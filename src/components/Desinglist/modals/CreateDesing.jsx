@@ -29,14 +29,20 @@ const CreateDesing = (props) => {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
-            status: data.status.toString(),
+            designer: data.designer.toString(),
             design_start: data.cadesign_start.toString(),
             project_delivery: data.project_delivery.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
     }
   }, [id]);
 
