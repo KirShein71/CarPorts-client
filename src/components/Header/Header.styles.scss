@@ -1,0 +1,16 @@
+.header {
+    margin-top: 25px;
+    display: flex;
+    &__title {
+        margin-top: 6px;
+        margin-left: 25px;
+        font-size: 32px;
+        font-weight: 700;
+        color: rgb(7, 7, 7);
+        text-transform: uppercase;
+    }
+    &__logo {
+        cursor: pointer;
+    }
+
+}

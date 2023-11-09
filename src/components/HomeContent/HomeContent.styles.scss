@@ -1,0 +1,10 @@
+.homecontent {
+    padding-top: 150px;
+    &__content {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: 1fr;
+        grid-column-gap: 15px;
+        grid-row-gap: 0px;
+    }
+}

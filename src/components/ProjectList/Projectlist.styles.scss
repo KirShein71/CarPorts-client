@@ -1,0 +1,22 @@
+.projectlist {
+    &__buttons {
+        margin-top: 25px;
+        display: flex;
+    }
+    &__button {
+        width: 180px;
+        height: 70px;
+        border-radius: 10px;
+        background-color: rgb(24, 86, 218);
+        border: none;
+        color: #ffffff;
+        font-size: 18px;
+        text-align: center;
+        margin-right: 15px;
+        &:hover {
+            background-color: #ffffff;
+            color: rgb(24, 86, 218);
+            border: solid 3px rgb(24, 86, 218);
+        }
+    }
+}
