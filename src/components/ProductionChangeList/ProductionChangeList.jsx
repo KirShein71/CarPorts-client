@@ -1,40 +1,40 @@
 import React from 'react';
-import { getAllWithNoDesing } from '../../http/projectApi';
+import { getAllWithNoDetails } from '../../http/projectApi';
 import { Spinner, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import CreateDesing from './modals/CreateDesing';
+import CreateDetails from './modals/createDetails';
 import Moment from 'react-moment';
 
-function Desinglist() {
+function ProductionChangeList() {
   const [projects, setProjects] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
-  const [updateShow, setUpdateShow] = React.useState(false);
+  const [show, setShow] = React.useState(false);
   const [project, setProject] = React.useState(null);
 
-  const handleUpdateClick = (id) => {
-    setProject(id);
-    setUpdateShow(true);
-  };
-
   React.useEffect(() => {
-    getAllWithNoDesing()
+    getAllWithNoDetails()
       .then((data) => setProjects(data))
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleUpdateClick = (project) => {
+    setProject(project);
+    setShow(true);
+  };
 
   if (fetching) {
     return <Spinner animation="border" />;
   }
   return (
-    <div className="desinglist">
+    <div className="productionchange">
       <div className="header">
-        <Link to="/project">
+        <Link to="/production">
           <img className="header__icon" src="./back.png" alt="back" />
         </Link>
-        <h1 className="header__title">Проектирование</h1>
+        <h1 className="header__title">Производственные детали</h1>
       </div>
-      <CreateDesing id={project} show={updateShow} setShow={setUpdateShow} setChange={setChange} />
+      <CreateDetails projectId={project} show={show} setShow={setShow} setChange={setChange} />
       <Table bordered hover size="sm" className="mt-3">
         <thead>
           <tr>
@@ -59,7 +59,7 @@ function Desinglist() {
               </td>
               <td>
                 <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
-                  Внести данные
+                  Внести изменения
                 </Button>
               </td>
             </tr>
@@ -70,4 +70,4 @@ function Desinglist() {
   );
 }
 
-export default Desinglist;
+export default ProductionChangeList;

@@ -12,41 +12,6 @@ function CardTabs() {
           </div>
         </div>
       </Link>
-      <Link to="/suppliers">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Поставщики</h2>
-          </div>
-        </div>
-      </Link>
-      <Link to="/payment">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Оплата</h2>
-          </div>
-        </div>
-      </Link>
-      <Link to="/stock">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Склад</h2>
-          </div>
-        </div>
-      </Link>
-      <Link to="/deadline">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Сроки</h2>
-          </div>
-        </div>
-      </Link>
-      <Link to="/logistics">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Логистика</h2>
-          </div>
-        </div>
-      </Link>
       <Link to="/production">
         <div className="cardtabs">
           <div className="cardtabs__content">
@@ -54,10 +19,24 @@ function CardTabs() {
           </div>
         </div>
       </Link>
-      <Link to="team">
+      <Link to="/planning">
         <div className="cardtabs">
           <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Бригады</h2>
+            <h2 className="cardtabs__title">Проектирование</h2>
+          </div>
+        </div>
+      </Link>
+      <Link to="/ordermaterials">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Заказы материалов</h2>
+          </div>
+        </div>
+      </Link>
+      <Link to="/installation">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Монтаж</h2>
           </div>
         </div>
       </Link>

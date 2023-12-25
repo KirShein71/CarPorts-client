@@ -4,6 +4,7 @@ import { createProject } from '../../../http/projectApi';
 
 const defaultValue = {
   name: '',
+  number: '',
   agreement_date: '',
   design_period: '',
   expiration_date: '',
@@ -12,6 +13,7 @@ const defaultValue = {
 };
 const defaultValid = {
   name: null,
+  number: null,
   agreement_date: null,
   design_period: null,
   expiration_date: null,
@@ -23,6 +25,7 @@ const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
+    if (key === 'number') result.number = value.number.trim() !== '';
     if (key === 'agreement_date') result.agreement_date = value.agreement_date.trim() !== '';
     if (key === 'design_period') result.design_period = value.design_period.trim() !== '';
     if (key === 'expiration_date') result.expiration_date = value.expiration_date.trim() !== '';
@@ -53,6 +56,7 @@ const CreateProject = (props) => {
 
     if (
       correct.name &&
+      correct.number &&
       correct.agreement_date &&
       correct.design_period &&
       correct.expiration_date &&
@@ -60,6 +64,7 @@ const CreateProject = (props) => {
     ) {
       const data = new FormData();
       data.append('name', value.name.trim());
+      data.append('number', value.number.trim());
       data.append('agreement_date', value.agreement_date.trim());
       data.append('design_period', value.design_period.trim());
       data.append('expiration_date', value.expiration_date.trim());
@@ -88,6 +93,17 @@ const CreateProject = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
+          <Col>
+            <Form.Control
+              name="number"
+              value={value.number}
+              onChange={(e) => handleInputChange(e)}
+              isValid={valid.number === true}
+              isInvalid={valid.number === false}
+              placeholder="Номер проекта"
+              className="mb-3"
+            />
+          </Col>
           <Form.Control
             name="name"
             value={value.name}

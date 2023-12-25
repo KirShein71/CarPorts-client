@@ -55,6 +55,7 @@ function ProjectList() {
       <Table bordered hover size="sm" className="mt-3">
         <thead>
           <tr>
+            <th>Номер проекта</th>
             <th>Название</th>
             <th>Дата договора</th>
             <th>Статус</th>
@@ -63,6 +64,7 @@ function ProjectList() {
         <tbody>
           {projects.map((item) => (
             <tr key={item.id}>
+              <td>{item.number}</td>
               <td>{item.name}</td>
               <td>
                 <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>

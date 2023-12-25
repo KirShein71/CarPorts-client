@@ -1,0 +1,17 @@
+.clue {
+    width: 150px;
+    height: 65px;
+    background-color: rgb(151, 138, 138);
+    border-radius: 10px;
+    position: absolute;
+
+    &__content {
+        padding: 7px;
+    }
+    &__text {
+        text-align: center;
+        font-size: 15px;
+        color: #ffffff;
+        font-weight: 600;
+    }
+}

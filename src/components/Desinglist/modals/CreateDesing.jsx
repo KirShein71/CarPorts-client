@@ -73,7 +73,13 @@ const CreateDesing = (props) => {
           setValid(isValid(prod));
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
     }
     setShow(false);
   };

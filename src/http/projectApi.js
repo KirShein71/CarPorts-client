@@ -12,6 +12,28 @@ export const fetchAllProjects = async () => {
     return data
 }
 
+export const getAllWithNoDetails = async () => {
+    const { data } = await guestInstance.get('project/getAllWithNoDetails ')
+    return data
+}
+
+export const getAllWithNoMaterials = async () => {
+    const { data } = await guestInstance.get('project/getAllWithNoMaterials')
+    return data
+}
+
+export const getAllWithNoDesing = async () => {
+    const {data} = await guestInstance.get('project/getAllWithNoDesing')
+    return data
+}
+
+
+export const getAllWithNoInstallers = async () => {
+    const {data} = await guestInstance.get('project/getAllWithNoInstallers')
+    return data
+}
+
+
 export const updateProject = async (id, project) => {
     const { data } = await authInstance.put(`project/update/${id}`, project)
     return data
@@ -22,22 +44,4 @@ export const fetchOneProject = async (id) => {
     return data
 }
 
-export const fetchAllProperty = async () => {
-    const { data } = await guestInstance.get('projectmaterials/getall')
-    return data
-}
 
-export const fetchProjectMaterials = async (projectId) => {
-    const {data} = await guestInstance.get(`projectmaterials/getproject/${projectId}`);
-    return data;
-  }
-
-export const createProperty = async (projectmaterials) => {
-    const { data } = await authInstance.post(`projectmaterials/create`, projectmaterials)
-    return data
-}
-
-export const fetchOneProperty = async (id) => {
-    const { data } = await guestInstance.get(`projectmaterials/getone/${id}`)
-    return data
-}

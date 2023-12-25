@@ -1,0 +1,19 @@
+.ordermaterialslist {
+    &__top {
+        margin-top: 25px;
+        display: flex;
+    }
+    &__number {
+        font-size: 22px;
+        color: rgb(0, 75, 214);
+        font-weight: 700;
+        padding-right: 10px;
+    }
+    &__project {
+        font-size: 22px;
+        color: rgb(0, 75, 214);
+        font-weight: 700;
+        
+    }
+
+}

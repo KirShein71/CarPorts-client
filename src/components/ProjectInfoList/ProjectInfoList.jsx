@@ -1,5 +1,6 @@
 import React from 'react';
-import { fetchOneProject, fetchProjectMaterials } from '../../http/projectApi';
+import { fetchProjectMaterials } from '../../http/projectMaterialsApi';
+import { fetchOneProject } from '../../http/projectApi';
 import { useParams, Link } from 'react-router-dom';
 import { Table, Spinner } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -31,12 +32,14 @@ function ProjectInfoList() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
+              <th>Номер проекта</th>
               <th>Название</th>
               <th>Дата договора</th>
             </tr>
           </thead>
           <tbody>
             <tr>
+              <td>{project.number}</td>
               <td>{project.name}</td>
               <td>
                 <Moment format="DD.MM.YYYY">{project.agreement_date}</Moment>

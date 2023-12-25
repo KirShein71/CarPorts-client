@@ -12,6 +12,11 @@ import Team from '../pages/Team';
 import Desing from '../pages/Desing';
 import Procurement from '../pages/Procurement';
 import ProjectInfo from '../pages/ProjectInfo';
+import ProductionChange from '../pages/ProductionChange';
+import Planning from '../pages/Planning';
+import OrderMaterials from '../pages/OrderMaterials';
+import Installation from '../pages/Installation';
+import Appoint from '../pages/Appoint';
 
 const routes = [
   { path: '/', Component: Home },
@@ -26,6 +31,11 @@ const routes = [
   { path: '/desing', Component: Desing },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
+  { path: '/productionchange', Component: ProductionChange },
+  { path: '/planning', Component: Planning },
+  { path: '/ordermaterials', Component: OrderMaterials },
+  { path: '/installation', Component: Installation },
+  { path: '/appoint', Component: Appoint },
 ];
 
 function AppRouter() {

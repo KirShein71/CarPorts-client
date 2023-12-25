@@ -1,5 +1,5 @@
 import React from 'react';
-import { fetchAllProjects } from '../../http/projectApi';
+import { getAllWithNoMaterials } from '../../http/projectApi';
 import { Spinner, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CreateProcurement from './modals/CreateProcurement';
@@ -13,7 +13,7 @@ function ProcurementList() {
   const [project, setProject] = React.useState(null);
 
   React.useEffect(() => {
-    fetchAllProjects()
+    getAllWithNoMaterials()
       .then((data) => setProjects(data))
       .finally(() => setFetching(false));
   }, [change]);
@@ -43,6 +43,7 @@ function ProcurementList() {
       <Table bordered hover size="sm" className="mt-3">
         <thead>
           <tr>
+            <th>Номер проекта</th>
             <th>Название</th>
             <th>Дата договора</th>
             <th>Статус</th>
@@ -51,6 +52,7 @@ function ProcurementList() {
         <tbody>
           {projects.map((item) => (
             <tr key={item.id}>
+              <td>{item.number}</td>
               <td>{item.name}</td>
               <td>
                 <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchMaterials } from '../../../http/materialsApi';
-import { createProperty } from '../../../http/projectApi';
+import { createProjectMaterials } from '../../../http/projectMaterialsApi';
 
 const defaultValue = {
   date_payment: '',
@@ -39,6 +39,7 @@ const CreateProcurement = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [materials, setMaterials] = React.useState(null);
+  const [selectedMaterials, setSelectedMaterials] = React.useState([]);
 
   React.useEffect(() => {
     fetchMaterials().then((data) => setMaterials(data));
@@ -50,35 +51,49 @@ const CreateProcurement = (props) => {
     setValid(isValid(data));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const correct = isValid(value);
-    setValid(correct);
+  const handleAddMaterial = () => {
     if (
-      correct.date_payment &&
-      correct.expiration_date &&
-      correct.ready_date &&
-      correct.shipping_date &&
-      correct.material
+      value.material &&
+      value.date_payment &&
+      value.ready_date &&
+      value.expiration_date &&
+      value.shipping_date
     ) {
-      const data = new FormData();
-      data.append('date_payment', value.date_payment.trim());
-      data.append('expiration_date', value.expiration_date.trim());
-      data.append('ready_date', value.ready_date.trim());
-      data.append('shipping_date', value.shipping_date.trim());
-      data.append('materialId', value.material);
-      data.append('materialName', value.materialName);
-      data.append('projectId', projectId);
-
-      createProperty(data)
-        .then((data) => {
-          setValue(defaultValue);
-          setValid(defaultValid);
-          setShow(false);
-          setChange((state) => !state);
-        })
-        .catch((error) => alert(error.response.data.message));
+      const newDetail = {
+        materialId: value.material,
+        materialName: value.materialName,
+        date_payment: value.date_payment,
+        ready_date: value.ready_date,
+        expiration_date: value.expiration_date,
+        shipping_date: value.shipping_date,
+      };
+      setSelectedMaterials((prev) => [...prev, newDetail]);
+      setValue(defaultValue);
+      setValid(defaultValid);
     }
+  };
+
+  const handleSaveMaterials = () => {
+    const newData = selectedMaterials.filter((material) => !material.id);
+    const data = newData.map((material) => {
+      const formData = new FormData();
+      formData.append('materialName', material.materialName);
+      formData.append('materialId', material.materialId);
+      formData.append('date_payment', material.date_payment);
+      formData.append('ready_date', material.ready_date);
+      formData.append('expiration_date', material.expiration_date);
+      formData.append('shipping_date', material.shipping_date);
+      formData.append('projectId', projectId);
+      return formData;
+    });
+
+    Promise.all(data.map(createProjectMaterials))
+      .then(() => {
+        setSelectedMaterials([]);
+        setShow(false);
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
   };
 
   const handleMaterialChange = (e) => {
@@ -91,13 +106,21 @@ const CreateProcurement = (props) => {
     }));
   };
 
+  const handleRemoveMaterial = (index) => {
+    setSelectedMaterials((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveAllMaterials = () => {
+    setSelectedMaterials([]);
+  };
+
   return (
     <Modal show={show} onHide={() => setShow(false)} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>Добавить материал</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form>
           <Col>
             <Form.Select
               name="material"
@@ -165,10 +188,46 @@ const CreateProcurement = (props) => {
                 onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
-            <Col>
-              <Button type="submit">Сохранить</Button>
-            </Col>
           </Row>
+          <Col>
+            <Button className="mb-3" onClick={handleAddMaterial}>
+              Добавить
+            </Button>
+          </Col>
+          {selectedMaterials.map((material, index) => (
+            <div key={index}>
+              <Row className="mb-3">
+                <Col>
+                  <Form.Control disabled value={material.materialName} className="mb-3" />
+                </Col>
+                <Col>
+                  <Form.Control disabled value={material.date_payment} className="mb-3" />
+                </Col>
+                <Col>
+                  <Form.Control disabled value={material.expiration_date} className="mb-3" />
+                </Col>
+                <Col>
+                  <Form.Control disabled value={material.ready_date} className="mb-3" />
+                </Col>
+                <Col>
+                  <Form.Control disabled value={material.shipping_date} className="mb-3" />
+                </Col>
+                <Col>
+                  <Button variant="danger" onClick={() => handleRemoveMaterial(index)}>
+                    Удалить
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          ))}
+          {selectedMaterials.length > 0 && (
+            <>
+              <Button className="me-3" onClick={handleSaveMaterials}>
+                Сохранить все детали
+              </Button>
+              <Button onClick={handleRemoveAllMaterials}>Удалить все</Button>
+            </>
+          )}
         </Form>
       </Modal.Body>
     </Modal>

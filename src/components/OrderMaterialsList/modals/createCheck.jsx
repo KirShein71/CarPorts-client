@@ -1,31 +1,34 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, updateProject } from '../../http/projectApi';
+import {
+  fetchOneProjectMaterials,
+  createCheckProjectMaterials,
+} from '../../../http/projectMaterialsApi';
 
-const defaultValue = { status: '' };
+const defaultValue = { check: '' };
 const defaultValid = {
-  status: null,
+  check: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'status') result.status = value.status.trim() !== '';
+    if (key === 'check') result.check = value.check.trim() !== '';
   }
   return result;
 };
 
-const CreateStatus = (props) => {
+const CreateDesing = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     if (id) {
-      fetchOneProject(id)
+      fetchOneProjectMaterials(id)
         .then((data) => {
           const prod = {
-            status: data.status.toString(),
+            check: data.check.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -50,14 +53,14 @@ const CreateStatus = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.status) {
+    if (correct.check) {
       const data = new FormData();
-      data.append('status', value.status.trim());
+      data.append('check', value.check.trim());
 
-      updateProject(id, data)
+      createCheckProjectMaterials(id, data)
         .then((data) => {
           const prod = {
-            status: data.status.toString(),
+            check: data.check.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -77,19 +80,19 @@ const CreateStatus = (props) => {
   return (
     <Modal show={show} onHide={() => setShow(false)} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Проектирование</Modal.Title>
+        <Modal.Title>Ввести номер счета</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="status"
-                value={value.status}
+                name="check"
+                value={value.check}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.status === true}
-                isInvalid={valid.status === false}
-                placeholder="Статус"
+                isValid={valid.check === true}
+                isInvalid={valid.check === false}
+                placeholder="Номер счета"
               />
             </Col>
           </Row>
@@ -104,4 +107,4 @@ const CreateStatus = (props) => {
   );
 };
 
-export default CreateStatus;
+export default CreateDesing;
