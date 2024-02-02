@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchOneShipmentDetails, updateShipmentDetails } from '../../../http/shipmentDetailsApi';
+import '../style.scss';
 
 const defaultValue = {
   shipment_quantity: '',
@@ -78,25 +79,23 @@ const UpdateShipmentDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl">
+    <Modal show={show} onHide={() => setShow(false)} size="sm">
       <Modal.Header closeButton>
         <Modal.Title>Добавить количество детали</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Row className="mb-3 mt-4">
-            <Col>
-              <Form.Control
-                name="shipment_quantity"
-                value={value.shipment_quantity}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.shipment_quantity === true}
-                isInvalid={valid.shipment_quantity === false}
-                placeholder="Количество деталей"
-                className="mb-3"
-              />
-            </Col>
-          </Row>
+          <Col>
+            <Form.Control
+              name="shipment_quantity"
+              value={value.shipment_quantity}
+              onChange={(e) => handleInputChange(e)}
+              isValid={valid.shipment_quantity === true}
+              isInvalid={valid.shipment_quantity === false}
+              placeholder="Количество деталей"
+              className="mb-3"
+            />
+          </Col>
           <Row>
             <Col>
               <Button type="submit">Сохранить</Button>
