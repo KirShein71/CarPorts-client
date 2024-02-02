@@ -1,10 +1,9 @@
 import React from 'react';
 import Header from '../Header/Header';
-import './Projectlist.styles.scss';
 import CreateProject from './modals/CreateProject';
 import CreateStatus from '../Status/CreateStatus';
 import { fetchAllProjects } from '../../http/projectApi';
-import { Spinner, Table, Button } from 'react-bootstrap';
+import { Spinner, Table, Button, Col, Row } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 
@@ -39,22 +38,24 @@ function ProjectList() {
   return (
     <div className="projectlist">
       <Header title={'Проекты '} />
-      <button className="projectlist__button">Все проекты</button>
+      <Button className="mt-3">Все проекты</Button>
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
-      <div className="projectlist__buttons">
-        <button onClick={() => setCreateShow(true)} className="projectlist__button">
-          Добавить проект
-        </button>
-        <Link to="/desing">
-          <button className="projectlist__button">Проектирование</button>
-        </Link>
-        <Link to="/procurement">
-          <button className="projectlist__button">Закупки</button>
-        </Link>
-        <Link to="/createaccount">
-          <button className="projectlist__button">Создать личный кабинет</button>
-        </Link>
-      </div>
+      <Row className=" d-flex flex-column">
+        <Col className="mt-3">
+          <Button className="me-3" onClick={() => setCreateShow(true)}>
+            Добавить проект
+          </Button>
+          <Link to="/desing">
+            <Button className="me-3">Проектирование</Button>
+          </Link>
+          <Link to="/procurement">
+            <Button className="me-3">Закупки</Button>
+          </Link>
+          <Link to="/createaccount">
+            <Button>Создать личный кабинет</Button>
+          </Link>
+        </Col>
+      </Row>
       <Table bordered hover size="sm" className="mt-3">
         <thead>
           <tr>
