@@ -100,11 +100,11 @@ const CreateProcurement = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl">
+    <Modal show={show} onHide={() => setShow(false)} size="xl " centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить материал</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="modal-dialog-scrollable">
         <Form>
           <Col>
             <Form.Select

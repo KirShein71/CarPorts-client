@@ -30,6 +30,13 @@ function WeldersList() {
     setStockDetail(id);
     setUpdateDetailsModal(true);
   };
+  const handleModalOpen = () => {
+    document.body.classList.add('modal-open');
+  };
+
+  const handleModalClose = () => {
+    document.body.classList.remove('modal-open');
+  };
 
   if (fetching) {
     return <Spinner animation="border" />;

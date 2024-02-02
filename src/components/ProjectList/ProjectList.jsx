@@ -40,19 +40,19 @@ function ProjectList() {
       <Header title={'Проекты '} />
       <Button className="mt-3">Все проекты</Button>
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
-      <Row className=" d-flex flex-column">
-        <Col className="mt-3">
-          <Button className="me-3" onClick={() => setCreateShow(true)}>
+      <Row className="d-flex flex-column">
+        <Col className="mt-3 align-items-start">
+          <Button className="me-3 my-2" onClick={() => setCreateShow(true)}>
             Добавить проект
           </Button>
           <Link to="/desing">
-            <Button className="me-3">Проектирование</Button>
+            <Button className="me-3 my-2">Проектирование</Button>
           </Link>
           <Link to="/procurement">
-            <Button className="me-3">Закупки</Button>
+            <Button className="me-3 my-2">Закупки</Button>
           </Link>
           <Link to="/createaccount">
-            <Button>Создать личный кабинет</Button>
+            <Button className="my-2">Создать личный кабинет</Button>
           </Link>
         </Col>
       </Row>

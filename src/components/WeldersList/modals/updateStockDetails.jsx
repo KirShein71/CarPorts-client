@@ -77,7 +77,7 @@ const UpdateStockDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl">
+    <Modal show={show} onHide={() => setShow(false)} size="lg" style={{ paddingLeft: '20px' }}>
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>

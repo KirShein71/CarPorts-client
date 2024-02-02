@@ -93,7 +93,7 @@ const CreateStockDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl">
+    <Modal show={show} onHide={() => setShow(false)} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>

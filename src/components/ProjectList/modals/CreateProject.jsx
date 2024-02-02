@@ -113,8 +113,8 @@ const CreateProject = (props) => {
             placeholder="Название проекта"
             className="mb-3"
           />
-          <Row className="mb-3">
-            <Col>
+          <Row className="mb-3 flex-column flex-md-row">
+            <Col md={3} className="my-3">
               <Form.Control
                 name="agreement_date"
                 value={value.agreement_date}
@@ -127,7 +127,7 @@ const CreateProject = (props) => {
                 onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
-            <Col>
+            <Col md={3} className="my-3">
               <Form.Control
                 name="design_period"
                 value={value.design_period}
@@ -137,7 +137,7 @@ const CreateProject = (props) => {
                 placeholder="Срок проектирования"
               />
             </Col>
-            <Col>
+            <Col md={3} className="my-3">
               <Form.Control
                 name="expiration_date"
                 value={value.expiration_date}
@@ -147,7 +147,7 @@ const CreateProject = (props) => {
                 placeholder="Срок производства"
               />
             </Col>
-            <Col>
+            <Col md={3} className="my-3">
               <Form.Control
                 name="installation_period"
                 value={value.installation_period}
@@ -157,18 +157,16 @@ const CreateProject = (props) => {
                 placeholder="Срок монтажа"
               />
             </Col>
-            <Col>
-              <Col>
-                <textarea
-                  name="note"
-                  value={value.note}
-                  onChange={(e) => handleInputChange(e)}
-                  isValid={valid.note === true}
-                  isInvalid={valid.note === false}
-                  placeholder="Примечание"
-                  style={{ height: '200px', width: '100%' }}
-                />
-              </Col>
+            <Col md={12} className="my-3">
+              <textarea
+                name="note"
+                value={value.note}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.note === true}
+                isInvalid={valid.note === false}
+                placeholder="Примечание"
+                style={{ height: '200px', width: '100%' }}
+              />
             </Col>
           </Row>
           <Row>
