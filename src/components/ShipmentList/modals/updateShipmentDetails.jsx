@@ -1,34 +1,34 @@
 import React from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import {
-  fetchOneProjectMaterials,
-  createCheckProjectMaterials,
-} from '../../../http/projectMaterialsApi';
+import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
+import { fetchOneShipmentDetails, updateShipmentDetails } from '../../../http/shipmentDetailsApi';
 
-const defaultValue = { check: '' };
+const defaultValue = {
+  shipment_quantity: '',
+};
 const defaultValid = {
-  check: null,
+  shipment_quantity: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'check') result.check = value.check.trim() !== '';
+    if (key === 'shipment_quantity')
+      result.shipment_quantity = value.shipment_quantity.trim() !== '';
   }
   return result;
 };
 
-const CreateCheck = (props) => {
-  const { id, show, setShow, setChange } = props;
+const UpdateShipmentDetails = (props) => {
+  const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     if (id) {
-      fetchOneProjectMaterials(id)
+      fetchOneShipmentDetails(id)
         .then((data) => {
           const prod = {
-            check: data.check.toString(),
+            shipment_quantity: data.shipment_quantity.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -53,14 +53,14 @@ const CreateCheck = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.check) {
+    if (correct.shipment_quantity) {
       const data = new FormData();
-      data.append('check', value.check.trim());
+      data.append('shipment_quantity', value.shipment_quantity.trim());
 
-      createCheckProjectMaterials(id, data)
+      updateShipmentDetails(id, data)
         .then((data) => {
           const prod = {
-            check: data.check.toString(),
+            shipment_quantity: data.shipment_quantity.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -78,21 +78,22 @@ const CreateCheck = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal show={show} onHide={() => setShow(false)} size="xl">
       <Modal.Header closeButton>
-        <Modal.Title>Ввести номер счета</Modal.Title>
+        <Modal.Title>Добавить количество детали</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Row className="mb-3">
+          <Row className="mb-3 mt-4">
             <Col>
               <Form.Control
-                name="check"
-                value={value.check}
+                name="shipment_quantity"
+                value={value.shipment_quantity}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.check === true}
-                isInvalid={valid.check === false}
-                placeholder="Номер счета"
+                isValid={valid.shipment_quantity === true}
+                isInvalid={valid.shipment_quantity === false}
+                placeholder="Количество деталей"
+                className="mb-3"
               />
             </Col>
           </Row>
@@ -107,4 +108,4 @@ const CreateCheck = (props) => {
   );
 };
 
-export default CreateCheck;
+export default UpdateShipmentDetails;

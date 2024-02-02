@@ -119,12 +119,20 @@ function ProjectInfoList() {
                 <td>
                   <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
                 </td>
-                <td>{property.expiration_date}</td>
+                <td>{property.expirationMaterial_date}</td>
                 <td>
-                  <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
+                  {property.ready_date ? (
+                    <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
+                  ) : (
+                    ''
+                  )}
                 </td>
                 <td>
-                  <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
+                  {property.shipping_date ? (
+                    <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
+                  ) : (
+                    ''
+                  )}
                 </td>
               </tr>
             ))}

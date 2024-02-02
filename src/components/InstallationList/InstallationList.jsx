@@ -26,8 +26,6 @@ function InstallationList() {
     setShowCalendar(true);
   };
 
-  console.log(selectedProject);
-
   const handleCloseCalendar = () => {
     setShowCalendar(false);
     setSelectedProject(null);

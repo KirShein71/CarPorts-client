@@ -5,17 +5,13 @@ import { createProjectMaterials } from '../../../http/projectMaterialsApi';
 
 const defaultValue = {
   date_payment: '',
-  expiration_date: '',
-  ready_date: '',
-  shipping_date: '',
+  expirationMaterial_date: '',
   material: '',
   materialName: '',
 };
 const defaultValid = {
   date_payment: null,
-  expiration_date: null,
-  ready_date: null,
-  shipping_date: null,
+  expirationMaterial_date: null,
   material: null,
   materialName: null,
 };
@@ -25,9 +21,8 @@ const isValid = (value) => {
   const pattern = /^[1-9][0-9]*$/;
   for (let key in value) {
     if (key === 'date_payment') result.date_payment = value.date_payment.trim() !== '';
-    if (key === 'expiration_date') result.expiration_date = value.expiration_date.trim() !== '';
-    if (key === 'ready_date') result.ready_date = value.ready_date.trim() !== '';
-    if (key === 'shipping_date') result.shipping_date = value.shipping_date.trim() !== '';
+    if (key === 'expirationMaterial_date')
+      result.expirationMaterial_date = value.expirationMaterial_date.trim() !== '';
     if (key === 'material') result.material = pattern.test(value.material);
     if (key === 'materialName') result.materialName = pattern.test(value.materialName);
   }
@@ -52,20 +47,12 @@ const CreateProcurement = (props) => {
   };
 
   const handleAddMaterial = () => {
-    if (
-      value.material &&
-      value.date_payment &&
-      value.ready_date &&
-      value.expiration_date &&
-      value.shipping_date
-    ) {
+    if (value.material && value.date_payment && value.expirationMaterial_date) {
       const newDetail = {
         materialId: value.material,
         materialName: value.materialName,
         date_payment: value.date_payment,
-        ready_date: value.ready_date,
-        expiration_date: value.expiration_date,
-        shipping_date: value.shipping_date,
+        expirationMaterial_date: value.expirationMaterial_date,
       };
       setSelectedMaterials((prev) => [...prev, newDetail]);
       setValue(defaultValue);
@@ -80,9 +67,7 @@ const CreateProcurement = (props) => {
       formData.append('materialName', material.materialName);
       formData.append('materialId', material.materialId);
       formData.append('date_payment', material.date_payment);
-      formData.append('ready_date', material.ready_date);
-      formData.append('expiration_date', material.expiration_date);
-      formData.append('shipping_date', material.shipping_date);
+      formData.append('expirationMaterial_date', material.expirationMaterial_date);
       formData.append('projectId', projectId);
       return formData;
     });
@@ -154,38 +139,13 @@ const CreateProcurement = (props) => {
             </Col>
             <Col>
               <Form.Control
-                name="expiration_date"
-                value={value.expiration_date}
+                name="expirationMaterial_date"
+                value={value.expirationMaterial_date}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.expiration_date === true}
-                isInvalid={valid.expiration_date === false}
+                isValid={valid.expirationMaterial_date === true}
+                isInvalid={valid.expirationMaterial_date === false}
                 placeholder="Срок производства"
-              />
-            </Col>
-            <Col>
-              <Form.Control
-                name="ready_date"
-                value={value.ready_date}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.ready_date === true}
-                isInvalid={valid.ready_date === false}
-                placeholder="Дата готовности"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
-            </Col>
-            <Col>
-              <Form.Control
-                name="shipping_date"
-                value={value.shipping_date}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.shipping_date === true}
-                isInvalid={valid.shipping_date === false}
-                placeholder="Дата отгрузки"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                className="mb-3"
               />
             </Col>
           </Row>

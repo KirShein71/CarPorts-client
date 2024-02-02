@@ -40,6 +40,34 @@ function CardTabs() {
           </div>
         </div>
       </Link>
+      <Link to="/welders">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Сварщики</h2>
+          </div>
+        </div>
+      </Link>
+      <Link to="/shipment">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Отгрузка</h2>
+          </div>
+        </div>
+      </Link>
+      <Link to="/manufacture">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Итоговая производство</h2>
+          </div>
+        </div>
+      </Link>
+      <Link to="/login">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Личный кабинет</h2>
+          </div>
+        </div>
+      </Link>
     </>
   );
 }

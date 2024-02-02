@@ -2,31 +2,35 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Table, Spinner, Tooltip } from 'react-bootstrap';
 import { fetchAllProjectMaterials } from '../../http/projectMaterialsApi';
-import Clue from './modals/Clue';
 import CreateCheck from './modals/createCheck';
 import moment from 'moment';
 import Moment from 'react-moment';
 import './OrderMaterialsList.styles.scss';
+import CreateReadyDate from './modals/createReadyDate';
+import CreateShippingDate from './modals/createShippingDate';
 
 function OrderMaterialsList() {
   const [projectsMaterials, setProjectsMaterials] = React.useState([]);
   const [change, setChange] = React.useState(true);
   const [updateShow, setUpdateShow] = React.useState(false);
+  const [readyDateShow, setReadyDateShow] = React.useState(false);
+  const [shippingDateShow, setShippingDateShow] = React.useState(false);
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
-  const [openClue, setOpenClue] = React.useState({});
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
     setUpdateShow(true);
   };
 
-  const handleMouseEnter = (id) => {
-    setOpenClue({ ...openClue, [id]: true });
+  const hadleReadyDate = (id) => {
+    setProjectMaterials(id);
+    setReadyDateShow(true);
   };
 
-  const handleMouseLeave = (id) => {
-    setOpenClue({ ...openClue, [id]: false });
+  const hadleShippingDate = (id) => {
+    setProjectMaterials(id);
+    setShippingDateShow(true);
   };
 
   React.useEffect(() => {
@@ -46,6 +50,18 @@ function OrderMaterialsList() {
         id={projectMaterials}
         show={updateShow}
         setShow={setUpdateShow}
+        setChange={setChange}
+      />
+      <CreateReadyDate
+        id={projectMaterials}
+        show={readyDateShow}
+        setShow={setReadyDateShow}
+        setChange={setChange}
+      />
+      <CreateShippingDate
+        id={projectMaterials}
+        show={shippingDateShow}
+        setShow={setShippingDateShow}
         setChange={setChange}
       />
       <>
@@ -75,24 +91,29 @@ function OrderMaterialsList() {
                       <td>
                         {moment(material.project.agreement_date, 'YYYY/MM/DD')
                           .businessAdd(material.project.expiration_date, 'days')
+                          .businessAdd(material.project.design_period, 'days')
                           .format('DD.MM.YYYY')}
                       </td>
-                      <td
-                        onMouseEnter={() => handleMouseEnter(prop.id)}
-                        onMouseLeave={() => handleMouseLeave(prop.id)}
-                        onClick={() => handleUpdateClick(prop.id)}>
-                        {prop.check}
-                        {openClue[prop.id] && <Clue />}
+                      <td onClick={() => handleUpdateClick(prop.id)}>
+                        {prop.check ? <>{prop.check}</> : 'Внесите счет'}
                       </td>
                       <td>
                         <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                       </td>
                       <td></td>
-                      <td>
-                        <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
+                      <td onClick={() => hadleReadyDate(prop.id)}>
+                        {prop.ready_date ? (
+                          <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
+                        ) : (
+                          'Внести дату готовности'
+                        )}
                       </td>
-                      <td>
-                        <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
+                      <td onClick={() => hadleShippingDate(prop.id)}>
+                        {prop.shipping_date ? (
+                          <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
+                        ) : (
+                          'Внести дату отгрузки'
+                        )}
                       </td>
                     </tr>
                   );

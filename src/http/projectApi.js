@@ -33,6 +33,16 @@ export const getAllWithNoInstallers = async () => {
     return data
 }
 
+export const getAllWithNoShipment = async () => {
+    const {data} = await guestInstance.get('project/getAllWithNoShipment')
+    return data
+}
+
+export const getAllWithNoAccount = async () => {
+    const {data} = await guestInstance.get('project/getAllWithNoAccount')
+    return data
+}
+
 
 export const updateProject = async (id, project) => {
     const { data } = await authInstance.put(`project/update/${id}`, project)

@@ -1,34 +1,31 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import {
-  fetchOneProjectMaterials,
-  createCheckProjectMaterials,
-} from '../../../http/projectMaterialsApi';
+import { fetchOneProject, updateProject } from '../../../http/projectApi';
 
-const defaultValue = { check: '' };
+const defaultValue = { project_delivery: '' };
 const defaultValid = {
-  check: null,
+  project_delivery: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'check') result.check = value.check.trim() !== '';
+    if (key === 'project_delivery') result.project_delivery = value.project_delivery;
   }
   return result;
 };
 
-const CreateCheck = (props) => {
+const CreateProjectDelivery = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     if (id) {
-      fetchOneProjectMaterials(id)
+      fetchOneProject(id)
         .then((data) => {
           const prod = {
-            check: data.check.toString(),
+            project_delivery: data.project_delivery.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -53,14 +50,13 @@ const CreateCheck = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.check) {
+    if (correct.project_delivery) {
       const data = new FormData();
-      data.append('check', value.check.trim());
-
-      createCheckProjectMaterials(id, data)
+      data.append('project_delivery', value.project_delivery.trim());
+      updateProject(id, data)
         .then((data) => {
           const prod = {
-            check: data.check.toString(),
+            project_delivery: data.project_delivery.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -80,19 +76,22 @@ const CreateCheck = (props) => {
   return (
     <Modal show={show} onHide={() => setShow(false)} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Ввести номер счета</Modal.Title>
+        <Modal.Title>Добавь дату сдачи проекта</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="check"
-                value={value.check}
+                name="project_delivery"
+                value={value.project_delivery}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.check === true}
-                isInvalid={valid.check === false}
-                placeholder="Номер счета"
+                isValid={valid.project_delivery === true}
+                isInvalid={valid.project_delivery === false}
+                placeholder="Дата сдачи проекта"
+                type="text"
+                onFocus={(e) => (e.target.type = 'date')}
+                onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
           </Row>
@@ -107,4 +106,4 @@ const CreateCheck = (props) => {
   );
 };
 
-export default CreateCheck;
+export default CreateProjectDelivery;
