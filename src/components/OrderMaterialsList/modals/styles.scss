@@ -1,8 +1,5 @@
 .modal__check{
     
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
     @media(max-width:575px) {
         width: 55% !important;
        
@@ -11,9 +8,7 @@
 
 .modal__readydate{
     
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+    
     @media(max-width:575px) {
         width: 55% !important;
         
@@ -22,9 +17,7 @@
 
 .modal__shippingdate {
   
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+   
     @media(max-width:575px) {
         width: 55% !important;
        

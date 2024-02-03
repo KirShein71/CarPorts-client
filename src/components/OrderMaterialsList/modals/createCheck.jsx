@@ -20,7 +20,7 @@ const isValid = (value) => {
 };
 
 const CreateCheck = (props) => {
-  const { id, show, setShow, setChange, clickPosition } = props;
+  const { id, show, setShow, setChange, top, left } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -82,7 +82,12 @@ const CreateCheck = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      style={{ top: clickPosition.y }}
+      style={{
+        position: 'absolute',
+        top: top,
+        left: left,
+        transform: 'translate(-50%, -50%)',
+      }}
       size="md"
       className="modal__check">
       <Modal.Header closeButton>

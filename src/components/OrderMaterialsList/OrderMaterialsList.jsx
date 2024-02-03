@@ -17,28 +17,28 @@ function OrderMaterialsList() {
   const [shippingDateShow, setShippingDateShow] = React.useState(false);
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
-  const [clickPosition, setClickPosition] = React.useState({ y: 0 });
+  const [clickPosition, setClickPosition] = React.useState({ top: 0, left: 0 });
 
-  const handleUpdateClick = (id, event) => {
+  const handleUpdateClick = (id, e) => {
     setProjectMaterials(id);
-    if (event) {
-      setClickPosition({ y: event.clientY });
+    if (e) {
+      setClickPosition({ top: e.clientY, left: e.clientX });
     }
     setUpdateShow(true);
   };
 
-  const hadleReadyDate = (id, event) => {
+  const hadleReadyDate = (id, e) => {
     setProjectMaterials(id);
-    if (event) {
-      setClickPosition({ y: event.clientY });
+    if (e) {
+      setClickPosition({ top: e.clientY, left: e.clientX });
     }
     setReadyDateShow(true);
   };
 
-  const hadleShippingDate = (id, event) => {
+  const hadleShippingDate = (id, e) => {
     setProjectMaterials(id);
-    if (event) {
-      setClickPosition({ y: event.clientY });
+    if (e) {
+      setClickPosition({ top: e.clientY, left: e.clientX });
     }
     setShippingDateShow(true);
   };
@@ -61,21 +61,24 @@ function OrderMaterialsList() {
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
-        clickPosition={clickPosition}
+        top={clickPosition.top}
+        left={clickPosition.left}
       />
       <CreateReadyDate
         id={projectMaterials}
         show={readyDateShow}
         setShow={setReadyDateShow}
         setChange={setChange}
-        clickPosition={clickPosition}
+        top={clickPosition.top}
+        left={clickPosition.left}
       />
       <CreateShippingDate
         id={projectMaterials}
         show={shippingDateShow}
         setShow={setShippingDateShow}
         setChange={setChange}
-        clickPosition={clickPosition}
+        top={clickPosition.top}
+        left={clickPosition.left}
       />
       <>
         {projectsMaterials.map((material) => (
@@ -107,21 +110,21 @@ function OrderMaterialsList() {
                           .businessAdd(material.project.design_period, 'days')
                           .format('DD.MM.YYYY')}
                       </td>
-                      <td onClick={(event) => handleUpdateClick(prop.id, event)}>
+                      <td onClick={(e) => handleUpdateClick(prop.id, e)}>
                         {prop.check ? <>{prop.check}</> : 'Внесите счет'}
                       </td>
                       <td>
                         <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                       </td>
                       <td></td>
-                      <td onClick={(event) => hadleReadyDate(prop.id, event)}>
+                      <td onClick={(e) => hadleReadyDate(prop.id, e)}>
                         {prop.ready_date ? (
                           <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
                         ) : (
                           'Внести дату готовности'
                         )}
                       </td>
-                      <td onClick={(event) => hadleShippingDate(prop.id, event)}>
+                      <td onClick={(e) => hadleShippingDate(prop.id, e)}>
                         {prop.shipping_date ? (
                           <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                         ) : (
