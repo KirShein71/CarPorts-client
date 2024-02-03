@@ -19,7 +19,7 @@ const isValid = (value) => {
 };
 
 const CreateShippingDate = (props) => {
-  const { id, show, setShow, setChange, top, left } = props;
+  const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -80,12 +80,8 @@ const CreateShippingDate = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      style={{
-        position: 'absolute',
-        top: top,
-        left: left,
-        transform: 'translate(-50%, -50%)',
-      }}
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
       size="md"
       className="modal__shippingdate">
       <Modal.Header closeButton>

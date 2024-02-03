@@ -20,7 +20,7 @@ const isValid = (value) => {
 };
 
 const CreateCheck = (props) => {
-  const { id, show, setShow, setChange, top, left } = props;
+  const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -82,13 +82,9 @@ const CreateCheck = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      style={{
-        position: 'absolute',
-        top: top,
-        left: left,
-        transform: 'translate(-50%, -50%)',
-      }}
       size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
       className="modal__check">
       <Modal.Header closeButton>
         <Modal.Title>Ввести номер счета</Modal.Title>
