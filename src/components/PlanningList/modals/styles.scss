@@ -1,6 +1,11 @@
 .modal__planning {
+   
+        
+      
     @media(max-width: 575px) {
         width: 60%;
-       
+        height: 100vh;
+        transform: translate(35%, 30%);
+  
     }
 }
