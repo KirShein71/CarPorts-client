@@ -23,6 +23,19 @@ const CreateCheck = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   React.useEffect(() => {
     if (id) {
@@ -85,6 +98,7 @@ const CreateCheck = (props) => {
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      style={{ top: `${scrollPosition}px` }}
       className="modal__check">
       <Modal.Header closeButton>
         <Modal.Title>Ввести номер счета</Modal.Title>
