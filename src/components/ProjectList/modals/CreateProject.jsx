@@ -87,12 +87,7 @@ const CreateProject = (props) => {
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={() => setShow(false)}
-      size="xl"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered>
+    <Modal show={show} onHide={() => setShow(false)} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>Добавить проект</Modal.Title>
       </Modal.Header>
