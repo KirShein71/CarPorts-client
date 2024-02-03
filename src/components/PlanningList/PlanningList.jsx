@@ -68,7 +68,7 @@ function PlanningList() {
                 {item.project_delivery ? (
                   <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
                 ) : (
-                  'Введите дату сдачи проекта'
+                  <span style={{ color: 'red', fontWeight: 600 }}>Введите дату сдачи проекта</span>
                 )}
               </td>
             </tr>
