@@ -4,7 +4,6 @@ import Home from '../pages/Home';
 import Production from '../pages/Production';
 import Suppliers from '../pages/Suppliers';
 import Payment from '../pages/Payment';
-import Stock from '../pages/Stock';
 import Deadline from '../pages/Deadline';
 import Logistics from '../pages/Logistics';
 import Project from '../pages/Project';
@@ -30,7 +29,6 @@ const routes = [
   { path: '/production', Component: Production },
   { path: '/suppliers', Component: Suppliers },
   { path: '/payment', Component: Payment },
-  { path: '/stock', Component: Stock },
   { path: '/deadline', Component: Deadline },
   { path: '/logistics', Component: Logistics },
   { path: '/project', Component: Project },

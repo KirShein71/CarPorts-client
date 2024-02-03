@@ -93,7 +93,11 @@ const CreateStockDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="md"
+      className="modal-dialog-centered modal-dialog-scrollable">
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>

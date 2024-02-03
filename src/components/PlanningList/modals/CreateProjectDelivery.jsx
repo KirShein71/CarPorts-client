@@ -74,27 +74,25 @@ const CreateProjectDelivery = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal show={show} onHide={() => setShow(false)} size="md">
       <Modal.Header closeButton>
         <Modal.Title>Добавь дату сдачи проекта</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="project_delivery"
-                value={value.project_delivery}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.project_delivery === true}
-                isInvalid={valid.project_delivery === false}
-                placeholder="Дата сдачи проекта"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
-            </Col>
-          </Row>
+          <Col className="mb-3">
+            <Form.Control
+              name="project_delivery"
+              value={value.project_delivery}
+              onChange={(e) => handleInputChange(e)}
+              isValid={valid.project_delivery === true}
+              isInvalid={valid.project_delivery === false}
+              placeholder="Дата сдачи проекта"
+              type="text"
+              onFocus={(e) => (e.target.type = 'date')}
+              onBlur={(e) => (e.target.type = 'text')}
+            />
+          </Col>
           <Row>
             <Col>
               <Button type="submit">Сохранить</Button>

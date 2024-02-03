@@ -22,8 +22,17 @@ a {
     text-decoration: none;
 }
 
-.modal-dialog {
+.fade modal-backdrop show {
     width: 100%;
+    height: 100%;
 }
 
-
+@media (max-width: 576px) {
+.modal {
+    --bs-modal-margin: 1.75rem;
+    --bs-modal-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    max-width: var(--bs-modal-width);
+    margin-right: auto;
+    margin-left: auto;
+}
+}
