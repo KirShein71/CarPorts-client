@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchMaterials } from '../../../http/materialsApi';
 import { createProjectMaterials } from '../../../http/projectMaterialsApi';
+import './styles.scss';
 
 const defaultValue = {
   date_payment: '',
@@ -100,7 +101,12 @@ const CreateProcurement = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl " centered>
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="xl "
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить материал</Modal.Title>
       </Modal.Header>

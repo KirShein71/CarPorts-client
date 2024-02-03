@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchAllDetails } from '../../../http/detailsApi';
 import { createProjectDetails } from '../../../http/projectDetailsApi';
-import '../styles.scss';
+import './styles.scss';
 
 const defaultValue = {
   detail: '',
@@ -98,7 +98,8 @@ const CreateDetails = (props) => {
       show={show}
       onHide={() => setShow(false)}
       size="md"
-      className="modal-dialog-centered modal-dialog-scrollable">
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>

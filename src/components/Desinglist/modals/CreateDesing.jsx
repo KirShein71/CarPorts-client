@@ -80,7 +80,12 @@ const CreateDesing = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Проектирование</Modal.Title>
       </Modal.Header>

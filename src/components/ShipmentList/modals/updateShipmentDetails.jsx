@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchOneShipmentDetails, updateShipmentDetails } from '../../../http/shipmentDetailsApi';
-import '../style.scss';
+import './style.scss';
 
 const defaultValue = {
   shipment_quantity: '',
@@ -79,7 +79,12 @@ const UpdateShipmentDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="sm">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить количество детали</Modal.Title>
       </Modal.Header>

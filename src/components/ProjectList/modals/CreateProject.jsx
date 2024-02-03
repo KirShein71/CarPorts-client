@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createProject } from '../../../http/projectApi';
-
+import './styles.scss';
 const defaultValue = {
   name: '',
   number: '',
@@ -87,7 +87,12 @@ const CreateProject = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="xl">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="xl"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить проект</Modal.Title>
       </Modal.Header>

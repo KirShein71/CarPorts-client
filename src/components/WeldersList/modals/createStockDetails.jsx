@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchAllDetails } from '../../../http/detailsApi';
 import { createStockDetails } from '../../../http/stockDetailsApi';
+import './styles.scss';
 
 const defaultValue = {
   detail: '',
@@ -97,7 +98,8 @@ const CreateStockDetails = (props) => {
       show={show}
       onHide={() => setShow(false)}
       size="md"
-      className="modal-dialog-centered modal-dialog-scrollable">
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>

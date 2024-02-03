@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { getOneStockDetails, updateStockDetails } from '../../../http/stockDetailsApi';
+import './styles.scss';
 
 const defaultValue = {
   stock_quantity: '',
@@ -77,7 +78,12 @@ const UpdateStockDetails = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg" style={{ paddingLeft: '20px' }}>
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>
