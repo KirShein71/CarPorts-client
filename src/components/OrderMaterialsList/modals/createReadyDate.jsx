@@ -19,7 +19,7 @@ const isValid = (value) => {
 };
 
 const CreateReadyDate = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, clickPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -77,7 +77,12 @@ const CreateReadyDate = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      style={{ top: clickPosition.y }}
+      size="md"
+      className="modal__readydate">
       <Modal.Header closeButton>
         <Modal.Title>Внести дату готовности</Modal.Title>
       </Modal.Header>

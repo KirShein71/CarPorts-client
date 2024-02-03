@@ -4,6 +4,7 @@ import {
   fetchOneProjectMaterials,
   createCheckProjectMaterials,
 } from '../../../http/projectMaterialsApi';
+import './styles.scss';
 
 const defaultValue = { check: '' };
 const defaultValid = {
@@ -19,7 +20,7 @@ const isValid = (value) => {
 };
 
 const CreateCheck = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, clickPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -78,7 +79,12 @@ const CreateCheck = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      style={{ top: clickPosition.y }}
+      size="md"
+      className="modal__check">
       <Modal.Header closeButton>
         <Modal.Title>Ввести номер счета</Modal.Title>
       </Modal.Header>

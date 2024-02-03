@@ -17,19 +17,29 @@ function OrderMaterialsList() {
   const [shippingDateShow, setShippingDateShow] = React.useState(false);
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
+  const [clickPosition, setClickPosition] = React.useState({ y: 0 });
 
-  const handleUpdateClick = (id) => {
+  const handleUpdateClick = (id, event) => {
     setProjectMaterials(id);
+    if (event) {
+      setClickPosition({ y: event.clientY });
+    }
     setUpdateShow(true);
   };
 
-  const hadleReadyDate = (id) => {
+  const hadleReadyDate = (id, event) => {
     setProjectMaterials(id);
+    if (event) {
+      setClickPosition({ y: event.clientY });
+    }
     setReadyDateShow(true);
   };
 
-  const hadleShippingDate = (id) => {
+  const hadleShippingDate = (id, event) => {
     setProjectMaterials(id);
+    if (event) {
+      setClickPosition({ y: event.clientY });
+    }
     setShippingDateShow(true);
   };
 
@@ -51,18 +61,21 @@ function OrderMaterialsList() {
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
+        clickPosition={clickPosition}
       />
       <CreateReadyDate
         id={projectMaterials}
         show={readyDateShow}
         setShow={setReadyDateShow}
         setChange={setChange}
+        clickPosition={clickPosition}
       />
       <CreateShippingDate
         id={projectMaterials}
         show={shippingDateShow}
         setShow={setShippingDateShow}
         setChange={setChange}
+        clickPosition={clickPosition}
       />
       <>
         {projectsMaterials.map((material) => (
@@ -94,21 +107,21 @@ function OrderMaterialsList() {
                           .businessAdd(material.project.design_period, 'days')
                           .format('DD.MM.YYYY')}
                       </td>
-                      <td onClick={() => handleUpdateClick(prop.id)}>
+                      <td onClick={(event) => handleUpdateClick(prop.id, event)}>
                         {prop.check ? <>{prop.check}</> : 'Внесите счет'}
                       </td>
                       <td>
                         <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                       </td>
                       <td></td>
-                      <td onClick={() => hadleReadyDate(prop.id)}>
+                      <td onClick={(event) => hadleReadyDate(prop.id, event)}>
                         {prop.ready_date ? (
                           <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
                         ) : (
                           'Внести дату готовности'
                         )}
                       </td>
-                      <td onClick={() => hadleShippingDate(prop.id)}>
+                      <td onClick={(event) => hadleShippingDate(prop.id, event)}>
                         {prop.shipping_date ? (
                           <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                         ) : (

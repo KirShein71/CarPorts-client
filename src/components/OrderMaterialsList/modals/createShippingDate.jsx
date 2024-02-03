@@ -19,7 +19,7 @@ const isValid = (value) => {
 };
 
 const CreateShippingDate = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, clickPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
@@ -77,7 +77,12 @@ const CreateShippingDate = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="lg">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      style={{ top: clickPosition.y }}
+      size="md"
+      className="modal__shippingdate">
       <Modal.Header closeButton>
         <Modal.Title>Добавьте дату отгрузки</Modal.Title>
       </Modal.Header>

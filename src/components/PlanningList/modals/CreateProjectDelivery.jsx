@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
-import '../styles.scss';
+import './styles.scss';
 
 const defaultValue = { project_delivery: '' };
 const defaultValid = {
