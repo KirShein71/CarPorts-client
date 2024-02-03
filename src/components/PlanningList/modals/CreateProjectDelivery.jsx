@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
+import '../styles.scss';
 
 const defaultValue = { project_delivery: '' };
 const defaultValid = {
@@ -74,7 +75,7 @@ const CreateProjectDelivery = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="md">
+    <Modal show={show} onHide={() => setShow(false)} size="md" className="modal__planning">
       <Modal.Header closeButton>
         <Modal.Title>Добавь дату сдачи проекта</Modal.Title>
       </Modal.Header>
