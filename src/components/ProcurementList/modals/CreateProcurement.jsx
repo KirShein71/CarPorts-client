@@ -106,7 +106,8 @@ const CreateProcurement = (props) => {
       onHide={() => setShow(false)}
       size="xl "
       aria-labelledby="contained-modal-title-vcenter"
-      centered>
+      centered
+      className="modal__procurement">
       <Modal.Header closeButton>
         <Modal.Title>Добавить материал</Modal.Title>
       </Modal.Header>
