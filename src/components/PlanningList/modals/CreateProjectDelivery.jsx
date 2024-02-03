@@ -75,7 +75,13 @@ const CreateProjectDelivery = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size="md" className="modal__planning">
+    <Modal
+      show={show}
+      onHide={() => setShow(false)}
+      size="md"
+      className="modal__planning"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
       <Modal.Header closeButton>
         <Modal.Title>Добавь дату сдачи проекта</Modal.Title>
       </Modal.Header>
