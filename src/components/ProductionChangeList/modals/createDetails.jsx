@@ -99,7 +99,8 @@ const CreateDetails = (props) => {
       onHide={() => setShow(false)}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
-      centered>
+      centered
+      className="modal__detail">
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>
