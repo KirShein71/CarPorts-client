@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchOneShipmentDetails, updateShipmentDetails } from '../../../http/shipmentDetailsApi';
-import './style.scss';
+import './styles.scss';
 
 const defaultValue = {
   shipment_quantity: '',
