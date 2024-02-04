@@ -46,7 +46,7 @@ function ProductionList() {
         setChange={setChange}
       />
       <div className="table-scrollable">
-        <Table bordered size="sm" className="mt-3">
+        <Table bordered size="md" className="mt-3">
           <thead>
             <tr>
               <th>Номер проекта</th>

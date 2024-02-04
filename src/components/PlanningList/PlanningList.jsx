@@ -37,44 +37,48 @@ function PlanningList() {
         setShow={setUpdateShow}
         setChange={setChange}
       />
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Номер проекта</th>
-            <th>Название</th>
-            <th>Примечание</th>
-            <th>Дата договора</th>
-            <th>Срок проектирования</th>
-            <th>Дедлайн</th>
-            <th>Дата сдачи</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map((item) => (
-            <tr key={item.id}>
-              <td>{item.number}</td>
-              <td>{item.name}</td>
-              <td>{item.note}</td>
-              <td>
-                <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-              </td>
-              <td>{item.design_period}</td>
-              <td>
-                {moment(item.agreement_date, 'YYYY/MM/DD')
-                  .businessAdd(item.design_period, 'days')
-                  .format('DD.MM.YYYY')}
-              </td>
-              <td onClick={() => handleUpdateProjectDelivery(item.id)}>
-                {item.project_delivery ? (
-                  <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
-                ) : (
-                  <span style={{ color: 'red', fontWeight: 600 }}>Введите дату сдачи проекта</span>
-                )}
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Номер проекта</th>
+              <th>Название</th>
+              <th>Примечание</th>
+              <th>Дата договора</th>
+              <th>Срок проектирования</th>
+              <th>Дедлайн</th>
+              <th>Дата сдачи</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {projects.map((item) => (
+              <tr key={item.id}>
+                <td>{item.number}</td>
+                <td>{item.name}</td>
+                <td>{item.note}</td>
+                <td>
+                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                </td>
+                <td>{item.design_period}</td>
+                <td>
+                  {moment(item.agreement_date, 'YYYY/MM/DD')
+                    .businessAdd(item.design_period, 'days')
+                    .format('DD.MM.YYYY')}
+                </td>
+                <td onClick={() => handleUpdateProjectDelivery(item.id)}>
+                  {item.project_delivery ? (
+                    <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600 }}>
+                      Введите дату сдачи проекта
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

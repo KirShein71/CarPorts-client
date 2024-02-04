@@ -71,55 +71,57 @@ function OrderMaterialsList() {
               <div className="ordermaterialslist__number">{material.project.number}</div>
               <div className="ordermaterialslist__project">{material.project.name}</div>
             </div>
-            <Table striped bordered size="sm" className="mt-3">
-              <thead>
-                <tr>
-                  <th>Тип материала</th>
-                  <th>Дедлайн производства</th>
-                  <th>Счёт</th>
-                  <th>Дата оплаты</th>
-                  <th>Сумма</th>
-                  <th>Дата готовности</th>
-                  <th>Даты отгрузки</th>
-                </tr>
-              </thead>
-              <tbody>
-                {material.props.map((prop) => {
-                  return (
-                    <tr key={prop.id}>
-                      <td>{prop.materialName}</td>
-                      <td>
-                        {moment(material.project.agreement_date, 'YYYY/MM/DD')
-                          .businessAdd(material.project.expiration_date, 'days')
-                          .businessAdd(material.project.design_period, 'days')
-                          .format('DD.MM.YYYY')}
-                      </td>
-                      <td onClick={() => handleUpdateClick(prop.id)}>
-                        {prop.check ? <>{prop.check}</> : 'Внесите счет'}
-                      </td>
-                      <td>
-                        <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
-                      </td>
-                      <td></td>
-                      <td onClick={() => hadleReadyDate(prop.id)}>
-                        {prop.ready_date ? (
-                          <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
-                        ) : (
-                          'Внести дату готовности'
-                        )}
-                      </td>
-                      <td onClick={() => hadleShippingDate(prop.id)}>
-                        {prop.shipping_date ? (
-                          <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
-                        ) : (
-                          'Внести дату отгрузки'
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+            <div className="table-scrollable">
+              <Table striped bordered size="sm" className="mt-3">
+                <thead>
+                  <tr>
+                    <th>Тип материала</th>
+                    <th>Дедлайн производства</th>
+                    <th>Счёт</th>
+                    <th>Дата оплаты</th>
+                    <th>Сумма</th>
+                    <th>Дата готовности</th>
+                    <th>Даты отгрузки</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {material.props.map((prop) => {
+                    return (
+                      <tr key={prop.id}>
+                        <td>{prop.materialName}</td>
+                        <td>
+                          {moment(material.project.agreement_date, 'YYYY/MM/DD')
+                            .businessAdd(material.project.expiration_date, 'days')
+                            .businessAdd(material.project.design_period, 'days')
+                            .format('DD.MM.YYYY')}
+                        </td>
+                        <td onClick={() => handleUpdateClick(prop.id)}>
+                          {prop.check ? <>{prop.check}</> : 'Внесите счет'}
+                        </td>
+                        <td>
+                          <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
+                        </td>
+                        <td></td>
+                        <td onClick={() => hadleReadyDate(prop.id)}>
+                          {prop.ready_date ? (
+                            <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
+                          ) : (
+                            'Внести дату готовности'
+                          )}
+                        </td>
+                        <td onClick={() => hadleShippingDate(prop.id)}>
+                          {prop.shipping_date ? (
+                            <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
+                          ) : (
+                            'Внести дату отгрузки'
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
           </>
         ))}
       </>
