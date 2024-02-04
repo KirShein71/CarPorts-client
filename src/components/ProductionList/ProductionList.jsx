@@ -45,7 +45,7 @@ function ProductionList() {
         setShow={setUpdateProjectDetailsModal}
         setChange={setChange}
       />
-      <Table bordered size="sm" className="mt-3">
+      <Table bordered size="sm" className="mt-3 table-scrollable">
         <thead>
           <tr>
             <th className="fixed-column">Номер проекта</th>
