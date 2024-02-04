@@ -6,6 +6,7 @@ import { fetchAllStockDetails } from '../../http/stockDetailsApi';
 import CreateStockDetails from './modals/createStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
+import './modals/styles.scss';
 
 function WeldersList() {
   const [nameDetails, setNameDetails] = React.useState([]);
@@ -56,34 +57,36 @@ function WeldersList() {
         setShow={setUpdateDetailsModal}
         setChange={setChange}
       />
-      <Table bordered size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Отметка времени</th>
-            {nameDetails
-              .sort((a, b) => a.id - b.id)
-              .map((part) => (
-                <th>{part.name}</th>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
-          {stockDetails.map((stock) => (
+      <div className="table-scrollable">
+        <Table bordered size="sm" className="mt-3">
+          <thead>
             <tr>
-              <td>
-                <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
-              </td>
+              <th className="welders_column">Отметка времени</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
-                .map((part) => {
-                  const detail = stock.props.find((el) => el.detailId === part.id);
-                  const quantity = detail ? detail.stock_quantity : '';
-                  return <td onClick={() => handleUpdateDetailClick(detail.id)}>{quantity}</td>;
-                })}
+                .map((part) => (
+                  <th>{part.name}</th>
+                ))}
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {stockDetails.map((stock) => (
+              <tr>
+                <td className="welders_column">
+                  <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
+                </td>
+                {nameDetails
+                  .sort((a, b) => a.id - b.id)
+                  .map((part) => {
+                    const detail = stock.props.find((el) => el.detailId === part.id);
+                    const quantity = detail ? detail.stock_quantity : '';
+                    return <td onClick={() => handleUpdateDetailClick(detail.id)}>{quantity}</td>;
+                  })}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

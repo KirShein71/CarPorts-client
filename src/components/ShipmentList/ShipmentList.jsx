@@ -6,6 +6,7 @@ import { fetchAllShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import Moment from 'react-moment';
+import './modals/styles.scss';
 
 function ShipmentList() {
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
@@ -45,40 +46,44 @@ function ShipmentList() {
         setShow={setUpdateShipmentDetailsModal}
         setChange={setChange}
       />
-      <Table bordered size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Номер проекта</th>
-            <th>Отметка времени</th>
-            {nameDetails
-              .sort((a, b) => a.id - b.id)
-              .map((part) => (
-                <th>{part.name}</th>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
-          {shipmentDetails.map((shipment) => (
-            <tr key={shipment.id}>
-              <td>{shipment.project ? shipment.project.number : ''}</td>
-              <td>
-                <Moment format="DD.MM.YYYY">
-                  {shipment.project ? shipment.project.shipment_date : ''}
-                </Moment>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th className="shipment_column">Номер проекта</th>
+              <th>Отметка времени</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
-                .map((part) => {
-                  const detail = shipment.props.find((el) => el.detailId === part.id);
-                  const quantity = detail ? detail.shipment_quantity : '';
-                  return (
-                    <td onClick={() => handleUpdateShipmentDetailClick(detail.id)}>{quantity}</td>
-                  );
-                })}
+                .map((part) => (
+                  <th>{part.name}</th>
+                ))}
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {shipmentDetails.map((shipment) => (
+              <tr key={shipment.id}>
+                <td className="shipment_column">
+                  {shipment.project ? shipment.project.number : ''}
+                </td>
+                <td>
+                  <Moment format="DD.MM.YYYY">
+                    {shipment.project ? shipment.project.shipment_date : ''}
+                  </Moment>
+                </td>
+                {nameDetails
+                  .sort((a, b) => a.id - b.id)
+                  .map((part) => {
+                    const detail = shipment.props.find((el) => el.detailId === part.id);
+                    const quantity = detail ? detail.shipment_quantity : '';
+                    return (
+                      <td onClick={() => handleUpdateShipmentDetailClick(detail.id)}>{quantity}</td>
+                    );
+                  })}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

@@ -49,8 +49,8 @@ function ProductionList() {
         <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>
-              <th className="fixed-column">Номер проекта</th>
-              <th className="fixed-column">Проект</th>
+              <th>Номер проекта</th>
+              <th className="production_column">Проект</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
                 .map((part) => (
@@ -61,8 +61,8 @@ function ProductionList() {
           <tbody>
             {projectDetails.map((detail) => (
               <tr key={detail.id}>
-                <td className="fixed-column">{detail.project ? detail.project.number : ''}</td>
-                <td className="fixed-column">{detail.project ? detail.project.name : ''}</td>
+                <td>{detail.project ? detail.project.number : ''}</td>
+                <td className="production_column">{detail.project ? detail.project.name : ''}</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => {

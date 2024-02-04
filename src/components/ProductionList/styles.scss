@@ -2,17 +2,12 @@
     overflow-x: auto;
   }
   
-  th:first-child
+  .production_column
  {
   position: sticky;
   left: 0;
   z-index: 1;
-  background-color: white; /* Чтобы столбец не перекрывал другие */
+  background-color: white !important;
 }
 
-td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background-color: white; /* Чтобы столбец не перекрывал другие */
-}
+
