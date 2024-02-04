@@ -1,13 +1,18 @@
 .table-scrollable {
     overflow-x: auto;
   }
-  .fixed-column {
-    position: sticky;
-    left: 0;
-    z-index: 1;
-    background-color: white; 
-  }
-  .fixed-column:nth-child(2) {
-    left: auto;
-    z-index: 2;
-  }
+  
+  th:first-child
+ {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: white; /* Чтобы столбец не перекрывал другие */
+}
+
+td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: white; /* Чтобы столбец не перекрывал другие */
+}
