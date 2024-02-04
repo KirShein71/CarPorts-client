@@ -19,3 +19,8 @@ export const fetchOneProjectDetails = async (id) => {
     const { data } = await guestInstance.get(`projectdetails/getone/${id}`)
     return data
 }
+
+export const updateProjectDetails = async (id, projectdetails) => {
+    const {data} = await authInstance.put(`projectdetails/update/${id}`, projectdetails)
+    return data
+}

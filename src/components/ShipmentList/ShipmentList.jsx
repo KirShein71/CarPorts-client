@@ -19,7 +19,7 @@ function ShipmentList() {
     fetchAllShipmentDetails()
       .then((data) => setShipmentDetails(data))
       .finally(() => setFetching(false));
-  }, []);
+  }, [change]);
 
   React.useEffect(() => {
     fetchAllDetails().then((data) => setNameDetails(data));
@@ -28,7 +28,6 @@ function ShipmentList() {
   const handleUpdateShipmentDetailClick = (id) => {
     setShipmentDetail(id);
     setUpdateShipmentDetailsModal(true);
-    console.log(id);
   };
 
   if (fetching) {
