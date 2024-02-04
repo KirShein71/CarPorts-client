@@ -4,7 +4,6 @@ import {
   fetchOneProjectMaterials,
   createCheckProjectMaterials,
 } from '../../../http/projectMaterialsApi';
-import './styles.scss';
 
 const defaultValue = { check: '' };
 const defaultValid = {
