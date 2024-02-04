@@ -5,4 +5,9 @@
     position: sticky;
     left: 0;
     z-index: 1;
+    background-color: white; 
+  }
+  .fixed-column:nth-child(2) {
+    left: auto;
+    z-index: 2;
   }

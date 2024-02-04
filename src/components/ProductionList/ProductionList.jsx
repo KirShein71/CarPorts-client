@@ -45,38 +45,40 @@ function ProductionList() {
         setShow={setUpdateProjectDetailsModal}
         setChange={setChange}
       />
-      <Table bordered size="sm" className="mt-3 table-scrollable">
-        <thead>
-          <tr>
-            <th className="fixed-column">Номер проекта</th>
-            <th className="fixed-column">Проект</th>
-            {nameDetails
-              .sort((a, b) => a.id - b.id)
-              .map((part) => (
-                <th>{part.name}</th>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
-          {projectDetails.map((detail) => (
-            <tr key={detail.id}>
-              <td>{detail.project ? detail.project.number : ''}</td>
-              <td>{detail.project ? detail.project.name : ''}</td>
+      <div className="table-scrollable">
+        <Table bordered size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th className="fixed-column">Номер проекта</th>
+              <th className="fixed-column">Проект</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
-                .map((part) => {
-                  const detailProject = detail.props.find((prop) => prop.detailId === part.id);
-                  const quantity = detailProject ? detailProject.quantity : '';
-                  return (
-                    <td onClick={() => handleUpdateProjectDetailClick(detailProject.id)}>
-                      {quantity}
-                    </td>
-                  );
-                })}
+                .map((part) => (
+                  <th>{part.name}</th>
+                ))}
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {projectDetails.map((detail) => (
+              <tr key={detail.id}>
+                <td className="fixed-column">{detail.project ? detail.project.number : ''}</td>
+                <td className="fixed-column">{detail.project ? detail.project.name : ''}</td>
+                {nameDetails
+                  .sort((a, b) => a.id - b.id)
+                  .map((part) => {
+                    const detailProject = detail.props.find((prop) => prop.detailId === part.id);
+                    const quantity = detailProject ? detailProject.quantity : '';
+                    return (
+                      <td onClick={() => handleUpdateProjectDetailClick(detailProject.id)}>
+                        {quantity}
+                      </td>
+                    );
+                  })}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }
