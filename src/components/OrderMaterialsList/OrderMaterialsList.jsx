@@ -96,7 +96,13 @@ function OrderMaterialsList() {
                             .format('DD.MM.YYYY')}
                         </td>
                         <td onClick={() => handleUpdateClick(prop.id)}>
-                          {prop.check ? <>{prop.check}</> : 'Внесите счет'}
+                          {prop.check ? (
+                            <>{prop.check}</>
+                          ) : (
+                            <span style={{ color: 'red', fontWeight: 600 }}>
+                              Внесите номер счёта
+                            </span>
+                          )}
                         </td>
                         <td>
                           <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
@@ -106,14 +112,18 @@ function OrderMaterialsList() {
                           {prop.ready_date ? (
                             <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
                           ) : (
-                            'Внести дату готовности'
+                            <span style={{ color: 'red', fontWeight: 600 }}>
+                              Введите дату готовности
+                            </span>
                           )}
                         </td>
                         <td onClick={() => hadleShippingDate(prop.id)}>
                           {prop.shipping_date ? (
                             <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                           ) : (
-                            'Внести дату отгрузки'
+                            <span style={{ color: 'red', fontWeight: 600 }}>
+                              Введите дату отгрузки
+                            </span>
                           )}
                         </td>
                       </tr>

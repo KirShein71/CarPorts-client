@@ -21,6 +21,7 @@ function ProductionChangeList() {
   const handleUpdateClick = (project) => {
     setProject(project);
     setShow(true);
+    console.log(project);
   };
 
   if (fetching) {

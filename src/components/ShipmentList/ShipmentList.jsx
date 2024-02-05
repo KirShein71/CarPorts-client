@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchAllShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
+import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
 import Moment from 'react-moment';
 import './modals/styles.scss';
 
@@ -13,6 +14,10 @@ function ShipmentList() {
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
   const [updateShipmentDetailsModal, setUpdateShipmentDetailsModal] = React.useState(false);
   const [nameDetails, setNameDetails] = React.useState([]);
+  const [createOneShipmentDetailModal, setCreateOneShipmentDetailModal] = React.useState(false);
+  const [detailId, setDetailId] = React.useState(null);
+  const [shipmentDate, setShipmentDate] = React.useState(null);
+  const [project, setProject] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
 
@@ -31,6 +36,14 @@ function ShipmentList() {
     setUpdateShipmentDetailsModal(true);
   };
 
+  const handleCreateOneShipmentDetail = (detailId, project, shipmentDate) => {
+    setDetailId(detailId);
+    setProject(project);
+    setShipmentDate(shipmentDate);
+    setCreateOneShipmentDetailModal(true);
+    console.log(shipmentDate);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -44,6 +57,14 @@ function ShipmentList() {
         id={shipmentDetail}
         show={updateShipmentDetailsModal}
         setShow={setUpdateShipmentDetailsModal}
+        setChange={setChange}
+      />
+      <CreateOneShipmentDetail
+        detailId={detailId}
+        projectId={project}
+        shipmentDate={shipmentDate}
+        show={createOneShipmentDetailModal}
+        setShow={setCreateOneShipmentDetailModal}
         setChange={setChange}
       />
       <div className="table-scrollable">
@@ -76,7 +97,18 @@ function ShipmentList() {
                     const detail = shipment.props.find((el) => el.detailId === part.id);
                     const quantity = detail ? detail.shipment_quantity : '';
                     return (
-                      <td onClick={() => handleUpdateShipmentDetailClick(detail.id)}>{quantity}</td>
+                      <td
+                        onClick={() =>
+                          quantity
+                            ? handleUpdateShipmentDetailClick(detail.id)
+                            : handleCreateOneShipmentDetail(
+                                part.id,
+                                shipment.projectId,
+                                shipment.project.shipment_date,
+                              )
+                        }>
+                        {quantity}
+                      </td>
                     );
                   })}
               </tr>

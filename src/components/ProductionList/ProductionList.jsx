@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchAllProjectDetails, updateProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateProjectDetails from './modal/UpdateProjectDetails';
+import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';
 
 function ProductionList() {
@@ -12,6 +13,9 @@ function ProductionList() {
   const [nameDetails, setNameDetails] = React.useState([]);
   const [projectDetail, setProjectDetail] = React.useState(null);
   const [updateProjectDetailsModal, setUpdateProjectDetailsModal] = React.useState(false);
+  const [createOneDetailModal, setCreateOneDetailModal] = React.useState(false);
+  const [detailId, setDetailId] = React.useState(null);
+  const [project, setProject] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
 
@@ -30,6 +34,12 @@ function ProductionList() {
     setUpdateProjectDetailsModal(true);
   };
 
+  const handleCreateOneDetail = (detailId, project) => {
+    setDetailId(detailId);
+    setProject(project);
+    setCreateOneDetailModal(true);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -43,6 +53,13 @@ function ProductionList() {
         id={projectDetail}
         show={updateProjectDetailsModal}
         setShow={setUpdateProjectDetailsModal}
+        setChange={setChange}
+      />
+      <CreateOneProjectDetail
+        detailId={detailId}
+        projectId={project}
+        show={createOneDetailModal}
+        setShow={setCreateOneDetailModal}
         setChange={setChange}
       />
       <div className="table-scrollable">
@@ -69,7 +86,12 @@ function ProductionList() {
                     const detailProject = detail.props.find((prop) => prop.detailId === part.id);
                     const quantity = detailProject ? detailProject.quantity : '';
                     return (
-                      <td onClick={() => handleUpdateProjectDetailClick(detailProject.id)}>
+                      <td
+                        onClick={() =>
+                          quantity
+                            ? handleUpdateProjectDetailClick(detailProject.id)
+                            : handleCreateOneDetail(part.id, detail.projectId)
+                        }>
                         {quantity}
                       </td>
                     );

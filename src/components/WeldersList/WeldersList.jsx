@@ -6,6 +6,7 @@ import { fetchAllStockDetails } from '../../http/stockDetailsApi';
 import CreateStockDetails from './modals/createStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
+import CreateOneStockDetail from './modals/createOneStockDetail';
 import './modals/styles.scss';
 
 function WeldersList() {
@@ -14,6 +15,9 @@ function WeldersList() {
   const [stockDetail, setStockDetail] = React.useState(null);
   const [createDetailsModal, setCreateDetailsModal] = React.useState(false);
   const [updateDetailsModal, setUpdateDetailsModal] = React.useState(false);
+  const [createOneStockDetailModal, setCreateOneStockDetailModal] = React.useState(false);
+  const [detailId, setDetailId] = React.useState(null);
+  const [stockDate, setStockDate] = React.useState(null);
   const [change, setChange] = React.useState(true);
   const [fetching, setFetching] = React.useState(true);
 
@@ -32,10 +36,11 @@ function WeldersList() {
     setUpdateDetailsModal(true);
   };
 
-  const handleCreateDetailClick = (id) => {
-    setStockDetail(id);
-    setCreateDetailsModal(true);
-    console.log(id);
+  const handleCreateOneStockDetail = (detailId, stockDate) => {
+    setDetailId(detailId);
+    setStockDate(stockDate);
+    setCreateOneStockDetailModal(true);
+    console.log(detailId, stockDate);
   };
 
   if (fetching) {
@@ -55,6 +60,13 @@ function WeldersList() {
         id={stockDetail}
         show={updateDetailsModal}
         setShow={setUpdateDetailsModal}
+        setChange={setChange}
+      />
+      <CreateOneStockDetail
+        detailId={detailId}
+        stockDate={stockDate}
+        show={createOneStockDetailModal}
+        setShow={setCreateOneStockDetailModal}
         setChange={setChange}
       />
       <div className="table-scrollable">
@@ -80,7 +92,16 @@ function WeldersList() {
                   .map((part) => {
                     const detail = stock.props.find((el) => el.detailId === part.id);
                     const quantity = detail ? detail.stock_quantity : '';
-                    return <td onClick={() => handleUpdateDetailClick(detail.id)}>{quantity}</td>;
+                    return (
+                      <td
+                        onClick={() =>
+                          quantity
+                            ? handleUpdateDetailClick(detail.id)
+                            : handleCreateOneStockDetail(part.id, stock.stock_date)
+                        }>
+                        {quantity}
+                      </td>
+                    );
                   })}
               </tr>
             ))}
