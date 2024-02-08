@@ -26,11 +26,6 @@ export const createAccount = async (user) => {
         localStorage.removeItem('token')
     }
 
-    // export const login = async (phone) => {
-    //     const {data} = await guestInstance.post('user/login', {phone})
-    //     return data
-    // }
-
     export const getOneAccount = async(id) => {
         const {data} = await guestInstance.get(`user/getOne/${id}`);
         return data;

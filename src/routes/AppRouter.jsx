@@ -21,6 +21,7 @@ import Manufacture from '../pages/Manufacture';
 import CreateAccount from '../pages/CreateAccount';
 import PersonalAccount from '../pages/PersonalAccount';
 import Login from '../pages/Login';
+import Admin from '../pages/Admin';
 
 const routes = [
   { path: '/', Component: Home },
@@ -44,6 +45,7 @@ const routes = [
   { path: '/createaccount', Component: CreateAccount },
   { path: '/personalaccount', Component: PersonalAccount },
   { path: '/login', Component: Login },
+  { path: '/admin', Component: Admin },
 ];
 
 function AppRouter() {

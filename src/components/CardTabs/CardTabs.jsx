@@ -68,6 +68,13 @@ function CardTabs() {
           </div>
         </div>
       </Link>
+      <Link to="/admin">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Админ</h2>
+          </div>
+        </div>
+      </Link>
     </>
   );
 }
