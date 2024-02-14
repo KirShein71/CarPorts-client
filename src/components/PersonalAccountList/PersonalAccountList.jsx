@@ -2,10 +2,12 @@ import React from 'react';
 import { getOneAccount, logout } from '../../http/userApi';
 import { Button, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
 
 function PersonalAccountList() {
   const [account, setAccount] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
+  const { user } = React.useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -22,8 +24,10 @@ function PersonalAccountList() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login', { replace: true });
+    user.logout();
+    navigate('/', { replace: true });
   };
+
   return (
     <>
       <div>Добро Пожаловать</div>

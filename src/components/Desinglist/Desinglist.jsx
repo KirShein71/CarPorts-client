@@ -15,6 +15,7 @@ function Desinglist() {
   const handleUpdateClick = (id) => {
     setProject(id);
     setUpdateShow(true);
+    console.log(id);
   };
 
   React.useEffect(() => {

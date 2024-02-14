@@ -1,12 +1,10 @@
 import React from 'react';
-import HomeContent from '../components/HomeContent/HomeContent';
-import Logo from '../components/Logo/Logo';
+import Login from '../components/Login/Login';
 
 function Home() {
   return (
     <>
-      <Logo />
-      <HomeContent />
+      <Login />
     </>
   );
 }

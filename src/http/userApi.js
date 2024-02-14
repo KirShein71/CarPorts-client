@@ -8,7 +8,7 @@ export const createAccount = async (user) => {
 
     export const login = async (phone) => {
         try {
-            const response = await guestInstance.post('user/login', {phone})
+            const response = await authInstance.post('user/login', {phone})
             const token = response.data.token
             const user = jwtDecode(token)
             localStorage.setItem('token', token)
@@ -16,6 +16,26 @@ export const createAccount = async (user) => {
             return user
         } catch (e) {
             alert(e.response.data.message)
+            return false
+        }
+    }
+
+    export const check = async () => {
+        let userToken, userData
+        try {
+            userToken = localStorage.getItem('token')
+            // если в хранилище нет действительного токена
+            if (!userToken) {
+                return false
+            }
+            // токен есть, надо проверить его подлинность
+            const response = await authInstance.get('user/check')
+            userToken = response.data.token
+            userData = jwtDecode(userToken)
+            localStorage.setItem('token', userToken)
+            return userData
+        } catch(e) {
+            localStorage.removeItem('token')
             return false
         }
     }

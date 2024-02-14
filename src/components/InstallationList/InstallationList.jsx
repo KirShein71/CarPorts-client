@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Link } from 'react-router-dom';
 import { Button, Spinner, Table, Modal } from 'react-bootstrap';
-import { fetchAllProjectInstallers } from '../../http/projectInstallersApi';
+import { fetchAllProjectBrigades } from '../../http/projectBrigadesApi';
 import moment from 'moment';
 import Moment from 'react-moment';
 import FullCalendar from '@fullcalendar/react';
@@ -10,14 +10,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import './InstallationList.styles.scss';
 
 function InstallationList() {
-  const [projectsInstallers, setProjectsInstallers] = React.useState([]);
+  const [projectsBrigades, setProjectsBrigades] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [selectedProject, setSelectedProject] = React.useState(null);
 
   React.useEffect(() => {
-    fetchAllProjectInstallers()
-      .then((data) => setProjectsInstallers(data))
+    fetchAllProjectBrigades()
+      .then((data) => setProjectsBrigades(data))
       .finally(() => setFetching(false));
   }, []);
 
@@ -42,10 +42,10 @@ function InstallationList() {
         <Button>Назначить бригаду</Button>
       </Link>
       <>
-        {projectsInstallers.map((brigade) => (
+        {projectsBrigades.map((brigade) => (
           <>
             <div key={brigade.id} className="installationlist__top">
-              <div className="installationlist__brigade">{brigade.installer.name}</div>
+              <div className="installationlist__brigade">{brigade.brigade.name}</div>
             </div>
             <Table striped bordered size="sm" className="mt-3">
               <thead>

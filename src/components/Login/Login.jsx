@@ -1,19 +1,32 @@
 import React from 'react';
+import { AppContext } from '../../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button } from 'react-bootstrap';
-import { login } from '../http/userApi';
+import { login } from '../../http/userApi';
+import { observer } from 'mobx-react';
 
-function Login() {
+const Login = observer(() => {
+  const { user } = React.useContext(AppContext);
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user.isAdmin) navigate('/workingpage', { replace: true });
+    if (user.isUser) navigate('/personalaccount', { replace: true });
+    if (user.isEmployee) navigate('/workingpage', { replace: true });
+  }, [navigate, user.isAdmin, user.isUser, user.isEmployee]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const phone = event.target.phone.value.trim();
     try {
       const data = await login(phone);
+
       if (data) {
-        localStorage.setItem('id', data.id);
-        navigate('/personalaccount');
+        user.login(data);
+
+        if (user.isAdmin) navigate('/admin');
+        if (user.isUser) navigate('/personalaccount');
+        if (user.isEmployee) navigate('/');
       }
     } catch (error) {
       console.error(error);
@@ -39,6 +52,6 @@ function Login() {
       </Card>
     </Container>
   );
-}
+});
 
 export default Login;

@@ -1,8 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
+import { logout } from '../../http/userApi';
+import { Button } from 'react-bootstrap';
 import './CardTabs.styles.scss';
 
 function CardTabs() {
+  const { user } = React.useContext(AppContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    user.logout();
+    navigate('/', { replace: true });
+  };
+
   return (
     <>
       <Link to="/project">
@@ -61,20 +73,23 @@ function CardTabs() {
           </div>
         </div>
       </Link>
-      <Link to="/login">
+      {user.isAdmin ? (
+        <Link to="/admin">
+          <div className="cardtabs">
+            <div className="cardtabs__content">
+              <h2 className="cardtabs__title">Админ</h2>
+            </div>
+          </div>
+        </Link>
+      ) : null}
+      <Link to="/adding">
         <div className="cardtabs">
           <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Личный кабинет</h2>
+            <h2 className="cardtabs__title">Создание деталей и монтажных бригад</h2>
           </div>
         </div>
       </Link>
-      <Link to="/admin">
-        <div className="cardtabs">
-          <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Админ</h2>
-          </div>
-        </div>
-      </Link>
+      <Button onClick={handleLogout}>Выйти</Button>
     </>
   );
 }

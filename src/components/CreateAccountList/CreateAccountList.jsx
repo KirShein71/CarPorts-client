@@ -20,7 +20,6 @@ function CreateAccountList() {
   const HadleCreateAccountModal = (project) => {
     setProject(project);
     setShow(true);
-    console.log(project);
   };
 
   if (fetching) {

@@ -25,8 +25,13 @@ export const createAccountEmployee = async (employee) => {
         return data
     }
 
-    
+    export const deleteAccountEmployee = async (id) => {
+        const { data } = await guestInstance.delete(`employee/delete/${id}`)
+        return data
+    }
 
     export const logout = () => {
         localStorage.removeItem('token')
     }
+
+

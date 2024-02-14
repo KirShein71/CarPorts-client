@@ -1,15 +1,15 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
-import { fetchInstallers } from '../../../http/installersApi';
-import { createProjectInstallers } from '../../../http/projectInstallersApi';
+import { fetchBrigades } from '../../../http/bragadeApi';
+import { createProjectBrigades } from '../../../http/projectBrigadesApi';
 
 const defaultValue = {
-  installer: '',
+  brigade: '',
   plan_start: '',
   plan_finish: '',
 };
 const defaultValid = {
-  installer: null,
+  brigade: null,
   plan_start: null,
   plan_finish: null,
 };
@@ -18,7 +18,7 @@ const isValid = (value) => {
   const result = {};
   const pattern = /^[1-9][0-9]*$/;
   for (let key in value) {
-    if (key === 'installer') result.installer = pattern.test(value.installer);
+    if (key === 'brigade') result.brigade = pattern.test(value.brigade);
     if (key === 'plan_start') result.plan_start = value.plan_start;
     if (key === 'plan_finish') result.plan_finish = value.plan_finish;
   }
@@ -29,10 +29,10 @@ const CreateBrigade = (props) => {
   const { show, setShow, setChange, projectId } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const [installers, setInstallers] = React.useState(null);
+  const [brigades, setBrigades] = React.useState(null);
 
   React.useEffect(() => {
-    fetchInstallers().then((data) => setInstallers(data));
+    fetchBrigades().then((data) => setBrigades(data));
   }, []);
 
   const handleInputChange = (event) => {
@@ -45,14 +45,14 @@ const CreateBrigade = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.installer && correct.plan_start && correct.plan_finish) {
+    if (correct.brigade && correct.plan_start && correct.plan_finish) {
       const data = new FormData();
       data.append('plan_start', value.plan_start);
       data.append('plan_finish', value.plan_finish);
-      data.append('installerId', value.installer);
+      data.append('brigadeId', value.brigade);
       data.append('projectId', projectId);
 
-      createProjectInstallers(data)
+      createProjectBrigades(data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -64,10 +64,10 @@ const CreateBrigade = (props) => {
   };
 
   const handleInstallerChange = (e) => {
-    const installerId = e.target.value;
+    const brigadeId = e.target.value;
     setValue((prevValue) => ({
       ...prevValue,
-      installer: installerId,
+      brigade: brigadeId,
     }));
   };
 
@@ -79,20 +79,20 @@ const CreateBrigade = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить материал</Modal.Title>
+        <Modal.Title>Назначить бригаду</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Col>
             <Form.Select
-              name="installer"
-              value={value.installer}
+              name="brigade"
+              value={value.brigade}
               onChange={handleInstallerChange}
-              isValid={valid.installer === true}
-              isInvalid={valid.installer === false}>
+              isValid={valid.brigade === true}
+              isInvalid={valid.brigade === false}>
               <option value="">Бригады</option>
-              {installers &&
-                installers.map((item) => (
+              {brigades &&
+                brigades.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
