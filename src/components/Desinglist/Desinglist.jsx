@@ -15,7 +15,6 @@ function Desinglist() {
   const handleUpdateClick = (id) => {
     setProject(id);
     setUpdateShow(true);
-    console.log(id);
   };
 
   React.useEffect(() => {
@@ -42,7 +41,6 @@ function Desinglist() {
             <th>Номер проекта</th>
             <th>Название</th>
             <th>Дата договора</th>
-            <th>Статус</th>
           </tr>
         </thead>
         <tbody>
@@ -52,11 +50,6 @@ function Desinglist() {
               <td>{item.name}</td>
               <td>
                 <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-              </td>
-              <td>
-                <Button variant="danger" size="sm">
-                  {item.status}
-                </Button>
               </td>
               <td>
                 <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>

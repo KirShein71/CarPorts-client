@@ -2,6 +2,7 @@ import React from 'react';
 import { getAllEmployee, deleteAccountEmployee } from '../../http/employeeApi';
 import { Table, Spinner, Button } from 'react-bootstrap';
 import CreateEmployee from './modals/CreateEmployee';
+import Header from '../Header/Header';
 
 function Admin() {
   const [employees, setEmployees] = React.useState([]);
@@ -30,9 +31,7 @@ function Admin() {
 
   return (
     <div className="adminlist">
-      <div className="header">
-        <h1 className="header__title">Создание доступа для сотрудников</h1>
-      </div>
+      <Header title={'Создание доступа для сотрудников'} />
       <CreateEmployee show={show} setShow={setShow} setChange={setChange} />
       <Button onClick={() => setShow(true)} className="mt-3">
         Добавить сотрудника

@@ -113,9 +113,26 @@ function PlanningList() {
                 </td>
                 <td>
                   <td>
-                    {moment(item.agreement_date, 'YYYY/MM/DD')
-                      .businessAdd(item.design_period, 'days')
-                      .diff(moment(), 'days')}
+                    {(() => {
+                      const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                        item.design_period,
+                        'days',
+                      );
+
+                      function subtractDaysUntilZero(targetDate) {
+                        const today = moment();
+                        let daysLeft = 0;
+
+                        while (targetDate.diff(today, 'days') > 0) {
+                          daysLeft++;
+                          targetDate.subtract(1, 'day');
+                        }
+
+                        return daysLeft;
+                      }
+
+                      return subtractDaysUntilZero(targetDate);
+                    })()}
                   </td>
                 </td>
                 <td>{item.designer}</td>

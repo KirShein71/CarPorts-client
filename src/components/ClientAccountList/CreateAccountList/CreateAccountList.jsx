@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '../../Header/Header';
 import { getAllWithNoAccount } from '../../../http/projectApi';
 import { Table, Button, Spinner } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import CreateAccountModal from './modal/CreateAccauntModal';
 
 function CreateAccountList() {
@@ -28,7 +28,12 @@ function CreateAccountList() {
 
   return (
     <div className="createaccount">
-      <Header title={'Создать личный кабинет'} />
+      <div className="header">
+        <Link to="/clientaccount">
+          <img className="header__icon" src=".././back.png" alt="back" />
+        </Link>
+        <h1 className="header__title">Создать личный кабинет</h1>
+      </div>
       <CreateAccountModal projectId={project} show={show} setShow={setShow} setChange={setChange} />
       <Table bordered hover size="sm" className="mt-3">
         <thead>
