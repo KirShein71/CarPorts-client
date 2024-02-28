@@ -39,36 +39,38 @@ function ClientAccountList() {
       <Link to="/createaccount">
         <Button className="mt-3">Создать личный кабинет</Button>
       </Link>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Номер</th>
-            <th>Название</th>
-            <th>Личный кабинет</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.project.number}</td>
-              <td>{user.project.name}</td>
-              <td>{user.phone}</td>
-              <td>
-                <Button variant="success" size="sm" onClick={() => addToInfo(user.id)}>
-                  Добавить информацию
-                </Button>
-              </td>
-              <td>
-                <Button variant="success" size="sm" onClick={() => handleDeleteClick(user.id)}>
-                  Удалить
-                </Button>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Номер</th>
+              <th>Название</th>
+              <th>Личный кабинет</th>
+              <th></th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.project.number}</td>
+                <td>{user.project.name}</td>
+                <td>{user.phone}</td>
+                <td>
+                  <Button variant="success" size="sm" onClick={() => addToInfo(user.id)}>
+                    Добавить информацию
+                  </Button>
+                </td>
+                <td>
+                  <Button variant="success" size="sm" onClick={() => handleDeleteClick(user.id)}>
+                    Удалить
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

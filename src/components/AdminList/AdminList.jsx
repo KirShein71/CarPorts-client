@@ -36,28 +36,30 @@ function Admin() {
       <Button onClick={() => setShow(true)} className="mt-3">
         Добавить сотрудника
       </Button>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Имя сотрудника</th>
-            <th>Телефон</th>
-            <th>Специальность</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees?.map((employee) => (
-            <tr key={employee.id}>
-              <td>{employee.name}</td>
-              <td>{employee.phone}</td>
-              <td>{employee.speciality}</td>
-              <td>
-                <Button onClick={() => handleDeleteClick(employee.id)}>Удалить</Button>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Имя сотрудника</th>
+              <th>Телефон</th>
+              <th>Специальность</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {employees?.map((employee) => (
+              <tr key={employee.id}>
+                <td>{employee.name}</td>
+                <td>{employee.phone}</td>
+                <td>{employee.speciality}</td>
+                <td>
+                  <Button onClick={() => handleDeleteClick(employee.id)}>Удалить</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

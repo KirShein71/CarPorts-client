@@ -49,28 +49,30 @@ function Materials() {
       <Button onClick={() => setMaterialModal(true)} className="mt-3">
         Создать материал
       </Button>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Название материала</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {materials.map((material) => (
-            <tr key={material.id}>
-              <td>{material.name}</td>
-              <td>
-                <Button onClick={() => handleUpdateMaterial(material.id)}>Редактировать</Button>
-              </td>
-              <td>
-                <Button onClick={() => handleDeleteClick(material.id)}>Удалить</Button>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Название материала</th>
+              <th></th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {materials.map((material) => (
+              <tr key={material.id}>
+                <td>{material.name}</td>
+                <td>
+                  <Button onClick={() => handleUpdateMaterial(material.id)}>Редактировать</Button>
+                </td>
+                <td>
+                  <Button onClick={() => handleDeleteClick(material.id)}>Удалить</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

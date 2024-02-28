@@ -182,7 +182,7 @@ function CreateInformatoinClientList() {
           style={{
             marginTop: '25px',
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+            gridTemplateColumns: '1fr 1fr 1fr',
             gridColumnGap: '5px',
             gridRowGap: '5px',
           }}>

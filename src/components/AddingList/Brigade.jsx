@@ -49,30 +49,32 @@ function Brigade() {
       <Button onClick={() => setBrigadeModal(true)} className="mt-3">
         Создать бригаду
       </Button>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Бригады</th>
-            <th>Номер телефона</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {brigades.map((brigade) => (
-            <tr key={brigade.id}>
-              <td>{brigade.name}</td>
-              <td>{brigade?.phone}</td>
-              <td>
-                <Button onClick={() => handleUpdateBrigade(brigade.id)}>Редактирование</Button>
-              </td>
-              <td>
-                <Button onClick={() => handleDeleteClick(brigade.id)}>Удалить</Button>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Бригады</th>
+              <th>Номер телефона</th>
+              <th></th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {brigades.map((brigade) => (
+              <tr key={brigade.id}>
+                <td>{brigade.name}</td>
+                <td>{brigade?.phone}</td>
+                <td>
+                  <Button onClick={() => handleUpdateBrigade(brigade.id)}>Редактирование</Button>
+                </td>
+                <td>
+                  <Button onClick={() => handleDeleteClick(brigade.id)}>Удалить</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

@@ -49,30 +49,32 @@ function Details() {
       <Button onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Название детали</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {details
-            .sort((a, b) => a.id - b.id)
-            .map((detail) => (
-              <tr key={detail.id}>
-                <td>{detail.name}</td>
-                <td>
-                  <Button onClick={() => handleUpdateDetail(detail.id)}>Редактировать</Button>
-                </td>
-                <td>
-                  <Button onClick={() => handleDeleteClick(detail.id)}>Удалить</Button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Название детали</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {details
+              .sort((a, b) => a.id - b.id)
+              .map((detail) => (
+                <tr key={detail.id}>
+                  <td>{detail.name}</td>
+                  <td>
+                    <Button onClick={() => handleUpdateDetail(detail.id)}>Редактировать</Button>
+                  </td>
+                  <td>
+                    <Button onClick={() => handleDeleteClick(detail.id)}>Удалить</Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }
