@@ -73,6 +73,13 @@ function CardTabs() {
           </div>
         </div>
       </Link>
+      <Link to="/clientaccount">
+        <div className="cardtabs">
+          <div className="cardtabs__content">
+            <h2 className="cardtabs__title">Личный кабинет клиента</h2>
+          </div>
+        </div>
+      </Link>
       {user.isAdmin ? (
         <Link to="/admin">
           <div className="cardtabs">
@@ -85,7 +92,7 @@ function CardTabs() {
       <Link to="/adding">
         <div className="cardtabs">
           <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Создание деталей и монтажных бригад</h2>
+            <h2 className="cardtabs__title">Справочники</h2>
           </div>
         </div>
       </Link>

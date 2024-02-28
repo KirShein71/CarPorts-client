@@ -47,6 +47,31 @@ export const createAccount = async (user) => {
     }
 
     export const getOneAccount = async(id) => {
+        const {data} = await guestInstance.get(`user/getOneAccount/${id}`);
+        return data;
+      }
+
+      export const getOne = async(id) => {
         const {data} = await guestInstance.get(`user/getOne/${id}`);
         return data;
       }
+
+    export const getAllUser = async() => {
+        const { data } = await guestInstance.get('user/getall');
+        return data
+    }
+
+    export const createManager = async(id, user) => {
+        const { data } = await guestInstance.put(`user/createManager/${id}`, user);
+        return data
+    }
+
+    export const createBrigade = async(id, user) => {
+        const { data } = await guestInstance.put(`user/createBrigade/${id}`, user);
+        return data
+    }
+
+    export const deleteUser = async(id) => {
+        const { data } = await guestInstance.delete(`user/delete/${id}`);
+        return data
+    }

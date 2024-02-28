@@ -35,7 +35,17 @@ export const createReadyDateProjectMaterials = async(id, projectmaterials) => {
     return data
 }
 
+export const createPaymentDateProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createPaymentDateProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
 export const createShippingDateProjectMaterials = async(id, projectmaterials) => {
     const {data} = await guestInstance.put(`projectmaterials/createShippingDateProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
+export const createExpirationMaterialDateProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createExpirationMaterialDateProjectMaterials/${id}`, projectmaterials)
     return data
 }

@@ -8,6 +8,9 @@ import { observer } from 'mobx-react';
 const Login = observer(() => {
   const { user } = React.useContext(AppContext);
   const navigate = useNavigate();
+  const form = React.useRef();
+  const [clicked, setClicked] = React.useState(false);
+  const [phone, setPhone] = React.useState('');
 
   React.useEffect(() => {
     if (user.isAdmin) navigate('/workingpage', { replace: true });
@@ -33,13 +36,26 @@ const Login = observer(() => {
     }
   };
 
+  const handleInputClick = () => {
+    if (!clicked) {
+      setClicked(true);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setPhone(event.target.value);
+  };
+
   return (
     <Container className="d-flex justify-content-center">
       <Card style={{ width: '50%' }} className="p-2 mt-5 bg-light">
         <h3 className="m-auto">Авторизация</h3>
-        <Form className="d-flex flex-column" onSubmit={handleSubmit}>
+        <Form className="d-flex flex-column" ref={form} onSubmit={handleSubmit}>
           <Form.Control
             name="phone"
+            value={clicked ? phone || 8 : ''}
+            onChange={handleInputChange}
+            onClick={handleInputClick}
             minLength="10"
             maxLength="11"
             className="mt-3"

@@ -16,6 +16,11 @@ export const createDetail = async (detail) => {
     return data
 }
 
+export const updateDetail = async (id, details) => {
+    const { data } = await guestInstance.put(`details/update/${id}`, details)
+    return data
+}
+
 export const deleteDetail = async(id) => {
     const {data} = await guestInstance.delete(`details/delete/${id}`)
     return data

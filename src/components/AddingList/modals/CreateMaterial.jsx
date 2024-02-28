@@ -1,29 +1,24 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createBrigade } from '../../../http/bragadeApi';
+import { createMaterial } from '../../../http/materialsApi';
 
-const defaultValue = { name: '', phone: '' };
+const defaultValue = { name: '' };
 const defaultValid = {
   name: null,
-  phone: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
-    if (key === 'phone') result.phone = value.phone.trim() !== '';
   }
   return result;
 };
 
-const CreateBrigade = (props) => {
+const CreateMaterial = (props) => {
   const { show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const [image, setImage] = React.useState(null);
-  const form = React.useRef();
-  const [clicked, setClicked] = React.useState(false);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -31,24 +26,14 @@ const CreateBrigade = (props) => {
     setValid(isValid(data));
   };
 
-  const handleImageChange = (event) => {
-    setImage(event.target.files[0]);
-  };
-
-  const handleInputClick = () => {
-    setClicked(true);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name && correct.phone) {
+    if (correct.name) {
       const data = new FormData();
       data.append('name', value.name.trim());
-      data.append('phone', value.phone.trim());
-      data.append('image', image, image.name);
-      createBrigade(data)
+      createMaterial(data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -57,6 +42,7 @@ const CreateBrigade = (props) => {
         })
         .catch((error) => alert(error.response.data.message));
     }
+    setShow(false);
   };
 
   return (
@@ -67,10 +53,10 @@ const CreateBrigade = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Создание бригады</Modal.Title>
+        <Modal.Title>Ввидите название материала</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form ref={form} noValidate onSubmit={handleSubmit}>
+        <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
@@ -79,33 +65,10 @@ const CreateBrigade = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
-                placeholder="Ввидите название бригады"
+                placeholder="Ввидите название материала"
               />
             </Col>
           </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="phone"
-                value={clicked ? value.phone || '8' : ''}
-                onChange={(e) => handleInputChange(e)}
-                onClick={handleInputClick}
-                isValid={valid.phone === true}
-                isInvalid={valid.phone === false}
-                placeholder="Ввидите номер телефона"
-                minLength="10"
-                maxLength="11"
-              />
-            </Col>
-          </Row>
-          <Col className="mb-3">
-            <Form.Control
-              name="image"
-              type="file"
-              onChange={(e) => handleImageChange(e)}
-              placeholder="Фото бригады..."
-            />
-          </Col>
           <Row>
             <Col>
               <Button type="submit">Сохранить</Button>
@@ -117,4 +80,4 @@ const CreateBrigade = (props) => {
   );
 };
 
-export default CreateBrigade;
+export default CreateMaterial;

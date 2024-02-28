@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createBrigade } from '../../../http/bragadeApi';
+import { fetchOneBrigade, updateBrigade } from '../../../http/bragadeApi';
 
 const defaultValue = { name: '', phone: '' };
 const defaultValid = {
@@ -17,13 +17,34 @@ const isValid = (value) => {
   return result;
 };
 
-const CreateBrigade = (props) => {
-  const { show, setShow, setChange } = props;
+const UpdateBrigade = (props) => {
+  const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [image, setImage] = React.useState(null);
   const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
+
+  React.useEffect(() => {
+    if (id) {
+      fetchOneBrigade(id)
+        .then((data) => {
+          const prod = {
+            name: data.name,
+            phone: data.phone,
+          };
+          setValue(prod);
+          setValid(isValid(prod));
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
+    }
+  }, [id]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -48,7 +69,7 @@ const CreateBrigade = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('image', image, image.name);
-      createBrigade(data)
+      updateBrigade(id, data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -67,7 +88,7 @@ const CreateBrigade = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Создание бригады</Modal.Title>
+        <Modal.Title>Редактирование бригады</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form ref={form} noValidate onSubmit={handleSubmit}>
@@ -117,4 +138,4 @@ const CreateBrigade = (props) => {
   );
 };
 
-export default CreateBrigade;
+export default UpdateBrigade;

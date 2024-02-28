@@ -2,11 +2,14 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Button, Table, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { fetchAllProjectDetails, updateProjectDetails } from '../../http/projectDetailsApi';
+import { fetchAllProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
+import { deleteAntypical } from '../../http/antypicalApi';
 import UpdateProjectDetails from './modal/UpdateProjectDetails';
 import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';
+import CreateAntypical from './modal/CreateAntypical';
+import ImageModal from './modal/ImageModal';
 
 function ProductionList() {
   const [projectDetails, setProjectDetails] = React.useState([]);
@@ -16,6 +19,9 @@ function ProductionList() {
   const [createOneDetailModal, setCreateOneDetailModal] = React.useState(false);
   const [detailId, setDetailId] = React.useState(null);
   const [project, setProject] = React.useState(null);
+  const [createAntypical, setCreateAntypical] = React.useState(false);
+  const [imageModal, setImageModal] = React.useState(false);
+  const [images, setImages] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
 
@@ -40,6 +46,16 @@ function ProductionList() {
     setCreateOneDetailModal(true);
   };
 
+  const handleCreateAntypical = (project) => {
+    setProject(project);
+    setCreateAntypical(true);
+  };
+
+  const handleOpenImage = (images, id) => {
+    setImages(images, id);
+    setImageModal(true);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -62,6 +78,20 @@ function ProductionList() {
         setShow={setCreateOneDetailModal}
         setChange={setChange}
       />
+      <CreateAntypical
+        projectId={project}
+        show={createAntypical}
+        setShow={setCreateAntypical}
+        setChange={setChange}
+      />
+      <ImageModal
+        show={imageModal}
+        images={images}
+        setImages={setImages}
+        setShow={setImageModal}
+        setChange={setChange}
+        change={change}
+      />
       <div className="table-scrollable">
         <Table bordered size="md" className="mt-3">
           <thead>
@@ -73,6 +103,7 @@ function ProductionList() {
                 .map((part) => (
                   <th>{part.name}</th>
                 ))}
+              <th>Нетипичные детали</th>
             </tr>
           </thead>
           <tbody>
@@ -96,6 +127,20 @@ function ProductionList() {
                       </td>
                     );
                   })}
+                <td
+                  onClick={() => {
+                    if (detail.antypical.length > 0) {
+                      handleOpenImage(detail.antypical);
+                    } else {
+                      handleCreateAntypical(detail.projectId);
+                    }
+                  }}>
+                  {detail.antypical.length > 0 ? (
+                    <span style={{ color: 'red', cursor: 'pointer' }}>Файлы</span>
+                  ) : (
+                    <span style={{ cursor: 'pointer' }}>Добавить файлы</span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -9,6 +9,7 @@ import { getOverproductionOneDetail } from '../../http/remainderDetailsApi';
 import { getProduceOneDetail } from '../../http/remainderDetailsApi';
 import { getWaitShipmentProjectOneDetail } from '../../http/remainderDetailsApi';
 import { getWaitShipment } from '../../http/remainderDetailsApi';
+import ModalImage from './modal/ModalImage';
 import './styles.scss';
 
 function ManufactureList() {
@@ -20,6 +21,8 @@ function ManufactureList() {
   const [remainderDetail, setRemainderDetail] = React.useState([]);
   const [waitShipmentDetail, setWaitShipmentDetail] = React.useState([]);
   const [waitShipmentAllOneDetail, setWaitShipmentAllOneDetail] = React.useState([]);
+  const [images, setImages] = React.useState([]);
+  const [imageModal, setImageModal] = React.useState(false);
   const [fetching, setFetching] = React.useState(false);
 
   React.useEffect(() => {
@@ -58,6 +61,11 @@ function ManufactureList() {
       .finally(() => setFetching(false));
   }, []);
 
+  const handleOpenImage = (images, id) => {
+    setImages(images, id);
+    setImageModal(true);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -66,6 +74,7 @@ function ManufactureList() {
     <div className="manufacturelist">
       <Header title={'Итоговая таблица по производству'} />
       <div className="table-scrollable">
+        <ModalImage show={imageModal} images={images} setShow={setImageModal} />
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -76,6 +85,7 @@ function ManufactureList() {
                 .map((part) => (
                   <th>{part.name}</th>
                 ))}
+              <th>Нетипичные детали</th>
             </tr>
           </thead>
           <tbody>
@@ -99,6 +109,7 @@ function ManufactureList() {
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {sumShipmentDetail.map((sumShipment) => (
@@ -114,6 +125,7 @@ function ManufactureList() {
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {waitShipmentAllOneDetail.map((allWait) => (
@@ -129,6 +141,7 @@ function ManufactureList() {
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {remainderDetail.map((remainder) => (
@@ -144,6 +157,7 @@ function ManufactureList() {
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {produceDetail.map((produce) => (
@@ -153,12 +167,16 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {produce.props.find((el) => el.detailId === part.id)
-                        ? produce.props.find((el) => el.detailId === part.id).produceDifference
+                        ? produce.props.find((el) => el.detailId === part.id).produceDifference !==
+                          undefined
+                          ? produce.props.find((el) => el.detailId === part.id).produceDifference
+                          : produce.props.find((el) => el.detailId === part.id).projectSum
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {overproductionDetail.map((over) => (
@@ -170,10 +188,15 @@ function ManufactureList() {
                   .map((part) => (
                     <td>
                       {over.props.find((el) => el.detailId === part.id)
-                        ? over.props.find((el) => el.detailId === part.id).overproductionDifference
+                        ? over.props.find((el) => el.detailId === part.id)
+                            .overproductionDifference < 0
+                          ? 0
+                          : over.props.find((el) => el.detailId === part.id)
+                              .overproductionDifference
                         : ''}
                     </td>
                   ))}
+                <td></td>
               </tr>
             ))}
             {waitShipmentDetail.map((waitShipment) => (
@@ -185,10 +208,24 @@ function ManufactureList() {
                   .map((part) => (
                     <td>
                       {waitShipment.props.find((el) => el.detailId === part.id)
-                        ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity
+                        ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity !==
+                          null
+                          ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity
+                          : waitShipment.props.find((el) => el.detailId === part.id).quantity
                         : ''}
                     </td>
                   ))}
+                <td>
+                  {waitShipment.antypical.length > 0 ? (
+                    <span
+                      style={{ color: 'red', cursor: 'pointer' }}
+                      onClick={() => handleOpenImage(waitShipment.antypical)}>
+                      Файлы
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

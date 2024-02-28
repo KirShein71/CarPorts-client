@@ -8,6 +8,7 @@ import Moment from 'react-moment';
 import './OrderMaterialsList.styles.scss';
 import CreateReadyDate from './modals/createReadyDate';
 import CreateShippingDate from './modals/createShippingDate';
+import CreatePaymentDate from './modals/createPaymentDate';
 
 function OrderMaterialsList() {
   const [projectsMaterials, setProjectsMaterials] = React.useState([]);
@@ -15,6 +16,7 @@ function OrderMaterialsList() {
   const [updateShow, setUpdateShow] = React.useState(false);
   const [readyDateShow, setReadyDateShow] = React.useState(false);
   const [shippingDateShow, setShippingDateShow] = React.useState(false);
+  const [paymentDateShow, setPaymentDateShow] = React.useState(false);
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
 
@@ -31,6 +33,11 @@ function OrderMaterialsList() {
   const hadleShippingDate = (id) => {
     setProjectMaterials(id);
     setShippingDateShow(true);
+  };
+
+  const handlePaymentDate = (id) => {
+    setProjectMaterials(id);
+    setPaymentDateShow(true);
   };
 
   React.useEffect(() => {
@@ -62,6 +69,12 @@ function OrderMaterialsList() {
         id={projectMaterials}
         show={shippingDateShow}
         setShow={setShippingDateShow}
+        setChange={setChange}
+      />
+      <CreatePaymentDate
+        id={projectMaterials}
+        show={paymentDateShow}
+        setShow={setPaymentDateShow}
         setChange={setChange}
       />
       <>
@@ -104,8 +117,14 @@ function OrderMaterialsList() {
                             </span>
                           )}
                         </td>
-                        <td>
-                          <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
+                        <td onClick={() => handlePaymentDate(prop.id)}>
+                          {prop.date_payment ? (
+                            <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
+                          ) : (
+                            <span style={{ color: 'red', fontWeight: 600 }}>
+                              Ввидите дату оплаты
+                            </span>
+                          )}
                         </td>
                         <td></td>
                         <td onClick={() => hadleReadyDate(prop.id)}>

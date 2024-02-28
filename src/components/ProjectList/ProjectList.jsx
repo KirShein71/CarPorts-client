@@ -51,9 +51,6 @@ function ProjectList() {
           <Link to="/procurement">
             <Button className="me-3 my-2">Закупки</Button>
           </Link>
-          <Link to="/createaccount">
-            <Button className="my-2">Создать личный кабинет</Button>
-          </Link>
         </Col>
       </Row>
       <Table bordered hover size="sm" className="mt-3">

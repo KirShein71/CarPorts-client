@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import Home from '../pages/Home';
 import Production from '../pages/Production';
-import Suppliers from '../pages/Suppliers';
 import Payment from '../pages/Payment';
 import Project from '../pages/Project';
 import Team from '../pages/Team';
@@ -24,6 +23,8 @@ import PersonalAccount from '../pages/PersonalAccount';
 import Admin from '../pages/Admin';
 import WorkingPage from '../pages/Workingpage';
 import Adding from '../pages/Adding';
+import ClientAccount from '../pages/ClientAccount';
+import CreateInformationClient from '../pages/CreateInformationClient';
 
 import { observer } from 'mobx-react';
 
@@ -35,7 +36,6 @@ const userRoutes = [
 const employeeRoutes = [
   { path: '/', Component: Home },
   { path: '/production', Component: Production },
-  { path: '/suppliers', Component: Suppliers },
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/team', Component: Team },
@@ -51,6 +51,8 @@ const employeeRoutes = [
   { path: '/shipment', Component: Shipment },
   { path: '/shipmentchange', Component: ShipmentChange },
   { path: '/manufacture', Component: Manufacture },
+  { path: '/clientaccount', Component: ClientAccount },
+  { path: '/createinformationclient/:id', Component: CreateInformationClient },
   { path: '/createaccount', Component: CreateAccount },
   { path: '/adding', Component: Adding },
   { path: '/workingpage', Component: WorkingPage },
@@ -59,7 +61,6 @@ const employeeRoutes = [
 const adminRoutes = [
   { path: '/', Component: Home },
   { path: '/production', Component: Production },
-  { path: '/suppliers', Component: Suppliers },
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/team', Component: Team },
@@ -76,6 +77,8 @@ const adminRoutes = [
   { path: '/shipmentchange', Component: ShipmentChange },
   { path: '/manufacture', Component: Manufacture },
   { path: '/createaccount', Component: CreateAccount },
+  { path: '/createinformationclient/:id', Component: CreateInformationClient },
+  { path: '/clientaccount', Component: ClientAccount },
   { path: '/personalaccount', Component: PersonalAccount },
   { path: '/admin', Component: Admin },
   { path: '/workingpage', Component: WorkingPage },

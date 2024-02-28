@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from '../Header/Header';
 import CreateProjectDelivery from './modals/CreateProjectDelivery';
+import CreateDateInspection from './modals/CreateDateInspection';
+import CreateInspectionDesigner from './modals/CreateInspectionDisegner';
 import { fetchAllProjects } from '../../http/projectApi';
 import { Spinner, Table } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -11,11 +13,23 @@ function PlanningList() {
   const [project, setProject] = React.useState(null);
   const [change, setChange] = React.useState(true);
   const [updateShow, setUpdateShow] = React.useState(false);
+  const [createDateInspectionModal, setCreateDateInspectionModal] = React.useState(false);
+  const [createInspectionDesignerModal, setCreateInspectionDesignerModal] = React.useState(false);
   const [fetching, setFetching] = React.useState(true);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
     setUpdateShow(true);
+  };
+
+  const handleCreateDateInspection = (id) => {
+    setProject(id);
+    setCreateDateInspectionModal(true);
+  };
+
+  const handleCreateInspectionDesigner = (id) => {
+    setProject(id);
+    setCreateInspectionDesignerModal(true);
   };
 
   React.useEffect(() => {
@@ -37,6 +51,18 @@ function PlanningList() {
         setShow={setUpdateShow}
         setChange={setChange}
       />
+      <CreateDateInspection
+        id={project}
+        show={createDateInspectionModal}
+        setShow={setCreateDateInspectionModal}
+        setChange={setChange}
+      />
+      <CreateInspectionDesigner
+        id={project}
+        show={createInspectionDesignerModal}
+        setShow={setCreateInspectionDesignerModal}
+        setChange={setChange}
+      />
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
@@ -48,6 +74,10 @@ function PlanningList() {
               <th>Срок проектирования</th>
               <th>Дедлайн</th>
               <th>Дата сдачи</th>
+              <th>Дата проверки</th>
+              <th>Осталось дней</th>
+              <th>Проектировщик</th>
+              <th>Проверяет проект</th>
             </tr>
           </thead>
           <tbody>
@@ -72,6 +102,28 @@ function PlanningList() {
                     <span style={{ color: 'red', fontWeight: 600 }}>
                       Введите дату сдачи проекта
                     </span>
+                  )}
+                </td>
+                <td onClick={() => handleCreateDateInspection(item.id)}>
+                  {item.date_inspection ? (
+                    <Moment format="DD.MM.YYYY">{item.date_inspection}</Moment>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600 }}>Введите дату проверки</span>
+                  )}
+                </td>
+                <td>
+                  <td>
+                    {moment(item.agreement_date, 'YYYY/MM/DD')
+                      .businessAdd(item.design_period, 'days')
+                      .diff(moment(), 'days')}
+                  </td>
+                </td>
+                <td>{item.designer}</td>
+                <td onClick={() => handleCreateInspectionDesigner(item.id)}>
+                  {item.inspection_designer ? (
+                    <div>{item.inspection_designer}</div>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600 }}>Введите проверяющего</span>
                   )}
                 </td>
               </tr>

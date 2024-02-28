@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '../Header/Header';
-import { getAllWithNoAccount } from '../../http/projectApi';
+import Header from '../../Header/Header';
+import { getAllWithNoAccount } from '../../../http/projectApi';
 import { Table, Button, Spinner } from 'react-bootstrap';
 import CreateAccountModal from './modal/CreateAccauntModal';
 

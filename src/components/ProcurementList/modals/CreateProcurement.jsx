@@ -5,14 +5,12 @@ import { createProjectMaterials } from '../../../http/projectMaterialsApi';
 import './styles.scss';
 
 const defaultValue = {
-  date_payment: '',
-  expirationMaterial_date: '',
   material: '',
   materialName: '',
+  expirationMaterial_date: '',
+  date_payment: '',
 };
 const defaultValid = {
-  date_payment: null,
-  expirationMaterial_date: null,
   material: null,
   materialName: null,
 };
@@ -21,9 +19,6 @@ const isValid = (value) => {
   const result = {};
   const pattern = /^[1-9][0-9]*$/;
   for (let key in value) {
-    if (key === 'date_payment') result.date_payment = value.date_payment.trim() !== '';
-    if (key === 'expirationMaterial_date')
-      result.expirationMaterial_date = value.expirationMaterial_date.trim() !== '';
     if (key === 'material') result.material = pattern.test(value.material);
     if (key === 'materialName') result.materialName = pattern.test(value.materialName);
   }
@@ -48,7 +43,7 @@ const CreateProcurement = (props) => {
   };
 
   const handleAddMaterial = () => {
-    if (value.material && value.date_payment && value.expirationMaterial_date) {
+    if (value.material) {
       const newDetail = {
         materialId: value.material,
         materialName: value.materialName,
@@ -67,9 +62,18 @@ const CreateProcurement = (props) => {
       const formData = new FormData();
       formData.append('materialName', material.materialName);
       formData.append('materialId', material.materialId);
-      formData.append('date_payment', material.date_payment);
-      formData.append('expirationMaterial_date', material.expirationMaterial_date);
       formData.append('projectId', projectId);
+
+      if (material.expirationMaterial_date) {
+        // Проверка на пустое значение
+        formData.append('expirationMaterial_date', material.expirationMaterial_date);
+      }
+
+      if (material.date_payment) {
+        // Проверка на пустое значение
+        formData.append('date_payment', material.date_payment);
+      }
+
       return formData;
     });
 
@@ -81,7 +85,6 @@ const CreateProcurement = (props) => {
       })
       .catch((error) => alert(error.response.data.message));
   };
-
   const handleMaterialChange = (e) => {
     const materialId = e.target.value;
     const materialName = e.target.options[e.target.selectedIndex].text;
@@ -135,8 +138,6 @@ const CreateProcurement = (props) => {
                 name="date_payment"
                 value={value.date_payment}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.date_payment === true}
-                isInvalid={valid.date_payment === false}
                 placeholder="Дата платежа"
                 className="mb-3"
                 type="text"
@@ -149,8 +150,6 @@ const CreateProcurement = (props) => {
                 name="expirationMaterial_date"
                 value={value.expirationMaterial_date}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.expirationMaterial_date === true}
-                isInvalid={valid.expirationMaterial_date === false}
                 placeholder="Срок производства"
                 className="mb-3"
               />
@@ -167,18 +166,7 @@ const CreateProcurement = (props) => {
                 <Col>
                   <Form.Control disabled value={material.materialName} className="mb-3" />
                 </Col>
-                <Col>
-                  <Form.Control disabled value={material.date_payment} className="mb-3" />
-                </Col>
-                <Col>
-                  <Form.Control disabled value={material.expiration_date} className="mb-3" />
-                </Col>
-                <Col>
-                  <Form.Control disabled value={material.ready_date} className="mb-3" />
-                </Col>
-                <Col>
-                  <Form.Control disabled value={material.shipping_date} className="mb-3" />
-                </Col>
+
                 <Col>
                   <Button variant="danger" onClick={() => handleRemoveMaterial(index)}>
                     Удалить
@@ -190,7 +178,7 @@ const CreateProcurement = (props) => {
           {selectedMaterials.length > 0 && (
             <>
               <Button className="me-3" onClick={handleSaveMaterials}>
-                Сохранить все детали
+                Сохранить все материалы
               </Button>
               <Button onClick={handleRemoveAllMaterials}>Удалить все</Button>
             </>
