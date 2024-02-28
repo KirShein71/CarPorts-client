@@ -96,7 +96,11 @@ function CardTabs() {
           </div>
         </div>
       </Link>
-      <Button onClick={handleLogout}>Выйти</Button>
+      <div className="cardtabs" onClick={handleLogout}>
+        <div className="cardtabs__content">
+          <h2 className="cardtabs__title">Выйти</h2>
+        </div>
+      </div>
     </>
   );
 }

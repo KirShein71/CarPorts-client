@@ -48,7 +48,7 @@ const Login = observer(() => {
 
   return (
     <Container className="d-flex justify-content-center">
-      <Card style={{ width: '50%' }} className="p-2 mt-5 bg-light">
+      <Card className="p-2 mt-5 bg-light" id="card">
         <h3 className="m-auto">Авторизация</h3>
         <Form className="d-flex flex-column" ref={form} onSubmit={handleSubmit}>
           <Form.Control
