@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { logout } from '../../http/userApi';
-import { Button } from 'react-bootstrap';
 import './CardTabs.styles.scss';
 
 function CardTabs() {

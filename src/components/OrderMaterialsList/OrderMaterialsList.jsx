@@ -79,8 +79,8 @@ function OrderMaterialsList() {
       />
       <>
         {projectsMaterials.map((material) => (
-          <>
-            <div key={material.id} className="ordermaterialslist__top">
+          <div key={material.id}>
+            <div className="ordermaterialslist__top">
               <div className="ordermaterialslist__number">{material.project.number}</div>
               <div className="ordermaterialslist__project">{material.project.name}</div>
             </div>
@@ -151,7 +151,7 @@ function OrderMaterialsList() {
                 </tbody>
               </Table>
             </div>
-          </>
+          </div>
         ))}
       </>
     </div>

@@ -82,8 +82,8 @@ function ManufactureList() {
               <th className="manufacture_column">Проекты</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
-                .map((part) => (
-                  <th>{part.name}</th>
+                .map((partAntypical) => (
+                  <th key={partAntypical.id}>{partAntypical.name}</th>
                 ))}
               <th>Нетипичные детали</th>
             </tr>
@@ -103,7 +103,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {sum.props.concat().find((el) => el.detailId === part.id)
                         ? sum.props.concat().find((el) => el.detailId === part.id).totalSum
                         : ''}
@@ -135,7 +135,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {allWait.props.find((el) => el.detailId === part.id)
                         ? allWait.props.find((el) => el.detailId === part.id).waitShipmentDifference
                         : ''}
@@ -151,7 +151,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {remainder.props.find((el) => el.detailId === part.id)
                         ? remainder.props.find((el) => el.detailId === part.id).remainderDifference
                         : ''}
@@ -186,7 +186,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {over.props.find((el) => el.detailId === part.id)
                         ? over.props.find((el) => el.detailId === part.id)
                             .overproductionDifference < 0
@@ -206,7 +206,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td>
+                    <td key={part.id}>
                       {waitShipment.props.find((el) => el.detailId === part.id)
                         ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity !==
                           null

@@ -112,28 +112,26 @@ function PlanningList() {
                   )}
                 </td>
                 <td>
-                  <td>
-                    {(() => {
-                      const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
-                        item.design_period,
-                        'days',
-                      );
+                  {(() => {
+                    const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                      item.design_period,
+                      'days',
+                    );
 
-                      function subtractDaysUntilZero(targetDate) {
-                        const today = moment();
-                        let daysLeft = 0;
+                    function subtractDaysUntilZero(targetDate) {
+                      const today = moment();
+                      let daysLeft = 0;
 
-                        while (targetDate.diff(today, 'days') > 0) {
-                          daysLeft++;
-                          targetDate.subtract(1, 'day');
-                        }
-
-                        return daysLeft;
+                      while (targetDate.diff(today, 'days') > 0) {
+                        daysLeft++;
+                        targetDate.subtract(1, 'day');
                       }
 
-                      return subtractDaysUntilZero(targetDate);
-                    })()}
-                  </td>
+                      return daysLeft;
+                    }
+
+                    return subtractDaysUntilZero(targetDate);
+                  })()}
                 </td>
                 <td>{item.designer}</td>
                 <td onClick={() => handleCreateInspectionDesigner(item.id)}>

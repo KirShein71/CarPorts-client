@@ -165,7 +165,7 @@ function PersonalAccountList() {
                     <img
                       onClick={hadleClickImage}
                       src={process.env.REACT_APP_IMG_URL + userData.brigade.image}
-                      alt="image"
+                      alt="foto__brigade"
                     />
                   </div>
                 </div>
@@ -179,7 +179,7 @@ function PersonalAccountList() {
                         <img
                           onClick={hadleClickImage}
                           src={process.env.REACT_APP_IMG_URL + userImage.image}
-                          alt="image"
+                          alt="photos of works"
                         />
                         <div className="account__image-date">{userImage.date}</div>
                       </div>

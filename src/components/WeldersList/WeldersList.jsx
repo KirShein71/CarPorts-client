@@ -77,7 +77,7 @@ function WeldersList() {
               {nameDetails
                 .sort((a, b) => a.id - b.id)
                 .map((part) => (
-                  <th>{part.name}</th>
+                  <th key={part.id}>{part.name}</th>
                 ))}
             </tr>
           </thead>

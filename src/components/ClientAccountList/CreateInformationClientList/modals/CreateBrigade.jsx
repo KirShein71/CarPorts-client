@@ -30,7 +30,7 @@ const CreateBrigade = (props) => {
         .then((res) => {
           const prod = {
             manager: res.manager.toString(),
-            phone_manager: res.phone_manager.toString(),
+            phone_manager: res.phone_manager,
           };
           setValue(prod);
           setValid(isValid(prod));

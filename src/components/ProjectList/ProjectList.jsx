@@ -8,10 +8,8 @@ import Moment from 'react-moment';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
-  const [project, setProject] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [createShow, setCreateShow] = React.useState(false);
-  const [createStatus, setCreateStatus] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const location = useLocation();
   const navigate = useNavigate();

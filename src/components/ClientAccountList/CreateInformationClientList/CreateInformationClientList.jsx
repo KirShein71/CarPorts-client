@@ -187,18 +187,20 @@ function CreateInformatoinClientList() {
             gridRowGap: '5px',
           }}>
           {userImages.map((image) => (
-            <div className="information__image-card">
-              <img
-                style={{ width: '70%', marginBottom: '10px' }}
-                src={process.env.REACT_APP_IMG_URL + image.image}
-                alt="image"
-              />
-              <div>{image.date}</div>
-              <div
-                className="delete__image"
-                style={{ color: 'red', cursor: 'pointer' }}
-                onClick={() => handleDeleteImage(image.id)}>
-                Удалить
+            <div key={image.id}>
+              <div className="information__image-card">
+                <img
+                  style={{ width: '70%', marginBottom: '10px' }}
+                  src={process.env.REACT_APP_IMG_URL + image.image}
+                  alt="photos of works"
+                />
+                <div>{image.date}</div>
+                <div
+                  className="delete__image"
+                  style={{ color: 'red', cursor: 'pointer' }}
+                  onClick={() => handleDeleteImage(image.id)}>
+                  Удалить
+                </div>
               </div>
             </div>
           ))}

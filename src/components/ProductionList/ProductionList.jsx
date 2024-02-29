@@ -101,7 +101,7 @@ function ProductionList() {
               {nameDetails
                 .sort((a, b) => a.id - b.id)
                 .map((part) => (
-                  <th>{part.name}</th>
+                  <th key={part.id}>{part.name}</th>
                 ))}
               <th>Нетипичные детали</th>
             </tr>
