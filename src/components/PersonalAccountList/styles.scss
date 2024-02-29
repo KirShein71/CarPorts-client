@@ -188,6 +188,10 @@
             grid-template-columns: repeat(3, 1fr);
             grid-column-gap: 5px;
             margin-bottom: 25px;
+            @media (max-width: 480px) {
+                grid-template-columns: repeat(2, 1fr);
+                margin-bottom: 15px;
+            }
         }
 
         &-card {
@@ -215,9 +219,10 @@
                     height: 180px;
                 } 
                 @media(max-width: 480px) {
-                    width:  150px;
-                    height: 150px;
+                    width:  180px;
+                    height: 180px;
                 } 
+                
             }
         }
 
