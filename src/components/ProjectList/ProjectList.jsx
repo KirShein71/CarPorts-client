@@ -39,7 +39,6 @@ function ProjectList() {
   return (
     <div className="projectlist">
       <Header title={'Проекты '} />
-      <Button className="mt-3">Все проекты</Button>
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">

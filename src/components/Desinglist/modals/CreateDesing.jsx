@@ -27,8 +27,8 @@ const CreateDesing = (props) => {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
-            designer: data.designer.toString(),
-            design_start: data.cadesign_start.toString(),
+            designer: data.designer ? data.designer.toString() : '',
+            design_start: data.cadesign_start ? data.cadesign_start.toString() : '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -36,8 +36,9 @@ const CreateDesing = (props) => {
         .catch((error) => {
           if (error.response && error.response.data) {
             alert(error.response.data.message);
+            console.log('Error response:', error.response.data);
           } else {
-            console.log('An error occurred');
+            console.log('An error occurred:', error);
           }
         });
     }
