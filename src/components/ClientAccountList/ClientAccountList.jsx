@@ -25,7 +25,7 @@ function ClientAccountList() {
     deleteUser(id)
       .then((data) => {
         setChange(!change);
-        alert(`Личный кабинет «${data.name}» будет удален`);
+        alert(`Личный кабинет пользователя будет удален`);
       })
       .catch((error) => alert(error.response.data.message));
   };
