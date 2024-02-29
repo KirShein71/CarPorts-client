@@ -30,7 +30,7 @@ const App = observer(() => {
             .finally(
                 () => setLoading(false)
             )
-    }, [])
+    }, [user])
 
 
     if (loading) {

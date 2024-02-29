@@ -54,4 +54,9 @@ export const fetchOneProject = async (id) => {
     return data
 }
 
+export const deleteProject = async (id) => {
+    const {data} = await guestInstance.delete(`project/delete/${id}`)
+    return data
+}
+
 

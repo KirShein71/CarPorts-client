@@ -26,7 +26,7 @@ const isValid = (value) => {
 };
 
 const CreateStockDetails = (props) => {
-  const { show, setShow, setChange, projectId } = props;
+  const { show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [details, setDetails] = React.useState(null);

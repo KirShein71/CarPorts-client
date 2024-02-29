@@ -1,4 +1,4 @@
-import { guestInstance, authInstance } from './index'
+import { guestInstance} from './index'
 
 export const getAllRemainderOneDetail = async () => {
     const {data} = await guestInstance.get('remainderdetails/getAllRemainderOneDetail')

@@ -4,7 +4,6 @@ import { Button, Table, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fetchAllProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
-import { deleteAntypical } from '../../http/antypicalApi';
 import UpdateProjectDetails from './modal/UpdateProjectDetails';
 import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Col, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 function ModalImage(props) {
   const { show, setShow, images } = props;

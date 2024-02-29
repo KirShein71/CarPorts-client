@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Table, Spinner, Tooltip } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import { fetchAllProjectMaterials } from '../../http/projectMaterialsApi';
 import CreateCheck from './modals/createCheck';
 import moment from 'moment';

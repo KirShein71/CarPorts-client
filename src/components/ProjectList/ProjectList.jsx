@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header/Header';
 import CreateProject from './modals/CreateProject';
-import { fetchAllProjects } from '../../http/projectApi';
+import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -19,6 +19,15 @@ function ProjectList() {
       .then((data) => setProjects(data))
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleDeleteClick = (id) => {
+    deleteProject(id)
+      .then((data) => {
+        setChange(!change);
+        alert(`Личный кабинет «${data.name}» будет удален`);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
 
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
@@ -51,6 +60,8 @@ function ProjectList() {
             <th>Номер проекта</th>
             <th>Название</th>
             <th>Дата договора</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -64,6 +75,11 @@ function ProjectList() {
               <td>
                 <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
                   Подробнее
+                </Button>
+              </td>
+              <td>
+                <Button variant="success" size="sm" onClick={() => handleDeleteClick(item.id)}>
+                  Удалить
                 </Button>
               </td>
             </tr>
