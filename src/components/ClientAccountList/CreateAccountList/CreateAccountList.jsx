@@ -40,7 +40,6 @@ function CreateAccountList() {
           <tr>
             <th>Номер</th>
             <th>Название</th>
-            <th>Личный кабинет</th>
             <th></th>
           </tr>
         </thead>
@@ -49,7 +48,6 @@ function CreateAccountList() {
             <tr key={project.id}>
               <td>{project.number}</td>
               <td>{project.name}</td>
-              <td>{project.account}</td>
               <td>
                 <Button
                   variant="success"

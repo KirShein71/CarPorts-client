@@ -154,17 +154,20 @@ function PersonalAccountList() {
                 <div className="account__brigade-content">
                   <div className="account__brigade-information">
                     <div className="account__brigade-foreman">
-                      Бригадир: <span>{userData.brigade.name}</span>
+                      Бригадир:{' '}
+                      <span>
+                        {userData.brigade && userData.brigade.name ? userData.brigade.name : ''}
+                      </span>
                     </div>
                     <div className="account__brigade-phone">
                       Телефон:{' '}
-                      <a href={`tel:${userData.brigade.phone}`}>{userData.brigade.phone}</a>
+                      <a href={`tel:${userData.brigade?.phone}`}>{userData.brigade?.phone}</a>
                     </div>
                   </div>
                   <div className="account__brigade-image">
                     <img
                       onClick={hadleClickImage}
-                      src={process.env.REACT_APP_IMG_URL + userData.brigade.image}
+                      src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
                       alt="foto__brigade"
                     />
                   </div>

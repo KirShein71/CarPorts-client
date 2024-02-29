@@ -106,7 +106,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {sum.props.concat().find((el) => el.detailId === part.id)
                         ? sum.props.concat().find((el) => el.detailId === part.id).totalSum
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>
@@ -122,7 +122,7 @@ function ManufactureList() {
                     <td>
                       {sumShipment.props.find((el) => el.detailId === part.id)
                         ? sumShipment.props.find((el) => el.detailId === part.id).shipmentSum
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>
@@ -138,7 +138,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {allWait.props.find((el) => el.detailId === part.id)
                         ? allWait.props.find((el) => el.detailId === part.id).waitShipmentDifference
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>
@@ -154,7 +154,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {remainder.props.find((el) => el.detailId === part.id)
                         ? remainder.props.find((el) => el.detailId === part.id).remainderDifference
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>
@@ -171,7 +171,10 @@ function ManufactureList() {
                       {produce.props.find((el) => el.detailId === part.id)
                         ? produce.props.find((el) => el.detailId === part.id).produceDifference !==
                           undefined
-                          ? produce.props.find((el) => el.detailId === part.id).produceDifference
+                          ? produce.props.find((el) => el.detailId === part.id).produceDifference <
+                            0
+                            ? 0
+                            : produce.props.find((el) => el.detailId === part.id).produceDifference
                           : produce.props.find((el) => el.detailId === part.id).projectSum
                         : ''}
                     </td>
@@ -193,7 +196,7 @@ function ManufactureList() {
                           ? 0
                           : over.props.find((el) => el.detailId === part.id)
                               .overproductionDifference
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>
@@ -212,7 +215,7 @@ function ManufactureList() {
                           null
                           ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity
                           : waitShipment.props.find((el) => el.detailId === part.id).quantity
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td>
