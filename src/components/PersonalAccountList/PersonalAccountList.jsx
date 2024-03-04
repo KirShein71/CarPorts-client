@@ -12,6 +12,7 @@ import './styles.scss';
 function PersonalAccountList() {
   const [account, setAccount] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
+  const [openImage, setOpenImage] = React.useState(false);
   const { user } = React.useContext(AppContext);
 
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ function PersonalAccountList() {
   if (fetching) {
     return <Spinner animation="border" />;
   }
+
+  const handleOpenImage = () => {
+    setOpenImage(true);
+  };
 
   const handleDownloadFile = (fileUrl) => {
     fetch(fileUrl)
@@ -50,6 +55,15 @@ function PersonalAccountList() {
     }
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})$/);
+    if (match) {
+      return `+${7}(${match[2]})-${match[3]}-${match[4]}-${match[5]}`;
+    }
+    return phoneNumber;
+  };
+
   const handleLogout = () => {
     logout();
     user.logout();
@@ -64,18 +78,17 @@ function PersonalAccountList() {
           {[account].map((userData) => (
             <div key={userData.id}>
               <div className="account__manager">
-                <div className="account__manager-title">Ваш менеджер:</div>
-
                 <div className="account__manager-content">
-                  <div className="account__manager-name">{userData.manager}</div>
+                  <div className="account__manager-title">Ваш менеджер:</div>
+                  <div className="account__manager-name">{userData.manager},</div>
                   <a className="account__manager-phone" href={`tel:${userData.manager_phone}`}>
-                    {userData.manager_phone}
+                    {formatPhoneNumber(userData.manager_phone)}
                   </a>
                 </div>
               </div>
               <div className="account__file">
-                <h4 className="account__file-title">Файлы:</h4>
                 <div className="account__file-items">
+                  <div className="account__file-title">Файлы:</div>
                   {userData.userfiles.map((file) => (
                     <div key={file.id}>
                       <div
@@ -89,10 +102,37 @@ function PersonalAccountList() {
                   ))}
                 </div>
               </div>
+              <div className="account__brigade">
+                <div className="account__brigade-content">
+                  <div className="account__brigade-title">Монтажная бригада:</div>
+                  <div className="account__brigade-foreman">
+                    {userData.brigade && userData.brigade.name ? userData.brigade.name : ''},
+                  </div>
+                  <a className="account__brigade-phone" href={`tel:${userData.brigade?.phone}`}>
+                    {formatPhoneNumber(userData.brigade?.phone)},
+                  </a>
+                  <div
+                    className="account__brigade-foto"
+                    onClick={() => {
+                      handleOpenImage();
+                    }}>
+                    фотография бригады
+                  </div>
+                </div>
+                {openImage && (
+                  <div className="account__brigade-image">
+                    <img
+                      src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
+                      alt="foto__brigade"
+                      onClick={() => setOpenImage(false)}
+                    />
+                  </div>
+                )}
+              </div>
               <div className="table-scrollable">
                 <Table bordered hover size="sm" className="mt-5">
-                  <thead>
-                    <tr>
+                  <thead style={{ backgroundColor: '#7d7f7d' }}>
+                    <tr style={{ color: '#ffff', textAlign: 'center' }}>
                       <th>Дата договора</th>
                       <th>Дедлайн проектирования</th>
                       <th>Дедлайн производства</th>
@@ -101,7 +141,7 @@ function PersonalAccountList() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr style={{ textAlign: 'center' }}>
                       <td>
                         <Moment format="DD.MM.YYYYY">{userData.project.agreement_date}</Moment>
                       </td>
@@ -149,30 +189,6 @@ function PersonalAccountList() {
                   </tbody>
                 </Table>
               </div>
-              <div className="account__brigade">
-                <h3 className="account__brigade-title">Монтажная бригада</h3>
-                <div className="account__brigade-content">
-                  <div className="account__brigade-information">
-                    <div className="account__brigade-foreman">
-                      Бригадир:{' '}
-                      <span>
-                        {userData.brigade && userData.brigade.name ? userData.brigade.name : ''}
-                      </span>
-                    </div>
-                    <div className="account__brigade-phone">
-                      Телефон:{' '}
-                      <a href={`tel:${userData.brigade?.phone}`}>{userData.brigade?.phone}</a>
-                    </div>
-                  </div>
-                  <div className="account__brigade-image">
-                    <img
-                      onClick={hadleClickImage}
-                      src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                      alt="foto__brigade"
-                    />
-                  </div>
-                </div>
-              </div>
               <div className="account__image">
                 <h3 className="account__image-title">Фотографии работ</h3>
                 <div className="account__image-content">
@@ -192,7 +208,13 @@ function PersonalAccountList() {
               </div>
             </div>
           ))}
-          <Button onClick={handleLogout}>Выйти</Button>
+          <Button
+            className="mt-5"
+            variant="secondary"
+            style={{ display: 'block', margin: '0 auto' }}
+            onClick={handleLogout}>
+            Выйти
+          </Button>
         </>
       </div>
     </>

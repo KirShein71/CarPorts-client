@@ -49,3 +49,8 @@ export const createExpirationMaterialDateProjectMaterials = async(id, projectmat
     const {data} = await guestInstance.put(`projectmaterials/createExpirationMaterialDateProjectMaterials/${id}`, projectmaterials)
     return data
 }
+
+export const deleteProjectMaterials = async(id) => {
+    const { data} = await guestInstance.delete(`projectmaterials/delete/${id}`)
+    return data
+}

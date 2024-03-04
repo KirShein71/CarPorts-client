@@ -10,12 +10,9 @@ function Materials() {
   const [materialModal, setMaterialModal] = React.useState(false);
   const [materialUpdateModal, setMaterialUpdateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
-  const [fetching, setFetching] = React.useState(true);
 
   React.useEffect(() => {
-    fetchMaterials()
-      .then((data) => setMaterials(data))
-      .finally(() => setFetching(false));
+    fetchMaterials().then((data) => setMaterials(data));
   }, [change]);
 
   const handleUpdateMaterial = (id) => {
@@ -31,10 +28,6 @@ function Materials() {
       })
       .catch((error) => alert(error.response.data.message));
   };
-
-  if (fetching) {
-    return <Spinner />;
-  }
 
   return (
     <div className="materials">

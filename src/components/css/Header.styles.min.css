@@ -1,0 +1,1 @@
+.header{margin-top:25px;display:-webkit-box;display:-ms-flexbox;display:flex}.header__title{margin-top:6px;margin-left:25px;font-size:32px;font-weight:700;color:#070707;text-transform:uppercase}@media(max-width: 420px){.header__title{font-size:25px}}.header__logo{cursor:pointer}@media(max-width: 480px){.header__logo{width:90%}}/*# sourceMappingURL=Header.styles.min.css.map */

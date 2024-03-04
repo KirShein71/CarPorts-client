@@ -7,7 +7,7 @@ import Brigade from './Brigade';
 function AddingList() {
   return (
     <>
-      <Header title={'Справочники'} />;
+      <Header title={'Справочники'} />
       <Details />
       <Materials />
       <Brigade />

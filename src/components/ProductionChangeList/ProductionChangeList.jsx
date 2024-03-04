@@ -11,6 +11,8 @@ function ProductionChangeList() {
   const [change, setChange] = React.useState(true);
   const [show, setShow] = React.useState(false);
   const [project, setProject] = React.useState(null);
+  const [sortOrder, setSortOrder] = React.useState('desc');
+  const [sortField, setSortField] = React.useState('agreement_date');
 
   React.useEffect(() => {
     getAllWithNoDetails()
@@ -21,7 +23,15 @@ function ProductionChangeList() {
   const handleUpdateClick = (project) => {
     setProject(project);
     setShow(true);
-    console.log(project);
+  };
+
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
   };
 
   if (fetching) {
@@ -41,30 +51,37 @@ function ProductionChangeList() {
           <tr>
             <th>Номер проекта</th>
             <th>Название</th>
-            <th>Дата договора</th>
-            <th>Статус</th>
+            <th style={{ cursor: 'pointer' }} onClick={() => handleSort('agreement_date')}>
+              Дата договора <img styles={{ marginLeft: '5px' }} src="../sort.png" alt="icon_sort" />
+            </th>
           </tr>
         </thead>
         <tbody>
-          {projects.map((item) => (
-            <tr key={item.id}>
-              <td>{item.number}</td>
-              <td>{item.name}</td>
-              <td>
-                <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-              </td>
-              <td>
-                <Button variant="danger" size="sm">
-                  {item.status}
-                </Button>
-              </td>
-              <td>
-                <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
-                  Внести изменения
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {projects
+            .sort((a, b) => {
+              const dateA = new Date(a[sortField]);
+              const dateB = new Date(b[sortField]);
+
+              if (sortOrder === 'desc') {
+                return dateB - dateA;
+              } else {
+                return dateA - dateB;
+              }
+            })
+            .map((item) => (
+              <tr key={item.id}>
+                <td>{item.number}</td>
+                <td>{item.name}</td>
+                <td>
+                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                </td>
+                <td>
+                  <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
+                    Внести изменения
+                  </Button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
     </div>

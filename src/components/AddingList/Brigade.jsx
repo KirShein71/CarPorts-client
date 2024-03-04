@@ -10,12 +10,9 @@ function Brigade() {
   const [brigadeModal, setBrigadeModal] = React.useState(false);
   const [brigadeUpdateModal, setBrigadeUpdateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
-  const [fetching, setFetching] = React.useState(true);
 
   React.useEffect(() => {
-    fetchBrigades()
-      .then((data) => setBrigades(data))
-      .finally(() => setFetching(false));
+    fetchBrigades().then((data) => setBrigades(data));
   }, [change]);
 
   const handleDeleteClick = (id) => {
@@ -31,10 +28,6 @@ function Brigade() {
     setBrigade(id);
     setBrigadeUpdateModal(true);
   };
-
-  if (fetching) {
-    return <Spinner />;
-  }
 
   return (
     <div className="details">
