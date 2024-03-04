@@ -12,7 +12,7 @@ import './styles.scss';
 function PersonalAccountList() {
   const [account, setAccount] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
-  const [openImage, setOpenImage] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState('information');
   const { user } = React.useContext(AppContext);
 
   const navigate = useNavigate();
@@ -24,13 +24,13 @@ function PersonalAccountList() {
       .finally(() => setFetching(false));
   }, []);
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
-
-  const handleOpenImage = () => {
-    setOpenImage(true);
-  };
 
   const handleDownloadFile = (fileUrl) => {
     fetch(fileUrl)
@@ -73,149 +73,209 @@ function PersonalAccountList() {
   return (
     <>
       <div className="account">
-        <h2 className="account__title">Личный кабинет</h2>
-        <>
-          {[account].map((userData) => (
-            <div key={userData.id}>
-              <div className="account__manager">
-                <div className="account__manager-content">
-                  <div className="account__manager-title">Ваш менеджер:</div>
-                  <div className="account__manager-name">{userData.manager},</div>
-                  <a className="account__manager-phone" href={`tel:${userData.manager_phone}`}>
-                    {formatPhoneNumber(userData.manager_phone)}
-                  </a>
+        {[account].map((userData) => (
+          <>
+            <div className="account__header">
+              <div className="account__header-content">
+                <div className="account__header-icon">
+                  <img src="./logo.png" alt="logo__company" />
                 </div>
-              </div>
-              <div className="account__file">
-                <div className="account__file-items">
-                  <div className="account__file-title">Файлы:</div>
-                  {userData.userfiles.map((file) => (
-                    <div key={file.id}>
-                      <div
-                        className="account__file-item"
-                        onClick={() =>
-                          handleDownloadFile(process.env.REACT_APP_IMG_URL + file.file)
-                        }>
-                        {file.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="account__brigade">
-                <div className="account__brigade-content">
-                  <div className="account__brigade-title">Монтажная бригада:</div>
-                  <div className="account__brigade-foreman">
-                    {userData.brigade && userData.brigade.name ? userData.brigade.name : ''},
-                  </div>
-                  <a className="account__brigade-phone" href={`tel:${userData.brigade?.phone}`}>
-                    {formatPhoneNumber(userData.brigade?.phone)},
-                  </a>
-                  <div
-                    className="account__brigade-foto"
-                    onClick={() => {
-                      handleOpenImage();
-                    }}>
-                    фотография бригады
-                  </div>
-                </div>
-                {openImage && (
-                  <div className="account__brigade-image">
-                    <img
-                      src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                      alt="foto__brigade"
-                      onClick={() => setOpenImage(false)}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="table-scrollable">
-                <Table bordered hover size="sm" className="mt-5">
-                  <thead style={{ backgroundColor: '#7d7f7d' }}>
-                    <tr style={{ color: '#ffff', textAlign: 'center' }}>
-                      <th>Дата договора</th>
-                      <th>Дедлайн проектирования</th>
-                      <th>Дедлайн производства</th>
-                      <th>Дата сдачи объекта</th>
-                      <th>Осталось дней</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ textAlign: 'center' }}>
-                      <td>
-                        <Moment format="DD.MM.YYYYY">{userData.project.agreement_date}</Moment>
-                      </td>
-                      <td>
-                        {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                          .businessAdd(userData.project.design_period, 'days')
-                          .format('DD.MM.YYYY')}
-                      </td>
-                      <td>
-                        {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                          .businessAdd(userData.project.expiration_date, 'days')
-                          .businessAdd(userData.project.design_period, 'days')
-                          .format('DD.MM.YYYY')}
-                      </td>
-                      <td>
-                        {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                          .businessAdd(userData.project.design_period, 'days')
-                          .businessAdd(userData.project.expiration_date, 'days')
-                          .businessAdd(userData.project.installation_period, 'days')
-                          .format('DD.MM.YYYY')}
-                      </td>
-                      <td>
-                        {(() => {
-                          const targetDate = moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                            .businessAdd(userData.project.design_period, 'days')
-                            .businessAdd(userData.project.expiration_date, 'days')
-                            .businessAdd(userData.project.installation_period, 'days');
-
-                          function subtractDaysUntilZero(targetDate) {
-                            const today = moment();
-                            let daysLeft = 0;
-
-                            while (targetDate.diff(today, 'days') > 0) {
-                              daysLeft++;
-                              targetDate.subtract(1, 'day');
-                            }
-
-                            return daysLeft;
-                          }
-
-                          return subtractDaysUntilZero(targetDate);
-                        })()}
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </div>
-              <div className="account__image">
-                <h3 className="account__image-title">Фотографии работ</h3>
-                <div className="account__image-content">
-                  {account.userimages.map((userImage) => (
-                    <div key={userImage.id}>
-                      <div className="account__image-card">
-                        <img
-                          onClick={hadleClickImage}
-                          src={process.env.REACT_APP_IMG_URL + userImage.image}
-                          alt="photos of works"
-                        />
-                        <div className="account__image-date">{userImage.date}</div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="account__header-logout" onClick={handleLogout}>
+                  Выйти
                 </div>
               </div>
             </div>
-          ))}
-          <Button
-            className="mt-5"
-            variant="secondary"
-            style={{ display: 'block', margin: '0 auto' }}
-            onClick={handleLogout}>
-            Выйти
-          </Button>
-        </>
+            <div className="account__greeting">
+              <div className="account__greeting-card">
+                <div className="account__greeting-card__content">
+                  <div className="account__greeting-card__image">
+                    <img src="./fon.jpg" alt="image__company" />
+                  </div>
+                  <div className="account__greeting-card__name">Шеин Кирилл Викторович</div>
+                </div>
+              </div>
+            </div>
+            <div className="account__filter">
+              <div className="account__filter-card">
+                <div className="account__filter-card__content">
+                  <div
+                    className={`account__filter-card__item ${
+                      activeTab === 'information' ? 'active' : ''
+                    }`}
+                    onClick={() => handleTabClick('information')}>
+                    Информация
+                  </div>
+                  <div
+                    className={`account__filter-card__item ${
+                      activeTab === 'project' ? 'active' : ''
+                    }`}
+                    onClick={() => handleTabClick('project')}>
+                    О проекте
+                  </div>
+                  <div
+                    className={`account__filter-card__item ${activeTab === 'file' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('file')}>
+                    Файлы
+                  </div>
+                  <div
+                    className={`account__filter-card__item ${
+                      activeTab === 'image' ? 'active' : ''
+                    }`}
+                    onClick={() => handleTabClick('image')}>
+                    Фотографии
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="account__description">
+              <div className="account__description-card">
+                <div className="account__description-card__content">
+                  {activeTab === 'information' && (
+                    <div className="information">
+                      <div className="manager">
+                        <div className="manager__content">
+                          <div className="manager__title">Менеджер:</div>
+                          <div className="manager__name">{userData.manager}</div>
+                        </div>
+                        <div className="manager__content">
+                          <div className="manager__title">Телефон:</div>
+                          <a className="manager__phone" href={`tel:${userData.manager_phone}`}>
+                            {formatPhoneNumber(userData.manager_phone)}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="brigade">
+                        <div className="brigade__content">
+                          <div className="brigade__title">Монтажная бригада:</div>
+                          <div className="brigade__foreman">
+                            {userData.brigade && userData.brigade.name ? userData.brigade.name : ''}
+                          </div>
+                        </div>
+                        <div className="brigade__content">
+                          <div className="brigade__title">Телефон:</div>
+                          <a className="brigade__phone" href={`tel:${userData.brigade?.phone}`}>
+                            {formatPhoneNumber(userData.brigade?.phone)}
+                          </a>
+                        </div>
+                        <div className="brigade__image">
+                          <img
+                            src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
+                            alt="foto__brigade"
+                            onClick={hadleClickImage}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {activeTab === 'project' && (
+                    <div className="project">
+                      <div className="project__content">
+                        <div className="project__items">
+                          <div className="project__title">Дата договора:</div>
+                          <div className="project__description">
+                            <Moment format="DD.MM.YYYYY">{userData.project.agreement_date}</Moment>
+                          </div>
+                        </div>
+                        <div className="project__items">
+                          <div className="project__title">Дедлайн проектирования:</div>
+                          <div className="project__description">
+                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
+                              .businessAdd(userData.project.design_period, 'days')
+                              .format('DD.MM.YYYY')}
+                          </div>
+                        </div>
+                        <div className="project__items">
+                          <div className="project__title">Дедлайн производства:</div>
+                          <div className="project__description">
+                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
+                              .businessAdd(userData.project.expiration_date, 'days')
+                              .businessAdd(userData.project.design_period, 'days')
+                              .format('DD.MM.YYYY')}
+                          </div>
+                        </div>
+                        <div className="project__items">
+                          <div className="project__title">Дата сдачи объекта:</div>
+                          <div className="project__description">
+                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
+                              .businessAdd(userData.project.design_period, 'days')
+                              .businessAdd(userData.project.expiration_date, 'days')
+                              .businessAdd(userData.project.installation_period, 'days')
+                              .format('DD.MM.YYYY')}
+                          </div>
+                        </div>
+                        <div className="project__items">
+                          <div className="project__title">Осталось дней:</div>
+                          <div className="project__description">
+                            {(() => {
+                              const targetDate = moment(
+                                userData.project.agreement_date,
+                                'YYYY/MM/DD',
+                              )
+                                .businessAdd(userData.project.design_period, 'days')
+                                .businessAdd(userData.project.expiration_date, 'days')
+                                .businessAdd(userData.project.installation_period, 'days');
+
+                              function subtractDaysUntilZero(targetDate) {
+                                const today = moment();
+                                let daysLeft = 0;
+
+                                while (targetDate.diff(today, 'days') > 0) {
+                                  daysLeft++;
+                                  targetDate.subtract(1, 'day');
+                                }
+
+                                return daysLeft;
+                              }
+
+                              return subtractDaysUntilZero(targetDate);
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {activeTab === 'file' && (
+                    <div className="file">
+                      <div className="file__content">
+                        {userData.userfiles.map((file) => (
+                          <div key={file.id}>
+                            <div
+                              className="file__item"
+                              onClick={() =>
+                                handleDownloadFile(process.env.REACT_APP_IMG_URL + file.file)
+                              }>
+                              {file.name}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {activeTab === 'image' && (
+                    <div className="image">
+                      <div className="image__content">
+                        <div className="image__content">
+                          {account.userimages.map((userImage) => (
+                            <div key={userImage.id}>
+                              <div className="image__card">
+                                <img
+                                  onClick={hadleClickImage}
+                                  src={process.env.REACT_APP_IMG_URL + userImage.image}
+                                  alt="photos of works"
+                                />
+                                <div className="image__date">{userImage.date}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
+        ))}
       </div>
     </>
   );
