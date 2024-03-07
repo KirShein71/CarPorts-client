@@ -100,7 +100,6 @@ const CreateDetails = (props) => {
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      //   style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       className="modal__detail">
       <Modal.Header closeButton>
         <Modal.Title>Добавить деталь</Modal.Title>
