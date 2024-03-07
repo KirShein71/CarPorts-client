@@ -114,8 +114,15 @@ function ProjectList() {
           <tr>
             <th>Номер проекта</th>
             <th>Название</th>
-            <th style={{ cursor: 'pointer' }} onClick={() => handleSort('agreement_date')}>
-              Дата договора <img styles={{ marginLeft: '5px' }} src="./sort.png" alt="icon_sort" />
+            <th
+              style={{ cursor: 'pointer', display: 'flex' }}
+              onClick={() => handleSort('agreement_date')}>
+              <div>Дата договора</div>{' '}
+              <img
+                style={{ marginLeft: '10px', width: '24px', height: '24px' }}
+                src="./sort.png"
+                alt="icon_sort"
+              />
             </th>
             <th></th>
             <th></th>

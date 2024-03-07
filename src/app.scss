@@ -40,7 +40,20 @@ a {
  }
 }
 
+th {
+    @media(max-width: 991px) {
+        font-size: 15px;
+    }
+   
+}
 
+
+
+// td {
+//     font-size: 17px;
+//     font-weight: 400;
+//     text-align: center;
+// }
 
 
 

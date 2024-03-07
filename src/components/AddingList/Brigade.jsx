@@ -1,7 +1,7 @@
 import React from 'react';
 import CreateBrigade from './modals/CreateBrigade';
 import UpdateBridage from './modals/UpdateBrigade';
-import { Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import { fetchBrigades, deleteBrigade } from '../../http/bragadeApi';
 
 function Brigade() {

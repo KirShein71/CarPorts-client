@@ -1,7 +1,7 @@
 import React from 'react';
 import CreateMaterial from './modals/CreateMaterial';
 import UpdateMaterial from './modals/UpdateMaterial';
-import { Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
 import { fetchMaterials, deleteMaterial } from '../../http/materialsApi';
 
 function Materials() {

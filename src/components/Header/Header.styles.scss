@@ -8,8 +8,19 @@
         font-weight: 700;
         color: rgb(7, 7, 7);
         text-transform: uppercase;
+        @media (max-width: 768px) {
+            font-size: 27px;
+        }
         @media(max-width: 420px) {
             font-size: 25px;
+        }
+    }
+
+    &__icon {
+        img {
+            @media(max-width: 768px) {
+                width: 90%;
+            }
         }
     }
     &__logo {

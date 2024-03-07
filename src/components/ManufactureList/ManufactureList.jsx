@@ -219,7 +219,7 @@ function ManufactureList() {
                     </td>
                   ))}
                 <td>
-                  {waitShipment.antypical.length > 0 ? (
+                  {waitShipment.antypical?.length > 0 ? (
                     <span
                       style={{ color: 'red', cursor: 'pointer' }}
                       onClick={() => handleOpenImage(waitShipment.antypical)}>

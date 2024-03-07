@@ -8,7 +8,7 @@ import { observer } from 'mobx-react';
 import { Spinner } from 'react-bootstrap';
 
 import './app.scss'
-import PersonalAccount from './pages/PersonalAccount';
+
 
 
 
