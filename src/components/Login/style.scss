@@ -42,6 +42,9 @@
         color: #ffff;
         left: 50%;
         margin-bottom: 15px;
+        @media (max-width: 450px) {
+            width: 350px;
+        }
 
         &::placeholder {
             font-size: 18px;
@@ -62,6 +65,9 @@
         font-weight: 600;
         text-align: center;
         color: rgb(7, 7, 7);
+        @media (max-width: 450px) {
+            width: 350px;
+        }
         &:hover {
             background-color: transparent;
             color: #ffff;
