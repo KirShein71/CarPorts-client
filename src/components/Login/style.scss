@@ -6,15 +6,14 @@
             right: 0;
             bottom: 0;
             height: 100vh;
-            overflow: auto;
             width: 100%;
+            overflow: auto;
             filter: brightness(18%);
+            object-fit: cover; 
         }
 
     &__card {
         padding: 25px 25px;
-        width: 650px;
-        height: 200px;
         position: fixed;
         top: 40%;
         left: 50%;
