@@ -35,31 +35,32 @@ function AppointBrigade() {
         <h1 className="header__title">Назначить бригаду</h1>
       </div>
       <CreateBrigade projectId={project} show={show} setShow={setShow} setChange={setChange} />
-
-      <Table bordered hover size="sm" className="mt-5">
-        <thead>
-          <tr>
-            <th>Номер проекта</th>
-            <th>Название</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects
-            .sort((a, b) => a.id - b.id)
-            .map((item) => (
-              <tr key={item.id}>
-                <td>{item.number}</td>
-                <td>{item.name}</td>
-                <td>
-                  <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
-                    Назначить бригаду
-                  </Button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-5">
+          <thead>
+            <tr>
+              <th>Номер проекта</th>
+              <th>Название</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects
+              .sort((a, b) => a.id - b.id)
+              .map((item) => (
+                <tr key={item.id}>
+                  <td>{item.number}</td>
+                  <td>{item.name}</td>
+                  <td>
+                    <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
+                      Назначить бригаду
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

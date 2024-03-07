@@ -40,31 +40,36 @@ function ShipmentChangeList() {
         setShow={setShow}
         setChange={setChange}
       />
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th>Номер проекта</th>
-            <th>Название</th>
-            <th>Дата договора</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map((item) => (
-            <tr key={item.id}>
-              <td>{item.number}</td>
-              <td>{item.name}</td>
-              <td>
-                <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-              </td>
-              <td>
-                <Button variant="success" size="sm" onClick={() => handleShipmentDetails(item.id)}>
-                  Внести детали на отгрузку
-                </Button>
-              </td>
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Номер проекта</th>
+              <th>Название</th>
+              <th>Дата договора</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {projects.map((item) => (
+              <tr key={item.id}>
+                <td>{item.number}</td>
+                <td>{item.name}</td>
+                <td>
+                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                </td>
+                <td>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => handleShipmentDetails(item.id)}>
+                    Внести детали на отгрузку
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

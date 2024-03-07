@@ -164,6 +164,7 @@ function OrderMaterialsList() {
                 size="sm"
                 className="ms-3"
                 variant="primary"
+                style={{ whiteSpace: 'nowrap' }}
                 onClick={() => handleCreateMaterial(material.project.id)}>
                 Добавить материал
               </Button>
@@ -247,7 +248,7 @@ function OrderMaterialsList() {
           </div>
         ))}
       </>
-      <Pagination>{pages}</Pagination>
+      <Pagination style={{ marginTop: '20px' }}>{pages}</Pagination>
     </div>
   );
 }

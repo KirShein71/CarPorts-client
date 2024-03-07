@@ -97,7 +97,7 @@ const CreateDetails = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="md"
+      size="sm"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       className="modal__detail">
