@@ -76,6 +76,7 @@ const CreateBrigade = (props) => {
       show={show}
       onHide={() => setShow(false)}
       size="xl"
+      style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
