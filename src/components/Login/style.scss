@@ -10,6 +10,7 @@
             overflow: auto;
             filter: brightness(18%);
             object-fit: cover; 
+            
         }
 
     &__card {
@@ -42,6 +43,7 @@
         color: #ffff;
         left: 50%;
         margin-bottom: 15px;
+        outline: none;
         @media (max-width: 450px) {
             width: 350px;
         }
