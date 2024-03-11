@@ -35,7 +35,7 @@
         justify-content: center;
     }
 
-    &__input {
+    .phone__input, .password__input {
         width: 400px;
         background-color: transparent;
         border: none;
@@ -54,6 +54,14 @@
             color:#ffff;
             
         }
+    }
+
+    &__label {
+       margin-bottom: 15px;
+        color: #ffff;
+        font-size: 15px;
+        font-weight: 400;
+        
     }
 
     &__button {

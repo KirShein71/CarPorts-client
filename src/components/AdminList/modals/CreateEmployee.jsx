@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createAccountEmployee } from '../../../http/employeeApi';
 
-const defaultValue = { phone: '', name: '', speciality: '' };
+const defaultValue = { phone: '', name: '', speciality: '', password: '' };
 const defaultValid = {
   phone: null,
   name: null,
   speciality: null,
+  password: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'password') result.password = value.password.trim() !== '';
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'speciality') result.speciality = value.speciality.trim() !== '';
   }
@@ -40,9 +42,10 @@ const CreateEmployee = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.phone && correct.name && correct.speciality) {
+    if (correct.phone && correct.password && correct.name && correct.speciality) {
       const data = new FormData();
       data.append('phone', value.phone.trim());
+      data.append('password', value.password.trim());
       data.append('name', value.name.trim());
       data.append('speciality', value.speciality.trim());
       createAccountEmployee(data)
@@ -82,6 +85,19 @@ const CreateEmployee = (props) => {
                 placeholder="Ввидите номер телефона"
                 minLength="10"
                 maxLength="11"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="password"
+                value={value.password}
+                onChange={(e) => handleInputChange(e)}
+                onClick={handleInputClick}
+                isValid={valid.password === true}
+                isInvalid={valid.password === false}
+                placeholder="Ввидите пароль"
               />
             </Col>
           </Row>

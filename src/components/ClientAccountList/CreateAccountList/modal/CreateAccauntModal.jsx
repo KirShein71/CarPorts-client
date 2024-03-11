@@ -2,15 +2,17 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createAccount } from '../../../../http/userApi';
 
-const defaultValue = { phone: '' };
+const defaultValue = { phone: '', password: '' };
 const defaultValid = {
   phone: null,
+  password: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'password') result.password = value.password.trim() !== '';
   }
   return result;
 };
@@ -36,9 +38,10 @@ const CreateAccountModal = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.phone) {
+    if (correct.phone && correct.password) {
       const data = new FormData();
       data.append('phone', value.phone.trim());
+      data.append('password', value.password.trim());
       data.append('projectId', projectId);
       createAccount(data)
         .then((data) => {
@@ -61,7 +64,7 @@ const CreateAccountModal = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Ввести номер телефона</Modal.Title>
+        <Modal.Title>Ввести номер телефона и пароль</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form ref={form} noValidate onSubmit={handleSubmit}>
@@ -76,6 +79,19 @@ const CreateAccountModal = (props) => {
                 isInvalid={valid.phone === false}
                 minLength="10"
                 maxLength="11"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="password"
+                value={value.password}
+                onChange={(e) => handleInputChange(e)}
+                onClick={handleInputClick}
+                isValid={valid.password === true}
+                isInvalid={valid.password === false}
+                placeholder="Ввидите пароль"
               />
             </Col>
           </Row>

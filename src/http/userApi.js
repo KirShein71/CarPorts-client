@@ -6,9 +6,9 @@ export const createAccount = async (user) => {
     return data
     }
 
-    export const login = async (phone) => {
+    export const login = async (phone,password) => {
         try {
-            const response = await authInstance.post('user/login', {phone})
+            const response = await authInstance.post('user/login', {phone, password})
             const token = response.data.token
             const user = jwtDecode(token)
             localStorage.setItem('token', token)
@@ -19,6 +19,7 @@ export const createAccount = async (user) => {
             return false
         }
     }
+
 
     export const check = async () => {
         let userToken, userData
@@ -40,7 +41,6 @@ export const createAccount = async (user) => {
         }
     }
 
-    
 
     export const logout = () => {
         localStorage.removeItem('token')
