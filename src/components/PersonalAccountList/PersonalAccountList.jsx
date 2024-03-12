@@ -49,11 +49,15 @@ function PersonalAccountList() {
 
   const handleClickImage = ({ target }) => {
     if (!document.fullscreenElement) {
-      if (target.webkitRequestFullscreen) {
+      if (target.requestFullscreen) {
+        target.requestFullscreen().catch((error) => console.log(error));
+      } else if (target.webkitRequestFullscreen) {
         target.webkitRequestFullscreen();
       }
     } else {
-      if (document.webkitExitFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
     }
