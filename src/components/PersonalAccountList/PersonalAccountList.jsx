@@ -48,18 +48,10 @@ function PersonalAccountList() {
   };
 
   const handleClickImage = ({ target }) => {
-    if (!document.fullscreenElement) {
-      if (target.requestFullscreen) {
-        target.requestFullscreen().catch((error) => console.log(error));
-      } else if (target.webkitRequestFullscreen) {
-        target.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
+    if (target.requestFullscreen) {
+      target.requestFullscreen().catch((error) => console.log(error));
+    } else if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
     }
   };
 
