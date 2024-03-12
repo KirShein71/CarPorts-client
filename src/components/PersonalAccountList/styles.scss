@@ -60,6 +60,9 @@
             @media (max-width: 450px) {
                 width: 400px;
             }
+            @media (max-width: 400px) {
+                width: 380px;
+            }
 
             &__image {
                 
@@ -77,6 +80,9 @@
                     }
                     @media (max-width: 450px) {
                         width: 400px;
+                    }
+                    @media (max-width: 400px) {
+                        width: 380px;
                     }
                 }
             }
@@ -145,6 +151,9 @@
                 }
                 @media (max-width: 450px) {
                     padding: 5px 13px;
+                }
+                @media (max-width: 450px) {
+                    padding: 5px 12px;
                 }
           
                 &:hover {
