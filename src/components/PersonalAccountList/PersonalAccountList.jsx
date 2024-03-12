@@ -169,7 +169,7 @@ function PersonalAccountList() {
                           <img
                             src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
                             alt="foto__brigade"
-                            onClick={hadleClickImage}
+                            onClick={handleClickImage}
                           />
                         </div>
                       </div>
