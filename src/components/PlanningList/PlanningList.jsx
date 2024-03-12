@@ -142,7 +142,7 @@ function PlanningList() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th>Номер проекта</th>
+              <th className="production_column">Номер проекта </th>
               <th>Название</th>
               <th>Примечание</th>
               <th
