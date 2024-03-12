@@ -7,6 +7,10 @@
     bottom: 0;
     height: 100vh;
     overflow: auto;
+    @media (max-width: 480px) {
+        overflow: hidden;
+    }
+    
     
 
     &__header {
