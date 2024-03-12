@@ -7,6 +7,9 @@
     bottom: 0;
     height: 100vh;
     overflow: auto;
+    @media (max-width: 1024px) {
+        position: relative;
+    }
 
     &__header {
         padding: 25px 100px;
