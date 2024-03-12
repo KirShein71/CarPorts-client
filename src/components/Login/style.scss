@@ -1,14 +1,16 @@
 .login {
         img {
-            img {
-                position: absolute; 
-                top: 50%; 
-                left: 0; 
-                transform: translateY(-50%);
-                height: 100vh;
-                width: 100%;
-                filter: brightness(18%);
-                object-fit: cover; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0;
+            bottom: 0;
+            height: 100vh;
+            width: 100%;
+            filter: brightness(18%);
+            object-fit: cover; 
+            @media (max-width: 1024px) {
+                position: fixed;
             }
         }
 
