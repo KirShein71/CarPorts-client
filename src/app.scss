@@ -41,19 +41,13 @@ a {
 }
 
 th, td {
-    white-space: nowrap;
+    @media (max-width: 991px) {
+        white-space: nowrap;
+    }
+ 
    
 }
 
-
-
-
-
-// td {
-//     font-size: 17px;
-//     font-weight: 400;
-//     text-align: center;
-// }
 
 
 
