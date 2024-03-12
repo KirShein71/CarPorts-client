@@ -3,7 +3,7 @@ import { getOneAccount, logout } from '../../http/userApi';
 import { Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
-
+import { useRef } from 'react';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
@@ -14,6 +14,7 @@ function PersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const { user } = React.useContext(AppContext);
+  const imageRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -47,14 +48,12 @@ function PersonalAccountList() {
       .catch((error) => console.error('Ошибка при скачивании файла:', error));
   };
 
-  const handleClickImage = ({ target }) => {
-    if (!document.fullscreenElement) {
-      if (target.webkitRequestFullscreen) {
-        target.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
+  const handleClickImage = () => {
+    if (imageRef.current) {
+      if (imageRef.current.requestFullscreen) {
+        imageRef.current.requestFullscreen();
+      } else if (imageRef.current.webkitRequestFullscreen) {
+        imageRef.current.webkitRequestFullscreen();
       }
     }
   };
@@ -165,6 +164,7 @@ function PersonalAccountList() {
                           <img
                             src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
                             alt="foto__brigade"
+                            ref={imageRef}
                             onClick={handleClickImage}
                           />
                         </div>
@@ -263,7 +263,8 @@ function PersonalAccountList() {
                             <div key={userImage.id}>
                               <div className="image__card">
                                 <img
-                                  onClick={hadleClickImage}
+                                  ref={imageRef}
+                                  onClick={handleClickImage}
                                   src={process.env.REACT_APP_IMG_URL + userImage.image}
                                   alt="photos of works"
                                 />
