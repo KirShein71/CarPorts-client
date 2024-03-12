@@ -14,7 +14,7 @@
 }
 
 .container {
-    max-width: 1270px;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
@@ -41,7 +41,7 @@ a {
 }
 
 th, td {
-    overflow: auto;
+    
     @media (max-width: 991px) {
         white-space: nowrap;
     }

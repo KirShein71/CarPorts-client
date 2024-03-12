@@ -179,7 +179,7 @@ function PlanningList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td>{item.number}</td>
-                  <td>{item.name}</td>
+                  <td className="production_column">{item.name}</td>
                   <td>{item.note}</td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
