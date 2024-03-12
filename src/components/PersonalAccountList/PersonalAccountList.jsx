@@ -47,11 +47,19 @@ function PersonalAccountList() {
       .catch((error) => console.error('Ошибка при скачивании файла:', error));
   };
 
-  const hadleClickImage = ({ target }) => {
-    if (!document.fullscreenElement) {
-      target.requestFullscreen().catch((error) => console.log(error));
+  const handleClickImage = ({ target }) => {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (target.requestFullscreen) {
+        target.requestFullscreen().catch((error) => console.log(error));
+      } else if (target.webkitRequestFullscreen) {
+        target.webkitRequestFullscreen();
+      }
     } else {
-      document.exitFullscreen();
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
     }
   };
 
