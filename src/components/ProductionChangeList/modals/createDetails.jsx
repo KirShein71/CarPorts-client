@@ -97,7 +97,7 @@ const CreateDetails = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="sm"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       className="modal__detail">
@@ -164,7 +164,9 @@ const CreateDetails = (props) => {
               <Button className="me-3" onClick={handleSaveDetails}>
                 Сохранить все детали
               </Button>
-              <Button onClick={handleRemoveAllDetails}>Удалить все</Button>
+              <Button className="mt-3" onClick={handleRemoveAllDetails}>
+                Удалить все
+              </Button>
             </>
           )}
         </Form>

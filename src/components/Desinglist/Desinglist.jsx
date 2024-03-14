@@ -42,6 +42,7 @@ function Desinglist() {
               <th>Номер проекта</th>
               <th>Название</th>
               <th>Дата договора</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

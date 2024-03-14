@@ -56,6 +56,7 @@ function ProductionChangeList() {
                 Дата договора{' '}
                 <img styles={{ marginLeft: '5px' }} src="../sort.png" alt="icon_sort" />
               </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

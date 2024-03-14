@@ -4,13 +4,20 @@ import { createAntypical } from '../../../http/antypicalApi';
 
 const CreateAntypical = (props) => {
   const { show, setShow, setChange, projectId } = props;
+  const [image, setImage] = React.useState(null);
   const [selectedImages, setSelectedImages] = React.useState([]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const fileName = e.target.files[0].name;
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
 
-    setSelectedImages((prevImages) => [...prevImages, { image: file, name: fileName }]);
+  const handleAddImage = () => {
+    if (image) {
+      const newImage = {
+        image: image,
+      };
+      setSelectedImages((prev) => [...prev, newImage]);
+    }
   };
 
   const handleSaveImages = () => {
@@ -60,11 +67,16 @@ const CreateAntypical = (props) => {
               />
             </Col>
           </Row>
+          <Col>
+            <Button className="mb-3" onClick={handleAddImage}>
+              Добавить
+            </Button>
+          </Col>
           {selectedImages.map((image, index) => (
             <div key={index}>
               <Row className="mb-3">
                 <Col>
-                  <Form.Control disabled value={image.name} className="mb-3" />
+                  <Form.Control disabled value={image.image.name} className="mb-3" />
                 </Col>
                 <Col>
                   <Button variant="danger" onClick={() => handleRemoveImage(index)}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Button, Table, Spinner } from 'react-bootstrap';
+import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fetchAllProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
@@ -23,10 +23,19 @@ function ProductionList() {
   const [images, setImages] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [totalPages, setTotalPages] = React.useState(0);
+  const itemsPerPage = 20;
 
   React.useEffect(() => {
     fetchAllProjectDetails()
-      .then((data) => setProjectDetails(data))
+      .then((data) => {
+        setProjectDetails(data);
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        setTotalPages(totalPages);
+        setCurrentPage(1);
+      })
       .finally(() => setFetching(false));
   }, [change]);
 
@@ -55,6 +64,38 @@ function ProductionList() {
     setImageModal(true);
   };
 
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, projectDetails.length);
+  const projectDetailsToShow = projectDetails
+    .filter((detail) => detail.project.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice(startIndex, endIndex);
+
+  const pages = [];
+  for (let page = 1; page <= totalPages; page++) {
+    const startIndex = (page - 1) * itemsPerPage;
+
+    if (startIndex < projectDetails.length) {
+      pages.push(
+        <Pagination.Item
+          key={page}
+          active={page === currentPage}
+          activeLabel=""
+          onClick={() => handlePageClick(page)}>
+          {page}
+        </Pagination.Item>,
+      );
+    }
+  }
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -64,6 +105,18 @@ function ProductionList() {
       <Link to="/productionchange">
         <Button>Внести данные в проект</Button>
       </Link>
+      <Col className="mt-3" sm={2}>
+        <Form className="d-flex">
+          <Form.Control
+            type="search"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="me-2"
+            aria-label="Search"
+          />
+        </Form>
+      </Col>
       <UpdateProjectDetails
         id={projectDetail}
         show={updateProjectDetailsModal}
@@ -106,7 +159,7 @@ function ProductionList() {
             </tr>
           </thead>
           <tbody>
-            {projectDetails.map((detail) => (
+            {projectDetailsToShow.map((detail) => (
               <tr key={detail.id}>
                 <td>{detail.project ? detail.project.number : ''}</td>
                 <td className="production_column">{detail.project ? detail.project.name : ''}</td>
@@ -145,6 +198,11 @@ function ProductionList() {
           </tbody>
         </Table>
       </div>
+      {projectDetails.length > 15 ? (
+        <Pagination style={{ marginTop: '15px' }}>{pages}</Pagination>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
