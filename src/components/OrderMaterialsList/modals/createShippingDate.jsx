@@ -98,9 +98,7 @@ const CreateShippingDate = (props) => {
                 isValid={valid.shipping_date === true}
                 isInvalid={valid.shipping_date === false}
                 placeholder="Дата отгрузки"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                type="date"
               />
             </Col>
           </Row>

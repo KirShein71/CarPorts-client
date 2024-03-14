@@ -47,6 +47,7 @@ function ClientAccountList() {
               <th>Название</th>
               <th>Номер клиента</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

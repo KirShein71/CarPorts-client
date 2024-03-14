@@ -98,9 +98,7 @@ const CreateReadyDate = (props) => {
                 isValid={valid.ready_date === true}
                 isInvalid={valid.ready_date === false}
                 placeholder="Дата готовности"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                type="date"
               />
             </Col>
           </Row>

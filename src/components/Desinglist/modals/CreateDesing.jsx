@@ -104,18 +104,35 @@ const CreateDesing = (props) => {
                 placeholder="Конструктор"
               />
             </Col>
+          </Row>
+          <Row className="mb-3">
             <Col>
-              <Form.Control
-                name="design_start"
-                value={value.design_start}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.design_start === true}
-                isInvalid={valid.design_start === false}
-                placeholder="Дата начала проектирования"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="design_start">Дата начала проектирования</label>
+                  <Form.Control
+                    id="design_start"
+                    name="design_start"
+                    value={value.design_start}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.design_start === true}
+                    isInvalid={valid.design_start === false}
+                    type="date"
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="design_start"
+                  value={value.design_start}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.design_start === true}
+                  isInvalid={valid.design_start === false}
+                  placeholder="Дата начала проектирования"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
             </Col>
           </Row>
           <Row>

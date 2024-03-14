@@ -115,7 +115,7 @@ const CreateMaterial = (props) => {
       </Modal.Header>
       <Modal.Body className="modal-dialog-scrollable">
         <Form>
-          <Col>
+          <Col className="mb-3">
             <Form.Select
               name="material"
               value={value.material}
@@ -131,19 +131,37 @@ const CreateMaterial = (props) => {
                 ))}
             </Form.Select>
           </Col>
-          <Row className="mb-3 mt-4">
+          <Row className="mb-3">
             <Col>
-              <Form.Control
-                name="date_payment"
-                value={value.date_payment}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Дата платежа"
-                className="mb-3"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="date_payment">Дата платежа</label>
+                  <Form.Control
+                    id="date_payment"
+                    name="date_payment"
+                    value={value.date_payment}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.date_payment === true}
+                    isInvalid={valid.date_payment === false}
+                    type="date"
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="design_start"
+                  value={value.date_payment}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.date_payment === true}
+                  isInvalid={valid.date_payment === false}
+                  placeholder="Дата платежа"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
             </Col>
+          </Row>
+          <Row>
             <Col>
               <Form.Control
                 name="expirationMaterial_date"

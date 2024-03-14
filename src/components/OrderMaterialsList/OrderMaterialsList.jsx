@@ -203,7 +203,9 @@ function OrderMaterialsList() {
                             </span>
                           )}
                         </td>
-                        <td onClick={() => handlePaymentDate(prop.id)}>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handlePaymentDate(prop.id)}>
                           {prop.date_payment ? (
                             <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                           ) : (
@@ -213,7 +215,7 @@ function OrderMaterialsList() {
                           )}
                         </td>
                         <td></td>
-                        <td onClick={() => hadleReadyDate(prop.id)}>
+                        <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
                           {prop.ready_date ? (
                             <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
                           ) : (
@@ -222,7 +224,9 @@ function OrderMaterialsList() {
                             </span>
                           )}
                         </td>
-                        <td onClick={() => hadleShippingDate(prop.id)}>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => hadleShippingDate(prop.id)}>
                           {prop.shipping_date ? (
                             <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                           ) : (

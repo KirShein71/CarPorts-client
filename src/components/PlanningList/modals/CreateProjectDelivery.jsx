@@ -94,9 +94,7 @@ const CreateProjectDelivery = (props) => {
               isValid={valid.project_delivery === true}
               isInvalid={valid.project_delivery === false}
               placeholder="Дата сдачи проекта"
-              type="text"
-              onFocus={(e) => (e.target.type = 'date')}
-              onBlur={(e) => (e.target.type = 'text')}
+              type="date"
             />
           </Col>
           <Row>

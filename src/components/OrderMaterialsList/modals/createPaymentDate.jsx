@@ -98,9 +98,7 @@ const CreatePaymentDate = (props) => {
                 isValid={valid.date_payment === true}
                 isInvalid={valid.date_payment === false}
                 placeholder="Дата платежа"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                type="date"
               />
             </Col>
           </Row>
