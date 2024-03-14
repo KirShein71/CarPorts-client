@@ -103,7 +103,7 @@ const CreateBrigade = (props) => {
           </Col>
           <Row className="mb-3 mt-4">
             <Col>
-              <Form.Control
+              <input
                 name="plan_start"
                 value={value.plan_start}
                 onChange={(e) => handleInputChange(e)}
