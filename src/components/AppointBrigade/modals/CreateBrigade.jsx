@@ -36,10 +36,12 @@ const CreateBrigade = (props) => {
     fetchBrigades().then((data) => setBrigades(data));
   }, []);
 
-  const handleInputChange = (event) => {
-    const data = { ...value, [event.target.name]: event.target.value };
-    setValue(data);
-    setValid(isValid(data));
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setValue((prevValue) => ({
+      ...prevValue,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (event) => {
