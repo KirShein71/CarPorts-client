@@ -72,6 +72,16 @@ const CreateBrigade = (props) => {
     }));
   };
 
+  const handleFocus = (e) => {
+    e.target.type = 'date';
+  };
+
+  const handleBlur = (e) => {
+    if (!e.target.value) {
+      e.target.type = 'text';
+    }
+  };
+
   return (
     <Modal
       show={show}
@@ -112,8 +122,8 @@ const CreateBrigade = (props) => {
                 placeholder="Наш план начала работ"
                 className="mb-3"
                 type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'date' : 'text'}
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                onFocus={(e) => handleFocus(e)}
+                onBlur={(e) => handleBlur(e)}
               />
             </Col>
             <Col>
