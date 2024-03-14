@@ -73,13 +73,13 @@ const CreateBrigade = (props) => {
   };
 
   const handleFocus = (e) => {
-    setInputFocused(true);
-    e.target.type = 'date';
+    if (e.target.value === '') {
+      e.target.type = 'date';
+    }
   };
 
   const handleBlur = (e) => {
-    setInputFocused(false);
-    if (!e.target.value) {
+    if (e.target.value === '') {
       e.target.type = 'text';
     }
   };
