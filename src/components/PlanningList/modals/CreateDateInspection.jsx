@@ -95,6 +95,7 @@ const CreateDateInspection = (props) => {
               isInvalid={valid.date_inspection === false}
               placeholder="Дата проверки"
               type="date"
+              defaultValue=""
             />
           </Col>
           <Row>
