@@ -103,17 +103,16 @@ const CreateBrigade = (props) => {
           </Col>
           <Row className="mb-3 mt-4">
             <Col>
-              <input
+              <Form.Control
                 name="plan_start"
                 value={value.plan_start}
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.plan_start === true}
                 isInvalid={valid.plan_start === false}
-                placeholder={isFocused ? '' : 'Наш план начала работ'}
+                placeholder="Наш план начала работ"
                 className="mb-3"
-                type={isFocused ? 'date' : 'text'}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                type="text"
+                onFocus={(e) => (e.target.type = 'date')}
               />
             </Col>
             <Col>
