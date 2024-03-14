@@ -94,9 +94,7 @@ const CreateDateInspection = (props) => {
               isValid={valid.date_inspection === true}
               isInvalid={valid.date_inspection === false}
               placeholder="Дата проверки"
-              type="text"
-              onFocus={(e) => (e.target.type = 'date')}
-              onBlur={(e) => (e.target.type = 'text')}
+              type="date"
             />
           </Col>
           <Row>

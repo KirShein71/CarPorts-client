@@ -205,7 +205,9 @@ function PlanningList() {
                     style={{ cursor: 'pointer' }}
                     onClick={() => handleCreateDateInspection(item.id)}>
                     {item.date_inspection ? (
-                      <Moment format="DD.MM.YYYY">{moment(item.date_inspection)}</Moment>
+                      <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
+                        {item.date_inspection}
+                      </Moment>
                     ) : (
                       <span style={{ color: 'red', fontWeight: 600 }}>Введите дату проверки</span>
                     )}
