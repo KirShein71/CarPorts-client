@@ -116,18 +116,36 @@ const CreateBrigade = (props) => {
           </Col>
           <Row className="mb-3 mt-4">
             <Col>
-              <Form.Control
-                name="plan_start"
-                value={value.plan_start}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.plan_start === true}
-                isInvalid={valid.plan_start === false}
-                placeholder={inputFocused ? '' : 'Наш план начала работ'}
-                className="mb-3"
-                type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'text' : 'date'}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-              />
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="myInput">Наш план начала работ</label>
+                  <Form.Control
+                    id="myInput"
+                    name="plan_start"
+                    value={value.plan_start}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.plan_start === true}
+                    isInvalid={valid.plan_start === false}
+                    className="mb-3"
+                    type="text"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="plan_start"
+                  value={value.plan_start}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.plan_start === true}
+                  isInvalid={valid.plan_start === false}
+                  placeholder="Наш план начала работ"
+                  className="mb-3"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
             </Col>
             <Col>
               <Form.Control
