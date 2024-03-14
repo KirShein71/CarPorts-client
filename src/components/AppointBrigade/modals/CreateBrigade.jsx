@@ -30,7 +30,6 @@ const CreateBrigade = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [brigades, setBrigades] = React.useState(null);
-  const [inputFocused, setInputFocused] = React.useState(false);
 
   React.useEffect(() => {
     fetchBrigades().then((data) => setBrigades(data));
@@ -72,19 +71,6 @@ const CreateBrigade = (props) => {
     }));
   };
 
-  const handleFocus = (e) => {
-    const inputType = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'text' : 'date';
-    e.target.type = inputType;
-    setInputFocused(true);
-  };
-
-  const handleBlur = (e) => {
-    setInputFocused(false);
-    if (!e.target.value) {
-      e.target.type = 'text';
-    }
-  };
-
   return (
     <Modal
       show={show}
@@ -114,7 +100,7 @@ const CreateBrigade = (props) => {
                 ))}
             </Form.Select>
           </Col>
-          <Row className="mb-3 mt-4">
+          <Row className=" mt-4">
             <Col>
               {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
                 <>
@@ -126,10 +112,7 @@ const CreateBrigade = (props) => {
                     onChange={(e) => handleInputChange(e)}
                     isValid={valid.plan_start === true}
                     isInvalid={valid.plan_start === false}
-                    className="mb-3"
-                    type="text"
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    type="date"
                   />
                 </>
               ) : (
@@ -140,13 +123,14 @@ const CreateBrigade = (props) => {
                   isValid={valid.plan_start === true}
                   isInvalid={valid.plan_start === false}
                   placeholder="Наш план начала работ"
-                  className="mb-3"
                   type="text"
                   onFocus={(e) => (e.target.type = 'date')}
                   onBlur={(e) => (e.target.type = 'text')}
                 />
               )}
             </Col>
+          </Row>
+          <Row className="mb-3 mt-4">
             <Col>
               <Form.Control
                 name="plan_finish"
