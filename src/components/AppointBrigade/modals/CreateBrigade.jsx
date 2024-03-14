@@ -73,13 +73,14 @@ const CreateBrigade = (props) => {
   };
 
   const handleFocus = (e) => {
-    if (e.target.value === '') {
-      e.target.type = 'date';
-    }
+    const inputType = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'text' : 'date';
+    e.target.type = inputType;
+    setInputFocused(true);
   };
 
   const handleBlur = (e) => {
-    if (e.target.value === '') {
+    setInputFocused(false);
+    if (!e.target.value) {
       e.target.type = 'text';
     }
   };
@@ -123,9 +124,9 @@ const CreateBrigade = (props) => {
                 isInvalid={valid.plan_start === false}
                 placeholder={inputFocused ? '' : 'Наш план начала работ'}
                 className="mb-3"
-                type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'date' : 'text'}
-                onFocus={(e) => handleFocus(e)}
-                onBlur={(e) => handleBlur(e)}
+                type="text"
+                onFocus={(e) => (e.target.type = 'date')}
+                onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
             <Col>
@@ -138,8 +139,8 @@ const CreateBrigade = (props) => {
                 placeholder="Наш план окончания работ"
                 className="mb-3"
                 type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
             </Col>
           </Row>
