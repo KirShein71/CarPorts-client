@@ -124,9 +124,9 @@ const CreateBrigade = (props) => {
                 isInvalid={valid.plan_start === false}
                 placeholder={inputFocused ? '' : 'Наш план начала работ'}
                 className="mb-3"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
+                type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'text' : 'date'}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
             </Col>
             <Col>
@@ -139,8 +139,8 @@ const CreateBrigade = (props) => {
                 placeholder="Наш план окончания работ"
                 className="mb-3"
                 type="text"
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                onFocus={(e) => (e.target.type = 'date')}
+                onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
           </Row>
