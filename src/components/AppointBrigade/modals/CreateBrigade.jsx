@@ -111,8 +111,9 @@ const CreateBrigade = (props) => {
                 isInvalid={valid.plan_start === false}
                 placeholder="Наш план начала работ"
                 className="mb-3"
-                type="text"
-                onClick={(e) => (e.target.type = 'date')}
+                type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'date' : 'text'}
+                onFocus={(e) => (e.target.type = 'date')}
+                onBlur={(e) => (e.target.type = 'text')}
               />
             </Col>
             <Col>
