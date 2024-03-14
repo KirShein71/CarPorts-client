@@ -112,7 +112,7 @@ const CreateBrigade = (props) => {
                 placeholder="Наш план начала работ"
                 className="mb-3"
                 type="text"
-                onFocus={(e) => (e.target.type = 'date')}
+                onClick={(e) => (e.target.type = 'date')}
               />
             </Col>
             <Col>
