@@ -118,21 +118,35 @@ const CreateProject = (props) => {
             isValid={valid.name === true}
             isInvalid={valid.name === false}
             placeholder="Название проекта"
-            className="mb-3"
           />
           <Row className="mb-3 flex-column flex-md-row">
             <Col md={3} className="my-3">
-              <Form.Control
-                name="agreement_date"
-                value={value.agreement_date}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.agreement_date === true}
-                isInvalid={valid.agreement_date === false}
-                placeholder="Дата договора"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="agreement_date">Дата договора</label>
+                  <Form.Control
+                    id="agreement_date"
+                    name="agreement_date"
+                    value={value.agreement_date}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.agreement_date === true}
+                    isInvalid={valid.agreement_date === false}
+                    type="date"
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="agreement_date"
+                  value={value.agreement_date}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.agreement_date === true}
+                  isInvalid={valid.agreement_date === false}
+                  placeholder="Дата договора"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
             </Col>
             <Col md={3} className="my-3">
               <Form.Control

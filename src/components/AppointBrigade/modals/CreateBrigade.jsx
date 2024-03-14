@@ -104,9 +104,9 @@ const CreateBrigade = (props) => {
             <Col>
               {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
                 <>
-                  <label for="myInput">Наш план начала работ</label>
+                  <label for="start">Наш план начала работ</label>
                   <Form.Control
-                    id="myInput"
+                    id="start"
                     name="plan_start"
                     value={value.plan_start}
                     onChange={(e) => handleInputChange(e)}
@@ -132,18 +132,32 @@ const CreateBrigade = (props) => {
           </Row>
           <Row className="mb-3 mt-4">
             <Col>
-              <Form.Control
-                name="plan_finish"
-                value={value.plan_finish}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.plan_finish === true}
-                isInvalid={valid.plan_finish === false}
-                placeholder="Наш план окончания работ"
-                className="mb-3"
-                type="text"
-                onFocus={(e) => (e.target.type = 'date')}
-                onBlur={(e) => (e.target.type = 'text')}
-              />
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="finish">Наш план окончания работ</label>
+                  <Form.Control
+                    id="finish"
+                    name="plan_finish"
+                    value={value.plan_finish}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.plan_finish === true}
+                    isInvalid={valid.plan_finish === false}
+                    type="date"
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="plan_finish"
+                  value={value.plan_finish}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.plan_finish === true}
+                  isInvalid={valid.plan_finish === false}
+                  placeholder="Наш план окончания работ"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
             </Col>
           </Row>
           <Row>
