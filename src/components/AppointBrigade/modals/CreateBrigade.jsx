@@ -30,18 +30,16 @@ const CreateBrigade = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [brigades, setBrigades] = React.useState(null);
-  const [isFocused, setIsFocused] = React.useState(false);
+  const [inputFocused, setInputFocused] = React.useState(false);
 
   React.useEffect(() => {
     fetchBrigades().then((data) => setBrigades(data));
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setValue((prevValue) => ({
-      ...prevValue,
-      [name]: value,
-    }));
+  const handleInputChange = (event) => {
+    const data = { ...value, [event.target.name]: event.target.value };
+    setValue(data);
+    setValid(isValid(data));
   };
 
   const handleSubmit = (event) => {
@@ -75,10 +73,12 @@ const CreateBrigade = (props) => {
   };
 
   const handleFocus = (e) => {
+    setInputFocused(true);
     e.target.type = 'date';
   };
 
   const handleBlur = (e) => {
+    setInputFocused(false);
     if (!e.target.value) {
       e.target.type = 'text';
     }
@@ -121,7 +121,7 @@ const CreateBrigade = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.plan_start === true}
                 isInvalid={valid.plan_start === false}
-                placeholder="Наш план начала работ"
+                placeholder={inputFocused ? '' : 'Наш план начала работ'}
                 className="mb-3"
                 type={/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'date' : 'text'}
                 onFocus={(e) => handleFocus(e)}
