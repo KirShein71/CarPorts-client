@@ -109,11 +109,11 @@ const CreateBrigade = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.plan_start === true}
                 isInvalid={valid.plan_start === false}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
                 placeholder={isFocused ? '' : 'Наш план начала работ'}
                 className="mb-3"
                 type={isFocused ? 'date' : 'text'}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
             </Col>
             <Col>
