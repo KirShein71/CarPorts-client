@@ -30,7 +30,17 @@ function PersonalAccountList() {
   };
 
   if (fetching) {
-    return <Spinner animation="border" />;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}>
+        <Spinner animation="border" />
+      </div>
+    );
   }
 
   const handleDownloadFile = (fileUrl) => {
