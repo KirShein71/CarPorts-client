@@ -338,10 +338,7 @@
               .full-screen img {
                 width: 100%; 
                 max-width: 90vw;
-                @media (max-width: 768px) {
-                    max-height: 90vw;
-                    
-                }
+                
                
               }
         }
