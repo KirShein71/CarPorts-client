@@ -273,14 +273,14 @@ function PersonalAccountList() {
                   {activeTab === 'file' && (
                     <div className="file">
                       <div className="file__content">
-                        {userData.userfiles?.map((file) => (
+                        {userData.userfiles?.map((file, index) => (
                           <div key={file.id}>
                             <div
                               className="file__item"
                               onClick={() =>
                                 handleDownloadFile(process.env.REACT_APP_IMG_URL + file.file)
                               }>
-                              {file.name}
+                              {index + 1}. {file.name}
                             </div>
                           </div>
                         ))}
