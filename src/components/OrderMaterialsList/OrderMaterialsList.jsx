@@ -157,23 +157,25 @@ function OrderMaterialsList() {
       <>
         {projectsMaterialsToShow.map((material) => (
           <div key={material.id}>
-            <div className="ordermaterialslist__top">
-              <div className="ordermaterialslist__number">{material.project.number}</div>
-              <div className="ordermaterialslist__project">{material.project.name}</div>
-              <Button
-                size="sm"
-                className="ms-3"
-                variant="primary"
-                style={{ whiteSpace: 'nowrap' }}
-                onClick={() => handleCreateMaterial(material.project.id)}>
-                Добавить материал
-              </Button>
+            <div className="table-scrollable">
+              <div className="ordermaterialslist__top">
+                <div className="ordermaterialslist__number">{material.project.number}</div>
+                <div className="ordermaterialslist__project">{material.project.name}</div>
+                <Button
+                  size="sm"
+                  className="ms-3"
+                  variant="primary"
+                  style={{ whiteSpace: 'nowrap' }}
+                  onClick={() => handleCreateMaterial(material.project.id)}>
+                  Добавить материал
+                </Button>
+              </div>
             </div>
             <div className="table-scrollable">
               <Table striped bordered size="sm" className="mt-3">
                 <thead>
                   <tr>
-                    <th>Тип материала</th>
+                    <th className="production_column">Тип материала</th>
                     <th>Дедлайн производства</th>
                     <th>Счёт</th>
                     <th>Дата оплаты</th>
@@ -187,7 +189,7 @@ function OrderMaterialsList() {
                   {material.props.map((prop) => {
                     return (
                       <tr key={prop.id}>
-                        <td>{prop.materialName}</td>
+                        <td className="production_column">{prop.materialName}</td>
                         <td>
                           {moment(material.project.agreement_date, 'YYYY/MM/DD')
                             .businessAdd(material.project.expiration_date, 'days')

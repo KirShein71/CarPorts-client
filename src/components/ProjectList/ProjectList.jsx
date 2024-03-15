@@ -109,58 +109,60 @@ function ProjectList() {
           </Link>
         </Col>
       </Row>
-      <Table bordered hover size="sm" className="mt-3">
-        <thead>
-          <tr>
-            <th className="production_column">Номер проекта</th>
-            <th>Название</th>
-            <th
-              style={{ cursor: 'pointer', display: 'flex' }}
-              onClick={() => handleSort('agreement_date')}>
-              <div>Дата договора</div>{' '}
-              <img
-                style={{ marginLeft: '10px', width: '24px', height: '24px' }}
-                src="./sort.png"
-                alt="icon_sort"
-              />
-            </th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {projectsToShow
-            .sort((a, b) => {
-              const dateA = new Date(a[sortField]);
-              const dateB = new Date(b[sortField]);
+      <div className="table-scrollable">
+        <Table bordered hover size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th className="production_column">Номер проекта</th>
+              <th>Название</th>
+              <th
+                style={{ cursor: 'pointer', display: 'flex' }}
+                onClick={() => handleSort('agreement_date')}>
+                <div>Дата договора</div>{' '}
+                <img
+                  style={{ marginLeft: '10px', width: '24px', height: '24px' }}
+                  src="./sort.png"
+                  alt="icon_sort"
+                />
+              </th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {projectsToShow
+              .sort((a, b) => {
+                const dateA = new Date(a[sortField]);
+                const dateB = new Date(b[sortField]);
 
-              if (sortOrder === 'desc') {
-                return dateB - dateA;
-              } else {
-                return dateA - dateB;
-              }
-            })
-            .map((item) => (
-              <tr key={item.id}>
-                <td className="production_column">{item.number}</td>
-                <td>{item.name}</td>
-                <td>
-                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                </td>
-                <td>
-                  <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
-                    Подробнее
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="success" size="sm" onClick={() => handleDeleteClick(item.id)}>
-                    Удалить
-                  </Button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+                if (sortOrder === 'desc') {
+                  return dateB - dateA;
+                } else {
+                  return dateA - dateB;
+                }
+              })
+              .map((item) => (
+                <tr key={item.id}>
+                  <td className="production_column">{item.number}</td>
+                  <td>{item.name}</td>
+                  <td>
+                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                  </td>
+                  <td>
+                    <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
+                      Подробнее
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="success" size="sm" onClick={() => handleDeleteClick(item.id)}>
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </div>
       <Pagination>{pages}</Pagination>
     </div>
   );

@@ -39,7 +39,7 @@ function Desinglist() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th>Номер проекта</th>
+              <th className="production_column">Номер проекта</th>
               <th>Название</th>
               <th>Дата договора</th>
               <th></th>
@@ -48,7 +48,7 @@ function Desinglist() {
           <tbody>
             {projects.map((item) => (
               <tr key={item.id}>
-                <td>{item.number}</td>
+                <td className="production_column">{item.number}</td>
                 <td>{item.name}</td>
                 <td>
                   <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>

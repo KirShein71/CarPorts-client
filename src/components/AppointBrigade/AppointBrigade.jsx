@@ -39,7 +39,7 @@ function AppointBrigade() {
         <Table bordered hover size="sm" className="mt-5">
           <thead>
             <tr>
-              <th>Номер проекта</th>
+              <th className="production_column">Номер проекта</th>
               <th>Название</th>
               <th></th>
             </tr>
@@ -49,7 +49,7 @@ function AppointBrigade() {
               .sort((a, b) => a.id - b.id)
               .map((item) => (
                 <tr key={item.id}>
-                  <td>{item.number}</td>
+                  <td className="production_column">{item.number}</td>
                   <td>{item.name}</td>
                   <td>
                     <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
