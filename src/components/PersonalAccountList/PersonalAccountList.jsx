@@ -14,6 +14,8 @@ function PersonalAccountList() {
   const [account, setAccount] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
+  const [fullscreen, setFullscreen] = React.useState(false);
+
   const { user } = React.useContext(AppContext);
   const imageRef = useRef(null);
 
@@ -70,6 +72,10 @@ function PersonalAccountList() {
         element.webkitRequestFullscreen();
       }
     }
+  };
+
+  const toggleFullscreen = () => {
+    setFullscreen(!fullscreen);
   };
 
   const formatPhoneNumber = (phoneNumber) => {
@@ -178,8 +184,8 @@ function PersonalAccountList() {
                           <img
                             src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
                             alt="foto__brigade"
-                            ref={imageRef}
-                            onClick={handleClickImage}
+                            className={fullscreen ? 'fullscreen' : ''}
+                            onClick={toggleFullscreen}
                           />
                         </div>
                       </div>
