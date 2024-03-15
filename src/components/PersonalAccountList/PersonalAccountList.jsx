@@ -66,7 +66,7 @@ function PersonalAccountList() {
         element.requestFullscreen();
       } else if (element.webkitRequestFullscreen) {
         // Используйте webkitRequestFullscreen для iOS
-        element.webkitRequestFullscreen();
+        element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
       }
     }
   };
