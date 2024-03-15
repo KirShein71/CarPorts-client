@@ -16,6 +16,7 @@ function PersonalAccountList() {
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const [pinchStartDistance, setPinchStartDistance] = React.useState(null);
+  const [isImageClicked, setIsImageClicked] = React.useState(false);
   const isIOS = () => {
     return /iPhone|iPad/.test(navigator.userAgent);
   };
@@ -69,16 +70,19 @@ function PersonalAccountList() {
     if (!document.fullscreenElement) {
       if (target.requestFullscreen) {
         target.requestFullscreen().catch((error) => console.log(error));
+        setIsImageClicked(true); // Устанавливаем флаг после клика
       }
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
+        setIsImageClicked(false); // Сбрасываем флаг при выходе из полноэкранного режима
       }
     }
   };
 
   const handleTouchStart = (e) => {
-    if (e.touches.length === 2) {
+    if (isImageClicked && e.touches.length === 2) {
+      // Проверяем флаг перед выполнением действий
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
@@ -87,7 +91,8 @@ function PersonalAccountList() {
   };
 
   const handleTouchMove = (e) => {
-    if (e.touches.length === 2 && pinchStartDistance !== null) {
+    if (isImageClicked && e.touches.length === 2 && pinchStartDistance !== null) {
+      // Проверяем флаг перед выполнением действий
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
       const currentDistance = Math.hypot(
@@ -105,7 +110,10 @@ function PersonalAccountList() {
   };
 
   const handleTouchEnd = () => {
-    setPinchStartDistance(null);
+    if (isImageClicked) {
+      // Проверяем флаг перед выполнением действий
+      setPinchStartDistance(null);
+    }
   };
 
   const toggleFullScreen = () => {
