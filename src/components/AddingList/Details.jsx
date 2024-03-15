@@ -19,12 +19,15 @@ function Details() {
   }, [change]);
 
   const handleDeleteClick = (id) => {
-    deleteDetail(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Деталь «${data.name}» будет удалена`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить деталь?');
+    if (confirmed) {
+      deleteDetail(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Деталь «${data.name}» будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleUpdateDetail = (id) => {

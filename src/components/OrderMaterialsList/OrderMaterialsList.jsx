@@ -64,13 +64,16 @@ function OrderMaterialsList() {
   }, [change]);
 
   const handleDeleteProjectMaterials = (id) => {
-    deleteProjectMaterials(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Строка будет удалена`);
-        console.log(id);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить материал?');
+    if (confirmed) {
+      deleteProjectMaterials(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Строка будет удалена`);
+          console.log(id);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handlePageClick = (page) => {

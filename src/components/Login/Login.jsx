@@ -43,6 +43,7 @@ const Login = observer(() => {
   const handleInputClick = () => {
     if (!clicked) {
       setClicked(true);
+      setPhone('8');
     }
   };
 
@@ -69,7 +70,7 @@ const Login = observer(() => {
               <input
                 className="phone__input"
                 name="phone"
-                value={clicked ? phone || 8 : ''}
+                value={clicked ? phone : ''}
                 onChange={handleInputPhone}
                 onClick={handleInputClick}
                 minLength="10"

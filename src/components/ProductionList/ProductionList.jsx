@@ -105,7 +105,7 @@ function ProductionList() {
       <Link to="/productionchange">
         <Button>Внести данные в проект</Button>
       </Link>
-      <Col className="mt-3" sm={2}>
+      <Col className="mt-3" sm={3}>
         <Form className="d-flex">
           <Form.Control
             type="search"

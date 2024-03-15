@@ -21,12 +21,15 @@ function Materials() {
   };
 
   const handleDeleteClick = (id) => {
-    deleteMaterial(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Материал «${data.name}» будет удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить материал?');
+    if (confirmed) {
+      deleteMaterial(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Материал «${data.name}» будет удален`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   return (

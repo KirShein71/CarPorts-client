@@ -11,12 +11,15 @@ function Admin() {
   const [change, setChange] = React.useState(true);
 
   const handleDeleteClick = (id) => {
-    deleteAccountEmployee(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Сотрудник «${data.name}» будет удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить сотрудника?');
+    if (confirmed) {
+      deleteAccountEmployee(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Сотрудник «${data.name}» будет удален`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   React.useEffect(() => {

@@ -22,12 +22,15 @@ function ClientAccountList() {
   };
 
   const handleDeleteClick = (id) => {
-    deleteUser(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Личный кабинет пользователя будет удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить личный кабинет?');
+    if (confirmed) {
+      deleteUser(id)
+        .then((data) => {
+          setChange(!change);
+          alert('Личный кабинет пользователя был удален');
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   if (fetching) {

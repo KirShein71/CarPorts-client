@@ -32,12 +32,15 @@ function ProjectList() {
   }, [change]);
 
   const handleDeleteClick = (id) => {
-    deleteProject(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Личный кабинет «${data.name}» будет удален`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить проект?');
+    if (confirmed) {
+      deleteProject(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Проект «${data.name}» был удален`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleSort = (field) => {

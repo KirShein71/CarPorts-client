@@ -47,15 +47,18 @@ function CreateInformatoinClientList() {
   };
 
   const handleDeleteImage = (id) => {
-    deleteUserImage(id)
-      .then((data) => {
-        setChange(!change);
-        // Удалить удаленное изображение из списка images
-        const updatedImages = userImages.filter((image) => image.id !== id);
-        setUserImages(updatedImages);
-        alert('Изображение удалено');
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить изображение?');
+    if (confirmed) {
+      deleteUserImage(id)
+        .then((data) => {
+          setChange(!change);
+          // Удалить удаленное изображение из списка images
+          const updatedImages = userImages.filter((image) => image.id !== id);
+          setUserImages(updatedImages);
+          alert('Изображение удалено');
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleDownloadFile = (fileUrl) => {
@@ -74,14 +77,17 @@ function CreateInformatoinClientList() {
   };
 
   const handleDeleteFile = (id) => {
-    deleteUserFile(id)
-      .then((data) => {
-        setChange(!change);
-        const updatedFiles = userFiles.filter((file) => file.id !== id);
-        setUserImages(updatedFiles);
-        alert('Файд удален');
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить файл?');
+    if (confirmed) {
+      deleteUserFile(id)
+        .then((data) => {
+          setChange(!change);
+          const updatedFiles = userFiles.filter((file) => file.id !== id);
+          setUserImages(updatedFiles);
+          alert('Файд удален');
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   if (!user) {

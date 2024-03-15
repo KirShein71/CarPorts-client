@@ -6,15 +6,17 @@ function ImageModal(props) {
   const { show, setShow, images, setImages, setChange, change } = props;
 
   const handleDeleteAntypical = (id) => {
-    deleteAntypical(id)
-      .then((data) => {
-        setChange(!change);
-        // Удалить удаленное изображение из списка images
-        const updatedImages = images.filter((image) => image.id !== id);
-        setImages(updatedImages);
-        alert('Изображение удалено');
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить изображение?');
+    if (confirmed) {
+      deleteAntypical(id)
+        .then((data) => {
+          setChange(!change);
+          const updatedImages = images.filter((image) => image.id !== id);
+          setImages(updatedImages);
+          alert('Изображение удалено');
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   return (

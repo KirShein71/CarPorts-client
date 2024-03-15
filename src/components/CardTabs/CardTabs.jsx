@@ -1,18 +1,11 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
-import { logout } from '../../http/userApi';
+
 import './CardTabs.styles.scss';
 
 function CardTabs() {
   const { user } = React.useContext(AppContext);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    user.logout();
-    navigate('/', { replace: true });
-  };
 
   return (
     <>
@@ -95,11 +88,6 @@ function CardTabs() {
           </div>
         </div>
       </Link>
-      <div className="cardtabs" onClick={handleLogout}>
-        <div className="cardtabs__content">
-          <h2 className="cardtabs__title">Выйти</h2>
-        </div>
-      </div>
     </>
   );
 }

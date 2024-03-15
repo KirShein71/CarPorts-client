@@ -16,12 +16,15 @@ function Brigade() {
   }, [change]);
 
   const handleDeleteClick = (id) => {
-    deleteBrigade(id)
-      .then((data) => {
-        setChange(!change);
-        alert(`Бригада «${data.name}» будет удалена`);
-      })
-      .catch((error) => alert(error.response.data.message));
+    const confirmed = window.confirm('Вы уверены, что хотите удалить бригаду?');
+    if (confirmed) {
+      deleteBrigade(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Бригада «${data.name}» будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleUpdateBrigade = (id) => {
