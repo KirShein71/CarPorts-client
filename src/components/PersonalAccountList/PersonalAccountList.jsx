@@ -15,9 +15,8 @@ function PersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
+  const isIOS = () => {
+    return /iPhone|iPad/.test(navigator.userAgent);
   };
 
   const { user } = React.useContext(AppContext);
@@ -78,9 +77,9 @@ function PersonalAccountList() {
     }
   };
 
-  //   const toggleFullscreen = () => {
-  //     setFullscreen(!fullscreen);
-  //   };
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
 
   const formatPhoneNumber = (phoneNumber) => {
     const cleaned = ('' + phoneNumber).replace(/\D/g, '');
@@ -184,14 +183,25 @@ function PersonalAccountList() {
                             {formatPhoneNumber(userData.brigade?.phone)}
                           </a>
                         </div>
-                        <div
-                          className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
-                          onClick={toggleFullScreen}>
-                          <img
-                            src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                            alt="foto__brigade"
-                          />
-                        </div>
+                        {isIOS() ? (
+                          <div
+                            className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
+                            onClick={toggleFullScreen}>
+                            <img
+                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
+                              alt="foto__brigade"
+                            />
+                          </div>
+                        ) : (
+                          <div className="brigade-image">
+                            <img
+                              ref={imageRef}
+                              onClick={handleClickImage}
+                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
+                              alt="photos of works"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
