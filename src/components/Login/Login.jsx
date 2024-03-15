@@ -48,7 +48,9 @@ const Login = observer(() => {
   };
 
   const handleInputPhone = (event) => {
-    setPhone(event.target.value);
+    if (event.target.value.length <= 11) {
+      setPhone(event.target.value);
+    }
   };
 
   const handleInputPassword = (event) => {
@@ -73,8 +75,6 @@ const Login = observer(() => {
                 value={clicked ? phone : ''}
                 onChange={handleInputPhone}
                 onClick={handleInputClick}
-                minLength="10"
-                maxLength="11"
                 placeholder="Введите номер телефона"
               />
             </div>
