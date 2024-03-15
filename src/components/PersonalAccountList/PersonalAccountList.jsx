@@ -54,9 +54,9 @@ function PersonalAccountList() {
 
       if (element.requestFullscreen) {
         element.requestFullscreen();
-      } else if (element.webkitEnterFullscreen) {
-        // Используйте webkitEnterFullscreen для iOS
-        element.webkitEnterFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        // Используйте webkitRequestFullscreen для iOS
+        element.webkitRequestFullscreen();
       }
     }
   };
