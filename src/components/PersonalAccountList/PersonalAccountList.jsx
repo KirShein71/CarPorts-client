@@ -64,15 +64,14 @@ function PersonalAccountList() {
       .catch((error) => console.error('Ошибка при скачивании файла:', error));
   };
 
-  const handleClickImage = () => {
-    if (imageRef.current) {
-      const element = imageRef.current;
-
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) {
-        // Используйте webkitRequestFullscreen для iOS
-        element.webkitRequestFullscreen();
+  const handleClickImage = ({ target }) => {
+    if (!document.fullscreenElement) {
+      if (target.requestFullscreen) {
+        target.requestFullscreen().catch((error) => console.log(error));
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
       }
     }
   };
