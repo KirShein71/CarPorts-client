@@ -260,10 +260,12 @@
 
         .brigade {
             margin-top: 25px;
+           
 
             &__content {
                 display: flex;
                 justify-content: left;
+                
             }
 
             &__title {
@@ -292,6 +294,7 @@
                 font-size: 19px;
                 font-weight: 400;
                 color: rgb(193 15 15);
+                margin-bottom: 25px;
                 @media (max-width: 480px) {
                     font-size: 17px;
                   
@@ -302,7 +305,7 @@
             }
 
             .image-container {
-                margin-top: 15px;
+         
                 cursor: pointer;
                 img {
                     width: 100%; 
@@ -324,11 +327,10 @@
               }
               
               .full-screen img {
-                width: auto; 
-                height: auto;
+                width: 100%; 
+               
                 max-width: 90vw;
-                max-height: 90vh;
-                border-radius: 10px;
+               
               }
         }
 
