@@ -15,11 +15,8 @@ function PersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-  const [pinchStartDistance, setPinchStartDistance] = React.useState(null);
-  const [isImageClicked, setIsImageClicked] = React.useState(false);
-  const isIOS = () => {
-    return /iPhone|iPad/.test(navigator.userAgent);
-  };
+
+  const isMobileScreen = window.innerWidth < 991;
 
   const { user } = React.useContext(AppContext);
   const imageRef = useRef(null);
@@ -70,49 +67,11 @@ function PersonalAccountList() {
     if (!document.fullscreenElement) {
       if (target.requestFullscreen) {
         target.requestFullscreen().catch((error) => console.log(error));
-        setIsImageClicked(true); // Устанавливаем флаг после клика
       }
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-        setIsImageClicked(false); // Сбрасываем флаг при выходе из полноэкранного режима
       }
-    }
-  };
-
-  const handleTouchStart = (e) => {
-    if (isImageClicked && e.touches.length === 2) {
-      // Проверяем флаг перед выполнением действий
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-      setPinchStartDistance(distance);
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (isImageClicked && e.touches.length === 2 && pinchStartDistance !== null) {
-      // Проверяем флаг перед выполнением действий
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const currentDistance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY,
-      );
-
-      // Calculate zoom level based on pinch distance change
-      const zoomLevel = currentDistance / pinchStartDistance;
-
-      // Apply zoom to the image
-      const image = imageRef.current;
-      image.style.transform = `scale(${zoomLevel})`;
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (isImageClicked) {
-      // Проверяем флаг перед выполнением действий
-      setPinchStartDistance(null);
     }
   };
 
@@ -222,7 +181,7 @@ function PersonalAccountList() {
                             {formatPhoneNumber(userData.brigade?.phone)}
                           </a>
                         </div>
-                        {isIOS() ? (
+                        {isMobileScreen ? (
                           <div
                             className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
                             onClick={toggleFullScreen}>
@@ -235,9 +194,6 @@ function PersonalAccountList() {
                           <div className="brigade-image">
                             <img
                               ref={imageRef}
-                              onTouchStart={handleTouchStart}
-                              onTouchMove={handleTouchMove}
-                              onTouchEnd={handleTouchEnd}
                               onClick={handleClickImage}
                               src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
                               alt="foto__brigade"
