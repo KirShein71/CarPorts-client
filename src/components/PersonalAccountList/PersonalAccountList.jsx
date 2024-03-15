@@ -273,7 +273,7 @@ function PersonalAccountList() {
                   {activeTab === 'file' && (
                     <div className="file">
                       <div className="file__content">
-                        {userData.userfiles.map((file) => (
+                        {userData.userfiles?.map((file) => (
                           <div key={file.id}>
                             <div
                               className="file__item"
