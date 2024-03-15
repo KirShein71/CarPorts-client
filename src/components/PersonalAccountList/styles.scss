@@ -319,7 +319,10 @@
                 cursor: pointer;
                 img {
                     width: 100%; 
+                    width: auto; 
                     height: auto;
+                    max-width: 90vw;
+                    max-height: 90vh;
                     
                 }
               }
@@ -336,13 +339,7 @@
                 align-items: center;
               }
               
-              .full-screen img {
-                width: auto; 
-                height: auto;
-                max-width: 90vw;
-                max-height: 90vh;
-               
-              }
+              
         }
 
         // project
