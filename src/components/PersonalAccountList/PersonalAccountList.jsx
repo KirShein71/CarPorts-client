@@ -50,10 +50,13 @@ function PersonalAccountList() {
 
   const handleClickImage = () => {
     if (imageRef.current) {
-      if (imageRef.current.requestFullscreen) {
-        imageRef.current.requestFullscreen();
-      } else if (imageRef.current.webkitRequestFullscreen) {
-        imageRef.current.webkitRequestFullscreen();
+      const element = imageRef.current;
+
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitEnterFullscreen) {
+        // Используйте webkitEnterFullscreen для iOS
+        element.webkitEnterFullscreen();
       }
     }
   };
