@@ -165,85 +165,74 @@ function PlanningList() {
             </tr>
           </thead>
           <tbody>
-            {projectsToShow
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
+            {projectsToShow.map((item) => (
+              <tr key={item.id}>
+                <td className="production_column">{item.number}</td>
+                <td>{item.name}</td>
+                <td>{item.note}</td>
+                <td>
+                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                </td>
+                <td>{item.design_period}</td>
+                <td>
+                  {moment(item.agreement_date, 'YYYY/MM/DD')
+                    .businessAdd(item.design_period, 'days')
+                    .format('DD.MM.YYYY')}
+                </td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleUpdateProjectDelivery(item.id)}>
+                  {item.project_delivery ? (
+                    <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600, textAlign: 'center' }}>
+                      Введите дату сдачи проекта
+                    </span>
+                  )}
+                </td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleCreateDateInspection(item.id)}>
+                  {item.date_inspection ? (
+                    <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
+                      {item.date_inspection}
+                    </Moment>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600 }}>Введите дату проверки</span>
+                  )}
+                </td>
+                <td>
+                  {(() => {
+                    const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                      item.design_period,
+                      'days',
+                    );
 
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
-              })
-              .map((item) => (
-                <tr key={item.id}>
-                  <td className="production_column">{item.number}</td>
-                  <td>{item.name}</td>
-                  <td>{item.note}</td>
-                  <td>
-                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                  </td>
-                  <td>{item.design_period}</td>
-                  <td>
-                    {moment(item.agreement_date, 'YYYY/MM/DD')
-                      .businessAdd(item.design_period, 'days')
-                      .format('DD.MM.YYYY')}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleUpdateProjectDelivery(item.id)}>
-                    {item.project_delivery ? (
-                      <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
-                    ) : (
-                      <span style={{ color: 'red', fontWeight: 600, textAlign: 'center' }}>
-                        Введите дату сдачи проекта
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleCreateDateInspection(item.id)}>
-                    {item.date_inspection ? (
-                      <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
-                        {item.date_inspection}
-                      </Moment>
-                    ) : (
-                      <span style={{ color: 'red', fontWeight: 600 }}>Введите дату проверки</span>
-                    )}
-                  </td>
-                  <td>
-                    {(() => {
-                      const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
-                        item.design_period,
-                        'days',
-                      );
+                    function subtractDaysUntilZero(targetDate) {
+                      const today = moment();
+                      let daysLeft = 0;
 
-                      function subtractDaysUntilZero(targetDate) {
-                        const today = moment();
-                        let daysLeft = 0;
-
-                        while (targetDate.diff(today, 'days') > 0) {
-                          daysLeft++;
-                          targetDate.subtract(1, 'day');
-                        }
-
-                        return daysLeft;
+                      while (targetDate.diff(today, 'days') > 0) {
+                        daysLeft++;
+                        targetDate.subtract(1, 'day');
                       }
 
-                      return subtractDaysUntilZero(targetDate);
-                    })()}
-                  </td>
-                  <td>{item.designer}</td>
-                  <td onClick={() => handleCreateInspectionDesigner(item.id)}>
-                    {item.inspection_designer ? (
-                      <div>{item.inspection_designer}</div>
-                    ) : (
-                      <span style={{ color: 'red', fontWeight: 600 }}>Введите проверяющего</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                      return daysLeft;
+                    }
+
+                    return subtractDaysUntilZero(targetDate);
+                  })()}
+                </td>
+                <td>{item.designer}</td>
+                <td onClick={() => handleCreateInspectionDesigner(item.id)}>
+                  {item.inspection_designer ? (
+                    <div>{item.inspection_designer}</div>
+                  ) : (
+                    <span style={{ color: 'red', fontWeight: 600 }}>Введите проверяющего</span>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
         <Pagination>{pages}</Pagination>

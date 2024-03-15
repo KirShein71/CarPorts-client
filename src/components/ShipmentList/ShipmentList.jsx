@@ -145,7 +145,11 @@ function ShipmentList() {
             <tr>
               <th className="shipment_column">Номер проекта</th>
               <th>Название проекта</th>
-              <th style={{ cursor: 'pointer' }} onClick={() => handleSort('shipment_date')}>
+              <th
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  handleSort('shipment_date');
+                }}>
                 Отметка времени{' '}
                 <img styles={{ marginLeft: '5px' }} src="./sort.png" alt="icon_sort" />
               </th>
@@ -161,16 +165,6 @@ function ShipmentList() {
               .filter((shipment) =>
                 shipment.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
               )
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
-
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
-              })
               .map((shipment) => (
                 <tr key={shipment.id}>
                   <td className="shipment_column">
