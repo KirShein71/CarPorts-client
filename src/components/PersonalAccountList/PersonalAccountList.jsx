@@ -293,17 +293,19 @@ function PersonalAccountList() {
                         {account.userimages.map((userImage) => (
                           <div key={userImage.id}>
                             {isMobileScreen ? (
-                              <div
-                                className={`image-card ${isFullScreen ? 'full-card' : ''}`}
-                                onClick={toggleFullScreen}>
-                                <img
-                                  ref={imageRef}
-                                  onClick={handleClickImage}
-                                  src={process.env.REACT_APP_IMG_URL + userImage.image}
-                                  alt="photos of works"
-                                />
+                              <>
+                                <div
+                                  className={`image-card ${isFullScreen ? 'full-card' : ''}`}
+                                  onClick={toggleFullScreen}>
+                                  <img
+                                    ref={imageRef}
+                                    onClick={handleClickImage}
+                                    src={process.env.REACT_APP_IMG_URL + userImage.image}
+                                    alt="photos of works"
+                                  />
+                                </div>
                                 <div className="image__date">{userImage.date}</div>
-                              </div>
+                              </>
                             ) : (
                               <div className="image__card">
                                 <img
@@ -317,25 +319,6 @@ function PersonalAccountList() {
                             )}
                           </div>
                         ))}
-                        {isMobileScreen ? (
-                          <div
-                            className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
-                            onClick={toggleFullScreen}>
-                            <img
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        ) : (
-                          <div className="brigade-image">
-                            <img
-                              ref={imageRef}
-                              onClick={handleClickImage}
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}
