@@ -89,7 +89,7 @@ const CreateAntypical = (props) => {
           {selectedImages.length > 0 && (
             <>
               <Button className="me-3" onClick={handleSaveImages}>
-                Сохранить все детали
+                Сохранить все изображения
               </Button>
               <Button onClick={handleRemoveAllImages}>Удалить все</Button>
             </>

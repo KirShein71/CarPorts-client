@@ -190,7 +190,7 @@ function ProductionList() {
                   {detail.antypical.length > 0 ? (
                     <span style={{ color: 'red', cursor: 'pointer' }}>Файлы</span>
                   ) : (
-                    <span style={{ cursor: 'pointer' }}>Добавить файлы</span>
+                    <span style={{ cursor: 'pointer', color: 'red' }}>Добавить файлы</span>
                   )}
                 </td>
               </tr>
