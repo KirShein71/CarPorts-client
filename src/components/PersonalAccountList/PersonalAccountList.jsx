@@ -15,6 +15,7 @@ function PersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
+  const [pinchStartDistance, setPinchStartDistance] = React.useState(null);
   const isIOS = () => {
     return /iPhone|iPad/.test(navigator.userAgent);
   };
@@ -74,6 +75,37 @@ function PersonalAccountList() {
         document.exitFullscreen();
       }
     }
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+      setPinchStartDistance(distance);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2 && pinchStartDistance !== null) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY,
+      );
+
+      // Calculate zoom level based on pinch distance change
+      const zoomLevel = currentDistance / pinchStartDistance;
+
+      // Apply zoom to the image
+      const image = imageRef.current;
+      image.style.transform = `scale(${zoomLevel})`;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setPinchStartDistance(null);
   };
 
   const toggleFullScreen = () => {
@@ -195,9 +227,12 @@ function PersonalAccountList() {
                           <div className="brigade-image">
                             <img
                               ref={imageRef}
+                              onTouchStart={handleTouchStart}
+                              onTouchMove={handleTouchMove}
+                              onTouchEnd={handleTouchEnd}
                               onClick={handleClickImage}
                               src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="photos of works"
+                              alt="foto__brigade"
                             />
                           </div>
                         )}

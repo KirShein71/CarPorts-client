@@ -310,6 +310,7 @@
                     height: 90%;
                     border-radius: 10px;
                     cursor: pointer;
+                    transition: transform 0.3s ease;
                 }
             }
 
@@ -340,8 +341,6 @@
                 height: auto;
                 max-width: 90vw;
                 max-height: 90vh;
-                
-                
                
               }
         }
