@@ -319,11 +319,8 @@
                 cursor: pointer;
                 img {
                     width: 100%; 
-                    width: auto; 
                     height: auto;
-                    max-width: 90vw;
-                    max-height: 90vh;
-                    
+                    border-radius: 10px;
                 }
               }
               
@@ -337,9 +334,13 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                img {
+                    width: auto; 
+                    height: auto;
+                    max-width: 90vw;
+                    max-height: 90vh;
+                  }
               }
-              
-              
         }
 
         // project
