@@ -164,6 +164,9 @@
                 @media (max-width: 450px) {
                     padding: 5px 12px;
                 }
+                @media (max-width: 400px) {
+                    font-size: 13px;
+                }
           
                 &:hover {
                   background-color: darken(#2a39e2, 2%);
