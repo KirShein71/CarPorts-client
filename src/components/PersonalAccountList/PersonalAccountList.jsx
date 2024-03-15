@@ -1,5 +1,5 @@
 import React from 'react';
-import { Element } from 'react';
+
 import { getOneAccount, logout } from '../../http/userApi';
 import { Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -67,7 +67,7 @@ function PersonalAccountList() {
         element.requestFullscreen();
       } else if (element.webkitRequestFullscreen) {
         // Используйте webkitRequestFullscreen для iOS
-        element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        element.webkitRequestFullscreen();
       }
     }
   };
