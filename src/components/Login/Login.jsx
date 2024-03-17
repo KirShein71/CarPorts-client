@@ -41,9 +41,9 @@ const Login = observer(() => {
   };
 
   const handleInputClick = () => {
-    if (!clicked) {
-      setClicked(true);
-      setPhone('8');
+    if (clicked) {
+      const hint = document.querySelector('.show-hint::before');
+      hint.style.display = 'none';
     }
   };
 
@@ -70,7 +70,7 @@ const Login = observer(() => {
           <form onSubmit={handleSubmit} ref={form}>
             <div>
               <input
-                className="phone__input"
+                className="phone__input show-hint"
                 name="phone"
                 value={clicked ? phone : ''}
                 onChange={handleInputPhone}

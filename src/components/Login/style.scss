@@ -57,6 +57,33 @@
         }
     }
 
+    @media only screen and (min-width: 1024px) {
+        .show-hint::-webkit-input-placeholder {
+          color: transparent;
+        }
+      
+        .show-hint:focus::-webkit-input-placeholder {
+          color: #000; /* Цвет текста подсказки */
+        }
+      
+        .show-hint:focus::placeholder {
+          color: transparent;
+        }
+      
+        .show-hint::before {
+          content: 'Кликни два раза'; /* Текст подсказки */
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          pointer-events: none; /* Позволяет кликать сквозь подсказку */
+        }
+      }
+
     &__label {
        margin-bottom: 15px;
         color: #ffff;
