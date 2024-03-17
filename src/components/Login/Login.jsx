@@ -41,7 +41,7 @@ const Login = observer(() => {
   };
 
   const handleInputClick = () => {
-    if (!clicked) {
+    if (clicked) {
       setClicked(true);
       setPhone('8');
     }
