@@ -29,3 +29,8 @@ export const getSumOneShipmentDetail = async () => {
     const {data} = await guestInstance.get('shipmentdetails/getSumOneShipmentDetail')
     return data
 }
+
+export const deleteShipmentDetails = async (projectId) => {
+    const {data} = await guestInstance.delete(`shipmentdetails/delete/${projectId}`)
+    return data
+}

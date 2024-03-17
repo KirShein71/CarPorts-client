@@ -228,7 +228,9 @@ function PlanningList() {
                   {item.inspection_designer ? (
                     <div>{item.inspection_designer}</div>
                   ) : (
-                    <span style={{ color: 'red', fontWeight: 600 }}>Введите проверяющего</span>
+                    <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                      Введите проверяющего
+                    </span>
                   )}
                 </td>
               </tr>

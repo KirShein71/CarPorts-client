@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Button, Table, Spinner, Pagination } from 'react-bootstrap';
+import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
 import { fetchAllDetails } from '../../http/detailsApi';
-import { fetchAllStockDetails } from '../../http/stockDetailsApi';
+import { fetchAllStockDetails, deleteStockDetails } from '../../http/stockDetailsApi';
 import CreateStockDetails from './modals/createStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
@@ -22,6 +22,7 @@ function WeldersList() {
   const [fetching, setFetching] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('stock_date');
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
   const itemsPerPage = 20;
@@ -50,6 +51,22 @@ function WeldersList() {
     setDetailId(detailId);
     setStockDate(stockDate);
     setCreateOneStockDetailModal(true);
+  };
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleDeleteStockDetails = (stock_date) => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить?');
+    if (confirmed) {
+      deleteStockDetails(stock_date)
+        .then((data) => {
+          setChange(!change);
+          alert(`Строка будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleSort = (field) => {
@@ -105,6 +122,18 @@ function WeldersList() {
     <div className="welderslist">
       <Header title={'Произведено'} />
       <Button onClick={() => setCreateDetailsModal(true)}>Внести детали</Button>
+      <Col className="mt-3" sm={2}>
+        <Form className="d-flex">
+          <Form.Control
+            type="search"
+            placeholder="Поиск по дате"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="me-2"
+            aria-label="Search"
+          />
+        </Form>
+      </Col>
       <CreateStockDetails
         show={createDetailsModal}
         setShow={setCreateDetailsModal}
@@ -136,19 +165,16 @@ function WeldersList() {
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {stockDetailsToShow
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
-
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
+              .filter((stock) => {
+                const searchValue = searchQuery.toLowerCase();
+                const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
+                const formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // Преобразуем дату в формат "dd.mm.yyyy"
+                return formattedDate.includes(searchValue); // Проверяем, содержит ли преобразованная дата искомое значение
               })
               .map((stock) => (
                 <tr>
@@ -162,6 +188,7 @@ function WeldersList() {
                       const quantity = detail ? detail.stock_quantity : '';
                       return (
                         <td
+                          style={{ cursor: 'pointer' }}
                           onClick={() =>
                             quantity
                               ? handleUpdateDetailClick(detail.id)
@@ -171,6 +198,14 @@ function WeldersList() {
                         </td>
                       );
                     })}
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleDeleteStockDetails(stock.stock_date)}>
+                      Удалить
+                    </Button>
+                  </td>
                 </tr>
               ))}
           </tbody>

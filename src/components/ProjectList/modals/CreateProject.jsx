@@ -48,6 +48,14 @@ const CreateProject = (props) => {
     setValid(isValid(data));
   };
 
+  const handleInputNumberChange = (event) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({ ...value, [event.target.name]: event.target.value });
+      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -152,7 +160,7 @@ const CreateProject = (props) => {
               <Form.Control
                 name="design_period"
                 value={value.design_period}
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) => handleInputNumberChange(e)}
                 isValid={valid.design_period === true}
                 isInvalid={valid.design_period === false}
                 placeholder="Срок проектирования"
@@ -162,7 +170,7 @@ const CreateProject = (props) => {
               <Form.Control
                 name="expiration_date"
                 value={value.expiration_date}
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) => handleInputNumberChange(e)}
                 isValid={valid.expiration_date === true}
                 isInvalid={valid.expiration_date === false}
                 placeholder="Срок производства"
@@ -172,7 +180,7 @@ const CreateProject = (props) => {
               <Form.Control
                 name="installation_period"
                 value={value.installation_period}
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) => handleInputNumberChange(e)}
                 isValid={valid.installation_period === true}
                 isInvalid={valid.installation_period === false}
                 placeholder="Срок монтажа"

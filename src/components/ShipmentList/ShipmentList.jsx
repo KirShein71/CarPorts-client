@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { fetchAllShipmentDetails } from '../../http/shipmentDetailsApi';
+import { fetchAllShipmentDetails, deleteShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
@@ -20,7 +20,7 @@ function ShipmentList() {
   const [project, setProject] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
-  const [sortOrder, setSortOrder] = React.useState('desc');
+  const [sortOrder, setSortOrder] = React.useState('asc');
   const [sortField, setSortField] = React.useState('shipment_date');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -57,6 +57,18 @@ function ShipmentList() {
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
     setCurrentPage(1);
+  };
+
+  const handleDeleteShipmentDetails = (projectId) => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить?');
+    if (confirmed) {
+      deleteShipmentDetails(projectId)
+        .then((data) => {
+          setChange(!change);
+          alert(`Строка будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const handleSort = (field) => {
@@ -158,6 +170,7 @@ function ShipmentList() {
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -172,9 +185,7 @@ function ShipmentList() {
                   </td>
                   <td>{shipment.project ? shipment.project.name : ''}</td>
                   <td>
-                    <Moment format="DD.MM.YYYY">
-                      {shipment.project ? shipment.project.shipment_date : ''}
-                    </Moment>
+                    <Moment format="DD.MM.YYYY">{shipment.shipment_date}</Moment>
                   </td>
                   {nameDetails
                     .sort((a, b) => a.id - b.id)
@@ -183,6 +194,7 @@ function ShipmentList() {
                       const quantity = detail ? detail.shipment_quantity : '';
                       return (
                         <td
+                          style={{ cursor: 'pointer' }}
                           onClick={() =>
                             quantity
                               ? handleUpdateShipmentDetailClick(detail.id)
@@ -196,6 +208,14 @@ function ShipmentList() {
                         </td>
                       );
                     })}
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
+                      Удалить
+                    </Button>
+                  </td>
                 </tr>
               ))}
           </tbody>

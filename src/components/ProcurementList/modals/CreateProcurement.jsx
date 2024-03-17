@@ -42,6 +42,14 @@ const CreateProcurement = (props) => {
     setValid(isValid(data));
   };
 
+  const handleInputNumberChange = (event) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({ ...value, [event.target.name]: event.target.value });
+      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
+    }
+  };
+
   const handleAddMaterial = () => {
     if (value.material) {
       const newDetail = {
@@ -107,7 +115,7 @@ const CreateProcurement = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="xl "
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
@@ -168,7 +176,7 @@ const CreateProcurement = (props) => {
               <Form.Control
                 name="expirationMaterial_date"
                 value={value.expirationMaterial_date}
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) => handleInputNumberChange(e)}
                 placeholder="Срок производства"
                 className="mb-3"
               />

@@ -23,9 +23,11 @@ const CreateOneProjectDetail = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
 
   const handleInputChange = (event) => {
-    const data = { ...value, [event.target.name]: event.target.value };
-    setValue(data);
-    setValid(isValid(data));
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({ ...value, [event.target.name]: event.target.value });
+      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
+    }
   };
 
   const handleSaveDetail = (event) => {
@@ -53,7 +55,7 @@ const CreateOneProjectDetail = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="sm"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       className="modal__detail">

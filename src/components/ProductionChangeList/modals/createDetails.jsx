@@ -37,9 +37,11 @@ const CreateDetails = (props) => {
   }, []);
 
   const handleInputChange = (event) => {
-    const data = { ...value, [event.target.name]: event.target.value };
-    setValue(data);
-    setValid(isValid(data));
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({ ...value, [event.target.name]: event.target.value });
+      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
+    }
   };
 
   const handleAddDetail = () => {
@@ -146,10 +148,10 @@ const CreateDetails = (props) => {
             <div key={index}>
               <Row className="mb-3">
                 <Col>
-                  <Form.Control disabled value={detail.detailName} className="mb-3" />
+                  <Form.Control disabled value={detail.detailName} />
                 </Col>
                 <Col>
-                  <Form.Control disabled value={detail.quantity} className="mb-3" />
+                  <Form.Control disabled value={detail.quantity} />
                 </Col>
                 <Col>
                   <Button variant="danger" onClick={() => handleRemoveDetail(index)}>
@@ -164,9 +166,7 @@ const CreateDetails = (props) => {
               <Button className="me-3" onClick={handleSaveDetails}>
                 Сохранить все детали
               </Button>
-              <Button className="mt-3" onClick={handleRemoveAllDetails}>
-                Удалить все
-              </Button>
+              <Button onClick={handleRemoveAllDetails}>Удалить все</Button>
             </>
           )}
         </Form>

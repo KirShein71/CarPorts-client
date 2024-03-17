@@ -50,7 +50,8 @@ const Login = observer(() => {
   };
 
   const handleInputPhone = (event) => {
-    if (event.target.value.length <= 11) {
+    const regex = /^[0-9]*$/;
+    if (event.target.value.length <= 11 && regex.test(event.target.value)) {
       setPhone(event.target.value);
     }
   };

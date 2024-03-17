@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { fetchAllProjectDetails } from '../../http/projectDetailsApi';
+import { fetchAllProjectDetails, deleteProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateProjectDetails from './modal/UpdateProjectDetails';
 import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
@@ -71,6 +71,18 @@ function ProductionList() {
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
     setCurrentPage(1);
+  };
+
+  const handleDeleteProjectDetails = (projectId) => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить?');
+    if (confirmed) {
+      deleteProjectDetails(projectId)
+        .then((data) => {
+          setChange(!change);
+          alert(`Строка будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -156,6 +168,7 @@ function ProductionList() {
                   <th key={part.id}>{part.name}</th>
                 ))}
               <th>Нетипичные детали</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -170,6 +183,7 @@ function ProductionList() {
                     const quantity = detailProject ? detailProject.quantity : '';
                     return (
                       <td
+                        style={{ cursor: 'pointer' }}
                         onClick={() =>
                           quantity
                             ? handleUpdateProjectDetailClick(detailProject.id)
@@ -192,6 +206,14 @@ function ProductionList() {
                   ) : (
                     <span style={{ cursor: 'pointer', color: 'red' }}>Добавить файлы</span>
                   )}
+                </td>
+                <td>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => handleDeleteProjectDetails(detail.projectId)}>
+                    Удалить
+                  </Button>
                 </td>
               </tr>
             ))}

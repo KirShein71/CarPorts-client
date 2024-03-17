@@ -176,7 +176,7 @@ function ManufactureList() {
                             ? 0
                             : produce.props.find((el) => el.detailId === part.id).produceDifference
                           : produce.props.find((el) => el.detailId === part.id).projectSum
-                        : ''}
+                        : 0}
                     </td>
                   ))}
                 <td></td>

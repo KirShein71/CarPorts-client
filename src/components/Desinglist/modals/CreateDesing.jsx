@@ -84,7 +84,7 @@ const CreateDesing = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="lg"
+      size="md"
       style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       aria-labelledby="contained-modal-title-vcenter"
       centered>

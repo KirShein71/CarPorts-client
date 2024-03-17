@@ -24,3 +24,8 @@ export const updateProjectDetails = async (id, projectdetails) => {
     const {data} = await authInstance.put(`projectdetails/update/${id}`, projectdetails)
     return data
 }
+
+export const deleteProjectDetails = async (projectId) => {
+    const {data} = await guestInstance.delete(`projectdetails/delete/${projectId}`)
+    return data
+}
