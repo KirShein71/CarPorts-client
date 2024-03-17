@@ -47,6 +47,7 @@ function ShipmentChangeList() {
               <th className="production_column">Номер проекта</th>
               <th>Название</th>
               <th>Дата договора</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
