@@ -65,9 +65,15 @@ function ShipmentList() {
       deleteShipmentDetails(projectId)
         .then((data) => {
           setChange(!change);
-          alert(`Строка будет удалена`);
+          alert('Строка будет удалена');
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('строка удалена');
+          }
+        });
     }
   };
 
