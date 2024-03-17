@@ -10,7 +10,7 @@ const Login = observer(() => {
   const { user } = React.useContext(AppContext);
   const navigate = useNavigate();
   const form = React.useRef();
-  const [clicked, setClicked] = React.useState(true);
+  const [clicked, setClicked] = React.useState(false);
   const [phone, setPhone] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
@@ -41,8 +41,10 @@ const Login = observer(() => {
   };
 
   const handleInputClick = () => {
-    if (clicked) {
+    if (!clicked) {
       setClicked(true);
+      setPhone('8');
+    } else {
       setPhone('8');
     }
   };
