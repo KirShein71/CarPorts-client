@@ -44,8 +44,6 @@ const Login = observer(() => {
     if (!clicked) {
       setClicked(true);
       setPhone('8');
-    } else {
-      setPhone('8');
     }
   };
 
