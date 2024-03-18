@@ -83,7 +83,7 @@ const CreateFile = (props) => {
                 name="file"
                 type="file"
                 onChange={(e) => handleFileChange(e)}
-                placeholder="Файл"
+                placeholder="Файл (не более 1MB)..."
               />
             </Col>
           </Row>

@@ -83,7 +83,7 @@ const CreateImage = (props) => {
                 name="image"
                 type="file"
                 onChange={(e) => handleImageChange(e)}
-                placeholder="Фото товара..."
+                placeholder="Фото товара (не более 1MB)..."
               />
             </Col>
           </Row>
