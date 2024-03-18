@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../Header/Header';
 import CreateProject from './modals/CreateProject';
+import UpdateNameProject from './modals/UpdateNameProject';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row, Pagination } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -8,8 +9,10 @@ import Moment from 'react-moment';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
+  const [project, setProject] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [createShow, setCreateShow] = React.useState(false);
+  const [updateNameModal, setUpdateNameModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
@@ -41,6 +44,11 @@ function ProjectList() {
         })
         .catch((error) => alert(error.response.data.message));
     }
+  };
+
+  const hadleUpdateNameProject = (id) => {
+    setProject(id);
+    setUpdateNameModal(true);
   };
 
   const handleSort = (field) => {
@@ -99,6 +107,12 @@ function ProjectList() {
     <div className="projectlist">
       <Header title={'Проекты '} />
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
+      <UpdateNameProject
+        show={updateNameModal}
+        setShow={setUpdateNameModal}
+        setChange={setChange}
+        id={project}
+      />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">
           <Button className="me-3 my-2" onClick={() => setCreateShow(true)}>
@@ -147,7 +161,7 @@ function ProjectList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td className="production_column">{item.number}</td>
-                  <td>{item.name}</td>
+                  <td onClick={() => hadleUpdateNameProject(item.id)}>{item.name}</td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>

@@ -3,7 +3,7 @@ import { getAllWithNoDesing } from '../../http/projectApi';
 import { Spinner, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CreateDesing from './modals/CreateDesing';
-import Moment from 'react-moment';
+import moment from 'moment-business-days';
 
 function Desinglist() {
   const [projects, setProjects] = React.useState([]);
@@ -41,7 +41,7 @@ function Desinglist() {
             <tr>
               <th className="production_column">Номер проекта</th>
               <th>Название</th>
-              <th>Дата договора</th>
+              <th>Дедлайн проектирования</th>
               <th></th>
             </tr>
           </thead>
@@ -51,7 +51,9 @@ function Desinglist() {
                 <td className="production_column">{item.number}</td>
                 <td>{item.name}</td>
                 <td>
-                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                  {moment(item.agreement_date, 'YYYY/MM/DD')
+                    .businessAdd(item.design_period, 'days')
+                    .format('DD.MM.YYYY')}
                 </td>
                 <td>
                   <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>

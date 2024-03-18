@@ -158,7 +158,7 @@ const CreateProcurement = (props) => {
                 </>
               ) : (
                 <Form.Control
-                  name="design_start"
+                  name="date_payment"
                   value={value.date_payment}
                   onChange={(e) => handleInputChange(e)}
                   isValid={valid.date_payment === true}
