@@ -161,9 +161,9 @@ function ManufactureList() {
               </tr>
             ))}
             {produceDetail.map((produce) => (
-              <tr key={produce.id}>
+              <tr key={produce.id} className="highlighted-row">
                 <td></td>
-                <td className="manufacture_column">К производству</td>
+                <td className="manufacture_column highlighted-row">К производству</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (

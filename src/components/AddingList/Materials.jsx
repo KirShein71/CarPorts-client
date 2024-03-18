@@ -34,7 +34,7 @@ function Materials() {
 
   return (
     <div className="materials">
-      <h2 className="materials__title">Матариалы</h2>
+      <h2 className="materials__title">Материалы</h2>
       <CreateMaterial show={materialModal} setShow={setMaterialModal} setChange={setChange} />
       <UpdateMaterial
         show={materialUpdateModal}

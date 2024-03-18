@@ -69,7 +69,7 @@ const CreateEmployee = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Ввидите данные сотрудника</Modal.Title>
+        <Modal.Title>Введите данные сотрудника</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form ref={form} noValidate onSubmit={handleSubmit}>

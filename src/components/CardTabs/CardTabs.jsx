@@ -19,7 +19,7 @@ function CardTabs() {
       <Link to="/production">
         <div className="cardtabs">
           <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Производство</h2>
+            <h2 className="cardtabs__title">Заказ на производство</h2>
           </div>
         </div>
       </Link>
@@ -47,7 +47,7 @@ function CardTabs() {
       <Link to="/welders">
         <div className="cardtabs">
           <div className="cardtabs__content">
-            <h2 className="cardtabs__title">Сварщики</h2>
+            <h2 className="cardtabs__title">Произведено</h2>
           </div>
         </div>
       </Link>

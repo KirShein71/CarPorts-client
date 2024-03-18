@@ -182,7 +182,6 @@ function OrderMaterialsList() {
                     <th>Дедлайн производства</th>
                     <th>Счёт</th>
                     <th>Дата оплаты</th>
-                    <th>Сумма</th>
                     <th>Дата готовности</th>
                     <th>Даты отгрузки</th>
                     <th></th>
@@ -219,7 +218,6 @@ function OrderMaterialsList() {
                             </span>
                           )}
                         </td>
-                        <td></td>
                         <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
                           {prop.ready_date ? (
                             <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>

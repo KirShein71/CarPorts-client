@@ -63,7 +63,7 @@ function ProjectInfoList() {
               <td>{project.design_period}</td>
               <td>
                 {moment(project.agreement_date, 'YYYY/MM/DD')
-                  .add(project.design_period, 'days')
+                  .businessAdd(project.design_period, 'days')
                   .format('DD.MM.YYYY')}
               </td>
               <td>
@@ -80,7 +80,7 @@ function ProjectInfoList() {
               <td>{project.expiration_date}</td>
               <td>
                 {moment(project.agreement_date, 'YYYY/MM/DD')
-                  .add(project.expiration_date, 'days')
+                  .businessAdd(project.expiration_date, 'days')
                   .format('DD.MM.YYYY')}
               </td>
               <td>-</td>
@@ -93,7 +93,7 @@ function ProjectInfoList() {
               <td>{project.installation_period}</td>
               <td>
                 {moment(project.agreement_date, 'YYYY/MM/DD')
-                  .add(project.installation_period, 'days')
+                  .businessAdd(project.installation_period, 'days')
                   .format('DD.MM.YYYY')}
               </td>
               <td>-</td>

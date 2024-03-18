@@ -26,6 +26,7 @@ const CreateBrigade = (props) => {
   const [clicked, setClicked] = React.useState(false);
 
   const handleInputChange = (event) => {
+    if (!value) return; // Добавьте эту проверку
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
@@ -43,7 +44,8 @@ const CreateBrigade = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name && correct.phone) {
+    if (correct.name && correct.phone && image) {
+      // Добавьте проверку наличия image
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
