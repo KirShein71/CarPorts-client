@@ -18,7 +18,7 @@ const isValid = (value) => {
 };
 
 const CreateBrigade = (props) => {
-  const { show, setShow, setChange, defaultValue = {}, defaultValid = {} } = props;
+  const { show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [image, setImage] = React.useState(null);
@@ -47,7 +47,7 @@ const CreateBrigade = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
-      data.append('image', image, image.name);
+      data.append('image', image, image.image);
       createBrigade(data)
         .then((data) => {
           setValue(defaultValue);
@@ -64,7 +64,6 @@ const CreateBrigade = (props) => {
       show={show}
       onHide={() => setShow(false)}
       size="lg"
-      style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
