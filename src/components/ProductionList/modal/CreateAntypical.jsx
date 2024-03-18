@@ -38,7 +38,7 @@ const CreateAntypical = (props) => {
         if (error.response && error.response.data) {
           alert(error.response.data.message);
         } else {
-          alert('An error occurred');
+          console.log('An error occurred');
         }
       });
   };
