@@ -161,7 +161,9 @@ function ProjectList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td className="production_column">{item.number}</td>
-                  <td onClick={() => hadleUpdateNameProject(item.id)}>{item.name}</td>
+                  <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateNameProject(item.id)}>
+                    {item.name}
+                  </td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
