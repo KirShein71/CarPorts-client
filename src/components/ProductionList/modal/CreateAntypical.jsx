@@ -34,7 +34,13 @@ const CreateAntypical = (props) => {
         setShow(false);
         setChange((state) => !state);
       })
-      .catch((error) => alert(error.response.data.message));
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          alert(error.response.data.message);
+        } else {
+          alert('Произошла ошибка при обработке запроса');
+        }
+      });
   };
 
   const handleRemoveImage = (index) => {
