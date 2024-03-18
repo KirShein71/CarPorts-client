@@ -38,7 +38,7 @@ const CreateAntypical = (props) => {
         if (error.response && error.response.data) {
           alert(error.response.data.message);
         } else {
-          alert('Произошла ошибка при сохранении изображений.');
+          alert('An error occurred');
         }
       });
   };
