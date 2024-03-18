@@ -49,7 +49,7 @@ const CreateBrigade = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
-      data.append('image', image);
+      data.append('image', image.image);
       createBrigade(data)
         .then((data) => {
           setValue(defaultValue);
