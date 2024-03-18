@@ -18,7 +18,7 @@ const isValid = (value) => {
 };
 
 const CreateBrigade = (props) => {
-  const { show, setShow, setChange } = props;
+  const { show, setShow, setChange, defaultValue = {}, defaultValid = {} } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [image, setImage] = React.useState(null);
@@ -55,13 +55,7 @@ const CreateBrigade = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            alert(error.response.data.message);
-          } else {
-            console.log('');
-          }
-        });
+        .catch((error) => alert(error.response.data.message));
     }
   };
 
