@@ -26,7 +26,6 @@ const CreateBrigade = (props) => {
   const [clicked, setClicked] = React.useState(false);
 
   const handleInputChange = (event) => {
-    if (!value) return; // Добавьте эту проверку
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
@@ -44,8 +43,7 @@ const CreateBrigade = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name && correct.phone && image) {
-      // Добавьте проверку наличия image
+    if (correct.name && correct.phone) {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
@@ -57,7 +55,13 @@ const CreateBrigade = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('');
+          }
+        });
     }
   };
 
