@@ -32,7 +32,9 @@ const CreateBrigade = (props) => {
   };
 
   const handleImageChange = (event) => {
-    setImage(event.target.files[0]);
+    if (event.target.files && event.target.files.length > 0) {
+      setImage(event.target.files[0]);
+    }
   };
 
   const handleInputClick = () => {
