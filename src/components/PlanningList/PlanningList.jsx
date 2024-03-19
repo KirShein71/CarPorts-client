@@ -185,8 +185,13 @@ function PlanningList() {
                   {item.project_delivery ? (
                     <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
                   ) : (
-                    <span style={{ color: 'red', fontWeight: 600, textAlign: 'center' }}>
-                      Введите дату сдачи проекта
+                    <span
+                      style={{
+                        color: 'red',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}>
+                      +
                     </span>
                   )}
                 </td>
@@ -198,7 +203,14 @@ function PlanningList() {
                       {item.date_inspection}
                     </Moment>
                   ) : (
-                    <span style={{ color: 'red', fontWeight: 600 }}>Введите дату проверки</span>
+                    <span
+                      style={{
+                        color: 'red',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}>
+                      +
+                    </span>
                   )}
                 </td>
                 <td>
@@ -228,8 +240,13 @@ function PlanningList() {
                   {item.inspection_designer ? (
                     <div>{item.inspection_designer}</div>
                   ) : (
-                    <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
-                      Введите проверяющего
+                    <span
+                      style={{
+                        color: 'red',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}>
+                      +
                     </span>
                   )}
                 </td>

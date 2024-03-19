@@ -115,7 +115,7 @@ function PersonalAccountList() {
                   <div className="account__greeting-card__image">
                     <img src="./fon.jpg" alt="image__company" />
                   </div>
-                  <div className="account__greeting-card__name">Шеин Кирилл Викторович</div>
+                  <div className="account__greeting-card__name">{userData.project.name}</div>
                 </div>
               </div>
             </div>

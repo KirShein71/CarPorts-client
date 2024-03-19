@@ -27,6 +27,11 @@ export const getSumOneDetail = async () => {
     return data
 }
 
+export const getCostPriceOneDetail = async () => {
+    const {data} = await guestInstance.get('stockdetails/getCostPriceOneDetail')
+    return data
+}
+
 export const deleteStockDetails = async (stock_date) => {
     const {data} = await guestInstance.delete(`stockdetails/delete/${stock_date}`)
     return data

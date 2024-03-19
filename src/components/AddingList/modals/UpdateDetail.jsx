@@ -2,15 +2,17 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchDetail, updateDetail } from '../../../http/detailsApi';
 
-const defaultValue = { name: '' };
+const defaultValue = { name: '', price: '' };
 const defaultValid = {
   name: null,
+  price: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
+    if (key === 'price') result.price = value.price.trim() !== '';
   }
   return result;
 };
@@ -26,6 +28,7 @@ const UpdateDetail = (props) => {
         .then((data) => {
           const prod = {
             name: data.name.toString(),
+            price: data.price.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -50,14 +53,16 @@ const UpdateDetail = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name) {
+    if (correct.name && correct.price) {
       const data = new FormData();
       data.append('name', value.name.trim());
+      data.append('price', value.price.trim());
 
       updateDetail(id, data)
         .then((data) => {
           const prod = {
             name: data.name.toString(),
+            price: data.price.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -81,7 +86,6 @@ const UpdateDetail = (props) => {
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       className="modal__name">
       <Modal.Header closeButton>
         <Modal.Title>Введите название детали</Modal.Title>
@@ -97,6 +101,18 @@ const UpdateDetail = (props) => {
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
                 placeholder="Название детали"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="price"
+                value={value.price}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.price === true}
+                isInvalid={valid.price === false}
+                placeholder="Себестоимость"
               />
             </Col>
           </Row>

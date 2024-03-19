@@ -213,8 +213,8 @@ function OrderMaterialsList() {
                           {prop.date_payment ? (
                             <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600 }}>
-                              Ввидите дату оплаты
+                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                              +
                             </span>
                           )}
                         </td>
@@ -222,8 +222,8 @@ function OrderMaterialsList() {
                           {prop.ready_date ? (
                             <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600 }}>
-                              Введите дату готовности
+                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                              +
                             </span>
                           )}
                         </td>
@@ -233,8 +233,14 @@ function OrderMaterialsList() {
                           {prop.shipping_date ? (
                             <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600 }}>
-                              Введите дату отгрузки
+                            <span
+                              style={{
+                                color: 'red',
+
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                              }}>
+                              +
                             </span>
                           )}
                         </td>

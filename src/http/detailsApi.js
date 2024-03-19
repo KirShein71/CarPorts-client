@@ -16,6 +16,11 @@ export const createDetail = async (detail) => {
     return data
 }
 
+export const createPrice = async (id, details) => {
+    const { data } = await guestInstance.put(`details/createPrice/${id}`, details)
+    return data
+}
+
 export const updateDetail = async (id, details) => {
     const { data } = await guestInstance.put(`details/update/${id}`, details)
     return data

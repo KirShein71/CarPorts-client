@@ -1,6 +1,7 @@
 import React from 'react';
 import CreateDetail from './modals/CreateDetail';
 import UpdateDetail from './modals/UpdateDetail';
+import CreatePriceDetail from './modals/CreatePriceDetail';
 import { Table, Button, Spinner } from 'react-bootstrap';
 import { fetchAllDetails, deleteDetail } from '../../http/detailsApi';
 
@@ -9,6 +10,7 @@ function Details() {
   const [detail, setDetail] = React.useState(null);
   const [detailModal, setDetailModal] = React.useState(false);
   const [updateDeatialModal, setUpdateDetailModal] = React.useState(null);
+  const [createPriceModal, setCreatePriceModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [fetching, setFetching] = React.useState(true);
 
@@ -30,6 +32,11 @@ function Details() {
     }
   };
 
+  const handleCreatePrice = (id) => {
+    setDetail(id);
+    setCreatePriceModal(true);
+  };
+
   const handleUpdateDetail = (id) => {
     setDetail(id);
     setUpdateDetailModal(true);
@@ -49,6 +56,12 @@ function Details() {
         setChange={setChange}
         id={detail}
       />
+      <CreatePriceDetail
+        show={createPriceModal}
+        setShow={setCreatePriceModal}
+        setChange={setChange}
+        id={detail}
+      />
       <Button onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
@@ -57,6 +70,7 @@ function Details() {
           <thead>
             <tr>
               <th>Название детали</th>
+              <th>Себестоимость</th>
               <th></th>
               <th></th>
             </tr>
@@ -67,6 +81,13 @@ function Details() {
               .map((detail) => (
                 <tr key={detail.id}>
                   <td>{detail.name}</td>
+                  <td onClick={() => handleCreatePrice(detail.id)}>
+                    {detail.price ? (
+                      <>{detail.price}</>
+                    ) : (
+                      <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
+                    )}
+                  </td>
                   <td>
                     <Button onClick={() => handleUpdateDetail(detail.id)}>Редактировать</Button>
                   </td>
