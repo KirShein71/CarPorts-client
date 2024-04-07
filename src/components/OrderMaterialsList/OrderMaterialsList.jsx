@@ -26,29 +26,36 @@ function OrderMaterialsList() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
   const itemsPerPage = 15;
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
+    setCurrentPageUrl(currentPage);
     setUpdateShow(true);
   };
 
   const hadleReadyDate = (id) => {
     setProjectMaterials(id);
+    setCurrentPageUrl(currentPage);
     setReadyDateShow(true);
   };
 
   const hadleShippingDate = (id) => {
     setProjectMaterials(id);
+    setCurrentPageUrl(currentPage);
     setShippingDateShow(true);
   };
 
   const handlePaymentDate = (id) => {
     setProjectMaterials(id);
+    setCurrentPageUrl(currentPage);
     setPaymentDateShow(true);
   };
 
   const handleCreateMaterial = (project) => {
     setProject(project);
+    setCurrentPageUrl(currentPage);
     setCreateMaterial(true);
   };
 
@@ -58,10 +65,21 @@ function OrderMaterialsList() {
         setProjectsMaterials(data);
         const totalPages = Math.ceil(data.length / itemsPerPage);
         setTotalPages(totalPages);
-        setCurrentPage(1);
+        setCurrentPage(currentPage);
       })
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleScroll = () => {
+    setScrollPosition(window.scrollY);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleDeleteProjectMaterials = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить материал?');
@@ -132,30 +150,40 @@ function OrderMaterialsList() {
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreateReadyDate
         id={projectMaterials}
         show={readyDateShow}
         setShow={setReadyDateShow}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreateShippingDate
         id={projectMaterials}
         show={shippingDateShow}
         setShow={setShippingDateShow}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreatePaymentDate
         id={projectMaterials}
         show={paymentDateShow}
         setShow={setPaymentDateShow}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreateMaterial
         projectId={project}
         show={createMaterial}
         setShow={setCreateMaterial}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <>
         {projectsMaterialsToShow.map((material) => (

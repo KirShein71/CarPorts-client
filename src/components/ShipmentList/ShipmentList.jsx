@@ -207,7 +207,7 @@ function ShipmentList() {
                               : handleCreateOneShipmentDetail(
                                   part.id,
                                   shipment.projectId,
-                                  shipment.project.shipment_date,
+                                  shipment.shipment_date,
                                 )
                           }>
                           {quantity}

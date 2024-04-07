@@ -4,6 +4,7 @@ import {
   createShippingDateProjectMaterials,
   fetchOneProjectMaterials,
 } from '../../../http/projectMaterialsApi';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { shipping_date: '' };
 const defaultValid = {
@@ -19,9 +20,10 @@ const isValid = (value) => {
 };
 
 const CreateShippingDate = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
@@ -49,6 +51,12 @@ const CreateShippingDate = (props) => {
     setValid(isValid(data));
   };
 
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
@@ -64,6 +72,7 @@ const CreateShippingDate = (props) => {
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -73,7 +82,6 @@ const CreateShippingDate = (props) => {
           }
         });
     }
-    setShow(false);
   };
 
   return (

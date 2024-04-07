@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { agreement_date: '' };
 const defaultValid = {
@@ -16,9 +17,10 @@ const isValid = (value) => {
 };
 
 const UpdateDateProject = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
@@ -46,6 +48,12 @@ const UpdateDateProject = (props) => {
     setValid(isValid(data));
   };
 
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
@@ -62,6 +70,7 @@ const UpdateDateProject = (props) => {
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -71,7 +80,6 @@ const UpdateDateProject = (props) => {
           }
         });
     }
-    setShow(false);
   };
 
   return (

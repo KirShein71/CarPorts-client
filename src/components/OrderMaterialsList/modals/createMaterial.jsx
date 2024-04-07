@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchMaterials } from '../../../http/materialsApi';
 import { createProjectMaterials } from '../../../http/projectMaterialsApi';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = {
   material: '',
@@ -25,11 +26,12 @@ const isValid = (value) => {
 };
 
 const CreateMaterial = (props) => {
-  const { show, setShow, setChange, projectId } = props;
+  const { show, setShow, setChange, projectId, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [materials, setMaterials] = React.useState(null);
   const [selectedMaterials, setSelectedMaterials] = React.useState([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchMaterials().then((data) => setMaterials(data));
@@ -53,6 +55,12 @@ const CreateMaterial = (props) => {
       setValue(defaultValue);
       setValid(defaultValid);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
   };
 
   const handleSaveMaterials = () => {
@@ -79,7 +87,7 @@ const CreateMaterial = (props) => {
     Promise.all(data.map(createProjectMaterials))
       .then(() => {
         setSelectedMaterials([]);
-        setShow(false);
+        handleCloseModal();
         setChange((state) => !state);
       })
       .catch((error) => alert(error.response.data.message));

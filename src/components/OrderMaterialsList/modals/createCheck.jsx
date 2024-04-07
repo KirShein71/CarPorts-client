@@ -5,6 +5,7 @@ import {
   createCheckProjectMaterials,
   deleteCheckProjectMaterials,
 } from '../../../http/projectMaterialsApi';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { check: '' };
 const defaultValid = {
@@ -20,9 +21,11 @@ const isValid = (value) => {
 };
 
 const CreateCheck = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
@@ -43,6 +46,12 @@ const CreateCheck = (props) => {
         });
     }
   }, [id]);
+
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+  };
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -66,6 +75,8 @@ const CreateCheck = (props) => {
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -75,7 +86,6 @@ const CreateCheck = (props) => {
           }
         });
     }
-    setShow(false);
   };
 
   const handleDeleteClick = () => {

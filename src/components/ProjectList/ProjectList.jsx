@@ -23,6 +23,8 @@ function ProjectList() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
   const itemsPerPage = 20;
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,10 +35,21 @@ function ProjectList() {
         setProjects(data);
         const totalPages = Math.ceil(data.length / itemsPerPage);
         setTotalPages(totalPages);
-        setCurrentPage(1);
+        setCurrentPage(currentPage);
       })
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleScroll = () => {
+    setScrollPosition(window.scrollY);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleDeleteClick = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить проект?');
@@ -52,16 +65,19 @@ function ProjectList() {
 
   const hadleUpdateNameProject = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateNameModal(true);
   };
 
   const hadleUpdateNumberProject = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateNumberProjectModal(true);
   };
 
   const hadleUpdateDateProject = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateDateProject(true);
   };
 
@@ -126,18 +142,24 @@ function ProjectList() {
         setShow={setUpdateNameModal}
         setChange={setChange}
         id={project}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <UpdateNumberProject
         show={updateNumberProjectModal}
         setShow={setUpdateNumberProjectModal}
         setChange={setChange}
         id={project}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <UpdateDateProject
         show={updateDateProject}
         setShow={setUpdateDateProject}
         setChange={setChange}
         id={project}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">

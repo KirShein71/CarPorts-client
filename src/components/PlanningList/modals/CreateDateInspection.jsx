@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
+import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { date_inspection: '' };
 const defaultValid = {
@@ -16,9 +17,10 @@ const isValid = (value) => {
 };
 
 const CreateDateInspection = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
@@ -46,6 +48,12 @@ const CreateDateInspection = (props) => {
     setValid(isValid(data));
   };
 
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
@@ -61,6 +69,7 @@ const CreateDateInspection = (props) => {
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -70,7 +79,6 @@ const CreateDateInspection = (props) => {
           }
         });
     }
-    setShow(false);
   };
 
   return (

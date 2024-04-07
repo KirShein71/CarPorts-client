@@ -26,29 +26,36 @@ function PlanningList() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(0);
   const itemsPerPage = 20;
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateShow(true);
   };
 
   const handleCreateDateInspection = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setCreateDateInspectionModal(true);
   };
 
   const handleCreateInspectionDesigner = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setCreateInspectionDesignerModal(true);
   };
 
   const handleUpdateDisegnerModal = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateDisegnerModal(true);
   };
 
   const handleUpdateNote = (id) => {
     setProject(id);
+    setCurrentPageUrl(currentPage);
     setUpdateNote(true);
   };
 
@@ -58,10 +65,21 @@ function PlanningList() {
         setProjects(data);
         const totalPages = Math.ceil(data.length / itemsPerPage);
         setTotalPages(totalPages);
-        setCurrentPage(1);
+        setCurrentPage(currentPage);
       })
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleScroll = () => {
+    setScrollPosition(window.scrollY);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleSort = (field) => {
     if (field === sortField) {
@@ -139,30 +157,45 @@ function PlanningList() {
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreateDateInspection
         id={project}
         show={createDateInspectionModal}
         setShow={setCreateDateInspectionModal}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <CreateInspectionDesigner
         id={project}
         show={createInspectionDesignerModal}
         setShow={setCreateInspectionDesignerModal}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
       <UpdateDesigner
         id={project}
         show={updateDisegnerModal}
         setShow={setUpdateDisegnerModal}
         setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
       />
-      <UpdateNote id={project} show={updateNote} setShow={setUpdateNote} setChange={setChange} />
+      <UpdateNote
+        id={project}
+        show={updateNote}
+        setShow={setUpdateNote}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+        currentPageUrl={currentPageUrl}
+      />
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
-            <tr className="column">
+            <tr>
               <th>Номер проекта </th>
               <th className="production_column">Название</th>
               <th>Примечание</th>
