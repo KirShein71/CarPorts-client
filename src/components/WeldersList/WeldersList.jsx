@@ -8,6 +8,7 @@ import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
 import CreateOneStockDetail from './modals/createOneStockDetail';
 import './modals/styles.scss';
+import CreateStockAntypical from './modals/createStockAntypical';
 
 function WeldersList() {
   const [nameDetails, setNameDetails] = React.useState([]);
@@ -16,6 +17,8 @@ function WeldersList() {
   const [createDetailsModal, setCreateDetailsModal] = React.useState(false);
   const [updateDetailsModal, setUpdateDetailsModal] = React.useState(false);
   const [createOneStockDetailModal, setCreateOneStockDetailModal] = React.useState(false);
+  const [createStockAntypical, setCreateStockAntypical] = React.useState(false);
+  const [stockAntypical, setStockAntypical] = React.useState([]);
   const [detailId, setDetailId] = React.useState(null);
   const [stockDate, setStockDate] = React.useState(null);
   const [change, setChange] = React.useState(true);
@@ -45,6 +48,11 @@ function WeldersList() {
   const handleUpdateDetailClick = (id) => {
     setStockDetail(id);
     setUpdateDetailsModal(true);
+  };
+
+  const handleCreateStockAntypical = (stockDate) => {
+    setStockDate(stockDate);
+    setCreateStockAntypical(true);
   };
 
   const handleCreateOneStockDetail = (detailId, stockDate) => {
@@ -145,6 +153,12 @@ function WeldersList() {
         setShow={setUpdateDetailsModal}
         setChange={setChange}
       />
+      <CreateStockAntypical
+        stockDate={stockDate}
+        show={createStockAntypical}
+        setShow={setCreateStockAntypical}
+        setChange={setChange}
+      />
       <CreateOneStockDetail
         detailId={detailId}
         stockDate={stockDate}
@@ -165,6 +179,7 @@ function WeldersList() {
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
+              <th>Нетипичные детали</th>
               <th></th>
             </tr>
           </thead>
@@ -198,6 +213,7 @@ function WeldersList() {
                         </td>
                       );
                     })}
+                  <td onClick={() => handleCreateStockAntypical(stock.stock_date)}></td>
                   <td>
                     <Button
                       variant="success"

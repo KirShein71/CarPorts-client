@@ -100,7 +100,7 @@ function CreateInformatoinClientList() {
         <Link to="/clientaccount">
           <img className="header__icon" src=".././back.png" alt="back" />
         </Link>
-        <h1 className="header__title">Добавление информация для личиного кабинета клиента</h1>
+        <h1 className="header__title">Добавление информация для личного кабинета клиента</h1>
       </div>
       <CreateManager
         data={user}

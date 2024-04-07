@@ -2,6 +2,8 @@ import React from 'react';
 import Header from '../Header/Header';
 import CreateProject from './modals/CreateProject';
 import UpdateNameProject from './modals/UpdateNameProject';
+import UpdateNumberProject from './modals/UpdateNumberProject';
+import UpdateDateProject from './modals/UpdateDateProject';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row, Pagination } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -13,6 +15,8 @@ function ProjectList() {
   const [fetching, setFetching] = React.useState(true);
   const [createShow, setCreateShow] = React.useState(false);
   const [updateNameModal, setUpdateNameModal] = React.useState(false);
+  const [updateNumberProjectModal, setUpdateNumberProjectModal] = React.useState(false);
+  const [updateDateProject, setUpdateDateProject] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
@@ -49,6 +53,16 @@ function ProjectList() {
   const hadleUpdateNameProject = (id) => {
     setProject(id);
     setUpdateNameModal(true);
+  };
+
+  const hadleUpdateNumberProject = (id) => {
+    setProject(id);
+    setUpdateNumberProjectModal(true);
+  };
+
+  const hadleUpdateDateProject = (id) => {
+    setProject(id);
+    setUpdateDateProject(true);
   };
 
   const handleSort = (field) => {
@@ -113,6 +127,18 @@ function ProjectList() {
         setChange={setChange}
         id={project}
       />
+      <UpdateNumberProject
+        show={updateNumberProjectModal}
+        setShow={setUpdateNumberProjectModal}
+        setChange={setChange}
+        id={project}
+      />
+      <UpdateDateProject
+        show={updateDateProject}
+        setShow={setUpdateDateProject}
+        setChange={setChange}
+        id={project}
+      />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">
           <Button className="me-3 my-2" onClick={() => setCreateShow(true)}>
@@ -160,11 +186,16 @@ function ProjectList() {
               })
               .map((item) => (
                 <tr key={item.id}>
-                  <td className="production_column">{item.number}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => hadleUpdateNumberProject(item.id)}
+                    className="production_column">
+                    {item.number}
+                  </td>
                   <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateNameProject(item.id)}>
                     {item.name}
                   </td>
-                  <td>
+                  <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateDateProject(item.id)}>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td>

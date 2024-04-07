@@ -11,17 +11,37 @@ function Desinglist() {
   const [change, setChange] = React.useState(true);
   const [updateShow, setUpdateShow] = React.useState(false);
   const [project, setProject] = React.useState(null);
-
-  const handleUpdateClick = (id) => {
-    setProject(id);
-    setUpdateShow(true);
-  };
+  const [sortOrder, setSortOrder] = React.useState('desc');
 
   React.useEffect(() => {
     getAllWithNoDesing()
       .then((data) => setProjects(data))
       .finally(() => setFetching(false));
   }, [change]);
+
+  const handleSort = () => {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedProjects = projects.slice().sort((a, b) => {
+    const dateA = moment(a.agreement_date, 'YYYY/MM/DD')
+      .businessAdd(a.design_period, 'days')
+      .format('DD.MM.YYYY');
+    const dateB = moment(b.agreement_date, 'YYYY/MM/DD')
+      .businessAdd(b.design_period, 'days')
+      .format('DD.MM.YYYY');
+
+    if (sortOrder === 'desc') {
+      return moment(dateB, 'DD.MM.YYYY').diff(moment(dateA, 'DD.MM.YYYY'));
+    } else {
+      return moment(dateA, 'DD.MM.YYYY').diff(moment(dateB, 'DD.MM.YYYY'));
+    }
+  });
+
+  const handleUpdateClick = (id) => {
+    setProject(id);
+    setUpdateShow(true);
+  };
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -41,12 +61,19 @@ function Desinglist() {
             <tr>
               <th className="production_column">Номер проекта</th>
               <th>Название</th>
-              <th>Дедлайн проектирования</th>
+              <th style={{ cursor: 'pointer', display: 'flex' }} onClick={() => handleSort()}>
+                <div>Дедлайн проектирования</div>{' '}
+                <img
+                  style={{ marginLeft: '10px', width: '24px', height: '24px' }}
+                  src="./sort.png"
+                  alt="icon_sort"
+                />
+              </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {projects.map((item) => (
+            {sortedProjects.map((item) => (
               <tr key={item.id}>
                 <td className="production_column">{item.number}</td>
                 <td>{item.name}</td>

@@ -57,7 +57,7 @@ const CreateDetail = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Ввидите название детали</Modal.Title>
+        <Modal.Title>Введите название детали</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
@@ -69,7 +69,7 @@ const CreateDetail = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
-                placeholder="Ввидите название детали"
+                placeholder="Введите название детали"
               />
             </Col>
           </Row>

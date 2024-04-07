@@ -198,7 +198,9 @@ function OrderMaterialsList() {
                             .businessAdd(material.project.design_period, 'days')
                             .format('DD.MM.YYYY')}
                         </td>
-                        <td onClick={() => handleUpdateClick(prop.id)}>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleUpdateClick(prop.id)}>
                           {prop.check ? (
                             <>{prop.check}</>
                           ) : (

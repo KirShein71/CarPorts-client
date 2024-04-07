@@ -1,15 +1,14 @@
 .table-scrollable {
     overflow-x: auto;
   }
+
   
-  .production_column
- {
+  .production_column {
   position: sticky;
   left: 0;
   z-index: 1;
-  background-color: white !important;
-  
-}
+  background-color: white !important; 
+    }
 
 .production_column::after {
     content: '';

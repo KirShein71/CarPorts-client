@@ -3,6 +3,8 @@ import Header from '../Header/Header';
 import CreateProjectDelivery from './modals/CreateProjectDelivery';
 import CreateDateInspection from './modals/CreateDateInspection';
 import CreateInspectionDesigner from './modals/CreateInspectionDisegner';
+import UpdateDesigner from './modals/UpdateDisegner';
+import UpdateNote from './modals/UpdateNote';
 import { fetchAllProjects } from '../../http/projectApi';
 import { Spinner, Table, Pagination, Form, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -15,6 +17,8 @@ function PlanningList() {
   const [updateShow, setUpdateShow] = React.useState(false);
   const [createDateInspectionModal, setCreateDateInspectionModal] = React.useState(false);
   const [createInspectionDesignerModal, setCreateInspectionDesignerModal] = React.useState(false);
+  const [updateDisegnerModal, setUpdateDisegnerModal] = React.useState(false);
+  const [updateNote, setUpdateNote] = React.useState(false);
   const [fetching, setFetching] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
@@ -36,6 +40,16 @@ function PlanningList() {
   const handleCreateInspectionDesigner = (id) => {
     setProject(id);
     setCreateInspectionDesignerModal(true);
+  };
+
+  const handleUpdateDisegnerModal = (id) => {
+    setProject(id);
+    setUpdateDisegnerModal(true);
+  };
+
+  const handleUpdateNote = (id) => {
+    setProject(id);
+    setUpdateNote(true);
   };
 
   React.useEffect(() => {
@@ -138,12 +152,19 @@ function PlanningList() {
         setShow={setCreateInspectionDesignerModal}
         setChange={setChange}
       />
+      <UpdateDesigner
+        id={project}
+        show={updateDisegnerModal}
+        setShow={setUpdateDisegnerModal}
+        setChange={setChange}
+      />
+      <UpdateNote id={project} show={updateNote} setShow={setUpdateNote} setChange={setChange} />
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
-            <tr>
-              <th className="production_column">Номер проекта </th>
-              <th>Название</th>
+            <tr className="column">
+              <th>Номер проекта </th>
+              <th className="production_column">Название</th>
               <th>Примечание</th>
               <th
                 style={{ cursor: 'pointer', display: 'flex' }}
@@ -167,9 +188,11 @@ function PlanningList() {
           <tbody>
             {projectsToShow.map((item) => (
               <tr key={item.id}>
-                <td className="production_column">{item.number}</td>
-                <td>{item.name}</td>
-                <td>{item.note}</td>
+                <td>{item.number}</td>
+                <td className="production_column">{item.name}</td>
+                <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
+                  {item.note}
+                </td>
                 <td>
                   <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                 </td>
@@ -235,8 +258,14 @@ function PlanningList() {
                     return subtractDaysUntilZero(targetDate);
                   })()}
                 </td>
-                <td>{item.designer}</td>
-                <td onClick={() => handleCreateInspectionDesigner(item.id)}>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleUpdateDisegnerModal(item.id)}>
+                  {item.designer}
+                </td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleCreateInspectionDesigner(item.id)}>
                   {item.inspection_designer ? (
                     <div>{item.inspection_designer}</div>
                   ) : (
