@@ -50,22 +50,28 @@ th, td {
 }
 
 .table-container {
- 
-
+    width: 100%;
+    height: 400px; 
+    overflow: visible;
+   @media(max-width: 991px) {
     overflow: auto;
-   
+   }
 }
 
+.column__thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+}
 
 .column {
     position: sticky;
     left: 0;
-    top: 0;
-    z-index: 1;
-    background-color: white !important; 
-  }
-
-  .column::after {
+    background-color: #fff !important;
+    z-index: 2;
+}
+.column::after {
     content: '';
     position: absolute;
     top: 0;
@@ -76,7 +82,18 @@ th, td {
     
   }
 
-  
+.td_column {
+    position: sticky;
+    left: 0;
+    background-color: #fff !important;
+    z-index: 2;
+}
+
+.td_column-scrool {
+    background-color: white; /* Цвет фона, чтобы текст был виден */
+}
+
+
 
 
 

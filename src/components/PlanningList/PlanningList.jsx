@@ -28,6 +28,7 @@ function PlanningList() {
   const itemsPerPage = 20;
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
+  const [scrollDirection, setScrollDirection] = React.useState(null);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
@@ -78,6 +79,23 @@ function PlanningList() {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const handleScrollColumn = () => {
+      // Определение направления скролла
+      if (window.scrollY > 0) {
+        setScrollDirection('vertical');
+      } else {
+        setScrollDirection('horizontal');
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollColumn);
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollColumn);
     };
   }, []);
 
@@ -222,7 +240,9 @@ function PlanningList() {
             {projectsToShow.map((item) => (
               <tr key={item.id}>
                 <td>{item.number}</td>
-                <td className="column">{item.name}</td>
+                <td className={scrollDirection === 'vertical' ? 'td_column-scroll' : 'td_column'}>
+                  {item.name}
+                </td>
                 <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
                   {item.note}
                 </td>
