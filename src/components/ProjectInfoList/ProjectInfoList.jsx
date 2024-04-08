@@ -124,9 +124,12 @@ function ProjectInfoList() {
                   )}
                 </td>
                 <td>
-                  {moment(property.date_payment, 'YYYY/MM/DD')
-                    .businessAdd(property.expirationMaterial_date, 'days')
-                    .format('DD.MM.YYYY')}
+                  {moment(property.date_payment, 'YYYY/MM/DD').isValid() &&
+                  moment(property.expirationMaterial_date, 'YYYY/MM/DD').isValid()
+                    ? moment(property.date_payment, 'YYYY/MM/DD')
+                        .businessAdd(property.expirationMaterial_date, 'days')
+                        .format('DD.MM.YYYY')
+                    : ''}
                 </td>
                 <td>
                   {property.ready_date ? (
