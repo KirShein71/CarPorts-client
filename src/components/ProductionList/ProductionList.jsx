@@ -199,19 +199,19 @@ function ProductionList() {
                       </td>
                     );
                   })}
-                <td
-                  onClick={() => {
-                    if (detail.antypical.length > 0) {
-                      handleOpenImage(detail.antypical);
-                    } else {
-                      handleCreateAntypical(detail.projectId);
-                    }
-                  }}>
-                  {detail.antypical.length > 0 ? (
-                    <span style={{ color: 'red', cursor: 'pointer' }}>Файлы</span>
-                  ) : (
-                    <span style={{ cursor: 'pointer', color: 'red' }}>Добавить файлы</span>
-                  )}
+                <td>
+                  <div style={{ textAlign: 'center' }}>
+                    <div
+                      onClick={() => handleCreateAntypical(detail.projectId)}
+                      style={{ cursor: 'pointer', color: 'red' }}>
+                      Добавить файлы
+                    </div>
+                    <div
+                      onClick={() => handleOpenImage(detail.antypical)}
+                      style={{ cursor: 'pointer' }}>
+                      Посмотреть файлы
+                    </div>
+                  </div>
                 </td>
                 <td>
                   <Button

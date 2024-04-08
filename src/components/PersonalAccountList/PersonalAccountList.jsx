@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { getOneAccount, logout } from '../../http/userApi';
 import { Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
