@@ -1,15 +1,18 @@
 .table-scrollable {
-    overflow: auto;
+  overflow-x: auto;
+
   }
+
   
   .production_column {
     position: sticky;
     left: 0;
+    top: 0;
     z-index: 1;
-    background-color: white;
-  }
-  
-  .production_column::after {
+    background-color: white !important; 
+    }
+
+.production_column::after {
     content: '';
     position: absolute;
     top: 0;
@@ -17,6 +20,7 @@
     width: 1px;
     height: 100%;
     background-color: #dee2e6; 
+    
   }
 
 
