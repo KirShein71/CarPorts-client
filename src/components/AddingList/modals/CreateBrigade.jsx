@@ -81,7 +81,7 @@ const CreateBrigade = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
-                placeholder="Ввидите название бригады"
+                placeholder="Введите название бригады"
               />
             </Col>
           </Row>
@@ -94,7 +94,7 @@ const CreateBrigade = (props) => {
                 onClick={handleInputClick}
                 isValid={valid.phone === true}
                 isInvalid={valid.phone === false}
-                placeholder="Ввидите номер телефона"
+                placeholder="Введите номер телефона"
                 minLength="10"
                 maxLength="11"
               />
@@ -105,7 +105,7 @@ const CreateBrigade = (props) => {
               name="image"
               type="file"
               onChange={(e) => handleImageChange(e)}
-              placeholder="Фото товара (не более 1MB)..."
+              placeholder="Фото бригады (не более 1MB)..."
             />
           </Col>
           <Row>

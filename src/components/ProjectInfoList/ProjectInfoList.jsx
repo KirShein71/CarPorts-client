@@ -117,9 +117,17 @@ function ProjectInfoList() {
               <tr key={property.id}>
                 <td>{property.materialName}</td>
                 <td>
-                  <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
+                  {property.date_payment ? (
+                    <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
+                  ) : (
+                    ''
+                  )}
                 </td>
-                <td>{property.expirationMaterial_date}</td>
+                <td>
+                  {moment(property.date_payment, 'YYYY/MM/DD')
+                    .businessAdd(property.expirationMaterial_date, 'days')
+                    .format('DD.MM.YYYY')}
+                </td>
                 <td>
                   {property.ready_date ? (
                     <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>

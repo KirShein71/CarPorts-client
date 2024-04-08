@@ -3,6 +3,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import {
   createPaymentDateProjectMaterials,
   fetchOneProjectMaterials,
+  deletePaymentDateProjectMaterials,
 } from '../../../http/projectMaterialsApi';
 import { useNavigate } from 'react-router-dom';
 
@@ -84,6 +85,19 @@ const CreatePaymentDate = (props) => {
     }
   };
 
+  const handleDeleteClick = () => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить дату платежа?');
+    if (confirmed) {
+      deletePaymentDateProjectMaterials(id) // Передаем параметр id для удаления
+        .then(() => {
+          alert('Дата платежа была удален');
+          setShow(false);
+          setChange((state) => !state);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+  };
+
   return (
     <Modal
       show={show}
@@ -112,7 +126,12 @@ const CreatePaymentDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button className="me-3 mb-3" type="submit">
+                Сохранить
+              </Button>
+              <Button className="mb-3" variant="danger" onClick={() => handleDeleteClick()}>
+                Удалить
+              </Button>
             </Col>
           </Row>
         </Form>

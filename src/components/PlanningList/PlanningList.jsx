@@ -192,12 +192,12 @@ function PlanningList() {
         scrollPosition={scrollPosition}
         currentPageUrl={currentPageUrl}
       />
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
-          <thead>
+          <thead className="column__thead">
             <tr>
               <th>Номер проекта </th>
-              <th className="production_column">Название</th>
+              <th className="column">Название</th>
               <th>Примечание</th>
               <th
                 style={{ cursor: 'pointer', display: 'flex' }}
@@ -222,7 +222,7 @@ function PlanningList() {
             {projectsToShow.map((item) => (
               <tr key={item.id}>
                 <td>{item.number}</td>
-                <td className="production_column">{item.name}</td>
+                <td className="column">{item.name}</td>
                 <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
                   {item.note}
                 </td>
