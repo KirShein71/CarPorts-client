@@ -158,11 +158,11 @@ function PersonalAccountList() {
                       <div className="manager">
                         <div className="manager__content">
                           <div className="manager__title">Менеджер:</div>
-                          <div className="manager__name">{userData.manager}</div>
+                          <div className="manager__name">{userData.employee.name}</div>
                         </div>
                         <div className="manager__content">
                           <div className="manager__title">Телефон:</div>
-                          <a className="manager__phone" href={`tel:${userData.manager_phone}`}>
+                          <a className="manager__phone" href={`tel:${userData.employee.phone}`}>
                             {formatPhoneNumber(userData.manager_phone)}
                           </a>
                         </div>

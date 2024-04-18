@@ -144,8 +144,8 @@ function CreateInformatoinClientList() {
           </thead>
           <tbody>
             <tr>
-              <td>{user?.manager}</td>
-              <td>{user.manager_phone}</td>
+              <td>{user.employee.name}</td>
+              <td>{user.employee.phone}</td>
             </tr>
           </tbody>
         </Table>

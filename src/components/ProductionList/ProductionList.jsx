@@ -24,17 +24,11 @@ function ProductionList() {
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 20;
 
   React.useEffect(() => {
     fetchAllProjectDetails()
       .then((data) => {
         setProjectDetails(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(1);
       })
       .finally(() => setFetching(false));
   }, [change]);
@@ -64,13 +58,8 @@ function ProductionList() {
     setImageModal(true);
   };
 
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const handleDeleteProjectDetails = (projectId) => {
@@ -90,29 +79,6 @@ function ProductionList() {
         });
     }
   };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, projectDetails.length);
-  const projectDetailsToShow = projectDetails
-    .filter((detail) => detail.project.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .slice(startIndex, endIndex);
-
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < projectDetails.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -164,7 +130,7 @@ function ProductionList() {
       />
       <div className="table-scrollable">
         <Table bordered size="md" className="mt-3">
-          <thead>
+          <thead className="thead_column">
             <tr>
               <th>Номер проекта</th>
               <th className="production_column">Проект</th>
@@ -178,59 +144,58 @@ function ProductionList() {
             </tr>
           </thead>
           <tbody>
-            {projectDetailsToShow.map((detail) => (
-              <tr key={detail.id}>
-                <td>{detail.project ? detail.project.number : ''}</td>
-                <td className="production_column">{detail.project ? detail.project.name : ''}</td>
-                {nameDetails
-                  .sort((a, b) => a.id - b.id)
-                  .map((part) => {
-                    const detailProject = detail.props.find((prop) => prop.detailId === part.id);
-                    const quantity = detailProject ? detailProject.quantity : '';
-                    return (
-                      <td
-                        style={{ cursor: 'pointer' }}
-                        onClick={() =>
-                          quantity
-                            ? handleUpdateProjectDetailClick(detailProject.id)
-                            : handleCreateOneDetail(part.id, detail.projectId)
-                        }>
-                        {quantity}
-                      </td>
-                    );
-                  })}
-                <td>
-                  <div style={{ textAlign: 'center' }}>
-                    <div
-                      onClick={() => handleCreateAntypical(detail.projectId)}
-                      style={{ cursor: 'pointer', color: 'red' }}>
-                      Добавить файлы
+            {projectDetails
+              .filter((detail) =>
+                detail.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+              )
+              .map((detail) => (
+                <tr key={detail.id}>
+                  <td>{detail.project ? detail.project.number : ''}</td>
+                  <td className="production_column">{detail.project ? detail.project.name : ''}</td>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => {
+                      const detailProject = detail.props.find((prop) => prop.detailId === part.id);
+                      const quantity = detailProject ? detailProject.quantity : '';
+                      return (
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() =>
+                            quantity
+                              ? handleUpdateProjectDetailClick(detailProject.id)
+                              : handleCreateOneDetail(part.id, detail.projectId)
+                          }>
+                          {quantity}
+                        </td>
+                      );
+                    })}
+                  <td>
+                    <div style={{ textAlign: 'center' }}>
+                      <div
+                        onClick={() => handleCreateAntypical(detail.projectId)}
+                        style={{ cursor: 'pointer', color: 'red' }}>
+                        Добавить файлы
+                      </div>
+                      <div
+                        onClick={() => handleOpenImage(detail.antypical)}
+                        style={{ cursor: 'pointer' }}>
+                        Посмотреть файлы
+                      </div>
                     </div>
-                    <div
-                      onClick={() => handleOpenImage(detail.antypical)}
-                      style={{ cursor: 'pointer' }}>
-                      Посмотреть файлы
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Button
-                    variant="success"
-                    size="sm"
-                    onClick={() => handleDeleteProjectDetails(detail.projectId)}>
-                    Удалить
-                  </Button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleDeleteProjectDetails(detail.projectId)}>
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
-      {projectDetails.length > 15 ? (
-        <Pagination style={{ marginTop: '15px' }}>{pages}</Pagination>
-      ) : (
-        ''
-      )}
     </div>
   );
 }

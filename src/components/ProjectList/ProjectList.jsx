@@ -5,7 +5,7 @@ import UpdateNameProject from './modals/UpdateNameProject';
 import UpdateNumberProject from './modals/UpdateNumberProject';
 import UpdateDateProject from './modals/UpdateDateProject';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
-import { Spinner, Table, Button, Col, Row, Pagination } from 'react-bootstrap';
+import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 
@@ -20,12 +20,9 @@ function ProjectList() {
   const [change, setChange] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 20;
   const [scrollPosition, setScrollPosition] = React.useState(0);
-  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
-
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [filteredProjects, setFilteredProjects] = React.useState([]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -33,9 +30,6 @@ function ProjectList() {
     fetchAllProjects()
       .then((data) => {
         setProjects(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(currentPage);
       })
       .finally(() => setFetching(false));
   }, [change]);
@@ -51,6 +45,17 @@ function ProjectList() {
     };
   }, []);
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  React.useEffect(() => {
+    const filtered = projects.filter((project) =>
+      project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredProjects(filtered);
+  }, [projects, searchQuery]);
+
   const handleDeleteClick = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить проект?');
     if (confirmed) {
@@ -65,19 +70,16 @@ function ProjectList() {
 
   const hadleUpdateNameProject = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateNameModal(true);
   };
 
   const hadleUpdateNumberProject = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateNumberProjectModal(true);
   };
 
   const hadleUpdateDateProject = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateDateProject(true);
   };
 
@@ -90,42 +92,6 @@ function ProjectList() {
     }
   };
 
-  const sortedProjects = projects.slice().sort((a, b) => {
-    const dateA = new Date(a[sortField]);
-    const dateB = new Date(b[sortField]);
-
-    if (sortOrder === 'desc') {
-      return dateB - dateA;
-    } else {
-      return dateA - dateB;
-    }
-  });
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, projects.length);
-  const projectsToShow = sortedProjects.slice(startIndex, endIndex);
-
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < projects.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
-
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
   };
@@ -136,6 +102,7 @@ function ProjectList() {
   return (
     <div className="projectlist">
       <Header title={'Проекты '} />
+
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
       <UpdateNameProject
         show={updateNameModal}
@@ -143,7 +110,6 @@ function ProjectList() {
         setChange={setChange}
         id={project}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <UpdateNumberProject
         show={updateNumberProjectModal}
@@ -151,7 +117,6 @@ function ProjectList() {
         setChange={setChange}
         id={project}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <UpdateDateProject
         show={updateDateProject}
@@ -159,21 +124,25 @@ function ProjectList() {
         setChange={setChange}
         id={project}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">
           <Button className="me-3 my-2" onClick={() => setCreateShow(true)}>
             Добавить проект
           </Button>
-          <Link to="/desing">
-            <Button className="me-3 my-2">Проектирование</Button>
-          </Link>
-          <Link to="/procurement">
-            <Button className="me-3 my-2">Закупки</Button>
-          </Link>
         </Col>
       </Row>
+      <Col className="mt-3" sm={2}>
+        <Form className="d-flex">
+          <Form.Control
+            type="search"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={handleSearch}
+            aria-label="Search"
+          />
+        </Form>
+      </Col>
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
@@ -195,7 +164,8 @@ function ProjectList() {
             </tr>
           </thead>
           <tbody>
-            {projectsToShow
+            {filteredProjects
+              .slice()
               .sort((a, b) => {
                 const dateA = new Date(a[sortField]);
                 const dateB = new Date(b[sortField]);
@@ -235,7 +205,6 @@ function ProjectList() {
           </tbody>
         </Table>
       </div>
-      <Pagination>{pages}</Pagination>
     </div>
   );
 }

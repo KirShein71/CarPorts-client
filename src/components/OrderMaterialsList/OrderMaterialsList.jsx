@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Table, Spinner, Button, Pagination, Col, Form } from 'react-bootstrap';
+import { Table, Spinner, Button, Col, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { fetchAllProjectMaterials, deleteProjectMaterials } from '../../http/projectMaterialsApi';
 import CreateCheck from './modals/createCheck';
 import moment from 'moment';
@@ -23,50 +24,37 @@ function OrderMaterialsList() {
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 15;
+  const [filteredProjectMaterials, setFilteredProjectMaterials] = React.useState([]);
   const [scrollPosition, setScrollPosition] = React.useState(0);
-  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
-    setCurrentPageUrl(currentPage);
     setUpdateShow(true);
   };
 
   const hadleReadyDate = (id) => {
     setProjectMaterials(id);
-    setCurrentPageUrl(currentPage);
     setReadyDateShow(true);
   };
 
   const hadleShippingDate = (id) => {
     setProjectMaterials(id);
-    setCurrentPageUrl(currentPage);
     setShippingDateShow(true);
   };
 
   const handlePaymentDate = (id) => {
     setProjectMaterials(id);
-    setCurrentPageUrl(currentPage);
     setPaymentDateShow(true);
   };
 
   const handleCreateMaterial = (project) => {
     setProject(project);
-    setCurrentPageUrl(currentPage);
     setCreateMaterial(true);
   };
 
   React.useEffect(() => {
     fetchAllProjectMaterials()
-      .then((data) => {
-        setProjectsMaterials(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(currentPage);
-      })
+      .then((data) => setProjectsMaterials(data))
       .finally(() => setFetching(false));
   }, [change]);
 
@@ -94,37 +82,16 @@ function OrderMaterialsList() {
     }
   };
 
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, projectsMaterials.length);
-  const projectsMaterialsToShow = projectsMaterials
-    .filter((material) => material.project.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .slice(startIndex, endIndex);
-
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < projectsMaterials.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
+  React.useEffect(() => {
+    const filtered = projectsMaterials.filter((projectMaterials) =>
+      projectMaterials.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredProjectMaterials(filtered);
+  }, [projectsMaterials, searchQuery]);
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -145,13 +112,17 @@ function OrderMaterialsList() {
           />
         </Form>
       </Col>
+      <Link to="/procurement">
+        <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
+          &bull; Показать новые проекты
+        </div>
+      </Link>
       <CreateCheck
         id={projectMaterials}
         show={updateShow}
         setShow={setUpdateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <CreateReadyDate
         id={projectMaterials}
@@ -159,7 +130,6 @@ function OrderMaterialsList() {
         setShow={setReadyDateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <CreateShippingDate
         id={projectMaterials}
@@ -167,7 +137,6 @@ function OrderMaterialsList() {
         setShow={setShippingDateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <CreatePaymentDate
         id={projectMaterials}
@@ -175,7 +144,6 @@ function OrderMaterialsList() {
         setShow={setPaymentDateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <CreateMaterial
         projectId={project}
@@ -183,10 +151,9 @@ function OrderMaterialsList() {
         setShow={setCreateMaterial}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <>
-        {projectsMaterialsToShow.map((material) => (
+        {filteredProjectMaterials.map((material) => (
           <div key={material.id}>
             <div className="table-scrollable">
               <div className="ordermaterialslist__top">
@@ -291,7 +258,6 @@ function OrderMaterialsList() {
           </div>
         ))}
       </>
-      <Pagination style={{ marginTop: '20px' }}>{pages}</Pagination>
     </div>
   );
 }

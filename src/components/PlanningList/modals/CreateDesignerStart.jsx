@@ -2,22 +2,20 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
 
-const defaultValue = { designer: '', design_start: '' };
+const defaultValue = { design_start: '' };
 const defaultValid = {
-  designer: null,
   design_start: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'designer') result.designer = value.designer.trim() !== '';
     if (key === 'design_start') result.design_start = value.design_start.trim() !== '';
   }
   return result;
 };
 
-const CreateDesing = (props) => {
+const CreateDesingStart = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -27,7 +25,6 @@ const CreateDesing = (props) => {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
-            designer: data.designer ? data.designer.toString() : '',
             design_start: data.cadesign_start ? data.cadesign_start.toString() : '',
           };
           setValue(prod);
@@ -54,15 +51,13 @@ const CreateDesing = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.designer && correct.design_start) {
+    if (correct.design_start) {
       const data = new FormData();
-      data.append('designer', value.designer.trim());
       data.append('design_start', value.design_start.trim());
 
       updateProject(id, data)
         .then((data) => {
           const prod = {
-            designer: data.designer.toString(),
             design_start: data.cadesign_start.toString(),
           };
           setValue(prod);
@@ -89,50 +84,21 @@ const CreateDesing = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Проектирование</Modal.Title>
+        <Modal.Title>Дата начала проектирования</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="designer"
-                value={value.designer}
+                name="design_start"
+                value={value.design_start}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.designer === true}
-                isInvalid={valid.designer === false}
-                placeholder="Конструктор"
+                isValid={valid.design_start === true}
+                isInvalid={valid.design_start === false}
+                placeholder="Дата начала проектирования"
+                type="date"
               />
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
-                <>
-                  <label for="design_start">Дата начала проектирования</label>
-                  <Form.Control
-                    id="design_start"
-                    name="design_start"
-                    value={value.design_start}
-                    onChange={(e) => handleInputChange(e)}
-                    isValid={valid.design_start === true}
-                    isInvalid={valid.design_start === false}
-                    type="date"
-                  />
-                </>
-              ) : (
-                <Form.Control
-                  name="design_start"
-                  value={value.design_start}
-                  onChange={(e) => handleInputChange(e)}
-                  isValid={valid.design_start === true}
-                  isInvalid={valid.design_start === false}
-                  placeholder="Дата начала проектирования"
-                  type="text"
-                  onFocus={(e) => (e.target.type = 'date')}
-                  onBlur={(e) => (e.target.type = 'text')}
-                />
-              )}
             </Col>
           </Row>
           <Row>
@@ -146,4 +112,4 @@ const CreateDesing = (props) => {
   );
 };
 
-export default CreateDesing;
+export default CreateDesingStart;

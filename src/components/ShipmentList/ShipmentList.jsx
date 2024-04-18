@@ -23,17 +23,11 @@ function ShipmentList() {
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [sortField, setSortField] = React.useState('shipment_date');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 15;
 
   React.useEffect(() => {
     fetchAllShipmentDetails()
       .then((data) => {
         setShipmentDetails(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(1);
       })
       .finally(() => setFetching(false));
   }, [change]);
@@ -56,7 +50,6 @@ function ShipmentList() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const handleDeleteShipmentDetails = (projectId) => {
@@ -96,31 +89,6 @@ function ShipmentList() {
       return dateA - dateB;
     }
   });
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, shipmentDetails.length);
-  const stockDetailsToShow = sortedShipmentDetails.slice(startIndex, endIndex);
-
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < shipmentDetails.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -180,7 +148,7 @@ function ShipmentList() {
             </tr>
           </thead>
           <tbody>
-            {stockDetailsToShow
+            {sortedShipmentDetails
               .filter((shipment) =>
                 shipment.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
               )
@@ -226,7 +194,6 @@ function ShipmentList() {
               ))}
           </tbody>
         </Table>
-        {shipmentDetails.length > 15 ? <Pagination>{pages}</Pagination> : ''}
       </div>
     </div>
   );

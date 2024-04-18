@@ -1,37 +1,31 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import {
-  createPaymentDateProjectMaterials,
-  fetchOneProjectMaterials,
-  deletePaymentDateProjectMaterials,
-} from '../../../http/projectMaterialsApi';
-import { useNavigate } from 'react-router-dom';
+import { createPlanFinish, fetchOneProjectBrigades } from '../../../http/projectBrigadesApi';
 
-const defaultValue = { date_payment: '' };
+const defaultValue = { plan_finish: '' };
 const defaultValid = {
-  date_payment: null,
+  plan_finish: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'date_payment') result.date_payment = value.date_payment;
+    if (key === 'plan_finish') result.plan_finish = value.plan_finish;
   }
   return result;
 };
 
-const CreatePaymentDate = (props) => {
-  const { id, show, setShow, setChange, scrollPosition } = props;
+const CreatePlanFinishDate = (props) => {
+  const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
-      fetchOneProjectMaterials(id)
+      fetchOneProjectBrigades(id)
         .then((data) => {
           const prod = {
-            date_payment: data.date_payment.toString(),
+            plan_finish: data.plan_finish.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -52,27 +46,22 @@ const CreatePaymentDate = (props) => {
     setValid(isValid(data));
   };
 
-  const handleCloseModal = () => {
-    setShow(false);
-    window.scrollTo(0, scrollPosition);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.date_payment) {
+    if (correct.plan_finish) {
       const data = new FormData();
-      data.append('date_payment', value.date_payment.trim());
-      createPaymentDateProjectMaterials(id, data)
+      data.append('plan_finish', value.plan_finish.trim());
+      createPlanFinish(id, data)
         .then((data) => {
           const prod = {
-            date_payment: data.date_payment.toString(),
+            plan_finish: data.plan_finish.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
-          handleCloseModal();
+          setShow(false);
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -81,19 +70,6 @@ const CreatePaymentDate = (props) => {
             console.log('An error occurred');
           }
         });
-    }
-  };
-
-  const handleDeleteClick = () => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить дату платежа?');
-    if (confirmed) {
-      deletePaymentDateProjectMaterials(id) // Передаем параметр id для удаления
-        .then(() => {
-          alert('Дата платежа была удален');
-          setShow(false);
-          setChange((state) => !state);
-        })
-        .catch((error) => alert(error.response.data.message));
     }
   };
 
@@ -106,19 +82,19 @@ const CreatePaymentDate = (props) => {
       size="md"
       className="modal__readydate">
       <Modal.Header closeButton>
-        <Modal.Title>Внести дату платежа</Modal.Title>
+        <Modal.Title>Наш план оканчания работ</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="date_payment"
-                value={value.date_payment}
+                name="plan_finish"
+                value={value.plan_finish}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.date_payment === true}
-                isInvalid={valid.date_payment === false}
-                placeholder="Дата платежа"
+                isValid={valid.plan_finish === true}
+                isInvalid={valid.plan_finish === false}
+                placeholder="Дата окончания работ"
                 type="date"
               />
             </Col>
@@ -128,9 +104,6 @@ const CreatePaymentDate = (props) => {
               <Button className="me-3 mb-3" type="submit">
                 Сохранить
               </Button>
-              <Button className="mb-3" variant="danger" onClick={() => handleDeleteClick()}>
-                Удалить
-              </Button>
             </Col>
           </Row>
         </Form>
@@ -139,4 +112,4 @@ const CreatePaymentDate = (props) => {
   );
 };
 
-export default CreatePaymentDate;
+export default CreatePlanFinishDate;

@@ -3,18 +3,21 @@ import Header from '../Header/Header';
 import CreateProjectDelivery from './modals/CreateProjectDelivery';
 import CreateDateInspection from './modals/CreateDateInspection';
 import CreateInspectionDesigner from './modals/CreateInspectionDisegner';
+import CreateDesignerStart from './modals/CreateDesignerStart';
 import UpdateDesigner from './modals/UpdateDisegner';
 import UpdateNote from './modals/UpdateNote';
 import { fetchAllProjects } from '../../http/projectApi';
-import { Spinner, Table, Pagination, Form, Col } from 'react-bootstrap';
+import { Spinner, Table, Form, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
+import Checkbox from './Checkbox';
 
 function PlanningList() {
   const [projects, setProjects] = React.useState([]);
   const [project, setProject] = React.useState(null);
   const [change, setChange] = React.useState(true);
   const [updateShow, setUpdateShow] = React.useState(false);
+  const [createDesignerStart, setCreateDesignerStart] = React.useState(false);
   const [createDateInspectionModal, setCreateDateInspectionModal] = React.useState(false);
   const [createInspectionDesignerModal, setCreateInspectionDesignerModal] = React.useState(false);
   const [updateDisegnerModal, setUpdateDisegnerModal] = React.useState(false);
@@ -23,39 +26,37 @@ function PlanningList() {
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 20;
   const [scrollPosition, setScrollPosition] = React.useState(0);
-  const [currentPageUrl, setCurrentPageUrl] = React.useState(currentPage);
+  const [filteredProjects, setFilteredProjects] = React.useState([]);
+  const [projectNoDesignerChechbox, setProjectNoDesignerCheckbox] = React.useState(false);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateShow(true);
+  };
+
+  const handleCreateDesignerStart = (id) => {
+    setProject(id);
+    setCreateDesignerStart(true);
   };
 
   const handleCreateDateInspection = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setCreateDateInspectionModal(true);
   };
 
   const handleCreateInspectionDesigner = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setCreateInspectionDesignerModal(true);
   };
 
   const handleUpdateDisegnerModal = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateDisegnerModal(true);
   };
 
   const handleUpdateNote = (id) => {
     setProject(id);
-    setCurrentPageUrl(currentPage);
     setUpdateNote(true);
   };
 
@@ -63,9 +64,6 @@ function PlanningList() {
     fetchAllProjects()
       .then((data) => {
         setProjects(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(currentPage);
       })
       .finally(() => setFetching(false));
   }, [change]);
@@ -90,48 +88,25 @@ function PlanningList() {
     }
   };
 
-  const sortedProjects = projects.slice().sort((a, b) => {
-    const dateA = new Date(a[sortField]);
-    const dateB = new Date(b[sortField]);
-
-    if (sortOrder === 'desc') {
-      return dateB - dateA;
-    } else {
-      return dateA - dateB;
-    }
-  });
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, projects.length);
-  const projectsToShow = sortedProjects
-    .filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .slice(startIndex, endIndex);
+  React.useEffect(() => {
+    const filtered = projects.filter((project) =>
+      project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+    setFilteredProjects(filtered);
+  }, [projects, searchQuery]);
 
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < projects.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
+  const handleNoDesignerCheckboxChange = () => {
+    const updatedValue = !projectNoDesignerChechbox;
+    setProjectNoDesignerCheckbox(updatedValue);
+    const filtered = updatedValue
+      ? projects.filter((project) => project.designer === null)
+      : projects;
+    setFilteredProjects(filtered);
+  };
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -147,7 +122,7 @@ function PlanningList() {
             placeholder="Поиск"
             value={searchQuery}
             onChange={handleSearch}
-            className="me-2"
+            className="mb-2"
             aria-label="Search"
           />
         </Form>
@@ -158,7 +133,13 @@ function PlanningList() {
         setShow={setUpdateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
+      />
+      <CreateDesignerStart
+        id={project}
+        show={createDesignerStart}
+        setShow={setCreateDesignerStart}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
       />
       <CreateDateInspection
         id={project}
@@ -166,7 +147,6 @@ function PlanningList() {
         setShow={setCreateDateInspectionModal}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <CreateInspectionDesigner
         id={project}
@@ -174,7 +154,6 @@ function PlanningList() {
         setShow={setCreateInspectionDesignerModal}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <UpdateDesigner
         id={project}
@@ -182,7 +161,6 @@ function PlanningList() {
         setShow={setUpdateDisegnerModal}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
       />
       <UpdateNote
         id={project}
@@ -190,7 +168,11 @@ function PlanningList() {
         setShow={setUpdateNote}
         setChange={setChange}
         scrollPosition={scrollPosition}
-        currentPageUrl={currentPageUrl}
+      />
+      <Checkbox
+        projectNoDesignerChechbox={projectNoDesignerChechbox}
+        handleNoDesignerCheckboxChange={handleNoDesignerCheckboxChange}
+        name={'Новые проекты'}
       />
       <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
@@ -211,6 +193,7 @@ function PlanningList() {
               </th>
               <th>Срок проектирования</th>
               <th>Дедлайн</th>
+              <th>Дата начала</th>
               <th>Дата сдачи</th>
               <th>Дата проверки</th>
               <th>Осталось дней</th>
@@ -219,104 +202,142 @@ function PlanningList() {
             </tr>
           </thead>
           <tbody>
-            {projectsToShow.map((item) => (
-              <tr key={item.id}>
-                <td>{item.number}</td>
-                <td className="td_column">{item.name}</td>
-                <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
-                  {item.note}
-                </td>
-                <td>
-                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                </td>
-                <td>{item.design_period}</td>
-                <td>
-                  {moment(item.agreement_date, 'YYYY/MM/DD')
-                    .businessAdd(item.design_period, 'days')
-                    .format('DD.MM.YYYY')}
-                </td>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleUpdateProjectDelivery(item.id)}>
-                  {item.project_delivery ? (
-                    <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
-                  ) : (
-                    <span
-                      style={{
-                        color: 'red',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}>
-                      +
-                    </span>
-                  )}
-                </td>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleCreateDateInspection(item.id)}>
-                  {item.date_inspection ? (
-                    <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
-                      {item.date_inspection}
-                    </Moment>
-                  ) : (
-                    <span
-                      style={{
-                        color: 'red',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}>
-                      +
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {(() => {
-                    const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
-                      item.design_period,
-                      'days',
-                    );
+            {filteredProjects
+              .slice()
+              .sort((a, b) => {
+                const dateA = new Date(a[sortField]);
+                const dateB = new Date(b[sortField]);
 
-                    function subtractDaysUntilZero(targetDate) {
-                      const today = moment();
-                      let daysLeft = 0;
+                if (sortOrder === 'desc') {
+                  return dateB - dateA;
+                } else {
+                  return dateA - dateB;
+                }
+              })
+              .map((item) => (
+                <tr key={item.id}>
+                  <td>{item.number}</td>
+                  <td className="td_column">{item.name}</td>
+                  <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
+                    {item.note}
+                  </td>
+                  <td>
+                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                  </td>
+                  <td>{item.design_period}</td>
+                  <td>
+                    {moment(item.agreement_date, 'YYYY/MM/DD')
+                      .businessAdd(item.design_period, 'days')
+                      .format('DD.MM.YYYY')}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleCreateDesignerStart(item.id)}>
+                    {item.design_start ? (
+                      <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
+                    ) : (
+                      <span
+                        style={{
+                          color: 'red',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}>
+                        +
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleUpdateProjectDelivery(item.id)}>
+                    {item.project_delivery ? (
+                      <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
+                    ) : (
+                      <span
+                        style={{
+                          color: 'red',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}>
+                        +
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleCreateDateInspection(item.id)}>
+                    {item.date_inspection ? (
+                      <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
+                        {item.date_inspection}
+                      </Moment>
+                    ) : (
+                      <span
+                        style={{
+                          color: 'red',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}>
+                        +
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {(() => {
+                      const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                        item.design_period,
+                        'days',
+                      );
 
-                      while (targetDate.diff(today, 'days') > 0) {
-                        daysLeft++;
-                        targetDate.subtract(1, 'day');
+                      function subtractDaysUntilZero(targetDate) {
+                        const today = moment();
+                        let daysLeft = 0;
+
+                        while (targetDate.diff(today, 'days') > 0) {
+                          daysLeft++;
+                          targetDate.subtract(1, 'day');
+                        }
+
+                        return daysLeft;
                       }
 
-                      return daysLeft;
-                    }
-
-                    return subtractDaysUntilZero(targetDate);
-                  })()}
-                </td>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleUpdateDisegnerModal(item.id)}>
-                  {item.designer}
-                </td>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleCreateInspectionDesigner(item.id)}>
-                  {item.inspection_designer ? (
-                    <div>{item.inspection_designer}</div>
-                  ) : (
-                    <span
-                      style={{
-                        color: 'red',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}>
-                      +
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
+                      return subtractDaysUntilZero(targetDate);
+                    })()}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleUpdateDisegnerModal(item.id)}>
+                    {item.designer ? (
+                      <div>{item.designer}</div>
+                    ) : (
+                      <span
+                        style={{
+                          color: 'red',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}>
+                        +
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleCreateInspectionDesigner(item.id)}>
+                    {item.inspection_designer ? (
+                      <div>{item.inspection_designer}</div>
+                    ) : (
+                      <span
+                        style={{
+                          color: 'red',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}>
+                        +
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
-        <Pagination>{pages}</Pagination>
       </div>
     </div>
   );

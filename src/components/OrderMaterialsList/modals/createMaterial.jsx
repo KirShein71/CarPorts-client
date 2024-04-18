@@ -26,7 +26,7 @@ const isValid = (value) => {
 };
 
 const CreateMaterial = (props) => {
-  const { show, setShow, setChange, projectId, scrollPosition, currentPageUrl } = props;
+  const { show, setShow, setChange, projectId, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [materials, setMaterials] = React.useState(null);
@@ -60,7 +60,6 @@ const CreateMaterial = (props) => {
   const handleCloseModal = () => {
     setShow(false);
     window.scrollTo(0, scrollPosition);
-    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
   };
 
   const handleSaveMaterials = () => {

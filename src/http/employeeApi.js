@@ -25,6 +25,11 @@ export const createAccountEmployee = async (employee) => {
         return data
     }
 
+    export const getManager = async () => {
+        const { data} = await guestInstance.get('employee/getManager')
+        return data
+    }
+
     export const deleteAccountEmployee = async (id) => {
         const { data } = await guestInstance.delete(`employee/delete/${id}`)
         return data

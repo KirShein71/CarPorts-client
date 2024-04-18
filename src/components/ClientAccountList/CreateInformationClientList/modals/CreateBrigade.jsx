@@ -28,12 +28,8 @@ const CreateBrigade = (props) => {
     if (id) {
       getOneAccount(id)
         .then((res) => {
-          const prod = {
-            manager: res.manager.toString(),
-            phone_manager: res.phone_manager,
-          };
-          setValue(prod);
-          setValid(isValid(prod));
+          setValue(defaultValue);
+          setValid(isValid(defaultValue));
         })
         .catch((error) => {
           if (error.response && error.response.data) {

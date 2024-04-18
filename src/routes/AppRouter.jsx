@@ -6,7 +6,6 @@ import Production from '../pages/Production';
 import Payment from '../pages/Payment';
 import Project from '../pages/Project';
 import Team from '../pages/Team';
-import Desing from '../pages/Desing';
 import Procurement from '../pages/Procurement';
 import ProjectInfo from '../pages/ProjectInfo';
 import ProductionChange from '../pages/ProductionChange';
@@ -39,7 +38,6 @@ const employeeRoutes = [
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/team', Component: Team },
-  { path: '/desing', Component: Desing },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
   { path: '/productionchange', Component: ProductionChange },
@@ -64,7 +62,6 @@ const adminRoutes = [
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/team', Component: Team },
-  { path: '/desing', Component: Desing },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
   { path: '/productionchange', Component: ProductionChange },

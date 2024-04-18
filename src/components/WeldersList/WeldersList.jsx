@@ -26,17 +26,11 @@ function WeldersList() {
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('stock_date');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(0);
-  const itemsPerPage = 20;
 
   React.useEffect(() => {
     fetchAllStockDetails()
       .then((data) => {
         setStockDetails(data);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        setTotalPages(totalPages);
-        setCurrentPage(1);
       })
       .finally(() => setFetching(false));
   }, [change]);
@@ -62,7 +56,6 @@ function WeldersList() {
   };
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const handleDeleteStockDetails = (stock_date) => {
@@ -96,31 +89,6 @@ function WeldersList() {
       return dateA - dateB;
     }
   });
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, stockDetails.length);
-  const stockDetailsToShow = sortedStockDetails.slice(startIndex, endIndex);
-
-  const pages = [];
-  for (let page = 1; page <= totalPages; page++) {
-    const startIndex = (page - 1) * itemsPerPage;
-
-    if (startIndex < stockDetails.length) {
-      pages.push(
-        <Pagination.Item
-          key={page}
-          active={page === currentPage}
-          activeLabel=""
-          onClick={() => handlePageClick(page)}>
-          {page}
-        </Pagination.Item>,
-      );
-    }
-  }
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -184,7 +152,7 @@ function WeldersList() {
             </tr>
           </thead>
           <tbody>
-            {stockDetailsToShow
+            {sortedStockDetails
               .filter((stock) => {
                 const searchValue = searchQuery.toLowerCase();
                 const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
@@ -226,7 +194,6 @@ function WeldersList() {
               ))}
           </tbody>
         </Table>
-        {stockDetails.length > 15 ? <Pagination>{pages}</Pagination> : ''}
       </div>
     </div>
   );

@@ -8,10 +8,13 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import CreatePlanStartDate from './modals/CreatePlanStartDate';
+import CreatePlanFinishDate from './modals/CreateFinishDate';
 import './InstallationList.styles.scss';
 
 function InstallationList() {
   const [projectsBrigades, setProjectsBrigades] = React.useState([]);
+  const [projectBrigades, setProjectBrigades] = React.useState(null);
   const [brigades, setBrigades] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [showCalendar, setShowCalendar] = React.useState(false);
@@ -19,6 +22,9 @@ function InstallationList() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [openModal, setOpenModal] = React.useState(false);
   const [selectedBrigade, setSelectedBrigade] = React.useState(null);
+  const [createStartDateModal, setCreateStartDateModal] = React.useState(false);
+  const [createFinishDateModal, setCreateFinishDateModal] = React.useState(false);
+  const [change, setChange] = React.useState(true);
 
   const modalRef = React.useRef();
 
@@ -31,7 +37,7 @@ function InstallationList() {
         setBrigades(data);
       })
       .finally(() => setFetching(false));
-  }, []);
+  }, [change]);
 
   React.useEffect(() => {
     const hadleClickOutside = (e) => {
@@ -65,6 +71,16 @@ function InstallationList() {
     setOpenModal(!openModal);
   };
 
+  const hadleCreateStartDate = (id) => {
+    setProjectBrigades(id);
+    setCreateStartDateModal(true);
+  };
+
+  const hadleCreateFinishDate = (id) => {
+    setProjectBrigades(id);
+    setCreateFinishDateModal(true);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -75,6 +91,18 @@ function InstallationList() {
       <Link to="/appoint">
         <Button>Назначить бригаду</Button>
       </Link>
+      <CreatePlanStartDate
+        id={projectBrigades}
+        show={createStartDateModal}
+        setShow={setCreateStartDateModal}
+        setChange={setChange}
+      />
+      <CreatePlanFinishDate
+        id={projectBrigades}
+        show={createFinishDateModal}
+        setShow={setCreateFinishDateModal}
+        setChange={setChange}
+      />
       <Col className="mt-3" sm={2}>
         <Form className="d-flex">
           <Form.Control
@@ -155,10 +183,14 @@ function InstallationList() {
                           <tr key={prop.id}>
                             <th>{prop.projectNumber}</th>
                             <th>{prop.projectName}</th>
-                            <th>
+                            <th
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => hadleCreateStartDate(prop.id)}>
                               <Moment format="DD.MM.YYYY">{prop.plan_start}</Moment>
                             </th>
-                            <th>
+                            <th
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => hadleCreateFinishDate(prop.id)}>
                               <Moment format="DD.MM.YYYY">{prop.plan_finish}</Moment>
                             </th>
                             <th>

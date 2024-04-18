@@ -1,9 +1,8 @@
 import React from 'react';
 import { getAllWithNoMaterials } from '../../http/projectApi';
-import { Spinner, Table, Button } from 'react-bootstrap';
+import { Spinner, Button, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CreateProcurement from './modals/CreateProcurement';
-import Moment from 'react-moment';
 
 function ProcurementList() {
   const [projects, setProjects] = React.useState([]);
@@ -29,10 +28,10 @@ function ProcurementList() {
   return (
     <div className="procurementlist">
       <div className="header">
-        <Link to="/project">
+        <Link to="/ordermaterials">
           <img className="header__icon" src="./back.png" alt="back" />
         </Link>
-        <h1 className="header__title">Закупки</h1>
+        <h1 className="header__title">Новые проекты</h1>
       </div>
       <CreateProcurement
         projectId={project}
@@ -41,26 +40,27 @@ function ProcurementList() {
         setChange={setChange}
       />
       <div className="table-scrollable">
-        <Table bordered hover size="sm" className="mt-3">
+        <Table striped bordered size="sm" className="mt-3">
           <thead>
             <tr>
-              <th className="production_column">Номер проекта</th>
+              <th>Номер</th>
               <th>Название</th>
-              <th>Дата договора</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {projects.map((item) => (
-              <tr key={item.id}>
-                <td className="production_column">{item.number}</td>
-                <td>{item.name}</td>
+            {projects.map((project) => (
+              <tr key={project.id}>
+                <td>{project.number}</td>
+                <td>{project.name}</td>
                 <td>
-                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                </td>
-                <td>
-                  <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
-                    Внести изменения
+                  <Button
+                    size="sm"
+                    className="ms-3"
+                    variant="primary"
+                    style={{ whiteSpace: 'nowrap' }}
+                    onClick={() => handleUpdateClick(project.id)}>
+                    Добавить материал
                   </Button>
                 </td>
               </tr>

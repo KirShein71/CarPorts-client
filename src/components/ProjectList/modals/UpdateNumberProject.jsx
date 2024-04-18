@@ -17,7 +17,7 @@ const isValid = (value) => {
 };
 
 const UpdateNumberProject = (props) => {
-  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
+  const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const navigate = useNavigate();
@@ -51,7 +51,6 @@ const UpdateNumberProject = (props) => {
   const handleCloseModal = () => {
     setShow(false);
     window.scrollTo(0, scrollPosition);
-    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
   };
 
   const handleSubmit = async (event) => {
