@@ -4,7 +4,6 @@ import {
   createReadyDateProjectMaterials,
   fetchOneProjectMaterials,
 } from '../../../http/projectMaterialsApi';
-import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { ready_date: '' };
 const defaultValid = {
@@ -23,7 +22,6 @@ const CreateReadyDate = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {

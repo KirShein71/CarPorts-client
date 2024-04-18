@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
+import { Button, Table, Spinner, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fetchAllProjectDetails, deleteProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';

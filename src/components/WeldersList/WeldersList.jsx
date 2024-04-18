@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Button, Table, Spinner, Pagination, Col, Form } from 'react-bootstrap';
+import { Button, Table, Spinner, Col, Form } from 'react-bootstrap';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { fetchAllStockDetails, deleteStockDetails } from '../../http/stockDetailsApi';
 import CreateStockDetails from './modals/createStockDetails';
@@ -18,7 +18,6 @@ function WeldersList() {
   const [updateDetailsModal, setUpdateDetailsModal] = React.useState(false);
   const [createOneStockDetailModal, setCreateOneStockDetailModal] = React.useState(false);
   const [createStockAntypical, setCreateStockAntypical] = React.useState(false);
-  const [stockAntypical, setStockAntypical] = React.useState([]);
   const [detailId, setDetailId] = React.useState(null);
   const [stockDate, setStockDate] = React.useState(null);
   const [change, setChange] = React.useState(true);

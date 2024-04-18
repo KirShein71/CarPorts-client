@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchMaterials } from '../../../http/materialsApi';
 import { createProjectMaterials } from '../../../http/projectMaterialsApi';
-import { useNavigate } from 'react-router-dom';
 
 const defaultValue = {
   material: '',
@@ -31,7 +30,6 @@ const CreateMaterial = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const [materials, setMaterials] = React.useState(null);
   const [selectedMaterials, setSelectedMaterials] = React.useState([]);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchMaterials().then((data) => setMaterials(data));

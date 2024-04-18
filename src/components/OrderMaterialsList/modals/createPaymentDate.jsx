@@ -5,7 +5,6 @@ import {
   fetchOneProjectMaterials,
   deletePaymentDateProjectMaterials,
 } from '../../../http/projectMaterialsApi';
-import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { date_payment: '' };
 const defaultValid = {
@@ -24,7 +23,6 @@ const CreatePaymentDate = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (id) {
