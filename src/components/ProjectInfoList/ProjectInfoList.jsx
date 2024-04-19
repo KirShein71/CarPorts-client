@@ -16,6 +16,16 @@ function ProjectInfoList() {
     fetchProjectMaterials(id).then((data) => setProjectMaterials(data));
   }, [id]);
 
+  //   const handleFinishProject = (id) => {
+  //     if (project.date_finish !== null) {
+  //       return;
+  //     }
+  //     setProject(id);
+  //     createDateFinish(id, { date_finish: new Date().toISOString() }).catch((error) =>
+  //       alert(error.response.data.message),
+  //     );
+  //   };
+
   if (!project) {
     return <Spinner />;
   }
@@ -149,6 +159,11 @@ function ProjectInfoList() {
             ))}
           </tbody>
         </Table>
+        {/* <Button
+          onClick={() => handleFinishProject(project.id)}
+          disabled={project.date_finish !== null}>
+          Завершить проект
+        </Button> */}
       </div>
     </div>
   );

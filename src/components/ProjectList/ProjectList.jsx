@@ -6,7 +6,7 @@ import UpdateNumberProject from './modals/UpdateNumberProject';
 import UpdateDateProject from './modals/UpdateDateProject';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Moment from 'react-moment';
 
 function ProjectList() {
@@ -143,6 +143,11 @@ function ProjectList() {
           />
         </Form>
       </Col>
+      <Link to="/finishproject">
+        <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
+          &bull; Показать завершенные проекты
+        </div>
+      </Link>
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>

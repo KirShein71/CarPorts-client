@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.scss';
 
-function Checkbox({ handleNoDesignerCheckboxChange, projectNoDesignerChechbox, name }) {
+function Checkbox({ handle, change, name }) {
   return (
     <div className="checkbox" style={{ display: 'flex' }}>
       <div class="cntr">
@@ -10,9 +10,9 @@ function Checkbox({ handleNoDesignerCheckboxChange, projectNoDesignerChechbox, n
             id="cbxNoDesigner"
             type="checkbox"
             class="invisible"
-            checked={projectNoDesignerChechbox}
+            checked={change}
             onChange={() => {
-              handleNoDesignerCheckboxChange();
+              handle();
             }}
           />
           <div class="checkbox">

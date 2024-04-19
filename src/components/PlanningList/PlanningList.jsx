@@ -10,7 +10,7 @@ import { fetchAllProjects } from '../../http/projectApi';
 import { Spinner, Table, Form, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
-import Checkbox from './Checkbox';
+import Checkbox from '../Checkbox/Checkbox';
 
 function PlanningList() {
   const [projects, setProjects] = React.useState([]);
@@ -170,8 +170,8 @@ function PlanningList() {
         scrollPosition={scrollPosition}
       />
       <Checkbox
-        projectNoDesignerChechbox={projectNoDesignerChechbox}
-        handleNoDesignerCheckboxChange={handleNoDesignerCheckboxChange}
+        change={projectNoDesignerChechbox}
+        handle={handleNoDesignerCheckboxChange}
         name={'Новые проекты'}
       />
       <div className="table-container">
