@@ -1,13 +1,10 @@
 import React from 'react';
-import CardTabs from '../CardTabs/CardTabs';
-import './HomeContent.styles.scss';
+import HomePage from '../HomePage/HomePageList';
 
 function HomeContent() {
   return (
     <div className="homecontent">
-      <div className="homecontent__content">
-        <CardTabs />
-      </div>
+      <HomePage />
     </div>
   );
 }

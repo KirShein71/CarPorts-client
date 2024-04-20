@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '../Logo/Logo';
+
 import { Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import CreateProject from './modals/CreateProject';
@@ -23,7 +23,6 @@ function HomePageList() {
         setShow={setCreateProjectModal}
         setChange={setChange}
       />
-      <Logo />
       <div className="homepage">
         <Counter />
         <div className="homepage__content">

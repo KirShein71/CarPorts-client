@@ -24,7 +24,7 @@ import WorkingPage from '../pages/Workingpage';
 import Adding from '../pages/Adding';
 import ClientAccount from '../pages/ClientAccount';
 import CreateInformationClient from '../pages/CreateInformationClient';
-import HomePage from '../pages/HomePage';
+
 import FinishProject from '../pages/FinishProject';
 
 import { observer } from 'mobx-react';
@@ -83,7 +83,6 @@ const adminRoutes = [
   { path: '/admin', Component: Admin },
   { path: '/workingpage', Component: WorkingPage },
   { path: '/adding', Component: Adding },
-  { path: '/homepage', Component: HomePage },
   { path: '/finishproject', Component: FinishProject },
 ];
 
