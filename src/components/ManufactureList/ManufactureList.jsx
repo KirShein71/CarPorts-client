@@ -167,7 +167,7 @@ function ManufactureList() {
                           undefined
                           ? produce.props.find((el) => el.detailId === part.id).produceDifference <
                             0
-                            ? 0
+                            ? ''
                             : produce.props.find((el) => el.detailId === part.id).produceDifference
                           : produce.props.find((el) => el.detailId === part.id).projectSum
                         : ''}
@@ -187,7 +187,7 @@ function ManufactureList() {
                       {over.props.find((el) => el.detailId === part.id)
                         ? over.props.find((el) => el.detailId === part.id)
                             .overproductionDifference < 0
-                          ? 0
+                          ? ''
                           : over.props.find((el) => el.detailId === part.id)
                               .overproductionDifference
                         : ''}
