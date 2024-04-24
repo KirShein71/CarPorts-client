@@ -71,6 +71,13 @@ export const createAccount = async (user) => {
         return data
     }
 
+    export const createMainImage = async (id, user) => {
+        const { data } = await guestInstance.put(`user/createMainImage/${id}`, user)
+        return data
+    }
+
+   
+
     export const deleteUser = async(id) => {
         const { data } = await guestInstance.delete(`user/delete/${id}`);
         return data

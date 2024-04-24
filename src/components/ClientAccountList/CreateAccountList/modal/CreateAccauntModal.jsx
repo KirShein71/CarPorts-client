@@ -91,7 +91,7 @@ const CreateAccountModal = (props) => {
                 onClick={handleInputClick}
                 isValid={valid.password === true}
                 isInvalid={valid.password === false}
-                placeholder="Ввидите пароль"
+                placeholder="Введите пароль"
               />
             </Col>
           </Row>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header/Header';
 import { Table, Spinner } from 'react-bootstrap';
-import { getSumOneDetail, getCostPriceOneDetail } from '../../http/stockDetailsApi';
+import { getSumOneDetail } from '../../http/stockDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { getSumOneShipmentDetail } from '../../http/shipmentDetailsApi';
 import { getAllRemainderOneDetail } from '../../http/remainderDetailsApi';
@@ -15,7 +15,6 @@ import './styles.scss';
 function ManufactureList() {
   const [nameDetails, setNameDatails] = React.useState([]);
   const [sumStockDetail, setSumStockDetail] = React.useState([]);
-  const [costPriceDetail, setCostPriceDetail] = React.useState([]);
   const [sumShipmentDetail, setSumShipmentDetail] = React.useState([]);
   const [overproductionDetail, SetOverproductionDetail] = React.useState([]);
   const [produceDetail, setProduceDetail] = React.useState([]);
@@ -36,7 +35,6 @@ function ManufactureList() {
       getProduceOneDetail(),
       getWaitShipmentProjectOneDetail(),
       getWaitShipment(),
-      getCostPriceOneDetail(),
     ])
       .then(
         ([
@@ -59,7 +57,6 @@ function ManufactureList() {
           setProduceDetail(produceDetail);
           setWaitShipmentDetail(waitShipmentDetail);
           setWaitShipmentAllOneDetail(waitShipmentAllOneDetail);
-          setCostPriceDetail(costPriceDetail);
         },
       )
       .finally(() => setFetching(false));
@@ -93,22 +90,6 @@ function ManufactureList() {
             </tr>
           </thead>
           <tbody>
-            {costPriceDetail.map((costPrice) => (
-              <tr key={costPrice.id}>
-                <td></td>
-                <td className="manufacture_column">Себестоимость</td>
-                {nameDetails
-                  .sort((a, b) => a.id - b.id)
-                  .map((part) => (
-                    <td key={part.id}>
-                      {costPrice.props.concat().find((el) => el.detailId === part.id)
-                        ? costPrice.props.concat().find((el) => el.detailId === part.id).totalPrice
-                        : 0}
-                    </td>
-                  ))}
-                <td></td>
-              </tr>
-            ))}
             {sumStockDetail.map((sum) => (
               <tr key={sum.id}>
                 <td></td>
@@ -119,7 +100,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {sum.props.concat().find((el) => el.detailId === part.id)
                         ? sum.props.concat().find((el) => el.detailId === part.id).totalSum
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -135,7 +116,7 @@ function ManufactureList() {
                     <td>
                       {sumShipment.props.find((el) => el.detailId === part.id)
                         ? sumShipment.props.find((el) => el.detailId === part.id).shipmentSum
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -151,7 +132,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {allWait.props.find((el) => el.detailId === part.id)
                         ? allWait.props.find((el) => el.detailId === part.id).waitShipmentDifference
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -167,7 +148,7 @@ function ManufactureList() {
                     <td key={part.id}>
                       {remainder.props.find((el) => el.detailId === part.id)
                         ? remainder.props.find((el) => el.detailId === part.id).remainderDifference
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -189,7 +170,7 @@ function ManufactureList() {
                             ? 0
                             : produce.props.find((el) => el.detailId === part.id).produceDifference
                           : produce.props.find((el) => el.detailId === part.id).projectSum
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -209,7 +190,7 @@ function ManufactureList() {
                           ? 0
                           : over.props.find((el) => el.detailId === part.id)
                               .overproductionDifference
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td></td>
@@ -228,7 +209,7 @@ function ManufactureList() {
                           null
                           ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity
                           : waitShipment.props.find((el) => el.detailId === part.id).quantity
-                        : 0}
+                        : ''}
                     </td>
                   ))}
                 <td>

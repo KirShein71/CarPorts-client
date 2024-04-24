@@ -64,6 +64,10 @@ export const fetchOneProject = async (id) => {
     return data
 }
 
+export const getProjectInfo = async (id) => {
+    const { data } = await guestInstance.get(`project/getProjectInfo/${id}`)
+    return data
+}
 
 
 export const deleteProject = async (id) => {

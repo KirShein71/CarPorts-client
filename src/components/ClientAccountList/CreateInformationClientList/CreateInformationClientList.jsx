@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getOneAccount } from '../../../http/userApi';
 import { getAllUserImageByUserId, deleteUserImage } from '../../../http/userImageApi';
 import { getAllUserFileByUserId, deleteUserFile } from '../../../http/userFileApi';
@@ -8,6 +8,7 @@ import CreateManager from './modals/CreateManager';
 import CreateBrigade from './modals/CreateBrigade';
 import CreateImage from './modals/CreateImages';
 import CreateFile from './modals/CreateFile';
+import CreateMainImage from './modals/CreateMainImage';
 
 function CreateInformatoinClientList() {
   const { id } = useParams();
@@ -19,6 +20,9 @@ function CreateInformatoinClientList() {
   const [imageCreateModal, setImageCreateModal] = React.useState(false);
   const [userFiles, setUserFiles] = React.useState([]);
   const [fileCreateModal, setFileCreateModal] = React.useState(false);
+  const [createMainImageModal, setCreateMainImageModal] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     getOneAccount(id).then((data) => setUser(data));
@@ -44,6 +48,11 @@ function CreateInformatoinClientList() {
   const handleCreateFile = (data) => {
     setUser(data);
     setFileCreateModal(true);
+  };
+
+  const handleCreateMainImage = (id) => {
+    setUser(id);
+    setCreateMainImageModal(true);
   };
 
   const handleDeleteImage = (id) => {
@@ -90,6 +99,10 @@ function CreateInformatoinClientList() {
     }
   };
 
+  const addToPersonalAccount = (id) => {
+    navigate(`/viewingpersonalaccount/${id}`, { state: { from: location.pathname } });
+  };
+
   if (!user) {
     return <Spinner />;
   }
@@ -126,6 +139,29 @@ function CreateInformatoinClientList() {
         setShow={setFileCreateModal}
         setChange={setChange}
       />
+      <CreateMainImage
+        id={id}
+        show={createMainImageModal}
+        setShow={setCreateMainImageModal}
+        setChange={setChange}
+      />
+      <div className="information__main-image">
+        <div
+          className="information__main-image-title"
+          style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
+          Изображение на главную
+        </div>
+        <Button className="mt-3" size="md" onClick={() => handleCreateMainImage(id)}>
+          Добавить изображение
+        </Button>
+        <div className="information__main-image-image">
+          <img
+            style={{ width: '40%', marginTop: '10px' }}
+            src={process.env.REACT_APP_IMG_URL + user.image}
+            alt="main image"
+          />
+        </div>
+      </div>
       <div className="information__manager">
         <div
           className="information__manager-title"
@@ -238,6 +274,9 @@ function CreateInformatoinClientList() {
             </div>
           ))}
         </div>
+        <Button className="information__viewing" onClick={() => addToPersonalAccount(id)}>
+          Посмотреть личный кабинет
+        </Button>
       </div>
     </div>
   );

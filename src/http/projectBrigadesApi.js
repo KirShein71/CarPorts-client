@@ -14,6 +14,13 @@ export const fetchOneProjectBrigades = async (id) => {
     const { data } = await guestInstance.get(`projectbrigades/getone/${id}`)
     return data
 }
+
+export const fetchProjectBrigades = async (projectId) => {
+    const {data} = await guestInstance.get(`projectbrigades/getproject/${projectId}`);
+    return data;
+}
+
+
 export const createPlanStart = async (id, projectbrigades) => {
     const { data } = await guestInstance.put(`projectbrigades/createPlanStart/${id}`, projectbrigades)
     return data

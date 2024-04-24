@@ -1,30 +1,28 @@
 import React from 'react';
-import { getOneAccount, logout } from '../../http/userApi';
+import { getOneAccount } from '../../../http/userApi';
 import { Spinner } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../context/AppContext';
 import { useRef } from 'react';
+import { useParams, useNavigate, location, useLocation } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
-import './styles.scss';
+import './style.scss';
 
-function PersonalAccountList() {
+function ViewingPersonalAccountList() {
+  const { id } = useParams();
   const [account, setAccount] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const isMobileScreen = window.innerWidth < 991;
 
-  const { user } = React.useContext(AppContext);
   const imageRef = useRef(null);
 
-  const navigate = useNavigate();
-
   React.useEffect(() => {
-    const userId = localStorage.getItem('id');
-    getOneAccount(userId)
+    getOneAccount(id)
       .then((data) => setAccount(data))
       .finally(() => setFetching(false));
   }, []);
@@ -87,10 +85,8 @@ function PersonalAccountList() {
     return phoneNumber;
   };
 
-  const handleLogout = () => {
-    logout();
-    user.logout();
-    navigate('/', { replace: true });
+  const addToBack = (id) => {
+    navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
   };
 
   return (
@@ -101,9 +97,10 @@ function PersonalAccountList() {
             <div className="account__header">
               <div className="account__header-content">
                 <div className="account__header-icon">
-                  <img src="./logo.png" alt="logo__company" />
+                  <img src="../logo.png" alt="logo__company" />
                 </div>
-                <div className="account__header-logout" onClick={handleLogout}>
+
+                <div className="account__header-logout" onClick={() => addToBack(id)}>
                   Выйти
                 </div>
               </div>
@@ -162,11 +159,11 @@ function PersonalAccountList() {
                       <div className="manager">
                         <div className="manager__content">
                           <div className="manager__title">Менеджер:</div>
-                          <div className="manager__name">{userData.employee.name}</div>
+                          <div className="manager__name">{userData.employee?.name}</div>
                         </div>
                         <div className="manager__content">
                           <div className="manager__title">Телефон:</div>
-                          <a className="manager__phone" href={`tel:${userData.employee.phone}`}>
+                          <a className="manager__phone" href={`tel:${userData.employee?.phone}`}>
                             {formatPhoneNumber(userData.manager_phone)}
                           </a>
                         </div>
@@ -335,4 +332,4 @@ function PersonalAccountList() {
   );
 }
 
-export default PersonalAccountList;
+export default ViewingPersonalAccountList;

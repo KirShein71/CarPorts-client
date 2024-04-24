@@ -24,7 +24,7 @@ import WorkingPage from '../pages/Workingpage';
 import Adding from '../pages/Adding';
 import ClientAccount from '../pages/ClientAccount';
 import CreateInformationClient from '../pages/CreateInformationClient';
-
+import ViewingPersonalAccount from '../pages/ViewingPersonalAccount';
 import FinishProject from '../pages/FinishProject';
 
 import { observer } from 'mobx-react';
@@ -57,6 +57,7 @@ const employeeRoutes = [
   { path: '/adding', Component: Adding },
   { path: '/workingpage', Component: WorkingPage },
   { path: '/finishproject', Component: FinishProject },
+  { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
 ];
 
 const adminRoutes = [
@@ -84,6 +85,7 @@ const adminRoutes = [
   { path: '/workingpage', Component: WorkingPage },
   { path: '/adding', Component: Adding },
   { path: '/finishproject', Component: FinishProject },
+  { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
 ];
 
 const routes = [{ path: '/', Component: Home }];
