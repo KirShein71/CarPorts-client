@@ -10,7 +10,6 @@ import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';
 import CreateAntypical from './modal/CreateAntypical';
 import ImageModal from './modal/ImageModal';
-import { Events } from 'react-scroll';
 
 function ProductionList() {
   const [projectDetails, setProjectDetails] = React.useState([]);
