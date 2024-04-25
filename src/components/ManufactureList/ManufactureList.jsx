@@ -46,7 +46,6 @@ function ManufactureList() {
           produceDetail,
           waitShipmentDetail,
           waitShipmentAllOneDetail,
-          costPriceDetail,
         ]) => {
           setNameDatails(nameDetails);
           setRemainderDetail(remainderDetail);
@@ -79,21 +78,23 @@ function ManufactureList() {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Номер проекта</th>
+              <th className="manufacture_thead">Номер проекта</th>
               <th className="manufacture_column">Проекты</th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)
                 .map((partAntypical) => (
-                  <th key={partAntypical.id}>{partAntypical.name}</th>
+                  <th className="manufacture_thead" key={partAntypical.id}>
+                    {partAntypical.name}
+                  </th>
                 ))}
-              <th>Нетипичные детали</th>
+              <th className="manufacture_thead">Нетипичные детали</th>
             </tr>
           </thead>
           <tbody>
             {sumStockDetail.map((sum) => (
               <tr key={sum.id}>
                 <td></td>
-                <td className="manufacture_column">Произведено (Иван)</td>
+                <td className="manufacture_td">Произведено (Иван)</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -109,7 +110,7 @@ function ManufactureList() {
             {sumShipmentDetail.map((sumShipment) => (
               <tr key={sumShipment.id}>
                 <td></td>
-                <td className="manufacture_column">Отгружено (Иван)</td>
+                <td className="manufacture_td">Отгружено (Иван)</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -125,7 +126,7 @@ function ManufactureList() {
             {waitShipmentAllOneDetail.map((allWait) => (
               <tr key={allWait.id}>
                 <td></td>
-                <td className="manufacture_column">Ждут отгрузки</td>
+                <td className="manufacture_td">Ждут отгрузки</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -141,7 +142,7 @@ function ManufactureList() {
             {remainderDetail.map((remainder) => (
               <tr key={remainder.id}>
                 <td></td>
-                <td className="manufacture_column">На остатке</td>
+                <td className="manufacture_td">На остатке</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -157,7 +158,7 @@ function ManufactureList() {
             {produceDetail.map((produce) => (
               <tr key={produce.id} className="highlighted-row">
                 <td></td>
-                <td className="manufacture_column highlighted-row">К производству</td>
+                <td className="manufacture_td highlighted-row">К производству</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -179,7 +180,7 @@ function ManufactureList() {
             {overproductionDetail.map((over) => (
               <tr key={over.id}>
                 <td></td>
-                <td className="manufacture_column">Перепроизводство</td>
+                <td className="manufacture_td">Перепроизводство</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
@@ -199,7 +200,7 @@ function ManufactureList() {
             {waitShipmentDetail.map((waitShipment) => (
               <tr key={waitShipment.id}>
                 <td>{waitShipment.project.number}</td>
-                <td className="manufacture_column">{waitShipment.project.name}</td>
+                <td className="manufacture_td">{waitShipment.project.name}</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (

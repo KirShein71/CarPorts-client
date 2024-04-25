@@ -78,10 +78,10 @@ th, td {
 
 .td_column {
     position: sticky;
-    left: 0;
-    top: 0;
-    z-index: 1;
-    background-color: white !important;
+        left: 0;
+        top: 0;
+        z-index: 3;
+        background-color: white !important; 
 }
 
 .custom-table {

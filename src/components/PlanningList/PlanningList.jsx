@@ -191,31 +191,31 @@ function PlanningList() {
         name={'В работе'}
         label={'chbxNoDateInspection'}
       />
-      <div className="table-container">
+      <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
-          <thead className="column__thead">
+          <thead>
             <tr>
-              <th>Номер проекта </th>
-              <th className="column">Название</th>
-              <th>Примечание</th>
-              <th
-                style={{ cursor: 'pointer', display: 'flex' }}
-                onClick={() => handleSort('agreement_date')}>
-                Дата договора{' '}
-                <img
-                  style={{ marginLeft: '5px', height: '100%' }}
-                  src="./sort.png"
-                  alt="icon_sort"
-                />
+              <th className="thead_column">Номер проекта </th>
+              <th className="production_column">Название</th>
+              <th className="thead_column">Примечание</th>
+              <th className="thead_column" onClick={() => handleSort('agreement_date')}>
+                <div style={{ display: 'flex', cursor: 'pointer' }}>
+                  Дата договора{' '}
+                  <img
+                    style={{ marginLeft: '5px', height: '100%' }}
+                    src="./sort.png"
+                    alt="icon_sort"
+                  />
+                </div>
               </th>
-              <th>Срок проектирования</th>
-              <th>Дедлайн</th>
-              <th>Дата начала</th>
-              <th>Дата сдачи</th>
-              <th>Дата проверки</th>
-              <th>Осталось дней</th>
-              <th>Проектировщик</th>
-              <th>Проверяет проект</th>
+              <th className="thead_column">Срок проектирования</th>
+              <th className="thead_column">Дедлайн</th>
+              <th className="thead_column">Дата начала</th>
+              <th className="thead_column">Дата сдачи</th>
+              <th className="thead_column">Дата проверки</th>
+              <th className="thead_column">Осталось дней</th>
+              <th className="thead_column">Проектировщик</th>
+              <th className="thead_column">Проверяет проект</th>
             </tr>
           </thead>
           <tbody>
