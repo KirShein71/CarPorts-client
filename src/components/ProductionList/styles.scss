@@ -1,5 +1,11 @@
 .table-scrollable {
-    overflow: auto;
+    overflow: scroll;
+    max-height: 600px;
+    width: 100%;
+    border-collapse: collapse;
+    @media(max-width: 480px) {
+        max-height: 300px;
+    }
   }
 
   
@@ -7,9 +13,17 @@
   position: sticky;
   left: 0;
   top: 0;
-  z-index: 3;
+  z-index: 4;
   background-color: white !important; 
     }
+
+    .production_td {
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 3;
+        background-color: white !important; 
+          }
 
 .production_column::after {
     content: '';
@@ -31,11 +45,18 @@
 }
 
 .thead_column {
-  position: sticky;
-  top: 0; 
-  z-index: 2;
-  
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white !important; 
 }
+
+
+.no-top-border {
+    border-bottom-color: #ffff !important;
+    border-top-color: black !important;
+}
+
 
 
 

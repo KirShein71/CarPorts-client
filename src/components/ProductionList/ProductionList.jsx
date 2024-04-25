@@ -10,6 +10,7 @@ import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';
 import CreateAntypical from './modal/CreateAntypical';
 import ImageModal from './modal/ImageModal';
+import { Events } from 'react-scroll';
 
 function ProductionList() {
   const [projectDetails, setProjectDetails] = React.useState([]);
@@ -152,83 +153,79 @@ function ProductionList() {
             const correspondingShipment = shipmentDetails.find(
               (shipment) => shipment.projectId === projectDetail.projectId,
             );
-
             return (
-              <>
-                <tbody>
-                  <tr key={projectDetail.id}>
-                    <td>{projectDetail.project ? projectDetail.project.number : ''}</td>
-                    <td className="production_column">
-                      {projectDetail.project ? projectDetail.project.name : ''}
-                    </td>
+              <tbody key={projectDetail.id}>
+                <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
+                  <td>{projectDetail.project ? projectDetail.project.number : ''}</td>
+                  <td className="production_td">
+                    {projectDetail.project ? projectDetail.project.name : ''}
+                  </td>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => {
+                      const detailProject = projectDetail.props.find(
+                        (prop) => prop.detailId === part.id,
+                      );
+                      const quantity = detailProject ? detailProject.quantity : '';
+                      return (
+                        <td
+                          key={part.id}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() =>
+                            quantity
+                              ? handleUpdateProjectDetailClick(detailProject.id)
+                              : handleCreateOneDetail(part.id, projectDetail.projectId)
+                          }>
+                          {quantity}
+                        </td>
+                      );
+                    })}
+                  <td>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        onClick={() => handleCreateAntypical(projectDetail.projectId)}
+                        style={{
+                          cursor: 'pointer',
+                          color: 'red',
+                          fontWeight: 600,
+                          paddingRight: '15px',
+                        }}>
+                        +
+                      </div>
+                      <div
+                        onClick={() => handleOpenImage(projectDetail.antypical)}
+                        className="production__eye">
+                        <img src="./eye.png" alt="eye" />
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleDeleteProjectDetails(projectDetail.projectId)}>
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+                {correspondingShipment && (
+                  <tr>
+                    <td></td>
+                    <td className="production_td">Отгрузка</td>
                     {nameDetails
                       .sort((a, b) => a.id - b.id)
                       .map((part) => {
-                        const detailProject = projectDetail.props.find(
-                          (prop) => prop.detailId === part.id,
+                        const detail = correspondingShipment.props.find(
+                          (el) => el.detailId === part.id,
                         );
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        return (
-                          <td
-                            style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              quantity
-                                ? handleUpdateProjectDetailClick(detailProject.id)
-                                : handleCreateOneDetail(part.id, projectDetail.projectId)
-                            }>
-                            {quantity}
-                          </td>
-                        );
+                        const quantity = detail ? detail.shipment_quantity : '';
+                        return <td key={part.id}>{quantity}</td>;
                       })}
-                    <td>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <div
-                          onClick={() => handleCreateAntypical(projectDetail.projectId)}
-                          style={{
-                            cursor: 'pointer',
-                            color: 'red',
-                            fontWeight: 600,
-                            paddingRight: '15px',
-                          }}>
-                          +
-                        </div>
-                        <div
-                          onClick={() => handleOpenImage(projectDetail.antypical)}
-                          className="production__eye">
-                          <img src="./eye.png" alt="eye" />
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <Button
-                        variant="success"
-                        size="sm"
-                        onClick={() => handleDeleteProjectDetails(projectDetail.projectId)}>
-                        Удалить
-                      </Button>
-                    </td>
+                    <td></td>
+                    <td></td>
                   </tr>
-                </tbody>
-                {correspondingShipment && (
-                  <tbody>
-                    <tr>
-                      <th></th>
-                      <th className="production_column">Отгрузка</th>
-                      {nameDetails
-                        .sort((a, b) => a.id - b.id)
-                        .map((part) => {
-                          const detail = correspondingShipment.props.find(
-                            (el) => el.detailId === part.id,
-                          );
-                          const quantity = detail ? detail.shipment_quantity : '';
-                          return <th>{quantity}</th>;
-                        })}
-                      <th></th>
-                      <th></th>
-                    </tr>
-                  </tbody>
                 )}
-              </>
+              </tbody>
             );
           })}
         </Table>
