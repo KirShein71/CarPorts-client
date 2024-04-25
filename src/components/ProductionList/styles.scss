@@ -1,11 +1,9 @@
 .table-scrollable {
-    overflow: scroll;
+    overflow: auto;
     max-height: 600px;
     width: 100%;
-    border-collapse: collapse;
-    @media(max-width: 480px) {
-        max-height: 300px;
-    }
+    
+    
   }
 
   
