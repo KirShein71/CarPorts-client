@@ -1,6 +1,5 @@
 .table-scrollable {
     overflow: auto;
-
   }
 
   
@@ -8,7 +7,7 @@
   position: sticky;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 3;
   background-color: white !important; 
     }
 
@@ -22,6 +21,23 @@
     background-color: #dee2e6; 
     
   }
+
+.production__eye {
+    img {
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+    }
+}
+
+.thead_column {
+  position: sticky;
+  top: 0; 
+  z-index: 2;
+  
+}
+
+
 
 
 

@@ -28,7 +28,8 @@ function PlanningList() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [filteredProjects, setFilteredProjects] = React.useState([]);
-  const [projectNoDesignerChechbox, setProjectNoDesignerCheckbox] = React.useState(false);
+  const [projectNoDesignerCheckbox, setProjectNoDesignerCheckbox] = React.useState(false);
+  const [projectInProgressCheckbox, setProjectInProgressCheckbox] = React.useState(false);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
@@ -100,10 +101,19 @@ function PlanningList() {
   }, [projects, searchQuery]);
 
   const handleNoDesignerCheckboxChange = () => {
-    const updatedValue = !projectNoDesignerChechbox;
+    const updatedValue = !projectNoDesignerCheckbox;
     setProjectNoDesignerCheckbox(updatedValue);
     const filtered = updatedValue
       ? projects.filter((project) => project.designer === null)
+      : projects;
+    setFilteredProjects(filtered);
+  };
+
+  const handleInProgressCheckboxChange = () => {
+    const updatedValue = !projectInProgressCheckbox;
+    setProjectInProgressCheckbox(updatedValue);
+    const filtered = updatedValue
+      ? projects.filter((project) => project.date_inspection === null && project.designer !== null)
       : projects;
     setFilteredProjects(filtered);
   };
@@ -170,9 +180,16 @@ function PlanningList() {
         scrollPosition={scrollPosition}
       />
       <Checkbox
-        change={projectNoDesignerChechbox}
+        change={projectNoDesignerCheckbox}
         handle={handleNoDesignerCheckboxChange}
         name={'Новые проекты'}
+        label={'chbxNoDesigner'}
+      />
+      <Checkbox
+        change={projectInProgressCheckbox}
+        handle={handleInProgressCheckboxChange}
+        name={'В работе'}
+        label={'chbxNoDateInspection'}
       />
       <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">

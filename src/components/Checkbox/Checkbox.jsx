@@ -1,13 +1,13 @@
 import React from 'react';
 import './style.scss';
 
-function Checkbox({ handle, change, name }) {
+function Checkbox({ handle, change, name, label }) {
   return (
     <div className="checkbox" style={{ display: 'flex' }}>
       <div class="cntr">
-        <label for="cbxNoDesigner" class="label-cbx">
+        <label for={label} class="label-cbx">
           <input
-            id="cbxNoDesigner"
+            id={label}
             type="checkbox"
             class="invisible"
             checked={change}
