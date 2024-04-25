@@ -54,22 +54,6 @@
             overflow-x: auto;
            }
             
-            // @media(max-width: 575px) {
-            //     width: 500px;
-            // }
-            // @media(max-width: 480px) {
-            //     width: 450px;
-            //     height: 30px;
-            // }
-            // @media (max-width: 480px) {
-            //     width: 450px;;
-            // }
-            // @media (max-width: 450px) {
-            //     width: 400px;
-            // }
-            // @media (max-width: 400px) {
-            //     width: 380px;
-            // }
 
             &__content {
                 display: flex;
@@ -135,6 +119,7 @@
             }
             @media(max-width: 575px) {
                 font-size: 18px;
+                padding-top: 20px;
             }
 
 
