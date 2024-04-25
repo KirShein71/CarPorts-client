@@ -42,7 +42,7 @@ function ClientAccountList() {
       <Link to="/createaccount">
         <Button className="mt-3">Создать личный кабинет</Button>
       </Link>
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

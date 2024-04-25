@@ -169,7 +169,7 @@ function OrderMaterialsList() {
                 </Button>
               </div>
             </div>
-            <div className="table-scrollable">
+            <div className="table-container">
               <Table striped bordered size="sm" className="mt-3">
                 <thead>
                   <tr>

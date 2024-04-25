@@ -133,7 +133,7 @@ function WeldersList() {
         setShow={setCreateOneStockDetailModal}
         setChange={setChange}
       />
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>

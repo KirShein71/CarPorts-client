@@ -39,7 +39,7 @@ function Admin() {
       <Button onClick={() => setShow(true)} className="mt-3">
         Добавить сотрудника
       </Button>
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

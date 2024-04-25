@@ -68,7 +68,7 @@ function FinishProjectList() {
           />
         </Form>
       </Col>
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

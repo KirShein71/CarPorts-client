@@ -156,7 +156,7 @@ function InstallationList() {
               <div key={brigade.id} className="installationlist__top">
                 <div className="installationlist__brigade">{brigade.brigade.name}</div>
               </div>
-              <div className="table-scrollable">
+              <div className="table-container">
                 <Table striped bordered size="sm" className="mt-3">
                   <thead>
                     <tr>

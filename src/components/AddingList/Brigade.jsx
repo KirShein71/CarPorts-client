@@ -45,7 +45,7 @@ function Brigade() {
       <Button onClick={() => setBrigadeModal(true)} className="mt-3">
         Создать бригаду
       </Button>
-      <div className="table-scrollable">
+      <div className="ttable-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

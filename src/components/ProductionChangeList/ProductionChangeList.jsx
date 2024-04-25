@@ -46,7 +46,7 @@ function ProductionChangeList() {
         <h1 className="header__title">Производственные детали</h1>
       </div>
       <CreateDetails projectId={project} show={show} setShow={setShow} setChange={setChange} />
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

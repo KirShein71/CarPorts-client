@@ -35,7 +35,7 @@ function AppointBrigade() {
         <h1 className="header__title">Назначить бригаду</h1>
       </div>
       <CreateBrigade projectId={project} show={show} setShow={setShow} setChange={setChange} />
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-5">
           <thead>
             <tr>

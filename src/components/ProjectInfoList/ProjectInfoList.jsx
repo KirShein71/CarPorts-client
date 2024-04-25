@@ -317,7 +317,7 @@ function ProjectInfoList() {
         )}
         {activeTab === 'production' && (
           <div className="production">
-            <div className="table-scrollable">
+            <div className="table-container">
               <Table bordered size="md" className="mt-3">
                 <thead className="thead_column">
                   <tr>
@@ -363,7 +363,7 @@ function ProjectInfoList() {
         )}
         {activeTab === 'brigade' && (
           <div className="brigade">
-            <div className="table-scrollable">
+            <div className="table-container">
               <Table striped bordered size="sm" className="mt-3">
                 <thead>
                   <tr>

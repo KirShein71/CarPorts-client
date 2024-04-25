@@ -65,7 +65,7 @@ function Details() {
       <Button onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>

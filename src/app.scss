@@ -50,10 +50,7 @@ th, td {
 }
 
 .table-container {
-    @media(max-width: 991px) {
-        overflow-x: auto;
-    }
-   
+    overflow-x: auto;
 }
 
 

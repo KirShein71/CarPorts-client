@@ -40,7 +40,7 @@ function ShipmentChangeList() {
         setShow={setShow}
         setChange={setChange}
       />
-      <div className="table-scrollable">
+      <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
