@@ -209,7 +209,9 @@ function PlanningList() {
           <thead>
             <tr>
               <th className="thead_column">Номер проекта </th>
-              <th className="production_column">Название</th>
+              <th className="production_column">
+                Название<div className="border_bottom"></div>
+              </th>
               <th className="thead_column">Примечание</th>
               <th className="thead_column" onClick={() => handleSort('agreement_date')}>
                 <div style={{ display: 'flex', cursor: 'pointer' }}>
@@ -247,7 +249,10 @@ function PlanningList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td>{item.number}</td>
-                  <td className="td_column">{item.name}</td>
+                  <td className="td_column">
+                    {item.name}
+                    <div className="border_top"></div>
+                  </td>
                   <td style={{ cursor: 'pointer' }}>
                     {item.note && (
                       <div onClick={() => handleUpdateNote(item.id)}>
