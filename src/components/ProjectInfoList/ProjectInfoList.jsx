@@ -477,9 +477,11 @@ function ProjectInfoList() {
           <pre className="note__field">
             {isExpanded ? project.project?.note : project.project?.note.slice(0, 255)}
           </pre>
-          <div className="note__show" onClick={handleToggleText}>
-            {isExpanded ? 'Скрыть' : 'Показать все...'}
-          </div>
+          {project.project.note > 255 && (
+            <div className="note__show" onClick={handleToggleText}>
+              {isExpanded ? 'Скрыть' : 'Показать все...'}
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', justifyContent: 'right' }}>
           <Button onClick={() => hadleUpdateNote(project.project.id)}>Добавить</Button>

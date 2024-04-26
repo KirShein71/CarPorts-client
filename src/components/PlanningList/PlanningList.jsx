@@ -205,7 +205,7 @@ function PlanningList() {
         label={'chbxNoDateInspection'}
       />
       <div className="table-scrollable">
-        <Table bordered hover size="sm" className="mt-3">
+        <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>
               <th className="thead_column">Номер проекта </th>
