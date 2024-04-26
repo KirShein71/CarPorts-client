@@ -125,4 +125,56 @@
 
         }
     }
+
+    // Note 
+
+    .note {
+        margin-bottom: 25px;
+        &__title {
+            padding-left: 20px;
+            font-size: 22px;
+            font-weight: 500;
+            color: rgb(7,7,7);
+            @media(max-width: 768px) {
+                font-size: 18px;
+            }
+        }
+
+        &__content {
+            margin: 25px 0px 15px 0px;
+            padding: 20px;
+            width: 100%;
+            min-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #9da1aa;
+            
+        }
+
+        &__field {
+            font-size: 19px;
+            font-weight: 400;
+            color: rgb(7,7,7);
+            font-family: "Open Sans", sans-serif;
+            @media(max-width: 1024px) {
+                white-space: pre-wrap;
+            }
+            @media(max-width: 768px) {
+                font-size: 16px;
+            }
+            @media(max-width: 480px) {
+                font-size: 14px;
+            }
+        }
+
+        &__show {
+            font-size: 17px;
+            font-weight: 400;
+            color: #7d7f7d;
+            text-align: center;
+            cursor: pointer;
+            @media(max-width: 768px) {
+                font-size: 14px;
+            }
+        }
+    }
 }

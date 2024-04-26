@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, updateProject } from '../../../http/projectApi';
-import { useNavigate } from 'react-router-dom';
+import { fetchOneProject, updateNote } from '../../../http/projectApi';
 
 const defaultValue = { note: '' };
 const defaultValid = {
@@ -11,7 +10,7 @@ const defaultValid = {
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'note') result.note = value.note;
+    if (key === 'note') result.note = value.note.trim() !== '';
   }
   return result;
 };
@@ -59,7 +58,8 @@ const UpdateNote = (props) => {
     if (correct.note) {
       const data = new FormData();
       data.append('note', value.note.trim());
-      updateProject(id, data)
+
+      updateNote(id, data)
         .then((data) => {
           const prod = {
             note: data.note.toString(),
@@ -84,25 +84,27 @@ const UpdateNote = (props) => {
       show={show}
       onHide={() => setShow(false)}
       size="md"
-      className="modal__planning"
       aria-labelledby="contained-modal-title-vcenter"
-      centered>
+      centered
+      className="modal__name">
       <Modal.Header closeButton>
-        <Modal.Title>Редактирование</Modal.Title>
+        <Modal.Title>Добавить комментарий</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Col>
-            <textarea
-              name="note"
-              value={value.note}
-              onChange={(e) => handleInputChange(e)}
-              isValid={valid.note === true}
-              isInvalid={valid.note === false}
-              placeholder="Комментарии"
-              style={{ minHeight: '200px', width: '100%' }}
-            />
-          </Col>
+          <Row className="mb-3">
+            <Col>
+              <textarea
+                name="note"
+                value={value.note}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.note === true}
+                isInvalid={valid.note === false}
+                placeholder="Комментарии"
+                style={{ minHeight: '200px', width: '100%' }}
+              />
+            </Col>
+          </Row>
           <Row>
             <Col>
               <Button type="submit">Сохранить</Button>

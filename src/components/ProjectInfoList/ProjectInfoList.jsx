@@ -3,6 +3,7 @@ import { getProjectInfo, createDateFinish } from '../../http/projectApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import CreateAccountModal from '../ClientAccountList/CreateAccountList/modal/CreateAccauntModal';
 import CreateMainImage from '../ClientAccountList/CreateInformationClientList/modals/CreateMainImage';
+import UpdateNote from './modals/UpdateNote';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Table, Spinner, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -19,6 +20,8 @@ function ProjectInfoList() {
   const [createAccount, setCreateAccount] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [createMainImageModal, setCreateMainImageModal] = React.useState(false);
+  const [updateNoteModal, setUpdateNoteModal] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,6 +57,15 @@ function ProjectInfoList() {
     setCreateMainImageModal(true);
   };
 
+  const hadleUpdateNote = (id) => {
+    setProject(id);
+    setUpdateNoteModal(true);
+  };
+
+  const handleToggleText = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const addToInfoAccount = (id) => {
     navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
   };
@@ -74,6 +86,12 @@ function ProjectInfoList() {
         id={user}
         show={createMainImageModal}
         setShow={setCreateMainImageModal}
+        setChange={setChange}
+      />
+      <UpdateNote
+        id={id}
+        show={updateNoteModal}
+        setShow={setUpdateNoteModal}
         setChange={setChange}
       />
       <div className="header">
@@ -452,6 +470,20 @@ function ProjectInfoList() {
             )}
           </div>
         )}
+      </div>
+      <div className="note">
+        <div className="note__title">Комментарии</div>
+        <div className="note__content">
+          <pre className="note__field">
+            {isExpanded ? project.project?.note : project.project?.note.slice(0, 255)}
+          </pre>
+          <div className="note__show" onClick={handleToggleText}>
+            {isExpanded ? 'Скрыть' : 'Показать все...'}
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'right' }}>
+          <Button onClick={() => hadleUpdateNote(project.project.id)}>Добавить</Button>
+        </div>
       </div>
       <div style={{ marginBottom: '25px' }}>
         <Button

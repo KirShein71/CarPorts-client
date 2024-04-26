@@ -12,6 +12,7 @@
   top: 0;
   z-index: 4;
   background-color: white !important; 
+  
     }
 
     .production_td {
@@ -20,6 +21,17 @@
         top: 0;
         z-index: 3;
         background-color: white !important; 
+          }
+
+          .production_column::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee2e6; 
+            
           }
 
 .production_column::after {

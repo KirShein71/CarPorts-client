@@ -30,6 +30,7 @@ function PlanningList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [projectNoDesignerCheckbox, setProjectNoDesignerCheckbox] = React.useState(false);
   const [projectInProgressCheckbox, setProjectInProgressCheckbox] = React.useState(false);
+  const [selectedNote, setSelectedNote] = React.useState(null);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
@@ -116,6 +117,18 @@ function PlanningList() {
       ? projects.filter((project) => project.date_inspection === null && project.designer !== null)
       : projects;
     setFilteredProjects(filtered);
+  };
+
+  const handleToggleText = (id) => {
+    if (selectedNote === id) {
+      setSelectedNote(null);
+      window.scrollTo(0, scrollPosition); // Возвращаемся к предыдущей позиции скролла
+    } else {
+      // Сохраняем информацию о скрытой ячейке
+
+      setScrollPosition(window.scrollY); // Сохраняем текущую позицию скролла
+      setSelectedNote(id);
+    }
   };
 
   if (fetching) {
@@ -235,8 +248,17 @@ function PlanningList() {
                 <tr key={item.id}>
                   <td>{item.number}</td>
                   <td className="td_column">{item.name}</td>
-                  <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateNote(item.id)}>
-                    {item.note}
+                  <td style={{ cursor: 'pointer' }}>
+                    {item.note && (
+                      <div onClick={() => handleUpdateNote(item.id)}>
+                        {selectedNote === item.id ? item.note : item.note.slice(0, 180)}
+                      </div>
+                    )}
+                    {item.note.length > 180 && (
+                      <div className="show" onClick={() => handleToggleText(item.id)}>
+                        {selectedNote === item.id ? 'Скрыть' : '...'}
+                      </div>
+                    )}
                   </td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
