@@ -11,6 +11,8 @@ import { Spinner, Table, Form, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 import Checkbox from '../Checkbox/Checkbox';
+import { CSVLink } from 'react-csv';
+import { format } from 'date-fns';
 
 function PlanningList() {
   const [projects, setProjects] = React.useState([]);
@@ -31,6 +33,14 @@ function PlanningList() {
   const [projectNoDesignerCheckbox, setProjectNoDesignerCheckbox] = React.useState(false);
   const [projectInProgressCheckbox, setProjectInProgressCheckbox] = React.useState(false);
   const [selectedNote, setSelectedNote] = React.useState(null);
+
+  React.useEffect(() => {
+    fetchAllProjects()
+      .then((data) => {
+        setProjects(data);
+      })
+      .finally(() => setFetching(false));
+  }, [change]);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
@@ -61,14 +71,6 @@ function PlanningList() {
     setProject(id);
     setUpdateNote(true);
   };
-
-  React.useEffect(() => {
-    fetchAllProjects()
-      .then((data) => {
-        setProjects(data);
-      })
-      .finally(() => setFetching(false));
-  }, [change]);
 
   const handleScroll = () => {
     setScrollPosition(window.scrollY);
@@ -130,6 +132,22 @@ function PlanningList() {
       setSelectedNote(id);
     }
   };
+
+  const headers = [
+    { label: 'Номер проекта', key: 'number' },
+    { label: 'Название', key: 'name' },
+    { label: 'Примечание', key: 'note' },
+    { label: 'Дата договора', key: 'agreement_date' },
+    { label: 'Конструктор', key: 'designer' },
+  ];
+
+  const flattenedProjects = projects.map((project) => ({
+    number: project.number,
+    name: project.name,
+    note: project.note,
+    agreement_date: format(new Date(project.agreement_date), 'dd.MM.yyyy'),
+    designer: project.designer,
+  }));
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -382,6 +400,9 @@ function PlanningList() {
               ))}
           </tbody>
         </Table>
+        <CSVLink data={flattenedProjects} headers={headers} filename={'данные.csv'}>
+          Экспорт в CSV
+        </CSVLink>
       </div>
     </div>
   );

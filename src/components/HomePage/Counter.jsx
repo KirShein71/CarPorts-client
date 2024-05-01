@@ -11,7 +11,7 @@ function Counter() {
   return (
     <div className="counter">
       {projectStatistics.map((number) => (
-        <div className="counter__content">
+        <div key={number.id} className="counter__content">
           <div className="counter__item">Всего проектов: {number.countProject} </div>
           <div className="counter__item">Очередь на проектирование: {number.countNoDesigner}</div>
           <div className="counter__item">Очередь на снабжение: {number.countNoMaterials}</div>
