@@ -158,7 +158,7 @@ function CreateInformatoinClientList() {
           <img
             style={{ width: '40%', marginTop: '10px' }}
             src={process.env.REACT_APP_IMG_URL + user.image}
-            alt="main image"
+            alt="main"
           />
         </div>
       </div>

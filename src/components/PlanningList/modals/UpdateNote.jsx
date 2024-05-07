@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
-import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { note: '' };
 const defaultValid = {

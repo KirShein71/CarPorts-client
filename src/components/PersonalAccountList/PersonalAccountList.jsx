@@ -115,7 +115,7 @@ function PersonalAccountList() {
                     {userData.image === null ? (
                       <img src="../fon.jpg" alt="image__company" />
                     ) : (
-                      <img src={process.env.REACT_APP_IMG_URL + userData.image} alt="main image" />
+                      <img src={process.env.REACT_APP_IMG_URL + userData.image} alt="main" />
                     )}
                   </div>
                   <div className="account__greeting-card__name">{userData.project.name}</div>

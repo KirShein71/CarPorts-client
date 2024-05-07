@@ -2,7 +2,7 @@ import React from 'react';
 import { getOneAccount } from '../../../http/userApi';
 import { Spinner } from 'react-bootstrap';
 import { useRef } from 'react';
-import { useParams, useNavigate, location, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
@@ -25,7 +25,7 @@ function ViewingPersonalAccountList() {
     getOneAccount(id)
       .then((data) => setAccount(data))
       .finally(() => setFetching(false));
-  }, []);
+  }, [id]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -112,7 +112,7 @@ function ViewingPersonalAccountList() {
                     {userData.image === null ? (
                       <img src="../fon.jpg" alt="image__company" />
                     ) : (
-                      <img src={process.env.REACT_APP_IMG_URL + userData.image} alt="main image" />
+                      <img src={process.env.REACT_APP_IMG_URL + userData.image} alt="main" />
                     )}
                   </div>
                   <div className="account__greeting-card__name">{userData.project.name}</div>

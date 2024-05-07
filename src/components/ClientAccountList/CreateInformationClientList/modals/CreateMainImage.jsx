@@ -9,7 +9,6 @@ const CreateMainImage = (props) => {
   React.useEffect(() => {
     if (id) {
       getOne(id).catch((error) => alert(error.response.data.message));
-      console.log(id);
     }
   }, [id]);
 
@@ -20,7 +19,8 @@ const CreateMainImage = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData();
-    if (image) data.append('image', image, image.name);
+    data.append('image', image, image.name);
+    console.log(image);
     data.append('otherDataKey', 'otherDataValue');
 
     createMainImage(id, data)
@@ -31,6 +31,7 @@ const CreateMainImage = (props) => {
       })
       .catch((error) => alert(error.response.data.message));
   };
+
   return (
     <Modal show={show} onHide={() => setShow(false)} size="md">
       <Modal.Header closeButton>
