@@ -110,7 +110,11 @@ function OrderMaterialsList() {
     const filtered = projectsMaterials.filter((projectMaterials) =>
       projectMaterials.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
+    const filteredMaterial = materialProjects.filter((projectMaterials) =>
+      projectMaterials.materialName.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
     setFilteredProjectMaterials(filtered);
+    setFilteredMaterialProjects(filteredMaterial);
   }, [projectsMaterials, searchQuery]);
 
   const handleNoDatePaymentCheckboxChange = () => {
