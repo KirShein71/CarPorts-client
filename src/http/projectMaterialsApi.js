@@ -5,6 +5,11 @@ export const fetchAllProjectMaterials = async () => {
     return data
 }
 
+export const getAllMaterialProject = async () => {
+    const { data} = await guestInstance.get('projectmaterials/getAllMaterialProject')
+    return data
+}
+
 export const fetchProjectMaterials = async (projectId) => {
     const {data} = await guestInstance.get(`projectmaterials/getproject/${projectId}`);
     return data;
@@ -52,6 +57,11 @@ export const deletePaymentDateProjectMaterials = async (id) => {
 
 export const createShippingDateProjectMaterials = async(id, projectmaterials) => {
     const {data} = await guestInstance.put(`projectmaterials/createShippingDateProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
+export const createColorProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createColorProjectMaterials/${id}`, projectmaterials)
     return data
 }
 

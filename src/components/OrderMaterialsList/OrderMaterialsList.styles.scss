@@ -1,4 +1,27 @@
 .ordermaterialslist {
+   
+    &__filter {
+        margin-top: 15px;
+        display: flex;
+
+        &-item {
+            font-size: 19px;
+            font-weight: 500;
+            color: rgb(7,7,7);
+            padding-right: 10px;
+            cursor: pointer;
+            &:active {
+                color: #ff0000;
+               
+              }
+            &.active {
+                color: #ff0000;
+            }
+        }
+    }
+}
+
+.projectmaterial {
     &__top {
         margin-top: 25px;
         display: flex;
@@ -16,5 +39,18 @@
         white-space: nowrap;
         
     }
+}
 
+.materialproject {
+    &__top {
+        margin-top: 25px;
+        display: flex;
+    }
+    &__name {
+        font-size: 22px;
+        color: rgb(0, 75, 214);
+        font-weight: 700;
+        white-space: nowrap;
+        
+    }
 }

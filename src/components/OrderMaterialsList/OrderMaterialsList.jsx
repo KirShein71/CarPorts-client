@@ -1,31 +1,52 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Table, Spinner, Button, Col, Form } from 'react-bootstrap';
+import { Spinner, Col, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { fetchAllProjectMaterials, deleteProjectMaterials } from '../../http/projectMaterialsApi';
+import {
+  fetchAllProjectMaterials,
+  deleteProjectMaterials,
+  getAllMaterialProject,
+} from '../../http/projectMaterialsApi';
 import CreateCheck from './modals/createCheck';
-import moment from 'moment';
-import Moment from 'react-moment';
 import './OrderMaterialsList.styles.scss';
 import CreateReadyDate from './modals/createReadyDate';
 import CreateShippingDate from './modals/createShippingDate';
 import CreatePaymentDate from './modals/createPaymentDate';
 import CreateMaterial from './modals/createMaterial';
+import CreateColor from './modals/createColor';
+import MaterialProject from './MaterialProject';
+import ProjectMaterial from './ProjectMaterial';
+import Checkbox from '../Checkbox/Checkbox';
 
 function OrderMaterialsList() {
   const [projectsMaterials, setProjectsMaterials] = React.useState([]);
+  const [materialProjects, setMaterialProjects] = React.useState([]);
   const [change, setChange] = React.useState(true);
   const [updateShow, setUpdateShow] = React.useState(false);
   const [readyDateShow, setReadyDateShow] = React.useState(false);
   const [shippingDateShow, setShippingDateShow] = React.useState(false);
   const [paymentDateShow, setPaymentDateShow] = React.useState(false);
   const [createMaterial, setCreateMaterial] = React.useState(false);
+  const [createColor, setCreateColor] = React.useState(false);
   const [project, setProject] = React.useState(null);
   const [projectMaterials, setProjectMaterials] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filteredProjectMaterials, setFilteredProjectMaterials] = React.useState([]);
+  const [filteredMaterialProjects, setFilteredMaterialProjects] = React.useState([]);
   const [scrollPosition, setScrollPosition] = React.useState(0);
+  const [activeTab, setActiveTab] = React.useState('project');
+  const [projectNoDatePaymentCheckbox, setProjectNoDatePaymentCheckbox] = React.useState(false);
+  const [projectNoColorCheckbox, setProjectNoColorCheckbox] = React.useState(false);
+
+  React.useEffect(() => {
+    Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])
+      .then(([projectMaterialsData, materialProjectsData]) => {
+        setProjectsMaterials(projectMaterialsData);
+        setMaterialProjects(materialProjectsData);
+      })
+      .finally(() => setFetching(false));
+  }, [change]);
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
@@ -52,11 +73,10 @@ function OrderMaterialsList() {
     setCreateMaterial(true);
   };
 
-  React.useEffect(() => {
-    fetchAllProjectMaterials()
-      .then((data) => setProjectsMaterials(data))
-      .finally(() => setFetching(false));
-  }, [change]);
+  const handleCreateColor = (id) => {
+    setProjectMaterials(id);
+    setCreateColor(true);
+  };
 
   const handleScroll = () => {
     setScrollPosition(window.scrollY);
@@ -88,35 +108,61 @@ function OrderMaterialsList() {
 
   React.useEffect(() => {
     const filtered = projectsMaterials.filter((projectMaterials) =>
-      projectMaterials.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      projectMaterials.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
     setFilteredProjectMaterials(filtered);
   }, [projectsMaterials, searchQuery]);
+
+  const handleNoDatePaymentCheckboxChange = () => {
+    const updatedValue = !projectNoDatePaymentCheckbox;
+    setProjectNoDatePaymentCheckbox(updatedValue);
+
+    const filtered = updatedValue
+      ? projectsMaterials.filter((projectMaterial) =>
+          projectMaterial.props.some((prop) => prop.date_payment === null),
+        )
+      : projectsMaterials;
+
+    const filteredMaterial = updatedValue
+      ? materialProjects.filter((materialProject) =>
+          materialProject.props.some((prop) => prop.date_payment === null),
+        )
+      : materialProjects;
+
+    setFilteredProjectMaterials(filtered);
+    setFilteredMaterialProjects(filteredMaterial);
+  };
+
+  const handleNoColorCheckboxChange = () => {
+    const updatedValue = !projectNoColorCheckbox;
+    setProjectNoColorCheckbox(updatedValue);
+
+    const filtered = updatedValue
+      ? projectsMaterials.filter((projectMaterial) =>
+          projectMaterial.props.some((prop) => prop.color === null),
+        )
+      : projectsMaterials;
+
+    const filteredMaterial = updatedValue
+      ? materialProjects.filter((materialProject) =>
+          materialProject.props.some((prop) => prop.color === null),
+        )
+      : materialProjects;
+
+    setFilteredProjectMaterials(filtered);
+    setFilteredMaterialProjects(filteredMaterial);
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
 
   if (fetching) {
     return <Spinner animation="border" />;
   }
 
   return (
-    <div className="ordermaterialslist">
-      <Header title={'Заказы материалов'} />
-      <Col className="mt-3" sm={2}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="me-2"
-            aria-label="Search"
-          />
-        </Form>
-      </Col>
-      <Link to="/procurement">
-        <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
-          &bull; Показать новые проекты
-        </div>
-      </Link>
+    <>
       <CreateCheck
         id={projectMaterials}
         show={updateShow}
@@ -152,113 +198,94 @@ function OrderMaterialsList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
-      <>
-        {filteredProjectMaterials.map((material) => (
-          <div key={material.id}>
-            <div className="table-scrollable">
-              <div className="ordermaterialslist__top">
-                <div className="ordermaterialslist__number">{material.project.number}</div>
-                <div className="ordermaterialslist__project">{material.project.name}</div>
-                <Button
-                  size="sm"
-                  className="ms-3"
-                  variant="primary"
-                  style={{ whiteSpace: 'nowrap' }}
-                  onClick={() => handleCreateMaterial(material.project.id)}>
-                  Добавить материал
-                </Button>
-              </div>
-            </div>
-            <div className="table-container">
-              <Table striped bordered size="sm" className="mt-3">
-                <thead>
-                  <tr>
-                    <th className="production_column">Тип материала</th>
-                    <th>Дедлайн производства</th>
-                    <th>Счёт</th>
-                    <th>Дата оплаты</th>
-                    <th>Дата готовности</th>
-                    <th>Даты отгрузки</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {material.props.map((prop) => {
-                    return (
-                      <tr key={prop.id}>
-                        <td className="production_column">{prop.materialName}</td>
-                        <td>
-                          {moment(material.project.agreement_date, 'YYYY/MM/DD')
-                            .businessAdd(material.project.expiration_date, 'days')
-                            .businessAdd(material.project.design_period, 'days')
-                            .format('DD.MM.YYYY')}
-                        </td>
-                        <td
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleUpdateClick(prop.id)}>
-                          {prop.check ? (
-                            <>{prop.check}</>
-                          ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
-                              +
-                            </span>
-                          )}
-                        </td>
-                        <td
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handlePaymentDate(prop.id)}>
-                          {prop.date_payment ? (
-                            <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
-                          ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
-                              +
-                            </span>
-                          )}
-                        </td>
-                        <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
-                          {prop.ready_date ? (
-                            <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
-                          ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
-                              +
-                            </span>
-                          )}
-                        </td>
-                        <td
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => hadleShippingDate(prop.id)}>
-                          {prop.shipping_date ? (
-                            <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
-                          ) : (
-                            <span
-                              style={{
-                                color: 'red',
+      <CreateColor
+        id={projectMaterials}
+        show={createColor}
+        setShow={setCreateColor}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+      />
+      <div className="ordermaterialslist">
+        <Header title={'Заказы материалов'} />
 
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                              }}>
-                              +
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => handleDeleteProjectMaterials(prop.id)}>
-                            Удалить
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-            </div>
+        <div className="ordermaterialslist__filter">
+          <div
+            className={`ordermaterialslist__filter-item ${activeTab === 'project' ? 'active' : ''}`}
+            onClick={() => handleTabClick('project')}>
+            Проекты
           </div>
-        ))}
-      </>
-    </div>
+          <div
+            className={`ordermaterialslist__filter-item ${
+              activeTab === 'material' ? 'active' : ''
+            }`}
+            onClick={() => handleTabClick('material')}>
+            Материалы
+          </div>
+        </div>
+        <Link to="/procurement">
+          <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
+            &bull; Показать новые проекты
+          </div>
+        </Link>
+        <Col className="mt-3 mb-3" sm={2}>
+          <Form className="d-flex">
+            <Form.Control
+              type="search"
+              placeholder="Поиск"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="me-2"
+              aria-label="Search"
+            />
+          </Form>
+        </Col>
+        <Checkbox
+          change={projectNoDatePaymentCheckbox}
+          handle={handleNoDatePaymentCheckboxChange}
+          name={'Неоплаченные'}
+          label={'chbxNoDatePayment'}
+        />
+        <Checkbox
+          change={projectNoColorCheckbox}
+          handle={handleNoColorCheckboxChange}
+          name={'Без цвета'}
+          label={'chbxNoColor'}
+        />
+        {activeTab === 'project' && (
+          <>
+            {filteredProjectMaterials.map((material) => (
+              <ProjectMaterial
+                key={material.id}
+                {...material}
+                handleUpdateClick={handleUpdateClick}
+                handlePaymentDate={handlePaymentDate}
+                hadleReadyDate={hadleReadyDate}
+                hadleShippingDate={hadleShippingDate}
+                handleDeleteProjectMaterials={handleDeleteProjectMaterials}
+                handleCreateMaterial={handleCreateMaterial}
+                handleCreateColor={handleCreateColor}
+              />
+            ))}
+          </>
+        )}
+        {activeTab === 'material' && (
+          <>
+            {filteredMaterialProjects.map((materialProject) => (
+              <MaterialProject
+                key={materialProject.id}
+                {...materialProject}
+                handleUpdateClick={handleUpdateClick}
+                handlePaymentDate={handlePaymentDate}
+                hadleReadyDate={hadleReadyDate}
+                hadleShippingDate={hadleShippingDate}
+                handleDeleteProjectMaterials={handleDeleteProjectMaterials}
+                handleCreateColor={handleCreateColor}
+              />
+            ))}
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
