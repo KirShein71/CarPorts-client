@@ -3,9 +3,11 @@ import Header from '../Header/Header';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Spinner, Table } from 'react-bootstrap';
 import { getAllUser, deleteUser } from '../../http/userApi';
+import { getAllRegion } from '../../http/userImageApi';
 
 function ClientAccountList() {
   const [users, setUsers] = React.useState([]);
+  const [region, setRegion] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
   const navigate = useNavigate();
@@ -16,6 +18,10 @@ function ClientAccountList() {
       .then((data) => setUsers(data))
       .finally(() => setFetching(false));
   }, [change]);
+
+  React.useEffect(() => {
+    getAllRegion().then((data) => setRegion(data));
+  }, []);
 
   const addToInfo = (id) => {
     navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
