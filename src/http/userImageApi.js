@@ -32,25 +32,5 @@ export const deleteUserImage = async(id) => {
     return data
 }
 
-export const getAllRegion = async () => {
-    const account = 'EMscd6r9JnFiQ3bLoyjJY6eM78JrJceI';
-    const password = 'PjLZkKBHEiLK3YsjtNrt3TGNG0ahs3kG';
 
-    const url = 'https://api.edu.cdek.ru/v2/location/regions';
-
-    try {
-        const {data} = await axios.get(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${btoa(`${account}:${password}`).toString('base64')}`
-            }
-        });
-
-        // const regions = response.data.regions; // Пример обработки данных
-        return data
-
-    } catch (error) {
-        console.error('Error fetching data from CDEK server:', error);
-    }
-};
 
