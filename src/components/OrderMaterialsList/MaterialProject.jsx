@@ -13,6 +13,8 @@ function MaterialProject({
   hadleShippingDate,
   handleDeleteProjectMaterials,
   handleCreateColor,
+  projectNoDatePaymentCheckbox,
+  projectNoColorCheckbox,
 }) {
   return (
     <div className="materialproject">
@@ -39,69 +41,80 @@ function MaterialProject({
                 </tr>
               </thead>
               <tbody>
-                {props.map((prop) => (
-                  <tr>
-                    <td>{prop.number}</td>
-                    <td className="production_column">{prop.name}</td>
-                    <td>
-                      {moment(prop.agreement_date, 'YYYY/MM/DD')
-                        .businessAdd(prop.expiration_date, 'days')
-                        .businessAdd(prop.design_period, 'days')
-                        .format('DD.MM.YYYY')}
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateClick(prop.id)}>
-                      {prop.check ? (
-                        <>{prop.check}</>
-                      ) : (
-                        <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
-                      )}
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => handlePaymentDate(prop.id)}>
-                      {prop.date_payment ? (
-                        <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
-                      ) : (
-                        <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
-                      )}
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
-                      {prop.ready_date ? (
-                        <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
-                      ) : (
-                        <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
-                      )}
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => hadleShippingDate(prop.id)}>
-                      {prop.shipping_date ? (
-                        <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
-                      ) : (
-                        <span
-                          style={{
-                            color: 'red',
+                {props
+                  .filter((prop) => !projectNoDatePaymentCheckbox || prop.date_payment === null)
+                  .filter((prop) => !projectNoColorCheckbox || prop.color === null)
+                  .map((prop) => (
+                    <tr>
+                      <td>{prop.number}</td>
+                      <td className="production_column">{prop.name}</td>
+                      <td>
+                        {moment(prop.agreement_date, 'YYYY/MM/DD')
+                          .businessAdd(prop.expiration_date, 'days')
+                          .businessAdd(prop.design_period, 'days')
+                          .format('DD.MM.YYYY')}
+                      </td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleUpdateClick(prop.id)}>
+                        {prop.check ? (
+                          <>{prop.check}</>
+                        ) : (
+                          <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handlePaymentDate(prop.id)}>
+                        {prop.date_payment ? (
+                          <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
+                        ) : (
+                          <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
+                        {prop.ready_date ? (
+                          <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
+                        ) : (
+                          <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => hadleShippingDate(prop.id)}>
+                        {prop.shipping_date ? (
+                          <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
 
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                    <td style={{ cursor: 'pointer' }} onClick={() => handleCreateColor(prop.id)}>
-                      {prop.color ? (
-                        <>{prop.color}</>
-                      ) : (
-                        <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
-                      )}
-                    </td>
-                    <td>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => handleDeleteProjectMaterials(prop.id)}>
-                        Удалить
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleCreateColor(prop.id)}>
+                        {prop.color ? (
+                          <>{prop.color}</>
+                        ) : (
+                          <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          onClick={() => handleDeleteProjectMaterials(prop.id)}>
+                          Удалить
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
           </div>

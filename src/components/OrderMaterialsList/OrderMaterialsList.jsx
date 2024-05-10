@@ -268,6 +268,8 @@ function OrderMaterialsList() {
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateMaterial={handleCreateMaterial}
                 handleCreateColor={handleCreateColor}
+                projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
+                projectNoColorCheckbox={projectNoColorCheckbox}
               />
             ))}
           </>
@@ -284,6 +286,8 @@ function OrderMaterialsList() {
                 hadleShippingDate={hadleShippingDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateColor={handleCreateColor}
+                projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
+                projectNoColorCheckbox={projectNoColorCheckbox}
               />
             ))}
           </>
