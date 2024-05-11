@@ -18,9 +18,9 @@ function ClientAccountList() {
       const account = 'Dqsnv0ptuXpDUzOYxGgCn3f9cA2cQLW9';
       const password = 'bYaN281Li7jbNuMUKpk23eXzyxctb2p';
       const url = 'https://api.cdek.ru/v2/location/regions';
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+
       try {
-        const response = await axios.get(proxyUrl, {
+        const response = await axios.get(url, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Basic ${btoa(`${account}:${password}`)}`,
