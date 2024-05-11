@@ -3,6 +3,7 @@ import Header from '../Header/Header';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Spinner, Table } from 'react-bootstrap';
 import { getAllUser, deleteUser } from '../../http/userApi';
+import axios from 'axios';
 
 function ClientAccountList() {
   const [users, setUsers] = React.useState([]);
@@ -12,6 +13,12 @@ function ClientAccountList() {
   const location = useLocation();
 
   const [regions, setRegions] = React.useState([]);
+
+  React.useEffect(() => {
+    getAllUser()
+      .then((data) => setUsers(data))
+      .finally(() => setFetching(false));
+  }, [change]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -35,12 +42,6 @@ function ClientAccountList() {
 
     fetchData();
   }, []);
-
-  React.useEffect(() => {
-    getAllUser()
-      .then((data) => setUsers(data))
-      .finally(() => setFetching(false));
-  }, [change]);
 
   const addToInfo = (id) => {
     navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
