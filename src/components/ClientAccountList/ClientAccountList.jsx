@@ -12,36 +12,11 @@ function ClientAccountList() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [regions, setRegions] = React.useState([]);
-
   React.useEffect(() => {
     getAllUser()
       .then((data) => setUsers(data))
       .finally(() => setFetching(false));
   }, [change]);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const account = 'Dqsnv0ptuXpDUzOYxGgCn3f9cA2cQLW9';
-      const password = 'bYaN281Li7jbNuMUKpk23eXzyxctb2p';
-      const url = 'https://api.cdek.ru/v2/location/regions';
-
-      try {
-        const response = await axios.get(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Basic ${btoa(`${account}:${password}`)}`,
-          },
-        });
-
-        setRegions(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const addToInfo = (id) => {
     navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
