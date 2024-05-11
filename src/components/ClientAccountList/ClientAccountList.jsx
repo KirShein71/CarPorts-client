@@ -11,6 +11,31 @@ function ClientAccountList() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [regions, setRegions] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const account = 'Dqsnv0ptuXpDUzOYxGgCn3f9cA2cQLW9';
+      const password = 'bYaN281Li7jbNuMUKpk23eXzyxctb2p';
+      const url = 'https://api.cdek.ru/v2/location/regions';
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/' + url;
+      try {
+        const response = await axios.get(proxyUrl, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic ${btoa(`${account}:${password}`)}`,
+          },
+        });
+
+        setRegions(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   React.useEffect(() => {
     getAllUser()
       .then((data) => setUsers(data))
