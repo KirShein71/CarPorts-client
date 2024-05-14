@@ -194,7 +194,7 @@ function ProductionList() {
                       <div
                         onClick={() => handleOpenImage(projectDetail.antypical)}
                         className="production__eye">
-                        <img src="./eye.png" alt="eye" />
+                        {project.antypical ? <img src="./eye.png" alt="eye" /> : ''}
                       </div>
                     </div>
                   </td>
