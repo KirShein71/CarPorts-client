@@ -321,7 +321,7 @@ function ProjectInfoList() {
                   <td>
                     {project.project && project.project.project_delivery ? (
                       <Moment format="DD.MM.YYYY">
-                        {project.project && project.project_delivery}
+                        {project.project && project.project.project_delivery}
                       </Moment>
                     ) : (
                       ''
