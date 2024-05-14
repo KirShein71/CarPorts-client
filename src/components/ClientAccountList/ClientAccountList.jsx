@@ -3,7 +3,6 @@ import Header from '../Header/Header';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Spinner, Table } from 'react-bootstrap';
 import { getAllUser, deleteUser } from '../../http/userApi';
-import axios from 'axios';
 
 function ClientAccountList() {
   const [users, setUsers] = React.useState([]);

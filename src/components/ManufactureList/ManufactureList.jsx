@@ -162,7 +162,7 @@ function ManufactureList() {
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (
-                    <td key={part.id}>
+                    <td style={{ color: 'white' }} key={part.id}>
                       {produce.props.find((el) => el.detailId === part.id)
                         ? produce.props.find((el) => el.detailId === part.id).produceDifference !==
                           undefined

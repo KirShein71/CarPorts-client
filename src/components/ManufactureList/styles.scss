@@ -35,13 +35,13 @@
     }
     
     
-
+  
 
   .highlighted-row {
-    background-color: #565656; /* Цвет фона для выделенной строки */
+    background-color: #565656 !important; /* Цвет фона для выделенной строки */
     font-weight: bold; /* Жирный шрифт для текста в выделенной строке */
     /* Другие стили, если необходимо */
-    color: #ffff;
+    color: #ffff !important;
   }
 
   .manufacture_column.highlighted-row {

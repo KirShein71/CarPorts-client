@@ -1,5 +1,5 @@
 import { guestInstance } from './index'
-import axios from 'axios'
+
 
 
 export const fetchUserImages = async () => {
