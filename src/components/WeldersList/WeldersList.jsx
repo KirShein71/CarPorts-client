@@ -150,9 +150,11 @@ function WeldersList() {
         <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>
-              <th>Сумма</th>
+              <th className="welders_column">Сумма</th>
               {detailSums.map((sum, index) => (
-                <th key={index}>{sum}</th>
+                <th className="welders_thead" key={index}>
+                  {sum}
+                </th>
               ))}
               <th></th>
             </tr>
@@ -168,8 +170,8 @@ function WeldersList() {
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
-              <th>Нетипичные детали</th>
-              <th></th>
+              <th className="welders_thead">Нетипичные детали</th>
+              <th className="welders_thead"></th>
             </tr>
           </thead>
           <tbody>

@@ -2,24 +2,31 @@
     overflow-x: auto;
   }
   
-.welders_column
- {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background-color: white !important;
-  cursor: pointer;
-}
+  .welders_column
+  {
+   position: sticky;
+   left: 0;
+   top: 0;
+   z-index: 4;
+   background-color: white !important;
+ }
+ 
+ .welders_column::after {
+     content: '';
+     position: absolute;
+     top: 0;
+     right: 0;
+     width: 1px;
+     height: 100%;
+     background-color: #dee2e6; 
+   }
 
-.welders_column::after {
-    content: '';
-    position: absolute;
+.welders_thead {
+    position: sticky;
     top: 0;
-    right: 0;
-    width: 1px;
-    height: 100%;
-    background-color: #dee2e6; 
-  }
+    z-index: 1;
+    background-color: white !important; 
+}
 
 
 
