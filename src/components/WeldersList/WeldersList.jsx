@@ -69,6 +69,19 @@ function WeldersList() {
     }
   };
 
+  const detailSums = nameDetails
+    .sort((a, b) => a.id - b.id)
+    .map((part) => {
+      let sum = 0;
+      stockDetails.forEach((stock) => {
+        const detail = stock.props.find((el) => el.detailId === part.id);
+        if (detail) {
+          sum += detail.stock_quantity;
+        }
+      });
+      return sum;
+    });
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -135,6 +148,15 @@ function WeldersList() {
       />
       <div className="table-container">
         <Table bordered size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th>Сумма</th>
+              {detailSums.map((sum, index) => (
+                <th key={index}>{sum}</th>
+              ))}
+              <th></th>
+            </tr>
+          </thead>
           <thead>
             <tr>
               <th className="welders_column" onClick={() => handleSort('stock_date')}>

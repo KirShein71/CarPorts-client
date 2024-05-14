@@ -52,6 +52,19 @@ function ShipmentList() {
     setSearchQuery(event.target.value);
   };
 
+  const detailSums = nameDetails
+    .sort((a, b) => a.id - b.id)
+    .map((part) => {
+      let sum = 0;
+      shipmentDetails.forEach((shipment) => {
+        const detail = shipment.props.find((el) => el.detailId === part.id);
+        if (detail) {
+          sum += detail.shipment_quantity;
+        }
+      });
+      return sum;
+    });
+
   const handleDeleteShipmentDetails = (projectId) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить?');
     if (confirmed) {
@@ -127,6 +140,17 @@ function ShipmentList() {
       />
       <div className="table-container">
         <Table bordered size="sm" className="mt-3">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>Сумма</th>
+              {detailSums.map((sum, index) => (
+                <th key={index}>{sum}</th>
+              ))}
+              <th></th>
+            </tr>
+          </thead>
           <thead>
             <tr>
               <th className="shipment_column">Номер проекта</th>
