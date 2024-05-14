@@ -142,9 +142,9 @@ function ShipmentList() {
         <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>
-              <th></th>
-              <th></th>
               <th className="shipment_column">Сумма</th>
+              <th></th>
+              <th></th>
               {detailSums.map((sum, index) => (
                 <th key={index}>{sum}</th>
               ))}
