@@ -43,15 +43,15 @@ function HomePageList() {
             <Link to="/welders">
               <div className="homepage__item">Произведено</div>
             </Link>
+            <Link to="/shipment">
+              <div className="homepage__item">Отгрузки</div>
+            </Link>
             <Link to="/manufacture">
               <div className="homepage__item">Итоговая производство</div>
             </Link>
             <div className="homepage__title">Снабжение</div>
             <Link to="/ordermaterials">
               <div className="homepage__item">Заказ материалов</div>
-            </Link>
-            <Link to="/shipment">
-              <div className="homepage__item">Отгрузки</div>
             </Link>
             <div className="homepage__title">Монтаж</div>
             <Link to="/installation">
