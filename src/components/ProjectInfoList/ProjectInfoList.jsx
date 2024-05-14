@@ -319,7 +319,7 @@ function ProjectInfoList() {
                 <tr>
                   <th>Дата сдачи</th>
                   <td>
-                    {project.project && project.project.design_start ? (
+                    {project.project && project.project.design_delivery ? (
                       <Moment format="DD.MM.YYYY">
                         {project.project && project.project_delivery}
                       </Moment>
