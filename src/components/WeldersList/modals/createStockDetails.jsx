@@ -84,6 +84,7 @@ const CreateStockDetails = (props) => {
       ...prevValue,
       detail: detailId,
       detailName: detailName,
+      stock_date: new Date().toISOString().slice(0, 10),
     }));
   };
 
