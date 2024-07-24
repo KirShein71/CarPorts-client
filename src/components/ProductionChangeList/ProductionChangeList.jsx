@@ -61,6 +61,7 @@ function ProductionChangeList() {
           </thead>
           <tbody>
             {projects
+              .filter((item) => item.date_finish === null)
               .sort((a, b) => {
                 const dateA = new Date(a[sortField]);
                 const dateB = new Date(b[sortField]);

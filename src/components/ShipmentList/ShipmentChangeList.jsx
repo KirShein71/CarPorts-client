@@ -51,23 +51,25 @@ function ShipmentChangeList() {
             </tr>
           </thead>
           <tbody>
-            {projects.map((item) => (
-              <tr key={item.id}>
-                <td className="production_column">{item.number}</td>
-                <td>{item.name}</td>
-                <td>
-                  <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                </td>
-                <td>
-                  <Button
-                    variant="success"
-                    size="sm"
-                    onClick={() => handleShipmentDetails(item.id)}>
-                    Внести детали на отгрузку
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {projects
+              .filter((item) => item.date_finish === null)
+              .map((item) => (
+                <tr key={item.id}>
+                  <td className="production_column">{item.number}</td>
+                  <td>{item.name}</td>
+                  <td>
+                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                  </td>
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleShipmentDetails(item.id)}>
+                      Внести детали на отгрузку
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
