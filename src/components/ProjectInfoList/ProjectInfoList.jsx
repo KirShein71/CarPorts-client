@@ -110,6 +110,60 @@ function ProjectInfoList() {
     setIsExpanded(!isExpanded);
   };
 
+  const holidays = [
+    '2024-01-01',
+    '2024-01-02',
+    '2024-01-03',
+    '2024-01-04',
+    '2024-01-05',
+    '2024-01-08',
+    '2024-02-23',
+    '2024-03-08',
+    '2024-04-29',
+    '2024-04-30',
+    '2024-05-01',
+    '2024-05-09',
+    '2024-05-10',
+    '2024-06-12',
+    '2024-11-04',
+  ].map((date) => new Date(date));
+
+  // Функция для проверки, является ли дата выходным или праздничным днем
+  function isWorkingDay(date) {
+    const dayOfWeek = date.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
+    const isHoliday = holidays.some((holiday) => {
+      const holidayString = holiday.toDateString();
+      const dateString = date.toDateString();
+      console.log(`${holidayString} с ${dateString}`); // Выводим сравниваемые даты
+      return holidayString === dateString;
+    });
+
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday; // Не выходной и не праздник
+  }
+  // Функция для добавления рабочих дней к дате
+  function addWorkingDays(startDate, daysToAdd) {
+    let currentDate = new Date(startDate);
+    let addedDays = 0;
+
+    while (addedDays < daysToAdd) {
+      currentDate.setDate(currentDate.getDate() + 1); // Переходим на следующий день
+      if (isWorkingDay(currentDate)) {
+        addedDays++;
+      }
+    }
+
+    return currentDate;
+  }
+
+  // Функция для форматирования даты в формате ДД.ММ.ГГГГ
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
+  }
+
   const addToInfoAccount = (id) => {
     navigate(`/createinformationclient/${id}`, { state: { from: location.pathname } });
   };
@@ -261,9 +315,16 @@ function ProjectInfoList() {
                   <td>Проектирование</td>
                   <td>{project.project && project.project.design_period}</td>
                   <td>
-                    {moment(project.project && project.project.agreement_date, 'YYYY/MM/DD')
-                      .businessAdd(project.project && project.project.design_period, 'days')
-                      .format('DD.MM.YYYY')}
+                    {(() => {
+                      const agreementDate = new Date(
+                        project.project && project.project.agreement_date,
+                      );
+                      const designPeriod = project.project && project.project.design_period;
+
+                      const endDate = addWorkingDays(agreementDate, designPeriod);
+                      const formattedEndDate = formatDate(endDate);
+                      return formattedEndDate;
+                    })()}
                   </td>
                 </tr>
               </tbody>
@@ -272,9 +333,20 @@ function ProjectInfoList() {
                   <td>Производство</td>
                   <td>{project.project && project.project.expiration_date}</td>
                   <td>
-                    {moment(project.project && project.project.agreement_date, 'YYYY/MM/DD')
-                      .businessAdd(project.project && project.project.expiration_date, 'days')
-                      .format('DD.MM.YYYY')}
+                    {(() => {
+                      const agreementDate = new Date(
+                        project.project && project.project.agreement_date,
+                      );
+                      const designPeriod = project.project && project.project.design_period;
+
+                      const expirationDate = project.project && project.project.expiration_date;
+
+                      const sumDays = designPeriod + expirationDate;
+
+                      const endDate = addWorkingDays(agreementDate, sumDays);
+                      const formattedEndDate = formatDate(endDate);
+                      return formattedEndDate;
+                    })()}
                   </td>
                 </tr>
               </tbody>
@@ -283,9 +355,20 @@ function ProjectInfoList() {
                   <td>Монтажные работы</td>
                   <td>{project.project && project.project.installation_period}</td>
                   <td>
-                    {moment(project.project && project.project.agreement_date, 'YYYY/MM/DD')
-                      .businessAdd(project.project && project.project.installation_period, 'days')
-                      .format('DD.MM.YYYY')}
+                    {(() => {
+                      const agreementDate = new Date(
+                        project.project && project.project.agreement_date,
+                      );
+                      const designPeriod = project.project && project.project.design_period;
+                      const expirationDate = project.project && project.project.expiration_date;
+                      const installationPeriod =
+                        project.project && project.project.installation_period;
+                      const sumDays = designPeriod + expirationDate + installationPeriod;
+
+                      const endDate = addWorkingDays(agreementDate, sumDays);
+                      const formattedEndDate = formatDate(endDate);
+                      return formattedEndDate;
+                    })()}
                   </td>
                 </tr>
               </tbody>

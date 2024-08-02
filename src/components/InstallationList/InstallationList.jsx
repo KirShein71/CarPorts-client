@@ -81,6 +81,60 @@ function InstallationList() {
     setCreateFinishDateModal(true);
   };
 
+  const holidays = [
+    '2024-01-01',
+    '2024-01-02',
+    '2024-01-03',
+    '2024-01-04',
+    '2024-01-05',
+    '2024-01-08',
+    '2024-02-23',
+    '2024-03-08',
+    '2024-04-29',
+    '2024-04-30',
+    '2024-05-01',
+    '2024-05-09',
+    '2024-05-10',
+    '2024-06-12',
+    '2024-11-04',
+  ].map((date) => new Date(date));
+
+  // Функция для проверки, является ли дата выходным или праздничным днем
+  function isWorkingDay(date) {
+    const dayOfWeek = date.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
+    const isHoliday = holidays.some((holiday) => {
+      const holidayString = holiday.toDateString();
+      const dateString = date.toDateString();
+      console.log(`${holidayString} с ${dateString}`); // Выводим сравниваемые даты
+      return holidayString === dateString;
+    });
+
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday; // Не выходной и не праздник
+  }
+  // Функция для добавления рабочих дней к дате
+  function addWorkingDays(startDate, daysToAdd) {
+    let currentDate = new Date(startDate);
+    let addedDays = 0;
+
+    while (addedDays < daysToAdd) {
+      currentDate.setDate(currentDate.getDate() + 1); // Переходим на следующий день
+      if (isWorkingDay(currentDate)) {
+        addedDays++;
+      }
+    }
+
+    return currentDate;
+  }
+
+  // Функция для форматирования даты в формате ДД.ММ.ГГГГ
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
+  }
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -206,11 +260,17 @@ function InstallationList() {
                                 .format('DD.MM.YYYY')}
                             </th>
                             <th>
-                              {moment(prop.agreementDate, 'YYYY/MM/DD')
-                                .businessAdd(prop.designPeriod, 'days')
-                                .businessAdd(prop.expirationDate, 'days')
-                                .businessAdd(prop.installationPeriod, 'days')
-                                .format('DD.MM.YYYY')}
+                              {(() => {
+                                const agreementDate = new Date(prop.agreementDate);
+                                const designPeriod = prop.designPeriod;
+                                const expirationDate = prop.expirationDate;
+                                const installationPeriod = prop.installationPeriod;
+                                const sumDays = designPeriod + expirationDate + installationPeriod;
+
+                                const endDate = addWorkingDays(agreementDate, sumDays);
+                                const formattedEndDate = formatDate(endDate);
+                                return formattedEndDate;
+                              })()}
                             </th>
                             <th>
                               {moment(prop.plan_finish, 'YYYY/MM/DD').businessDiff(
