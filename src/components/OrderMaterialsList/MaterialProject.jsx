@@ -16,6 +16,30 @@ function MaterialProject({
   projectNoDatePaymentCheckbox,
   projectNoColorCheckbox,
 }) {
+  const [sortOrder, setSortOrder] = React.useState('desc');
+  const [sortField, setSortField] = React.useState('prop.name');
+
+  const sortedProps = [...props].sort((a, b) => {
+    if (sortField === 'prop.name') {
+      if (a.name < b.name) {
+        return sortOrder === 'asc' ? -1 : 1;
+      } else if (a.name > b.name) {
+        return sortOrder === 'asc' ? 1 : -1;
+      } else {
+        return 0;
+      }
+    }
+  });
+
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
   return (
     <div className="materialproject">
       <>
@@ -30,7 +54,17 @@ function MaterialProject({
               <thead>
                 <tr>
                   <th>Номер проекта</th>
-                  <th className="production_column">Название проекта</th>
+                  <th className="production_column">
+                    <div style={{ cursor: 'pointer', display: 'flex' }}>
+                      <div>Название проекта</div>{' '}
+                      <img
+                        onClick={() => handleSort('prop.name')}
+                        style={{ marginLeft: '10px', width: '24px', height: '24px' }}
+                        src="./sort.png"
+                        alt="icon_sort"
+                      />
+                    </div>
+                  </th>
                   <th>Дедлайн производства</th>
                   <th>Счёт</th>
                   <th>Дата оплаты</th>
@@ -41,7 +75,7 @@ function MaterialProject({
                 </tr>
               </thead>
               <tbody>
-                {props
+                {sortedProps
                   .filter((prop) => !projectNoDatePaymentCheckbox || prop.date_payment === null)
                   .filter((prop) => !projectNoColorCheckbox || prop.color === null)
                   .map((prop) => (
