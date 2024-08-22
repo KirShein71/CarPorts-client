@@ -78,6 +78,7 @@ function MaterialProject({
                 {sortedProps
                   .filter((prop) => !projectNoDatePaymentCheckbox || prop.date_payment === null)
                   .filter((prop) => !projectNoColorCheckbox || prop.color === null)
+                  .sort((a, b) => a.id - b.id)
                   .map((prop) => (
                     <tr>
                       <td>{prop.number}</td>

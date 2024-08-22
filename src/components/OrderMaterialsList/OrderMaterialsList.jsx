@@ -38,17 +38,6 @@ function OrderMaterialsList() {
   const [activeTab, setActiveTab] = React.useState('project');
   const [projectNoDatePaymentCheckbox, setProjectNoDatePaymentCheckbox] = React.useState(false);
   const [projectNoColorCheckbox, setProjectNoColorCheckbox] = React.useState(false);
-  const [sortOrder, setSortOrder] = React.useState('desc');
-  const [sortField, setSortField] = React.useState('name');
-
-  const handleSort = (field) => {
-    if (field === sortField) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
-  };
 
   React.useEffect(() => {
     Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])

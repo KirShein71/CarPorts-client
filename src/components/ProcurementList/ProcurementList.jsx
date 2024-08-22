@@ -49,22 +49,24 @@ function ProcurementList() {
             </tr>
           </thead>
           <tbody>
-            {projects.map((project) => (
-              <tr key={project.id}>
-                <td>{project.number}</td>
-                <td>{project.name}</td>
-                <td>
-                  <Button
-                    size="sm"
-                    className="ms-3"
-                    variant="primary"
-                    style={{ whiteSpace: 'nowrap' }}
-                    onClick={() => handleUpdateClick(project.id)}>
-                    Добавить материал
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {projects
+              .filter((project) => project.date_finish === null)
+              .map((project) => (
+                <tr key={project.id}>
+                  <td>{project.number}</td>
+                  <td>{project.name}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      className="ms-3"
+                      variant="primary"
+                      style={{ whiteSpace: 'nowrap' }}
+                      onClick={() => handleUpdateClick(project.id)}>
+                      Добавить материал
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
