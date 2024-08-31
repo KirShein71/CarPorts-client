@@ -171,39 +171,6 @@ function PersonalAccountList() {
                           </a>
                         </div>
                       </div>
-                      <div className="brigade">
-                        <div className="brigade__content">
-                          <div className="brigade__title">Монтажная бригада:</div>
-                          <div className="brigade__foreman">
-                            {userData.brigade && userData.brigade.name ? userData.brigade.name : ''}
-                          </div>
-                        </div>
-                        <div className="brigade__content">
-                          <div className="brigade__title">Телефон:</div>
-                          <a className="brigade__phone" href={`tel:${userData.brigade?.phone}`}>
-                            {formatPhoneNumber(userData.brigade?.phone)}
-                          </a>
-                        </div>
-                        {isMobileScreen ? (
-                          <div
-                            className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
-                            onClick={toggleFullScreen}>
-                            <img
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        ) : (
-                          <div className="brigade-image">
-                            <img
-                              ref={imageRef}
-                              onClick={handleClickImage}
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        )}
-                      </div>
                     </div>
                   )}
                   {activeTab === 'project' && (
@@ -213,23 +180,6 @@ function PersonalAccountList() {
                           <div className="project__title">Дата договора:</div>
                           <div className="project__description">
                             <Moment format="DD.MM.YYYYY">{userData.project.agreement_date}</Moment>
-                          </div>
-                        </div>
-                        <div className="project__items">
-                          <div className="project__title">Дедлайн проектирования:</div>
-                          <div className="project__description">
-                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                              .businessAdd(userData.project.design_period, 'days')
-                              .format('DD.MM.YYYY')}
-                          </div>
-                        </div>
-                        <div className="project__items">
-                          <div className="project__title">Дедлайн производства:</div>
-                          <div className="project__description">
-                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                              .businessAdd(userData.project.expiration_date, 'days')
-                              .businessAdd(userData.project.design_period, 'days')
-                              .format('DD.MM.YYYY')}
                           </div>
                         </div>
                         <div className="project__items">
@@ -256,17 +206,12 @@ function PersonalAccountList() {
 
                               function subtractDaysUntilZero(targetDate) {
                                 const today = moment();
-                                let daysLeft = 0;
-
-                                while (targetDate.diff(today, 'days') > 0) {
-                                  daysLeft++;
-                                  targetDate.subtract(1, 'day');
-                                }
-
-                                return daysLeft;
+                                return targetDate.businessDiff(today, 'days'); // Используем businessDiff
                               }
 
-                              return subtractDaysUntilZero(targetDate);
+                              const daysLeft = subtractDaysUntilZero(targetDate);
+
+                              return daysLeft >= 0 ? daysLeft : `-${Math.abs(daysLeft)}`;
                             })()}
                           </div>
                         </div>

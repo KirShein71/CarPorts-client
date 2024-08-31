@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import {
   createReadyDateProjectMaterials,
+  deleteReadyDateProjectMaterials,
   fetchOneProjectMaterials,
 } from '../../../http/projectMaterialsApi';
 
@@ -81,6 +82,19 @@ const CreateReadyDate = (props) => {
     }
   };
 
+  const handleDeleteReadyDate = () => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить дату готовности?');
+    if (confirmed) {
+      deleteReadyDateProjectMaterials(id) // Передаем параметр id для удаления
+        .then(() => {
+          alert('Дата готовности была удалена');
+          setShow(false);
+          setChange((state) => !state);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+  };
+
   return (
     <Modal
       show={show}
@@ -109,7 +123,12 @@ const CreateReadyDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button className="me-3 mb-3" type="submit">
+                Сохранить
+              </Button>
+              <Button className="mb-3" variant="danger" onClick={() => handleDeleteReadyDate()}>
+                Удалить
+              </Button>
             </Col>
           </Row>
         </Form>

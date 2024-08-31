@@ -104,22 +104,36 @@ function PlanningList() {
   }, [projects, searchQuery]);
 
   const handleNoDesignerCheckboxChange = () => {
-    const updatedValue = !projectNoDesignerCheckbox;
-    setProjectNoDesignerCheckbox(updatedValue);
-    const filtered = updatedValue
-      ? projects.filter((project) => project.designer === null)
-      : projects;
-    setFilteredProjects(filtered);
+    setProjectNoDesignerCheckbox((prev) => !prev);
   };
 
+  React.useEffect(() => {
+    if (projectNoDesignerCheckbox) {
+      // Фильтруем проекты только если чекбокс активен
+      const filtered = projects.filter((project) => project.designer === null);
+      setFilteredProjects(filtered);
+    } else {
+      // Если чекбокс не активен, показываем все проекты
+      setFilteredProjects(projects);
+    }
+  }, [projects, projectNoDesignerCheckbox]);
+
   const handleInProgressCheckboxChange = () => {
-    const updatedValue = !projectInProgressCheckbox;
-    setProjectInProgressCheckbox(updatedValue);
-    const filtered = updatedValue
-      ? projects.filter((project) => project.date_inspection === null && project.designer !== null)
-      : projects;
-    setFilteredProjects(filtered);
+    setProjectInProgressCheckbox((prev) => !prev);
   };
+
+  React.useEffect(() => {
+    if (projectInProgressCheckbox) {
+      // Фильтруем проекты только если чекбокс активен
+      const filtered = projects.filter(
+        (project) => project.date_inspection === null && project.designer !== null,
+      );
+      setFilteredProjects(filtered);
+    } else {
+      // Если чекбокс не активен, показываем все проекты
+      setFilteredProjects(projects);
+    }
+  }, [projects, projectInProgressCheckbox]);
 
   const handleToggleText = (id) => {
     if (selectedNote === id) {

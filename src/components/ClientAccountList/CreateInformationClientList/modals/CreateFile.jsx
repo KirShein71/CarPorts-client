@@ -123,7 +123,7 @@ const CreateFile = (props) => {
           ))}
           {selectedFiles.length > 0 && (
             <>
-              <Button className="me-3" onClick={handleSaveFiles}>
+              <Button className="me-3 mb-3" onClick={handleSaveFiles}>
                 Сохранить все файлы
               </Button>
               <Button onClick={handleRemoveAllFiles}>Удалить все</Button>

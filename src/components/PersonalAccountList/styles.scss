@@ -50,7 +50,7 @@
 
         &-card {
             width: 600px;
-            height: 250px;
+            height: auto;
             background-color: #ffff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -73,7 +73,7 @@
                 img {
                     display: block;
                     width: 600px;
-                    height: 180px;
+                    height: auto;
                     border-radius: 10px;
                     filter: brightness(25%);
                     @media(max-width: 575px) {
@@ -353,7 +353,7 @@
 
             &__title {
                 font-size: 19px;
-                font-weight: 400;
+                font-weight: 500;
                 color: rgb(118 109 109);
                 padding-right: 25px;
                 @media (max-width: 450px) {
@@ -371,6 +371,85 @@
                     
                 }
             }
+
+            &__design {
+                margin-top: 25px;
+
+                &-title {
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: rgb( 7 7 7);
+                    text-transform: uppercase;
+                    @media (max-width: 450px) {
+                        font-size: 17px;
+                    }
+                }
+
+                &-subtitle {
+                    font-size: 19px;
+                    font-weight: 500;
+                    width: 40%;
+                    @media(max-width: 460px) {
+                        width: 50%;
+                        font-size: 16px;
+                    }
+                }
+
+                &-circle {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50px;
+                   @media(max-width: 460px) {
+                    margin-top: 2px;
+                   }
+                    
+                }
+               
+
+            }
+
+            &__production {
+                margin-top: 25px;
+
+                &-title {
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: rgb( 7 7 7);
+                    text-transform: uppercase;
+                    @media (max-width: 450px) {
+                        font-size: 17px;
+                    }
+                }
+
+                &-head {
+                    font-size: 18px;
+                    font-weight: 500;
+                    color: rgb( 7 7 7);
+                    text-align: center;
+                    @media (max-width: 450px) {
+                        font-size: 16px;
+                    }
+                }
+
+                &-body {
+                    font-size: 18px;
+                    font-weight: 500;
+                    color: rgb( 7 7 7);
+                    @media (max-width: 450px) {
+                        font-size: 16px;
+                    }
+                }
+
+                &-circle {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50px;
+                    margin: 0 auto;
+                    
+                }
+            }
+
+            
         }
 
         // file 

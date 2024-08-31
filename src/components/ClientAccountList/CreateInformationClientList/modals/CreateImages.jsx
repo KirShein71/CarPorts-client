@@ -123,7 +123,7 @@ const CreateImage = (props) => {
           ))}
           {selectedImages.length > 0 && (
             <>
-              <Button className="me-3" onClick={handleSaveImages}>
+              <Button className="me-3 mb-3" onClick={handleSaveImages}>
                 Сохранить все изображения
               </Button>
               <Button onClick={handleRemoveAllImages}>Удалить все</Button>

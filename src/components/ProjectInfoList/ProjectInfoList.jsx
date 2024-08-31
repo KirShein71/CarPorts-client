@@ -220,7 +220,7 @@ function ProjectInfoList() {
         <Link to="/project">
           <img className="header__icon" src="../back.png" alt="back" />
         </Link>
-        <h1 className="header__title">Подробная информация о проекте</h1>
+        <h1 className="header__title">Подробная информация</h1>
       </div>
       <div className="projectinfo__content">
         <div className="projectinfo__content">

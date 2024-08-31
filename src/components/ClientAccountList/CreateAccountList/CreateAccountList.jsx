@@ -44,20 +44,22 @@ function CreateAccountList() {
           </tr>
         </thead>
         <tbody>
-          {projects.map((project) => (
-            <tr key={project.id}>
-              <td>{project.number}</td>
-              <td>{project.name}</td>
-              <td>
-                <Button
-                  variant="success"
-                  size="sm"
-                  onClick={() => HadleCreateAccountModal(project.id)}>
-                  Создать
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {projects
+            .filter((project) => project.date_finish === null)
+            .map((project) => (
+              <tr key={project.id}>
+                <td>{project.number}</td>
+                <td>{project.name}</td>
+                <td>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => HadleCreateAccountModal(project.id)}>
+                    Создать
+                  </Button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
     </div>

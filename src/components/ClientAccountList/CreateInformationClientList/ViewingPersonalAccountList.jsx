@@ -1,8 +1,10 @@
 import React from 'react';
 import { getOneAccount } from '../../../http/userApi';
+import { fetchMaterials } from '../../../http/materialsApi';
 import { Spinner } from 'react-bootstrap';
 import { useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { Table } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
@@ -14,6 +16,7 @@ function ViewingPersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
+  const [materials, setMaterials] = React.useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,6 +28,7 @@ function ViewingPersonalAccountList() {
     getOneAccount(id)
       .then((data) => setAccount(data))
       .finally(() => setFetching(false));
+    fetchMaterials().then((data) => setMaterials(data));
   }, [id]);
 
   const handleTabClick = (tab) => {
@@ -168,39 +172,6 @@ function ViewingPersonalAccountList() {
                           </a>
                         </div>
                       </div>
-                      <div className="brigade">
-                        <div className="brigade__content">
-                          <div className="brigade__title">Монтажная бригада:</div>
-                          <div className="brigade__foreman">
-                            {userData.brigade && userData.brigade.name ? userData.brigade.name : ''}
-                          </div>
-                        </div>
-                        <div className="brigade__content">
-                          <div className="brigade__title">Телефон:</div>
-                          <a className="brigade__phone" href={`tel:${userData.brigade?.phone}`}>
-                            {formatPhoneNumber(userData.brigade?.phone)}
-                          </a>
-                        </div>
-                        {isMobileScreen ? (
-                          <div
-                            className={`image-container ${isFullScreen ? 'full-screen' : ''}`}
-                            onClick={toggleFullScreen}>
-                            <img
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        ) : (
-                          <div className="brigade-image">
-                            <img
-                              ref={imageRef}
-                              onClick={handleClickImage}
-                              src={process.env.REACT_APP_IMG_URL + userData.brigade?.image}
-                              alt="foto__brigade"
-                            />
-                          </div>
-                        )}
-                      </div>
                     </div>
                   )}
                   {activeTab === 'project' && (
@@ -212,23 +183,7 @@ function ViewingPersonalAccountList() {
                             <Moment format="DD.MM.YYYYY">{userData.project.agreement_date}</Moment>
                           </div>
                         </div>
-                        <div className="project__items">
-                          <div className="project__title">Дедлайн проектирования:</div>
-                          <div className="project__description">
-                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                              .businessAdd(userData.project.design_period, 'days')
-                              .format('DD.MM.YYYY')}
-                          </div>
-                        </div>
-                        <div className="project__items">
-                          <div className="project__title">Дедлайн производства:</div>
-                          <div className="project__description">
-                            {moment(userData.project.agreement_date, 'YYYY/MM/DD')
-                              .businessAdd(userData.project.expiration_date, 'days')
-                              .businessAdd(userData.project.design_period, 'days')
-                              .format('DD.MM.YYYY')}
-                          </div>
-                        </div>
+
                         <div className="project__items">
                           <div className="project__title">Дата сдачи объекта:</div>
                           <div className="project__description">
@@ -253,19 +208,158 @@ function ViewingPersonalAccountList() {
 
                               function subtractDaysUntilZero(targetDate) {
                                 const today = moment();
-                                let daysLeft = 0;
-
-                                while (targetDate.diff(today, 'days') > 0) {
-                                  daysLeft++;
-                                  targetDate.subtract(1, 'day');
-                                }
-
-                                return daysLeft;
+                                return targetDate.businessDiff(today, 'days'); // Используем businessDiff
                               }
 
-                              return subtractDaysUntilZero(targetDate);
+                              const daysLeft = subtractDaysUntilZero(targetDate);
+
+                              return daysLeft >= 0 ? daysLeft : `-${Math.abs(daysLeft)}`;
                             })()}
                           </div>
+                        </div>
+                        <div className="project__design">
+                          <div className="project__design-title">Проектирование</div>
+                          <Table bordered size="sm" className="mt-3">
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.design_start !== null &&
+                                      moment(userData.project.design_start).isSameOrBefore(today)
+                                      ? 'rgb(7,7,7)'
+                                      : 'rgb(218, 206, 206)';
+                                  })(),
+                                }}>
+                                Взяли в работу
+                              </td>
+                              <td>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.design_start !== null &&
+                                        moment(userData.project.design_start).isSameOrBefore(today)
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.project_delivery !== null &&
+                                      moment(userData.project.project_delivery).isSameOrBefore(
+                                        today,
+                                      )
+                                      ? 'rgb(7,7,7)'
+                                      : 'rgb(218, 206, 206)'; // серый цвет
+                                  })(),
+                                }}>
+                                Проект готов
+                              </td>
+                              <td>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.project_delivery !== null &&
+                                        moment(userData.project.project_delivery).isSameOrBefore(
+                                          today,
+                                        )
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.date_inspection !== null &&
+                                      moment(userData.project.date_inspection).isSameOrBefore(today)
+                                      ? 'rgb(7,7,7)'
+                                      : 'rgb(218, 206, 206)';
+                                  })(),
+                                }}>
+                                Проект проверен
+                              </td>
+                              <td style={{}}>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.date_inspection !== null &&
+                                        moment(userData.project.date_inspection).isSameOrBefore(
+                                          today,
+                                        )
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                          </Table>
+                        </div>
+                        <div className="project__production">
+                          <div className="project__production-title">Производство и снабжение</div>
+                          <Table size="sm" className="mt-3">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th className="project__production-head">Заказан</th>
+                                <th className="project__production-head">Отгружен</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {userData.project.project_materials.map((userMaterials) => (
+                                <tr key={userMaterials.id}>
+                                  <th className="project__production-body">
+                                    {userMaterials.material_name}
+                                  </th>
+                                  <th>
+                                    <div
+                                      className="project__production-circle"
+                                      style={{
+                                        backgroundColor: (function () {
+                                          const today = moment();
+                                          return userMaterials.date_payment !== null &&
+                                            moment(userMaterials.date_payment).isSameOrBefore(today)
+                                            ? 'rgb(7, 7, 7)'
+                                            : 'rgb(218, 206, 206)';
+                                        })(),
+                                      }}></div>
+                                  </th>
+                                  <th>
+                                    <div
+                                      className="project__production-circle"
+                                      style={{
+                                        backgroundColor: (function () {
+                                          const today = moment();
+                                          return userMaterials.shipping_date !== null &&
+                                            moment(userMaterials.shipping_date).isSameOrBefore(
+                                              today,
+                                            )
+                                            ? 'rgb(7, 7, 7)'
+                                            : 'rgb(218, 206, 206)';
+                                        })(),
+                                      }}></div>
+                                  </th>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
                         </div>
                       </div>
                     </div>
