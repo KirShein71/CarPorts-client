@@ -286,7 +286,7 @@ function ViewingPersonalAccountList() {
                                     const today = moment();
                                     return userData.project.date_inspection !== null &&
                                       moment(userData.project.date_inspection).isSameOrBefore(today)
-                                      ? 'rgb(7,7,7)'
+                                      ? 'rgb(7, 7, 7)'
                                       : 'rgb(218, 206, 206)';
                                   })(),
                                 }}>
