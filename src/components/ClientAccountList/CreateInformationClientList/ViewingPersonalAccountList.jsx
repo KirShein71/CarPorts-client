@@ -166,7 +166,7 @@ function ViewingPersonalAccountList() {
                         <div className="manager__content">
                           <div className="manager__title">Телефон:</div>
                           <a className="manager__phone" href={`tel:${userData.employee?.phone}`}>
-                            {formatPhoneNumber(userData.manager_phone)}
+                            {formatPhoneNumber(userData.emploee?.phone)}
                           </a>
                         </div>
                       </div>
