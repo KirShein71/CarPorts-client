@@ -1,6 +1,5 @@
 import React from 'react';
 import { getOneAccount } from '../../../http/userApi';
-import { fetchMaterials } from '../../../http/materialsApi';
 import { Spinner } from 'react-bootstrap';
 import { useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -16,7 +15,7 @@ function ViewingPersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-  const [materials, setMaterials] = React.useState([]);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,7 +27,6 @@ function ViewingPersonalAccountList() {
     getOneAccount(id)
       .then((data) => setAccount(data))
       .finally(() => setFetching(false));
-    fetchMaterials().then((data) => setMaterials(data));
   }, [id]);
 
   const handleTabClick = (tab) => {
