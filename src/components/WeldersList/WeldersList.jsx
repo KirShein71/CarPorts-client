@@ -6,9 +6,9 @@ import { fetchAllStockDetails, deleteStockDetails } from '../../http/stockDetail
 import CreateStockDetails from './modals/сreateStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
-import CreateOneStockDetail from './modals/CreateOneStockDetail';
+import CreateOneStockDetail from './modals/createOneStockDetail';
 import './modals/style.scss';
-import CreateStockAntypical from './modals/CreateStockAntypical';
+import CreateStockAntypical from './modals/createStockAntypical';
 
 function WeldersList() {
   const [nameDetails, setNameDetails] = React.useState([]);
