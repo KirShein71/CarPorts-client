@@ -5,7 +5,6 @@ import Home from '../pages/Home';
 import Production from '../pages/Production';
 import Payment from '../pages/Payment';
 import Project from '../pages/Project';
-import Team from '../pages/Team';
 import Procurement from '../pages/Procurement';
 import ProjectInfo from '../pages/ProjectInfo';
 import ProductionChange from '../pages/ProductionChange';
@@ -40,7 +39,6 @@ const employeeRoutes = [
   { path: '/production', Component: Production },
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
-  { path: '/team', Component: Team },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
   { path: '/productionchange', Component: ProductionChange },
@@ -67,7 +65,6 @@ const adminRoutes = [
   { path: '/production', Component: Production },
   { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
-  { path: '/team', Component: Team },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
   { path: '/productionchange', Component: ProductionChange },
