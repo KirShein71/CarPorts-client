@@ -3,6 +3,7 @@ import { getAllEmployee, deleteAccountEmployee } from '../../http/employeeApi';
 import { Table, Spinner, Button } from 'react-bootstrap';
 import CreateEmployee from './modals/CreateEmployee';
 import Header from '../Header/Header';
+import { Link } from 'react-router-dom';
 
 function Admin() {
   const [employees, setEmployees] = React.useState([]);

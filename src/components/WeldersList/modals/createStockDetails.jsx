@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchAllDetails } from '../../../http/detailsApi';
 import { createStockDetails } from '../../../http/stockDetailsApi';
-import './styles.scss';
+import './style.scss';
 
 const defaultValue = {
   detail: '',

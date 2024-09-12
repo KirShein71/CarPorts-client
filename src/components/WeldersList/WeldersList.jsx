@@ -3,12 +3,12 @@ import Header from '../Header/Header';
 import { Button, Table, Spinner, Col, Form } from 'react-bootstrap';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { fetchAllStockDetails, deleteStockDetails } from '../../http/stockDetailsApi';
-import CreateStockDetails from './modals/createStockDetails';
+import CreateStockDetails from './modals/CreateStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
-import CreateOneStockDetail from './modals/createOneStockDetail';
-import './modals/styles.scss';
-import CreateStockAntypical from './modals/createStockAntypical';
+import CreateOneStockDetail from './modals/CreateOneStockDetail';
+import './modals/style.scss';
+import CreateStockAntypical from './modals/CreateStockAntypical';
 
 function WeldersList() {
   const [nameDetails, setNameDetails] = React.useState([]);

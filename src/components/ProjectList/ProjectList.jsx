@@ -4,6 +4,7 @@ import CreateProject from './modals/CreateProject';
 import UpdateNameProject from './modals/UpdateNameProject';
 import UpdateNumberProject from './modals/UpdateNumberProject';
 import UpdateDateProject from './modals/UpdateDateProject';
+import CreateRegion from './modals/CreateRegion';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -23,6 +24,7 @@ function ProjectList() {
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filteredProjects, setFilteredProjects] = React.useState([]);
+  const [createRegionModal, setCreateRegionModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -83,6 +85,11 @@ function ProjectList() {
     setUpdateDateProject(true);
   };
 
+  const hadleCreateRegionProject = (id) => {
+    setProject(id);
+    setCreateRegionModal(true);
+  };
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -121,6 +128,13 @@ function ProjectList() {
       <UpdateDateProject
         show={updateDateProject}
         setShow={setUpdateDateProject}
+        setChange={setChange}
+        id={project}
+        scrollPosition={scrollPosition}
+      />
+      <CreateRegion
+        show={createRegionModal}
+        setShow={setCreateRegionModal}
         setChange={setChange}
         id={project}
         scrollPosition={scrollPosition}
@@ -164,6 +178,7 @@ function ProjectList() {
                   alt="icon_sort"
                 />
               </th>
+              <th>Регион</th>
               <th></th>
               <th></th>
             </tr>
@@ -194,6 +209,11 @@ function ProjectList() {
                   </td>
                   <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateDateProject(item.id)}>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => hadleCreateRegionProject(item.id)}>
+                    {item.region?.region}
                   </td>
                   <td>
                     <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>

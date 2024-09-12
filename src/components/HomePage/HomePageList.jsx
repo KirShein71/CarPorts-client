@@ -1,5 +1,5 @@
 import React from 'react';
-
+import TableBrigadeCalendar from '../TableBrigadeCalendar/TableBrigadeCalendar';
 import { Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import CreateProject from './modals/CreateProject';
@@ -57,6 +57,9 @@ function HomePageList() {
             <Link to="/installation">
               <div className="homepage__item">Монтажные работы</div>
             </Link>
+            <Link to="/changebrigadedate">
+              <div className="homepage__item">Календарь монтажных работ</div>
+            </Link>
             <div className="homepage__title">Администирование</div>
             <Link to="/clientaccount">
               <div className="homepage__item">Личные кабинеты заказчиков</div>
@@ -69,6 +72,9 @@ function HomePageList() {
                 <div className="homepage__item">Админ</div>
               </Link>
             ) : null}
+          </div>
+          <div className="homepage__bottom">
+            <TableBrigadeCalendar />
           </div>
         </div>
       </div>

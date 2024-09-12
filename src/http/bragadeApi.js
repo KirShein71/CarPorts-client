@@ -16,6 +16,11 @@ export const createBrigade = async (installer) => {
     return data
 }
 
+export const createRegion = async (id, brigade) => {
+    const { data} = await guestInstance.put(`brigade/createRegion/${id}`, brigade)
+    return data
+}
+
 export const updateBrigade = async (id, brigade) => {
     const { data } = await guestInstance.put(`brigade/update/${id}`, brigade)
     return data

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createProject } from '../../../http/projectApi';
+import { getAllRegion } from '../../../http/regionApi';
 import './styles.scss';
 const defaultValue = {
   name: '',
@@ -10,6 +11,7 @@ const defaultValue = {
   expiration_date: '',
   installation_period: '',
   note: '',
+  region: '',
 };
 const defaultValid = {
   name: null,
@@ -19,6 +21,7 @@ const defaultValid = {
   expiration_date: null,
   installation_period: null,
   note: null,
+  region: null,
 };
 
 const isValid = (value) => {
@@ -32,15 +35,22 @@ const isValid = (value) => {
     if (key === 'installation_period')
       result.installation_period = value.installation_period.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
+    if (key === 'region') result.region = value.region;
   }
   return result;
 };
 
 const CreateProject = (props) => {
   const { show, setShow, setChange } = props;
-
+  const [regions, setRegions] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+
+  React.useEffect(() => {
+    getAllRegion()
+      .then((data) => setRegions(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -78,6 +88,7 @@ const CreateProject = (props) => {
       data.append('expiration_date', value.expiration_date.trim());
       data.append('installation_period', value.installation_period.trim());
       data.append('note', value.note.trim());
+      data.append('regionId', value.region);
 
       createProject(data)
         .then((data) => {
@@ -127,6 +138,24 @@ const CreateProject = (props) => {
             isInvalid={valid.name === false}
             placeholder="Название проекта"
           />
+          <Row className="mb-3 mt-4">
+            <Col>
+              <Form.Select
+                name="region"
+                value={value.region}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.region === true}
+                isInvalid={valid.region === false}>
+                <option value="">Регион</option>
+                {regions &&
+                  regions.map((region) => (
+                    <option key={region.id} value={region.id}>
+                      {region.region}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Col>
+          </Row>
           <Row className="mb-3 flex-column flex-md-row">
             <Col md={3} className="my-3">
               {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (

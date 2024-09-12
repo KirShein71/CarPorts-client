@@ -1,11 +1,13 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createBrigade } from '../../../http/bragadeApi';
+import { getAllRegion } from '../../../http/regionApi';
 
-const defaultValue = { name: '', phone: '' };
+const defaultValue = { name: '', phone: '', region: '' };
 const defaultValid = {
   name: null,
   phone: null,
+  region: null,
 };
 
 const isValid = (value) => {
@@ -13,6 +15,7 @@ const isValid = (value) => {
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'region') result.region = value.region;
   }
   return result;
 };
@@ -24,6 +27,13 @@ const CreateBrigade = (props) => {
   const [image, setImage] = React.useState(null);
   const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
+  const [regions, setRegions] = React.useState([]);
+
+  React.useEffect(() => {
+    getAllRegion()
+      .then((data) => setRegions(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -50,6 +60,7 @@ const CreateBrigade = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('image', image);
+      data.append('regionId', value.region);
       createBrigade(data)
         .then((data) => {
           setValue(defaultValue);
@@ -98,6 +109,24 @@ const CreateBrigade = (props) => {
                 minLength="10"
                 maxLength="11"
               />
+            </Col>
+          </Row>
+          <Row className="mb-3 mt-4">
+            <Col>
+              <Form.Select
+                name="region"
+                value={value.region}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.region === true}
+                isInvalid={valid.region === false}>
+                <option value="">Регион</option>
+                {regions &&
+                  regions.map((region) => (
+                    <option key={region.id} value={region.id}>
+                      {region.region}
+                    </option>
+                  ))}
+              </Form.Select>
             </Col>
           </Row>
           <Col className="mb-3">

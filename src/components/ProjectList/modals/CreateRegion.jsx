@@ -1,37 +1,37 @@
 import React from 'react';
-import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
-import { getOneStockDetails, updateStockDetails } from '../../../http/stockDetailsApi';
-import './style.scss';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { fetchOneProject, createRegion } from '../../../http/projectApi';
+import { getAllRegion } from '../../../http/regionApi';
 
-const defaultValue = {
-  stock_quantity: '',
-};
+const defaultValue = { region: '' };
 const defaultValid = {
-  stock_quantity: null,
+  region: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'stock_quantity') result.stock_quantity = value.stock_quantity.trim() !== '';
+    if (key === 'region') result.region = value.region;
   }
   return result;
 };
 
-const UpdateStockDetails = (props) => {
-  const { show, setShow, setChange, id } = props;
+const CreateRegion = (props) => {
+  const { id, show, setShow, setChange, scrollPosition } = props;
+  const [regions, setRegions] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     if (id) {
-      getOneStockDetails(id)
-        .then((data) => {
+      Promise.all([fetchOneProject(id), getAllRegion()])
+        .then(([projectData, regionsData]) => {
           const prod = {
-            stock_quantity: data.stock_quantity.toString(),
+            regionId: projectData.regionId,
           };
           setValue(prod);
           setValid(isValid(prod));
+          setRegions(regionsData);
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -44,29 +44,32 @@ const UpdateStockDetails = (props) => {
   }, [id]);
 
   const handleInputChange = (event) => {
-    const regex = /^[0-9]*$/;
-    if (regex.test(event.target.value)) {
-      setValue({ ...value, [event.target.name]: event.target.value });
-      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
-    }
+    const data = { ...value, [event.target.name]: event.target.value };
+    setValue(data);
+    setValid(isValid(data));
+  };
+
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.stock_quantity) {
+    if (correct.region) {
       const data = new FormData();
-      data.append('stock_quantity', value.stock_quantity.trim());
-
-      updateStockDetails(id, data)
+      data.append('regionId', value.region);
+      createRegion(id, data)
         .then((data) => {
           const prod = {
-            stock_quantity: data.stock_quantity.toString(),
+            region: data.region,
           };
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -76,32 +79,37 @@ const UpdateStockDetails = (props) => {
           }
         });
     }
-    setShow(false);
   };
 
   return (
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="lg"
+      size="md"
+      className="modal__planning"
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить деталь</Modal.Title>
+        <Modal.Title>Добавьте регион</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Row className="mb-3 mt-4">
             <Col>
-              <Form.Control
-                name="stock_quantity"
-                value={value.stock_quantity}
+              <Form.Select
+                name="region"
+                value={value.region}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.stock_quantity === true}
-                isInvalid={valid.stock_quantity === false}
-                placeholder="Количество деталей"
-                className="mb-3"
-              />
+                isValid={valid.region === true}
+                isInvalid={valid.region === false}>
+                <option value="">Регион</option>
+                {regions &&
+                  regions.map((region) => (
+                    <option key={region.id} value={region.id}>
+                      {region.region}
+                    </option>
+                  ))}
+              </Form.Select>
             </Col>
           </Row>
           <Row>
@@ -115,4 +123,4 @@ const UpdateStockDetails = (props) => {
   );
 };
 
-export default UpdateStockDetails;
+export default CreateRegion;

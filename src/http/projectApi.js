@@ -12,6 +12,11 @@ export const createDateFinish = async (id, project) => {
     return data
 }
 
+export const createRegion = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createRegion/${id}`, project)
+    return data
+}
+
 export const fetchAllProjects = async () => {
     const { data } = await guestInstance.get('project/getall')
     return data

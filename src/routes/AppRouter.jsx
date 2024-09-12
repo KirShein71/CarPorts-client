@@ -26,6 +26,7 @@ import ClientAccount from '../pages/ClientAccount';
 import CreateInformationClient from '../pages/CreateInformationClient';
 import ViewingPersonalAccount from '../pages/ViewingPersonalAccount';
 import FinishProject from '../pages/FinishProject';
+import ChangeBrigadeDate from '../pages/ChangeBrigadeDate';
 
 import { observer } from 'mobx-react';
 
@@ -58,6 +59,7 @@ const employeeRoutes = [
   { path: '/workingpage', Component: WorkingPage },
   { path: '/finishproject', Component: FinishProject },
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
+  { path: '/changebrigadedate', Component: ChangeBrigadeDate },
 ];
 
 const adminRoutes = [
@@ -86,6 +88,7 @@ const adminRoutes = [
   { path: '/adding', Component: Adding },
   { path: '/finishproject', Component: FinishProject },
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
+  { path: '/changebrigadedate', Component: ChangeBrigadeDate },
 ];
 
 const routes = [{ path: '/', Component: Home }];

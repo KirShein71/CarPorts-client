@@ -1,0 +1,30 @@
+.calendar-brigade {
+   
+    &__filter {
+        margin-top: 15px;
+        display: flex;
+
+        &-item {
+            font-size: 19px;
+            font-weight: 500;
+            color: rgb(7,7,7);
+            padding-right: 10px;
+            cursor: pointer;
+            &:active {
+                color: #ff0000;
+               
+              }
+            &.active {
+                color: #ff0000;
+            }
+        }
+    }
+
+    &__table {
+        margin-top: 25px;
+        width: 50%;
+        @media(max-width: 460px) {
+            width: 100%;
+        }
+    }
+}
