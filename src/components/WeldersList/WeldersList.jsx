@@ -3,7 +3,7 @@ import Header from '../Header/Header';
 import { Button, Table, Spinner, Col, Form } from 'react-bootstrap';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { fetchAllStockDetails, deleteStockDetails } from '../../http/stockDetailsApi';
-import CreateStockDetails from './modals/CreateStockDetails';
+import CreateStockDetails from './modals/сreateStockDetails';
 import Moment from 'react-moment';
 import UpdateStockDetails from './modals/updateStockDetails';
 import CreateOneStockDetail from './modals/CreateOneStockDetail';
