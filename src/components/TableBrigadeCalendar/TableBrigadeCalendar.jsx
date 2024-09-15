@@ -29,7 +29,7 @@ function TableBrigadeCalendar() {
   }, []);
 
   return (
-    <div className="table" style={{ marginTop: '25px', width: '400px' }}>
+    <div className="table" style={{ marginTop: '25px', width: '360px' }}>
       {dates.map((date) => (
         <Table bordered size="sm">
           <thead>
