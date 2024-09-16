@@ -15,6 +15,7 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import './style.scss';
+import CalendarProject from '../Calendar/CalendarProject';
 
 function ProjectInfoList() {
   const { id } = useParams();
@@ -80,7 +81,6 @@ function ProjectInfoList() {
   const hadleCreateBrigade = (id) => {
     setProject(id);
     setCreateBrigadeModal(true);
-    console.log(id);
   };
 
   const hadleCreateStartDate = (id) => {
@@ -134,7 +134,6 @@ function ProjectInfoList() {
     const isHoliday = holidays.some((holiday) => {
       const holidayString = holiday.toDateString();
       const dateString = date.toDateString();
-      console.log(`${holidayString} с ${dateString}`); // Выводим сравниваемые даты
       return holidayString === dateString;
     });
 
@@ -289,6 +288,13 @@ function ProjectInfoList() {
                 }`}
                 onClick={() => handleTabClick('brigade')}>
                 Монтаж
+              </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'calendar' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('calendar')}>
+                Календарь
               </div>
               <div
                 className={`projectinfo__filter-card__item ${
@@ -606,6 +612,39 @@ function ProjectInfoList() {
                 Назначить бригаду
               </Button>
             </div>
+          </div>
+        )}
+        {activeTab === 'calendar' && (
+          <div className="calendar">
+            <CalendarProject
+              startDateDesing={project.project.agreement_date}
+              endDateDesing={project.project.project_delivery}
+              startDateProduction={project.project.agreement_date}
+              endDateProduction={(() => {
+                const agreementDate = new Date(project.project && project.project.agreement_date);
+                const designPeriod = project.project && project.project.design_period;
+
+                const expirationDate = project.project && project.project.expiration_date;
+
+                const sumDays = designPeriod + expirationDate;
+
+                const endDate = addWorkingDays(agreementDate, sumDays);
+                const formattedEndDate = formatDate(endDate);
+                return formattedEndDate;
+              })()}
+              startDateInstallation={project.project.agreement_date}
+              endDateInstallation={(() => {
+                const agreementDate = new Date(project.project && project.project.agreement_date);
+                const designPeriod = project.project && project.project.design_period;
+                const expirationDate = project.project && project.project.expiration_date;
+                const installationPeriod = project.project && project.project.installation_period;
+                const sumDays = designPeriod + expirationDate + installationPeriod;
+
+                const endDate = addWorkingDays(agreementDate, sumDays);
+                const formattedEndDate = formatDate(endDate);
+                return formattedEndDate;
+              })()}
+            />
           </div>
         )}
         {activeTab === 'cabinet' && (
