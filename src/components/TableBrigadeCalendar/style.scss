@@ -1,7 +1,12 @@
-.table {
-    margin-top: 25px;
-    width: 400px;
-    @media(max-width: 430px) {
-        width: 350px;
+.table-brigade {
+    
+    &__header, &__body {
+        width: 200px;
+        
+        
     }
+}
+
+.table>:not(caption)>*>* {
+    border-bottom-width: 0px !important;
 }

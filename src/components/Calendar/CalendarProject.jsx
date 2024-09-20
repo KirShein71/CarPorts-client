@@ -11,6 +11,7 @@ function CalendarComponent(props) {
     endDateProduction,
     startDateInstallation,
     endDateInstallation,
+    brigadesDate,
   } = props;
 
   const formatDate = (dateStr) => {
@@ -32,32 +33,45 @@ function CalendarComponent(props) {
     },
   ];
 
-  const getColorsForDate = (date) => {
-    return dateRanges
-      .filter((range) => date >= range.start && date <= range.end)
-      .map((range) => range.color);
+  const isDateInRange = (date) => {
+    return dateRanges.find((range) => {
+      return date >= range.start && date <= range.end;
+    });
+  };
+
+  const getInitials = (name) => {
+    const parts = name.split(' ');
+    return parts.map((part) => part.charAt(0)).join('. ') + '.';
   };
 
   // Функция для отображения контента на тайле
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
-      const colors = getColorsForDate(date);
-      if (colors.length > 0) {
+      const range = isDateInRange(date);
+      console.log(range);
+      const brigadesEntry = brigadesDate.find((entry) => {
+        // Сравнение только дат без учета времени
+        const entryDate = new Date(entry.date);
+        const tileDate = new Date(date);
         return (
-          <div style={{ display: 'flex', height: '100%' }}>
-            {colors.map((color, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: color,
-                  height: '100%',
-                  width: '100%',
-                }}
-              />
-            ))}
-          </div>
+          entryDate.getDate() === tileDate.getDate() &&
+          entryDate.getMonth() === tileDate.getMonth() &&
+          entryDate.getFullYear() === tileDate.getFullYear()
         );
-      }
+      });
+
+      return (
+        <>
+          {range && (
+            <div style={{ backgroundColor: range.color, height: '10px', opacity: 0.5 }}></div>
+          )}
+          {brigadesEntry && (
+            <div style={{ fontSize: '0.8em', textAlign: 'center' }}>
+              {getInitials(brigadesEntry.name)}
+            </div>
+          )}
+        </>
+      );
     }
   };
 
@@ -83,6 +97,10 @@ function CalendarComponent(props) {
           <div className="calendar__tooltip-items">
             <div className="calendar__tooltip-items__installation"></div>
             <div className="calendar__tooltip-items__description">Монтаж</div>
+          </div>
+          <div className="calendar__tooltip-items">
+            <div className="calendar__tooltip-items__brigade">Бригада:</div>
+            <div className="calendar__tooltip-items__description">{brigadesDate[0].name}</div>
           </div>
         </div>
       </div>

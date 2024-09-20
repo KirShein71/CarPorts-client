@@ -21,6 +21,8 @@ export const fetchOneBrigadesDate = async (id) => {
 }
 
 
+
+
 export const updateBrigadesDate = async (id, brigadesdate) => {
     const { data } = await guestInstance.put(`brigadesdate/updateBrigadesDate/${id}`, brigadesdate)
     return data

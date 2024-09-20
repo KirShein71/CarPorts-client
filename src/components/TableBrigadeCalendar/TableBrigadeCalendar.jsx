@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import { getAllCertainDays } from '../../http/brigadesDateApi';
+import './style.scss';
 
 function TableBrigadeCalendar() {
   const [dateBrigades, setDateBrigades] = React.useState([]);
@@ -28,14 +29,30 @@ function TableBrigadeCalendar() {
     setDates(datesArray);
   }, []);
 
+  const todayString = new Date().toISOString().split('T')[0]; // Получаем строку даты для сравнения
+
   return (
-    <div className="table" style={{ marginTop: '25px', width: '360px' }}>
+    <div className="table-brigade" style={{ marginTop: '25px', width: '360px' }}>
       {dates.map((date) => (
-        <Table bordered size="sm">
+        <Table size="sm" key={date.toISOString()}>
           <thead>
             <tr>
-              <th>{date.toLocaleDateString()}</th>
-              <th>МО</th>
+              <th
+                className="table-brigade__header"
+                style={{
+                  backgroundColor:
+                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                }}>
+                {date.toLocaleDateString()}
+              </th>
+              <th
+                className="table-brigade__header"
+                style={{
+                  backgroundColor:
+                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                }}>
+                МО
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -46,15 +63,43 @@ function TableBrigadeCalendar() {
               })
               .map((dateMoscow) => (
                 <tr key={dateMoscow.id}>
-                  <td>{dateMoscow.brigade.name}</td>
-                  <td>{dateMoscow.project?.name || dateMoscow.warranty || dateMoscow.weekend}</td>
+                  <td
+                    className="table-brigade__body"
+                    style={{
+                      backgroundColor:
+                        date.toISOString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : 'transparent',
+                    }}>
+                    {dateMoscow.brigade.name}
+                  </td>
+                  <td
+                    className="table-brigade__body"
+                    style={{
+                      backgroundColor:
+                        date.toISOString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : 'transparent',
+                    }}>
+                    {dateMoscow.project?.name} {dateMoscow.warranty} {dateMoscow.weekend}
+                  </td>
                 </tr>
               ))}
           </tbody>
           <thead>
             <tr>
-              <th></th>
-              <th>ЛО</th>
+              <th
+                style={{
+                  backgroundColor:
+                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                }}></th>
+              <th
+                style={{
+                  backgroundColor:
+                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                }}>
+                ЛО
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -65,8 +110,26 @@ function TableBrigadeCalendar() {
               })
               .map((dateSpb) => (
                 <tr key={dateSpb.id}>
-                  <td>{dateSpb.brigade.name}</td>
-                  <td>{dateSpb.project?.name || dateSpb.warranty || dateSpb.weekend}</td>
+                  <td
+                    className="table-brigade__body"
+                    style={{
+                      backgroundColor:
+                        date.toISOString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : 'transparent',
+                    }}>
+                    {dateSpb.brigade.name}
+                  </td>
+                  <td
+                    className="table-brigade__body"
+                    style={{
+                      backgroundColor:
+                        date.toISOString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : 'transparent',
+                    }}>
+                    {dateSpb.project?.name} {dateSpb.warranty} {dateSpb.weekend}
+                  </td>
                 </tr>
               ))}
           </tbody>

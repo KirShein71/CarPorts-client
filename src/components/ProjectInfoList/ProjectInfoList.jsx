@@ -617,6 +617,7 @@ function ProjectInfoList() {
         {activeTab === 'calendar' && (
           <div className="calendar">
             <CalendarProject
+              brigadesDate={project.brigadesdate}
               startDateDesing={project.project.agreement_date}
               endDateDesing={project.project.project_delivery}
               startDateProduction={project.project.agreement_date}

@@ -1,7 +1,8 @@
 import React from 'react';
 import TableBrigadeCalendar from '../TableBrigadeCalendar/TableBrigadeCalendar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
+import { logout } from '../../http/userApi';
 import CreateProject from './modals/CreateProject';
 import Counter from './Counter';
 
@@ -11,6 +12,13 @@ function HomePageList() {
   const { user } = React.useContext(AppContext);
   const [createProjectModal, setCreateProjectModal] = React.useState(false);
   const [setChange] = React.useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    user.logout();
+    navigate('/', { replace: true });
+  };
 
   const hadleOpenModal = () => {
     setCreateProjectModal(true);
@@ -26,9 +34,6 @@ function HomePageList() {
       <div className="homepage">
         <Counter />
         <div className="homepage__content">
-          <div className="homepage__addproject" onClick={hadleOpenModal}>
-            Добавить проект
-          </div>
           <div className="homepage__items">
             <Link to="/project">
               <div className="homepage__title-1">Все проекты</div>
@@ -72,6 +77,10 @@ function HomePageList() {
                 <div className="homepage__item">Админ</div>
               </Link>
             ) : null}
+            <div className="homepage__item" onClick={handleLogout}>
+              {' '}
+              Выйти
+            </div>
           </div>
           <div className="homepage__bottom">
             <TableBrigadeCalendar />
