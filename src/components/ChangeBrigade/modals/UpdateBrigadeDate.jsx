@@ -48,30 +48,58 @@ const UpdateBrigadeDate = (props) => {
     }
   }, [id]);
 
-  const handleInputChange = (event) => {
-    const data = { ...value, [event.target.name]: event.target.value };
-    setValue(data);
-    setValid(isValid(data));
-  };
-
   React.useEffect(() => {
     fetchAllProjects().then((data) => setProjects(data));
   }, []);
 
+  const handleInputChange = (event) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({
+        project: event.target.value, // Устанавливаем только проект
+        weekend: '', // Сбрасываем выходной
+        warranty: '', // Сбрасываем гарантийный день
+      });
+      setValid(
+        isValid({
+          project: event.target.value,
+          weekend: '',
+          warranty: '',
+        }),
+      );
+    }
+  };
+
   const handleWeekendChange = (e) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
-      ...prevValue,
+      project: 0, // Сбрасываем проект
       weekend: isChecked ? 'Выходной' : null,
+      warranty: '', // Сбрасываем гарантийный день
     }));
+    setValid(
+      isValid({
+        project: 0,
+        weekend: isChecked ? 'Выходной' : null,
+        warranty: '',
+      }),
+    );
   };
 
   const handleWarrantyChange = (e) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
-      ...prevValue,
+      project: 0, // Сбрасываем проект
+      weekend: '', // Сбрасываем выходной
       warranty: isChecked ? 'Гарантийный день' : null,
     }));
+    setValid(
+      isValid({
+        project: 0,
+        weekend: '',
+        warranty: isChecked ? 'Гарантийный день' : null,
+      }),
+    );
   };
 
   const handleSubmit = async (event) => {

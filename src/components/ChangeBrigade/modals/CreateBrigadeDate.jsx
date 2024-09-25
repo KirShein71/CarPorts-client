@@ -17,8 +17,8 @@ const defaultValid = {
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'weekend') result.weekend = value.weekend.trim() !== '';
-    if (key === 'warranty') result.warranty = value.warranty.trim() !== '';
+    if (key === 'weekend') result.weekend = value.weekend !== '';
+    if (key === 'warranty') result.warranty = value.warranty !== '';
     if (key === 'project') result.project = value.project;
   }
   return result;
@@ -30,32 +30,58 @@ const CreateBrigadeDate = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
 
-  const handleInputChange = (event) => {
-    const regex = /^[0-9]*$/;
-    if (regex.test(event.target.value)) {
-      setValue({ ...value, [event.target.name]: event.target.value });
-      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
-    }
-  };
-
   React.useEffect(() => {
     fetchAllProjects().then((data) => setProjects(data));
   }, []);
 
+  const handleInputChange = (event) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({
+        project: event.target.value, // Устанавливаем только проект
+        weekend: '', // Сбрасываем выходной
+        warranty: '', // Сбрасываем гарантийный день
+      });
+      setValid(
+        isValid({
+          project: event.target.value,
+          weekend: '',
+          warranty: '',
+        }),
+      );
+    }
+  };
+
   const handleWeekendChange = (e) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
-      ...prevValue,
+      project: 0, // Сбрасываем проект
       weekend: isChecked ? 'Выходной' : null,
+      warranty: '', // Сбрасываем гарантийный день
     }));
+    setValid(
+      isValid({
+        project: 0,
+        weekend: isChecked ? 'Выходной' : null,
+        warranty: '',
+      }),
+    );
   };
 
   const handleWarrantyChange = (e) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
-      ...prevValue,
+      project: 0, // Сбрасываем проект
+      weekend: '', // Сбрасываем выходной
       warranty: isChecked ? 'Гарантийный день' : null,
     }));
+    setValid(
+      isValid({
+        project: 0,
+        weekend: '',
+        warranty: isChecked ? 'Гарантийный день' : null,
+      }),
+    );
   };
 
   const handleSave = (event) => {
@@ -64,12 +90,12 @@ const CreateBrigadeDate = (props) => {
     setValid(correct);
 
     const data = new FormData();
-    data.append('weekend', value.weekend.trim());
+    data.append('weekend', value.weekend);
     data.append('projectId', value.project === '' ? 0 : value.project);
     data.append('brigadeId', brigadeId);
     data.append('dateId', dateId);
     data.append('regionId', regionId);
-    data.append('warranty', value.warranty.trim());
+    data.append('warranty', value.warranty);
 
     createBrigadesDate(data)
       .then((data) => {
