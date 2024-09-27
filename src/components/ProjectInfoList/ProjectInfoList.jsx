@@ -598,7 +598,7 @@ function ProjectInfoList() {
                         </td>
                         <td>
                           <Button
-                            variant="secondary"
+                            variant="dark"
                             onClick={() => handleDeleteProjectBrigades(brigade.id)}>
                             Удалить
                           </Button>
@@ -608,7 +608,7 @@ function ProjectInfoList() {
                   ))}
                 </tbody>
               </Table>
-              <Button onClick={() => hadleCreateBrigade(project.project.id)}>
+              <Button variant="dark" onClick={() => hadleCreateBrigade(project.project.id)}>
                 Назначить бригаду
               </Button>
             </div>
@@ -618,8 +618,16 @@ function ProjectInfoList() {
           <div className="calendar">
             <CalendarProject
               brigadesDate={project.brigadesdate}
+              designer={project.project.designer}
               startDateDesing={project.project.agreement_date}
-              endDateDesing={project.project.project_delivery}
+              endDateDesing={(() => {
+                const agreementDate = new Date(project.project && project.project.agreement_date);
+                const designPeriod = project.project && project.project.design_period;
+
+                const endDate = addWorkingDays(agreementDate, designPeriod);
+                const formattedEndDate = formatDate(endDate);
+                return formattedEndDate;
+              })()}
               startDateProduction={project.project.agreement_date}
               endDateProduction={(() => {
                 const agreementDate = new Date(project.project && project.project.agreement_date);
@@ -696,12 +704,14 @@ function ProjectInfoList() {
           )}
         </div>
         <div style={{ display: 'flex', justifyContent: 'right' }}>
-          <Button onClick={() => hadleUpdateNote(project.project?.id)}>Добавить</Button>
+          <Button variant="dark" onClick={() => hadleUpdateNote(project.project?.id)}>
+            Добавить
+          </Button>
         </div>
       </div>
       <div style={{ marginBottom: '25px' }}>
         <Button
-          variant="outline-secondary"
+          variant="dark"
           style={{ display: 'block', margin: '0 auto' }}
           onClick={() => handleFinishProject(project.project.id)}
           disabled={project.project && project.project.date_finish !== null}>

@@ -40,7 +40,9 @@ function ClientAccountList() {
     <div className="clientaccount">
       <Header title={'Личный кабинет клиентов'} />
       <Link to="/createaccount">
-        <Button className="mt-3">Создать личный кабинет</Button>
+        <Button variant="dark" className="mt-3">
+          Создать личный кабинет
+        </Button>
       </Link>
       <div className="table-container">
         <Table bordered hover size="sm" className="mt-3">
@@ -60,12 +62,12 @@ function ClientAccountList() {
                 <td>{user.project.name}</td>
                 <td>{user.phone}</td>
                 <td>
-                  <Button variant="success" size="sm" onClick={() => addToInfo(user.id)}>
+                  <Button variant="dark" size="sm" onClick={() => addToInfo(user.id)}>
                     Добавить информацию
                   </Button>
                 </td>
                 <td>
-                  <Button variant="success" size="sm" onClick={() => handleDeleteClick(user.id)}>
+                  <Button variant="dark" size="sm" onClick={() => handleDeleteClick(user.id)}>
                     Удалить
                   </Button>
                 </td>

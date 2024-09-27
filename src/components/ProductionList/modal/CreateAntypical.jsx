@@ -74,7 +74,7 @@ const CreateAntypical = (props) => {
             </Col>
           </Row>
           <Col>
-            <Button className="mb-3" onClick={handleAddImage}>
+            <Button variant="dark" className="mb-3" onClick={handleAddImage}>
               Добавить
             </Button>
           </Col>
@@ -85,7 +85,7 @@ const CreateAntypical = (props) => {
                   <Form.Control disabled value={image.image.name} className="mb-3" />
                 </Col>
                 <Col>
-                  <Button variant="danger" onClick={() => handleRemoveImage(index)}>
+                  <Button variant="dark" onClick={() => handleRemoveImage(index)}>
                     Удалить
                   </Button>
                 </Col>
@@ -94,10 +94,10 @@ const CreateAntypical = (props) => {
           ))}
           {selectedImages.length > 0 && (
             <>
-              <Button className="me-3 mb-3" onClick={handleSaveImages}>
+              <Button variant="dark" className="me-3 mb-3" onClick={handleSaveImages}>
                 Сохранить все изображения
               </Button>
-              <Button className="mb-3" variant="danger" onClick={handleRemoveAllImages}>
+              <Button className="mb-3" variant="dark" onClick={handleRemoveAllImages}>
                 Удалить все
               </Button>
             </>

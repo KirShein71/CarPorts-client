@@ -49,7 +49,9 @@ const CreateMainImage = (props) => {
           </Col>
           <Row className="mt-3">
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button variant="dark" type="submit">
+                Сохранить
+              </Button>
             </Col>
           </Row>
         </Form>

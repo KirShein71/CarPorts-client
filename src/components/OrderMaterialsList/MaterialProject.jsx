@@ -143,7 +143,7 @@ function MaterialProject({
                       <td>
                         <Button
                           size="sm"
-                          variant="danger"
+                          variant="dark"
                           onClick={() => handleDeleteProjectMaterials(prop.id)}>
                           Удалить
                         </Button>

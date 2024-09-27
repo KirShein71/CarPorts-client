@@ -52,7 +52,7 @@ function AppointBrigade() {
                   <td className="production_column">{item.number}</td>
                   <td>{item.name}</td>
                   <td>
-                    <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
+                    <Button variant="dark" size="sm" onClick={() => handleUpdateClick(item.id)}>
                       Назначить бригаду
                     </Button>
                   </td>

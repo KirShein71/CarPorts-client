@@ -101,7 +101,7 @@ const CreateManager = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button className="mt-3" type="submit">
+              <Button variant="dark" className="mt-3" type="submit">
                 Сохранить
               </Button>
             </Col>

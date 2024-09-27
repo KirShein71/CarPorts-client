@@ -62,7 +62,7 @@ function Details() {
         setChange={setChange}
         id={detail}
       />
-      <Button onClick={() => setDetailModal(true)} className="mt-3">
+      <Button variant="dark" onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
       <div className="table-container">
@@ -89,10 +89,14 @@ function Details() {
                     )}
                   </td>
                   <td>
-                    <Button onClick={() => handleUpdateDetail(detail.id)}>Редактировать</Button>
+                    <Button variant="dark" onClick={() => handleUpdateDetail(detail.id)}>
+                      Редактировать
+                    </Button>
                   </td>
                   <td>
-                    <Button onClick={() => handleDeleteClick(detail.id)}>Удалить</Button>
+                    <Button variant="dark" onClick={() => handleDeleteClick(detail.id)}>
+                      Удалить
+                    </Button>
                   </td>
                 </tr>
               ))}

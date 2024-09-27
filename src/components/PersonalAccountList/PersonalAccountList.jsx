@@ -1,6 +1,6 @@
 import React from 'react';
 import { getOneAccount, logout } from '../../http/userApi';
-import { Spinner } from 'react-bootstrap';
+import { Spinner, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { useRef } from 'react';
@@ -162,12 +162,14 @@ function PersonalAccountList() {
                       <div className="manager">
                         <div className="manager__content">
                           <div className="manager__title">Менеджер:</div>
-                          <div className="manager__name">{userData.employee.name}</div>
+                          <div className="manager__name">
+                            {userData.employee ? userData.employee.name : ''}
+                          </div>
                         </div>
                         <div className="manager__content">
                           <div className="manager__title">Телефон:</div>
-                          <a className="manager__phone" href={`tel:${userData.employee.phone}`}>
-                            {formatPhoneNumber(userData.employee.phone)}
+                          <a className="manager__phone" href={`tel:${userData.employee?.phone}`}>
+                            {formatPhoneNumber(userData.employee?.phone)}
                           </a>
                         </div>
                       </div>
@@ -214,6 +216,150 @@ function PersonalAccountList() {
                               return daysLeft >= 0 ? daysLeft : `-${Math.abs(daysLeft)}`;
                             })()}
                           </div>
+                        </div>
+                        <div className="project__design">
+                          <div className="project__design-title">Проектирование</div>
+                          <Table bordered size="sm" className="mt-3">
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.design_start !== null &&
+                                      moment(userData.project.design_start).isSameOrBefore(today)
+                                      ? 'rgb(7,7,7)'
+                                      : 'rgb(218, 206, 206)';
+                                  })(),
+                                }}>
+                                Взяли в работу
+                              </td>
+                              <td>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.design_start !== null &&
+                                        moment(userData.project.design_start).isSameOrBefore(today)
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.project_delivery !== null &&
+                                      moment(userData.project.project_delivery).isSameOrBefore(
+                                        today,
+                                      )
+                                      ? 'rgb(7,7,7)'
+                                      : 'rgb(218, 206, 206)'; // серый цвет
+                                  })(),
+                                }}>
+                                Проект готов
+                              </td>
+                              <td>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.project_delivery !== null &&
+                                        moment(userData.project.project_delivery).isSameOrBefore(
+                                          today,
+                                        )
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                            <tbody>
+                              <td
+                                className="project__design-subtitle"
+                                style={{
+                                  color: (function () {
+                                    const today = moment();
+                                    return userData.project.date_inspection !== null &&
+                                      moment(userData.project.date_inspection).isSameOrBefore(today)
+                                      ? 'rgb(7, 7, 7)'
+                                      : 'rgb(218, 206, 206)';
+                                  })(),
+                                }}>
+                                Проект проверен
+                              </td>
+                              <td style={{}}>
+                                <div
+                                  className="project__design-circle"
+                                  style={{
+                                    backgroundColor: (function () {
+                                      const today = moment();
+                                      return userData.project.date_inspection !== null &&
+                                        moment(userData.project.date_inspection).isSameOrBefore(
+                                          today,
+                                        )
+                                        ? 'rgb(7, 7, 7)'
+                                        : 'rgb(218, 206, 206)';
+                                    })(),
+                                  }}></div>
+                              </td>
+                            </tbody>
+                          </Table>
+                        </div>
+                        <div className="project__production">
+                          <div className="project__production-title">Производство и снабжение</div>
+                          <Table size="sm" className="mt-3">
+                            <thead>
+                              <tr>
+                                <th></th>
+                                <th className="project__production-head">Заказан</th>
+                                <th className="project__production-head">Отгружен</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {userData.project.project_materials.map((userMaterials) => (
+                                <tr key={userMaterials.id}>
+                                  <th className="project__production-body">
+                                    {userMaterials.material_name}
+                                  </th>
+                                  <th>
+                                    <div
+                                      className="project__production-circle"
+                                      style={{
+                                        backgroundColor: (function () {
+                                          const today = moment();
+                                          return userMaterials.date_payment !== null &&
+                                            moment(userMaterials.date_payment).isSameOrBefore(today)
+                                            ? 'rgb(7, 7, 7)'
+                                            : 'rgb(218, 206, 206)';
+                                        })(),
+                                      }}></div>
+                                  </th>
+                                  <th>
+                                    <div
+                                      className="project__production-circle"
+                                      style={{
+                                        backgroundColor: (function () {
+                                          const today = moment();
+                                          return userMaterials.shipping_date !== null &&
+                                            moment(userMaterials.shipping_date).isSameOrBefore(
+                                              today,
+                                            )
+                                            ? 'rgb(7, 7, 7)'
+                                            : 'rgb(218, 206, 206)';
+                                        })(),
+                                      }}></div>
+                                  </th>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
                         </div>
                       </div>
                     </div>

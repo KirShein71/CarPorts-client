@@ -6,7 +6,6 @@ import { getAllRegion } from '../../http/regionApi';
 import CreateBrigadeDate from './modals/CreateBrigadeDate';
 import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
 import Header from '../Header/Header';
-import Moment from 'react-moment';
 
 import './style.scss';
 
@@ -63,6 +62,10 @@ function ChangeBrigade() {
       document.body.removeEventListener('click', hadleClickOutside);
     };
   });
+
+  const getDayName = (date) => {
+    return new Date(date).toLocaleDateString('ru-RU', { weekday: 'long' });
+  };
 
   const handleOpenModalCreateBrigadeDate = (selectedBrigade, date) => {
     setBrigadeId(selectedBrigade);
@@ -167,7 +170,7 @@ function ChangeBrigade() {
               {dates.map((date) => (
                 <tr key={date.id}>
                   <td>
-                    <Moment format="DD.MM.YYYY">{date.date}</Moment>
+                    {new Date(date.date).toLocaleDateString('ru-RU')} - {getDayName(date.date)}
                   </td>
                   {brigadesDates.filter(
                     (brigadeDate) =>

@@ -37,7 +37,7 @@ function Admin() {
     <div className="adminlist">
       <Header title={'Создание доступа для сотрудников'} />
       <CreateEmployee show={show} setShow={setShow} setChange={setChange} />
-      <Button onClick={() => setShow(true)} className="mt-3">
+      <Button variant="dark" onClick={() => setShow(true)} className="mt-3">
         Добавить сотрудника
       </Button>
       <div className="table-container">
@@ -57,7 +57,9 @@ function Admin() {
                 <td>{employee.phone}</td>
                 <td>{employee.speciality}</td>
                 <td>
-                  <Button onClick={() => handleDeleteClick(employee.id)}>Удалить</Button>
+                  <Button variant="dark" onClick={() => handleDeleteClick(employee.id)}>
+                    Удалить
+                  </Button>
                 </td>
               </tr>
             ))}

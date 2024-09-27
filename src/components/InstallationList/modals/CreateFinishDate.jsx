@@ -101,7 +101,7 @@ const CreatePlanFinishDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button className="me-3 mb-3" type="submit">
+              <Button variant="dark" className="me-3 mb-3" type="submit">
                 Сохранить
               </Button>
             </Col>

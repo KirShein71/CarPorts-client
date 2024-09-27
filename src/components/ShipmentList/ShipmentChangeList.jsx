@@ -61,10 +61,7 @@ function ShipmentChangeList() {
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => handleShipmentDetails(item.id)}>
+                    <Button variant="dark" size="sm" onClick={() => handleShipmentDetails(item.id)}>
                       Внести детали на отгрузку
                     </Button>
                   </td>

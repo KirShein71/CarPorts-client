@@ -151,7 +151,7 @@ function CreateInformatoinClientList() {
           style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
           Изображение на главную
         </div>
-        <Button className="mt-3" size="md" onClick={() => handleCreateMainImage(id)}>
+        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateMainImage(id)}>
           Добавить изображение
         </Button>
         <div className="information__main-image-image">
@@ -168,7 +168,7 @@ function CreateInformatoinClientList() {
           style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
           Менеджер проекта
         </div>
-        <Button className="mt-3" size="md" onClick={() => handleCreateManager(id)}>
+        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateManager(id)}>
           Добавить менеджера
         </Button>
         <Table bordered hover size="sm" className="mt-3">
@@ -192,7 +192,7 @@ function CreateInformatoinClientList() {
           style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
           Бригада
         </div>
-        <Button className="mt-3" size="md" onClick={() => handleCreateBrigade(id)}>
+        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateBrigade(id)}>
           Добавить бригаду
         </Button>
         <Table bordered hover size="sm" className="mt-3">
@@ -216,7 +216,7 @@ function CreateInformatoinClientList() {
           style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
           Изображения хода работ
         </div>
-        <Button className="mt-3" size="md" onClick={() => handleCreateImage(id)}>
+        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateImage(id)}>
           Добавить изображение
         </Button>
         <div
@@ -254,7 +254,7 @@ function CreateInformatoinClientList() {
           style={{ marginTop: '25px', color: 'rgb(7, 7, 7)', fontSize: '22px', fontWeight: '600' }}>
           Добавить файлы
         </div>
-        <Button className="mt-3" size="md" onClick={() => handleCreateFile(id)}>
+        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateFile(id)}>
           Добавить файл
         </Button>
         <div className="information__file-content" style={{ marginTop: '25px' }}>
@@ -274,7 +274,10 @@ function CreateInformatoinClientList() {
             </div>
           ))}
         </div>
-        <Button className="information__viewing" onClick={() => addToPersonalAccount(id)}>
+        <Button
+          variant="dark"
+          className="information__viewing"
+          onClick={() => addToPersonalAccount(id)}>
           Посмотреть личный кабинет
         </Button>
       </div>

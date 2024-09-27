@@ -59,7 +59,7 @@ function ProcurementList() {
                     <Button
                       size="sm"
                       className="ms-3"
-                      variant="primary"
+                      variant="dark"
                       style={{ whiteSpace: 'nowrap' }}
                       onClick={() => handleUpdateClick(project.id)}>
                       Добавить материал

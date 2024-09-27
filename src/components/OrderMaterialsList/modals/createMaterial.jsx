@@ -178,7 +178,7 @@ const CreateMaterial = (props) => {
             </Col>
           </Row>
           <Col>
-            <Button className="mb-3" onClick={handleAddMaterial}>
+            <Button variant="dark" className="mb-3" onClick={handleAddMaterial}>
               Добавить
             </Button>
           </Col>
@@ -190,7 +190,7 @@ const CreateMaterial = (props) => {
                 </Col>
 
                 <Col>
-                  <Button variant="danger" onClick={() => handleRemoveMaterial(index)}>
+                  <Button variant="dark" onClick={() => handleRemoveMaterial(index)}>
                     Удалить
                   </Button>
                 </Col>
@@ -199,10 +199,12 @@ const CreateMaterial = (props) => {
           ))}
           {selectedMaterials.length > 0 && (
             <>
-              <Button className="me-3" onClick={handleSaveMaterials}>
+              <Button variant="dark" className="me-3" onClick={handleSaveMaterials}>
                 Сохранить все материалы
               </Button>
-              <Button onClick={handleRemoveAllMaterials}>Удалить все</Button>
+              <Button variant="dark" onClick={handleRemoveAllMaterials}>
+                Удалить все
+              </Button>
             </>
           )}
         </Form>

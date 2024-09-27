@@ -55,7 +55,7 @@ function Brigade() {
         setChange={setChange}
         id={brigade}
       />
-      <Button onClick={() => setBrigadeModal(true)} className="mt-3">
+      <Button variant="dark" onClick={() => setBrigadeModal(true)} className="mt-3">
         Создать бригаду
       </Button>
       <div className="ttable-container">
@@ -82,10 +82,14 @@ function Brigade() {
                     {brigade.region?.region}
                   </td>
                   <td>
-                    <Button onClick={() => handleUpdateBrigade(brigade.id)}>Редактирование</Button>
+                    <Button variant="dark" onClick={() => handleUpdateBrigade(brigade.id)}>
+                      Редактирование
+                    </Button>
                   </td>
                   <td>
-                    <Button onClick={() => handleDeleteClick(brigade.id)}>Удалить</Button>
+                    <Button variant="dark" onClick={() => handleDeleteClick(brigade.id)}>
+                      Удалить
+                    </Button>
                   </td>
                 </tr>
               ))}

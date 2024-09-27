@@ -42,7 +42,7 @@ function Materials() {
         setChange={setChange}
         id={material}
       />
-      <Button onClick={() => setMaterialModal(true)} className="mt-3">
+      <Button variant="dark" onClick={() => setMaterialModal(true)} className="mt-3">
         Создать материал
       </Button>
       <div className="table-container">
@@ -59,10 +59,14 @@ function Materials() {
               <tr key={material.id}>
                 <td>{material.name}</td>
                 <td>
-                  <Button onClick={() => handleUpdateMaterial(material.id)}>Редактировать</Button>
+                  <Button variant="dark" onClick={() => handleUpdateMaterial(material.id)}>
+                    Редактировать
+                  </Button>
                 </td>
                 <td>
-                  <Button onClick={() => handleDeleteClick(material.id)}>Удалить</Button>
+                  <Button variant="dark" onClick={() => handleDeleteClick(material.id)}>
+                    Удалить
+                  </Button>
                 </td>
               </tr>
             ))}

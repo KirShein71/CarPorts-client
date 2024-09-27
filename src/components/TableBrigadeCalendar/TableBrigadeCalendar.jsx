@@ -14,7 +14,7 @@ function TableBrigadeCalendar() {
   React.useEffect(() => {
     const today = new Date();
     const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 3);
+    startDate.setDate(today.getDate() - 1);
     const endDate = new Date(today);
     endDate.setDate(today.getDate() + 3);
     const datesArray = [];

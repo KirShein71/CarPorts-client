@@ -100,7 +100,7 @@ const CreateImage = (props) => {
             </Col>
           </Row>
           <Col>
-            <Button className="mb-3" onClick={handleAddImage}>
+            <Button variant="dark" className="mb-3" onClick={handleAddImage}>
               Добавить
             </Button>
           </Col>
@@ -114,7 +114,7 @@ const CreateImage = (props) => {
                   <Form.Control disabled value={image.date} className="mb-3" />
                 </Col>
                 <Col>
-                  <Button variant="danger" onClick={() => handleRemoveImage(index)}>
+                  <Button variant="dark" onClick={() => handleRemoveImage(index)}>
                     Удалить
                   </Button>
                 </Col>
@@ -123,10 +123,12 @@ const CreateImage = (props) => {
           ))}
           {selectedImages.length > 0 && (
             <>
-              <Button className="me-3 mb-3" onClick={handleSaveImages}>
+              <Button variant="dark" className="me-3 mb-3" onClick={handleSaveImages}>
                 Сохранить все изображения
               </Button>
-              <Button onClick={handleRemoveAllImages}>Удалить все</Button>
+              <Button variant="dark" onClick={handleRemoveAllImages}>
+                Удалить все
+              </Button>
             </>
           )}
         </Form>

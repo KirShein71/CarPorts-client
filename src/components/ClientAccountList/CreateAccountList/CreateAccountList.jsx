@@ -52,7 +52,7 @@ function CreateAccountList() {
                 <td>{project.name}</td>
                 <td>
                   <Button
-                    variant="success"
+                    variant="dark"
                     size="sm"
                     onClick={() => HadleCreateAccountModal(project.id)}>
                     Создать

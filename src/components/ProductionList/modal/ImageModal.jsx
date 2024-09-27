@@ -66,7 +66,7 @@ function ImageModal(props) {
                 </div>
               )}
               <Col>
-                <Button variant="danger" size="sm" onClick={() => handleDeleteAntypical(image.id)}>
+                <Button variant="dark" size="sm" onClick={() => handleDeleteAntypical(image.id)}>
                   Удалить
                 </Button>
               </Col>

@@ -143,7 +143,7 @@ function InstallationList() {
     <div className="installationlist">
       <Header title={'Монтаж'} />
       <Link to="/appoint">
-        <Button>Назначить бригаду</Button>
+        <Button variant="dark">Назначить бригаду</Button>
       </Link>
       <CreatePlanStartDate
         id={projectBrigades}
@@ -280,7 +280,7 @@ function InstallationList() {
                             </th>
                             <th>
                               <Button
-                                variant="success"
+                                variant="dark"
                                 size="sm"
                                 onClick={() => handleCalendarClick(brigade)}>
                                 Календарь
@@ -333,7 +333,7 @@ function InstallationList() {
                                     />
                                   </Modal.Body>
                                   <Modal.Footer>
-                                    <Button variant="secondary" onClick={handleCloseCalendar}>
+                                    <Button variant="dark" onClick={handleCloseCalendar}>
                                       Закрыть
                                     </Button>
                                   </Modal.Footer>

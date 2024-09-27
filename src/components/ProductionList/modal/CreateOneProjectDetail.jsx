@@ -79,7 +79,9 @@ const CreateOneProjectDetail = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button variant="dark" type="submit">
+                Сохранить
+              </Button>
             </Col>
           </Row>
         </Form>

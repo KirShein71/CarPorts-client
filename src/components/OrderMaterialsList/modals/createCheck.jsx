@@ -124,10 +124,10 @@ const CreateCheck = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button className="me-3 mb-3" type="submit">
+              <Button variant="dark" className="me-3 mb-3" type="submit">
                 Сохранить
               </Button>
-              <Button className="mb-3" variant="danger" onClick={() => handleDeleteClick()}>
+              <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
                 Удалить
               </Button>
             </Col>

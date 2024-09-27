@@ -204,7 +204,7 @@ function ProductionList() {
                   </td>
                   <td>
                     <Button
-                      variant="success"
+                      variant="dark"
                       size="sm"
                       onClick={() => handleDeleteProjectDetails(projectDetail.projectId)}>
                       Удалить

@@ -107,7 +107,9 @@ const CreateInspectionDesigner = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button type="submit">Сохранить</Button>
+              <Button variant="dark" type="submit">
+                Сохранить
+              </Button>
             </Col>
           </Row>
         </Form>

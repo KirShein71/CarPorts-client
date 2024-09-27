@@ -33,7 +33,7 @@ function ProjectMaterial({
               <Button
                 size="sm"
                 className="ms-3"
-                variant="primary"
+                variant="dark"
                 style={{ whiteSpace: 'nowrap' }}
                 onClick={() => handleCreateMaterial(id)}>
                 Добавить материал
@@ -131,7 +131,7 @@ function ProjectMaterial({
                         <td>
                           <Button
                             size="sm"
-                            variant="danger"
+                            variant="dark"
                             onClick={() => handleDeleteProjectMaterials(prop.id)}>
                             Удалить
                           </Button>

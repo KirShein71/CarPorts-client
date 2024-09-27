@@ -141,7 +141,7 @@ function ProjectList() {
       />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">
-          <Button className="me-3 my-2" onClick={() => setCreateShow(true)}>
+          <Button variant="dark" className="me-3 my-2" onClick={() => setCreateShow(true)}>
             Добавить проект
           </Button>
         </Col>
@@ -168,6 +168,7 @@ function ProjectList() {
             <tr>
               <th className="production_column">Номер проекта</th>
               <th>Название</th>
+              <th></th>
               <th
                 style={{ cursor: 'pointer', display: 'flex' }}
                 onClick={() => handleSort('agreement_date')}>
@@ -179,7 +180,7 @@ function ProjectList() {
                 />
               </th>
               <th>Регион</th>
-              <th></th>
+
               <th></th>
             </tr>
           </thead>
@@ -207,6 +208,11 @@ function ProjectList() {
                   <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateNameProject(item.id)}>
                     {item.name}
                   </td>
+                  <td>
+                    <Button variant="dark" size="sm" onClick={() => addToInfo(item.id)}>
+                      Подробнее
+                    </Button>
+                  </td>
                   <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateDateProject(item.id)}>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
@@ -215,13 +221,9 @@ function ProjectList() {
                     onClick={() => hadleCreateRegionProject(item.id)}>
                     {item.region?.region}
                   </td>
+
                   <td>
-                    <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
-                      Подробнее
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="success" size="sm" onClick={() => handleDeleteClick(item.id)}>
+                    <Button variant="dark" size="sm" onClick={() => handleDeleteClick(item.id)}>
                       Удалить
                     </Button>
                   </td>

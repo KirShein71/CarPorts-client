@@ -207,7 +207,7 @@ function WeldersList() {
                   <td onClick={() => handleCreateStockAntypical(stock.stock_date)}></td>
                   <td>
                     <Button
-                      variant="success"
+                      variant="dark"
                       size="sm"
                       onClick={() => handleDeleteStockDetails(stock.stock_date)}>
                       Удалить

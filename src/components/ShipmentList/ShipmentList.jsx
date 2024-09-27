@@ -208,7 +208,7 @@ function ShipmentList() {
                     })}
                   <td>
                     <Button
-                      variant="success"
+                      variant="dark"
                       size="sm"
                       onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
                       Удалить

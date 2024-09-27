@@ -12,6 +12,7 @@ function CalendarComponent(props) {
     startDateInstallation,
     endDateInstallation,
     brigadesDate,
+    designer,
   } = props;
 
   const formatDate = (dateStr) => {
@@ -20,7 +21,11 @@ function CalendarComponent(props) {
   };
 
   const dateRanges = [
-    { start: new Date(startDateDesing), end: new Date(endDateDesing), color: '#42aaff' },
+    {
+      start: new Date(startDateDesing),
+      end: new Date(formatDate(endDateDesing)),
+      color: '#42aaff',
+    },
     {
       start: new Date(startDateProduction),
       end: new Date(formatDate(endDateProduction)),
@@ -48,7 +53,6 @@ function CalendarComponent(props) {
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
       const range = isDateInRange(date);
-      console.log(range);
       const brigadesEntry = brigadesDate.find((entry) => {
         // Сравнение только дат без учета времени
         const entryDate = new Date(entry.date);
@@ -64,6 +68,11 @@ function CalendarComponent(props) {
         <>
           {range && (
             <div style={{ backgroundColor: range.color, height: '10px', opacity: 0.5 }}></div>
+          )}
+          {range && range.color === '#42aaff' && (
+            <div style={{ fontSize: '0.8em', textAlign: 'center', overflowWrap: 'break-word' }}>
+              {designer}
+            </div>
           )}
           {brigadesEntry && (
             <div style={{ fontSize: '0.8em', textAlign: 'center' }}>
@@ -98,10 +107,22 @@ function CalendarComponent(props) {
             <div className="calendar__tooltip-items__installation"></div>
             <div className="calendar__tooltip-items__description">Монтаж</div>
           </div>
-          <div className="calendar__tooltip-items">
-            <div className="calendar__tooltip-items__brigade">Бригада:</div>
-            <div className="calendar__tooltip-items__description">{brigadesDate[0].name}</div>
-          </div>
+          {designer !== null ? (
+            <div className="calendar__tooltip-items">
+              <div className="calendar__tooltip-items__brigade">Конструктор:</div>
+              <div className="calendar__tooltip-items__description">{designer}</div>
+            </div>
+          ) : (
+            ''
+          )}
+          {brigadesDate.length > 0 ? (
+            <div className="calendar__tooltip-items">
+              <div className="calendar__tooltip-items__brigade">Бригада:</div>
+              <div className="calendar__tooltip-items__description">{brigadesDate[0].name}</div>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       </div>
     </div>

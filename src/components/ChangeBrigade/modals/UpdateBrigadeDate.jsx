@@ -193,7 +193,7 @@ const UpdateBrigadeDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button type="submit" onClick={() => setShow(false)}>
+              <Button variant="dark" type="submit" onClick={() => setShow(false)}>
                 Сохранить
               </Button>
             </Col>

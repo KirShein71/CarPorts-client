@@ -100,7 +100,7 @@ const CreateFile = (props) => {
             </Col>
           </Row>
           <Col>
-            <Button className="mb-3" onClick={handleAddFile}>
+            <Button variant="dark" className="mb-3" onClick={handleAddFile}>
               Добавить
             </Button>
           </Col>
@@ -114,7 +114,7 @@ const CreateFile = (props) => {
                   <Form.Control disabled value={file.name} className="mb-3" />
                 </Col>
                 <Col>
-                  <Button variant="danger" onClick={() => handleRemoveFile(index)}>
+                  <Button variant="dark" onClick={() => handleRemoveFile(index)}>
                     Удалить
                   </Button>
                 </Col>
@@ -123,10 +123,12 @@ const CreateFile = (props) => {
           ))}
           {selectedFiles.length > 0 && (
             <>
-              <Button className="me-3 mb-3" onClick={handleSaveFiles}>
+              <Button variant="dark" className="me-3 mb-3" onClick={handleSaveFiles}>
                 Сохранить все файлы
               </Button>
-              <Button onClick={handleRemoveAllFiles}>Удалить все</Button>
+              <Button variant="dark" onClick={handleRemoveAllFiles}>
+                Удалить все
+              </Button>
             </>
           )}
         </Form>

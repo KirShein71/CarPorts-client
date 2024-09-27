@@ -80,7 +80,7 @@ function ProductionChangeList() {
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td>
-                    <Button variant="success" size="sm" onClick={() => handleUpdateClick(item.id)}>
+                    <Button variant="dark" size="sm" onClick={() => handleUpdateClick(item.id)}>
                       Внести изменения
                     </Button>
                   </td>

@@ -140,7 +140,7 @@ const CreateShipmentDetails = (props) => {
             </Col>
           </Row>
           <Col>
-            <Button className="mb-3" onClick={handleAddDetail}>
+            <Button variant="dark" className="mb-3" onClick={handleAddDetail}>
               Добавить
             </Button>
           </Col>
@@ -154,7 +154,7 @@ const CreateShipmentDetails = (props) => {
                   <Form.Control disabled value={detail.shipment_quantity} className="mb-3" />
                 </Col>
                 <Col>
-                  <Button variant="danger" onClick={() => handleRemoveDetail(index)}>
+                  <Button variant="dark" onClick={() => handleRemoveDetail(index)}>
                     Удалить
                   </Button>
                 </Col>
@@ -163,10 +163,12 @@ const CreateShipmentDetails = (props) => {
           ))}
           {selectedDetails.length > 0 && (
             <>
-              <Button className="me-3" onClick={handleSaveDetails}>
+              <Button variant="dark" className="me-3" onClick={handleSaveDetails}>
                 Сохранить все детали
               </Button>
-              <Button onClick={handleRemoveAllDetails}>Удалить все</Button>
+              <Button variant="dark" onClick={handleRemoveAllDetails}>
+                Удалить все
+              </Button>
             </>
           )}
         </Form>
