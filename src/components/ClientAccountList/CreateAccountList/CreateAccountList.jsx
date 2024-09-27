@@ -30,7 +30,7 @@ function CreateAccountList() {
     <div className="createaccount">
       <div className="header">
         <Link to="/clientaccount">
-          <img className="header__icon" src=".././back.png" alt="back" />
+          <img className="header__icon" src="../img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Создать личный кабинет</h1>
       </div>

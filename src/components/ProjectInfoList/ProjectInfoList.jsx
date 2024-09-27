@@ -229,7 +229,7 @@ function ProjectInfoList() {
       />
       <div className="header">
         <Link to="/project">
-          <img className="header__icon" src="../back.png" alt="back" />
+          <img className="header__icon" src="../img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Подробная информация</h1>
       </div>
@@ -240,7 +240,7 @@ function ProjectInfoList() {
             project.userProject &&
             (project.userProject.length === 0 ||
               project.userProject.every((user) => !user.image)) ? (
-              <img src="../fon.jpg" alt="image__company" />
+              <img src="../img/fon.jpg" alt="image__company" />
             ) : (
               project.userProject &&
               project.userProject.map(

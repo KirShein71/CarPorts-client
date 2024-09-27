@@ -3,6 +3,7 @@ import Header from '../Header/Header';
 import Details from './Details';
 import Materials from './Materials';
 import Brigade from './Brigade';
+import Service from './Service';
 
 function AddingList() {
   return (
@@ -11,6 +12,7 @@ function AddingList() {
       <Details />
       <Materials />
       <Brigade />
+      <Service />
     </>
   );
 }

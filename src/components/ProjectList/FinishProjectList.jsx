@@ -54,7 +54,7 @@ function FinishProjectList() {
     <div className="projectlist">
       <div className="header">
         <Link to="/project">
-          <img className="header__icon" src="./back.png" alt="back" />
+          <img className="header__icon" src="./img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Завершенные проекты</h1>
       </div>
@@ -81,7 +81,7 @@ function FinishProjectList() {
                 <div>Дата договора</div>{' '}
                 <img
                   style={{ marginLeft: '10px', width: '24px', height: '24px' }}
-                  src="./sort.png"
+                  src="./img/sort.png"
                   alt="icon_sort"
                 />
               </th>

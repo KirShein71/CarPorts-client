@@ -41,7 +41,7 @@ function ProductionChangeList() {
     <div className="productionchange">
       <div className="header">
         <Link to="/production">
-          <img className="header__icon" src="./back.png" alt="back" />
+          <img className="header__icon" src="./img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Производственные детали</h1>
       </div>
@@ -54,7 +54,7 @@ function ProductionChangeList() {
               <th>Название</th>
               <th style={{ cursor: 'pointer' }} onClick={() => handleSort('agreement_date')}>
                 Дата договора{' '}
-                <img styles={{ marginLeft: '5px' }} src="../sort.png" alt="icon_sort" />
+                <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
               </th>
               <th></th>
             </tr>

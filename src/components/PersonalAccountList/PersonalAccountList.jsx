@@ -101,7 +101,7 @@ function PersonalAccountList() {
             <div className="account__header">
               <div className="account__header-content">
                 <div className="account__header-icon">
-                  <img src="./logo.png" alt="logo__company" />
+                  <img src="./img/logo.png" alt="logo__company" />
                 </div>
                 <div className="account__header-logout" onClick={handleLogout}>
                   Выйти
@@ -113,7 +113,7 @@ function PersonalAccountList() {
                 <div className="account__greeting-card__content">
                   <div className="account__greeting-card__image">
                     {userData.image === null ? (
-                      <img src="../fon.jpg" alt="image__company" />
+                      <img src="../img/fon.jpg" alt="image__company" />
                     ) : (
                       <img src={process.env.REACT_APP_IMG_URL + userData.image} alt="main" />
                     )}

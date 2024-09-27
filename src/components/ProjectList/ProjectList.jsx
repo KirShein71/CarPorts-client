@@ -175,7 +175,7 @@ function ProjectList() {
                 <div>Дата договора</div>{' '}
                 <img
                   style={{ marginLeft: '10px', width: '24px', height: '24px' }}
-                  src="./sort.png"
+                  src="./img/sort.png"
                   alt="icon_sort"
                 />
               </th>

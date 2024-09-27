@@ -30,7 +30,7 @@ function AppointBrigade() {
     <div className="appointbrigade">
       <div className="header">
         <Link to="/installation">
-          <img className="header__icon" src="./back.png" alt="back" />
+          <img className="header__icon" src="./img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Назначить бригаду</h1>
       </div>

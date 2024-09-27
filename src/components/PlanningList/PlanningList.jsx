@@ -304,7 +304,7 @@ function PlanningList() {
                   Дата договора{' '}
                   <img
                     style={{ marginLeft: '5px', height: '100%' }}
-                    src="./sort.png"
+                    src="./img/sort.png"
                     alt="icon_sort"
                   />
                 </div>

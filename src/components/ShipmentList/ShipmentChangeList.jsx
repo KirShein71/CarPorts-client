@@ -30,7 +30,7 @@ function ShipmentChangeList() {
     <div className="shipmentchange">
       <div className="header">
         <Link to="/shipment">
-          <img className="header__icon" src="./back.png" alt="back" />
+          <img className="header__icon" src="./img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Производственные детали</h1>
       </div>

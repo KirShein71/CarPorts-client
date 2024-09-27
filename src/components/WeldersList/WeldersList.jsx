@@ -163,7 +163,7 @@ function WeldersList() {
             <tr>
               <th className="welders_column" onClick={() => handleSort('stock_date')}>
                 Отметка времени{' '}
-                <img styles={{ marginLeft: '5px' }} src="./sort.png" alt="icon_sort" />
+                <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
               </th>
               {nameDetails
                 .sort((a, b) => a.id - b.id)

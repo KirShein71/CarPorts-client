@@ -111,7 +111,7 @@ function CreateInformatoinClientList() {
     <div className="information" style={{ marginBottom: '25px' }}>
       <div className="header">
         <Link to="/clientaccount">
-          <img className="header__icon" src=".././back.png" alt="back" />
+          <img className="header__icon" src="../img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Добавление информация для личного кабинета клиента</h1>
       </div>

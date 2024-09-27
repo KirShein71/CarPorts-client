@@ -66,7 +66,7 @@ const Login = observer(() => {
 
   return (
     <div className="login">
-      <img src="./login_fon.jpg" alt="login_fon" />
+      <img src="./img/login_fon.jpg" alt="login_fon" />
       <div className="login__card">
         <h3 className="login__title">Авторизация</h3>
         <div className="login__content">
