@@ -1,5 +1,5 @@
 import React from 'react';
-import { getProjectInfo, createDateFinish } from '../../http/projectApi';
+import { getProjectInfo, createDateFinish, deleteDateFinish } from '../../http/projectApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { deleteProjectBrigades } from '../../http/projectBrigadesApi';
 import CreateAccountModal from '../ClientAccountList/CreateAccountList/modal/CreateAccauntModal';
@@ -101,6 +101,18 @@ function ProjectInfoList() {
           setChange(!change);
           alert(`Строка будет удалена`);
           console.log(id);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+  };
+
+  const handleRestoreProject = (id) => {
+    const confirmed = window.confirm('Вы уверены, что хотите восстановить проект?');
+    if (confirmed) {
+      deleteDateFinish(id)
+        .then(() => {
+          setChange(!change);
+          alert('Проект восстановлен');
         })
         .catch((error) => alert(error.response.data.message));
     }
@@ -709,15 +721,25 @@ function ProjectInfoList() {
           </Button>
         </div>
       </div>
-      <div style={{ marginBottom: '25px' }}>
-        <Button
-          variant="dark"
-          style={{ display: 'block', margin: '0 auto' }}
-          onClick={() => handleFinishProject(project.project.id)}
-          disabled={project.project && project.project.date_finish !== null}>
-          Завершить проект
-        </Button>
-      </div>
+      {project.project && project.project.date_finish !== null ? (
+        <div style={{ marginBottom: '25px' }}>
+          <Button
+            variant="dark"
+            style={{ display: 'block', margin: '0 auto' }}
+            onClick={() => handleRestoreProject(project.project.id)}>
+            Восстановить
+          </Button>
+        </div>
+      ) : (
+        <div style={{ marginBottom: '25px' }}>
+          <Button
+            variant="dark"
+            style={{ display: 'block', margin: '0 auto' }}
+            onClick={() => handleFinishProject(project.project.id)}>
+            Завершить проект
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

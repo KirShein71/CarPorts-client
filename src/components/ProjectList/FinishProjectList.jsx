@@ -1,5 +1,5 @@
 import React from 'react';
-import { getFinishProject, deleteDateFinish } from '../../http/projectApi';
+import { getFinishProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -40,18 +40,6 @@ function FinishProjectList() {
     } else {
       setSortField(field);
       setSortOrder('asc');
-    }
-  };
-
-  const handleRestoreProject = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите восстановить проект?');
-    if (confirmed) {
-      deleteDateFinish(id)
-        .then(() => {
-          setChange(!change);
-          alert('Проект восстановлен');
-        })
-        .catch((error) => alert(error.response.data.message));
     }
   };
 
@@ -122,13 +110,8 @@ function FinishProjectList() {
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td>
-                    <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
+                    <Button variant="dark" size="sm" onClick={() => addToInfo(item.id)}>
                       Подробнее
-                    </Button>
-                  </td>
-                  <td>
-                    <Button variant="dark" size="sm" onClick={() => handleRestoreProject(item.id)}>
-                      Восстановить
                     </Button>
                   </td>
                 </tr>
