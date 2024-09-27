@@ -12,6 +12,11 @@ export const createDateFinish = async (id, project) => {
     return data
 }
 
+export const deleteDateFinish = async (id) => {
+    const { data} = await guestInstance.delete(`project/deleteDateFinish/${id}`)
+    return data
+}
+
 export const createRegion = async (id, project) => {
     const { data} = await guestInstance.put(`project/createRegion/${id}`, project)
     return data

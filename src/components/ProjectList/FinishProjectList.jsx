@@ -1,5 +1,5 @@
 import React from 'react';
-import { getFinishProject } from '../../http/projectApi';
+import { getFinishProject, deleteDateFinish } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -7,6 +7,7 @@ import Moment from 'react-moment';
 function FinishProjectList() {
   const [projects, setProjects] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
+  const [change, setChange] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -20,7 +21,7 @@ function FinishProjectList() {
         setProjects(data);
       })
       .finally(() => setFetching(false));
-  }, []);
+  }, [change]);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -39,6 +40,18 @@ function FinishProjectList() {
     } else {
       setSortField(field);
       setSortOrder('asc');
+    }
+  };
+
+  const handleRestoreProject = (id) => {
+    const confirmed = window.confirm('Вы уверены, что хотите восстановить проект?');
+    if (confirmed) {
+      deleteDateFinish(id)
+        .then(() => {
+          setChange(!change);
+          alert('Проект восстановлен');
+        })
+        .catch((error) => alert(error.response.data.message));
     }
   };
 
@@ -85,6 +98,7 @@ function FinishProjectList() {
                 />
               </th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -110,6 +124,11 @@ function FinishProjectList() {
                   <td>
                     <Button variant="success" size="sm" onClick={() => addToInfo(item.id)}>
                       Подробнее
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="dark" size="sm" onClick={() => handleRestoreProject(item.id)}>
+                      Восстановить
                     </Button>
                   </td>
                 </tr>
