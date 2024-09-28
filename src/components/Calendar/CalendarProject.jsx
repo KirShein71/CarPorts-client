@@ -16,7 +16,6 @@ function CalendarComponent(props) {
     endDateСonstructor,
     designer,
   } = props;
-  console.log(endDateСonstructor);
 
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
@@ -42,7 +41,10 @@ function CalendarComponent(props) {
   ];
 
   const dateConstructor = [
-    { start: new Date(startDateConstructor), end: new Date(endDateСonstructor) },
+    {
+      start: new Date(startDateConstructor),
+      end: endDateСonstructor ? new Date(endDateСonstructor) : new Date(),
+    },
   ];
 
   const isDateInRange = (date) => {
