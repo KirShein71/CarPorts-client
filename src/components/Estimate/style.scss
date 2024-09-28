@@ -1,0 +1,13 @@
+.estimate {
+    display: flex;
+    justify-content: center;
+
+    &__item {
+        display: flex;
+    }
+
+    &__service {
+        font-size: 19px;
+        margin-right: 10px;
+    }
+}

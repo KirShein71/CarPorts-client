@@ -26,6 +26,7 @@ import CreateInformationClient from '../pages/CreateInformationClient';
 import ViewingPersonalAccount from '../pages/ViewingPersonalAccount';
 import FinishProject from '../pages/FinishProject';
 import ChangeBrigadeDate from '../pages/ChangeBrigadeDate';
+import Test from '../pages/Test';
 
 import { observer } from 'mobx-react';
 
@@ -86,6 +87,7 @@ const adminRoutes = [
   { path: '/finishproject', Component: FinishProject },
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
+  { path: '/test', Component: Test },
 ];
 
 const routes = [{ path: '/', Component: Home }];

@@ -16,6 +16,7 @@ import moment from 'moment';
 
 import './style.scss';
 import CalendarProject from '../Calendar/CalendarProject';
+import Estimate from '../Estimate/Estimate';
 
 function ProjectInfoList() {
   const { id } = useParams();
@@ -307,6 +308,13 @@ function ProjectInfoList() {
                 }`}
                 onClick={() => handleTabClick('calendar')}>
                 Календарь
+              </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'estimate' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('estimate')}>
+                Смета
               </div>
               <div
                 className={`projectinfo__filter-card__item ${
@@ -631,6 +639,8 @@ function ProjectInfoList() {
             <CalendarProject
               brigadesDate={project.brigadesdate}
               designer={project.project.designer}
+              startDateConstructor={project.project.agreement_date}
+              endDateСonstructor={project.project.project_delivery}
               startDateDesing={project.project.agreement_date}
               endDateDesing={(() => {
                 const agreementDate = new Date(project.project && project.project.agreement_date);
@@ -668,6 +678,7 @@ function ProjectInfoList() {
             />
           </div>
         )}
+        {activeTab === 'estimate' && <Estimate projectId={id} />}
         {activeTab === 'cabinet' && (
           <div className="cabinet">
             {project.userProject && project.userProject.length > 0 ? (

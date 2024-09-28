@@ -3,10 +3,11 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneBrigadesDate, updateBrigadesDate } from '../../../http/brigadesDateApi';
 import { fetchAllProjects } from '../../../http/projectApi';
 
-const defaultValue = { weekend: '', warranty: '', project: '' };
+const defaultValue = { weekend: '', warranty: '', downtime: '', project: '' };
 const defaultValid = {
   weekend: null,
   warranty: null,
+  downtime: null,
   project: null,
 };
 
@@ -15,13 +16,14 @@ const isValid = (value) => {
   for (let key in value) {
     if (key === 'weekend') result.weekend = value.weekend;
     if (key === 'warranty') result.warranty = value.warranty;
+    if (key === 'downtime') result.downtime = value.downtime;
     if (key === 'project') result.project = value.project;
   }
   return result;
 };
 
 const UpdateBrigadeDate = (props) => {
-  const { id, show, setShow, setChange, regionId, setDataUpdated } = props;
+  const { id, show, setShow, setChange, regionId } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [projects, setProjects] = React.useState([]);
@@ -33,6 +35,7 @@ const UpdateBrigadeDate = (props) => {
           const prod = {
             weekend: data.weekend.toString(),
             warranty: data.warranty.toString(),
+            downtime: data.downtime.toString(),
             project: data.project.toString(),
           };
           setValue(prod);
@@ -59,12 +62,14 @@ const UpdateBrigadeDate = (props) => {
         project: event.target.value, // Устанавливаем только проект
         weekend: '', // Сбрасываем выходной
         warranty: '', // Сбрасываем гарантийный день
+        downtime: '',
       });
       setValid(
         isValid({
           project: event.target.value,
           weekend: '',
           warranty: '',
+          downtime: '',
         }),
       );
     }
@@ -76,12 +81,14 @@ const UpdateBrigadeDate = (props) => {
       project: 0, // Сбрасываем проект
       weekend: isChecked ? 'Выходной' : null,
       warranty: '', // Сбрасываем гарантийный день
+      downtime: '',
     }));
     setValid(
       isValid({
         project: 0,
         weekend: isChecked ? 'Выходной' : null,
         warranty: '',
+        downtime: '',
       }),
     );
   };
@@ -92,12 +99,32 @@ const UpdateBrigadeDate = (props) => {
       project: 0, // Сбрасываем проект
       weekend: '', // Сбрасываем выходной
       warranty: isChecked ? 'Гарантийный день' : null,
+      downtime: '',
     }));
     setValid(
       isValid({
         project: 0,
         weekend: '',
         warranty: isChecked ? 'Гарантийный день' : null,
+        downtime: '',
+      }),
+    );
+  };
+
+  const handleDowntimeChange = (e) => {
+    const isChecked = e.target.checked;
+    setValue((prevValue) => ({
+      project: 0, // Сбрасываем проект
+      weekend: '', // Сбрасываем выходной
+      warranty: '',
+      downtime: isChecked ? 'Простой' : null,
+    }));
+    setValid(
+      isValid({
+        project: 0,
+        weekend: '',
+        warranty: '',
+        downtime: isChecked ? 'Простой' : null,
       }),
     );
   };
@@ -111,6 +138,7 @@ const UpdateBrigadeDate = (props) => {
     data.append('weekend', value.weekend);
     data.append('projectId', value.project === '' ? 0 : value.project);
     data.append('warranty', value.warranty);
+    data.append('downtime', value.downtime);
 
     updateBrigadesDate(id, data)
       .then((data) => {
@@ -188,6 +216,20 @@ const UpdateBrigadeDate = (props) => {
                 onChange={(e) => handleWarrantyChange(e)}
                 isValid={valid.warranty === true}
                 isInvalid={valid.warranty === false}
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Check
+                name="downtime"
+                type="switch"
+                id="downtime-switch"
+                label="Простой"
+                checked={value.downtime === 'Простой'}
+                onChange={(e) => handleDowntimeChange(e)}
+                isValid={valid.downtime === true}
+                isInvalid={valid.downtime === false}
               />
             </Col>
           </Row>

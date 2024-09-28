@@ -12,8 +12,11 @@ function CalendarComponent(props) {
     startDateInstallation,
     endDateInstallation,
     brigadesDate,
+    startDateConstructor,
+    endDateСonstructor,
     designer,
   } = props;
+  console.log(endDateСonstructor);
 
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
@@ -38,9 +41,19 @@ function CalendarComponent(props) {
     },
   ];
 
+  const dateConstructor = [
+    { start: new Date(startDateConstructor), end: new Date(endDateСonstructor) },
+  ];
+
   const isDateInRange = (date) => {
     return dateRanges.find((range) => {
       return date >= range.start && date <= range.end;
+    });
+  };
+
+  const isDateConstructor = (date) => {
+    return dateConstructor.find((constructor) => {
+      return date >= constructor.start && date <= constructor.end;
     });
   };
 
@@ -53,6 +66,7 @@ function CalendarComponent(props) {
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
       const range = isDateInRange(date);
+      const constructor = isDateConstructor(date);
       const brigadesEntry = brigadesDate.find((entry) => {
         // Сравнение только дат без учета времени
         const entryDate = new Date(entry.date);
@@ -69,11 +83,7 @@ function CalendarComponent(props) {
           {range && (
             <div style={{ backgroundColor: range.color, height: '10px', opacity: 0.5 }}></div>
           )}
-          {range && range.color === '#42aaff' && (
-            <div style={{ fontSize: '0.8em', textAlign: 'center', overflowWrap: 'break-word' }}>
-              {designer}
-            </div>
-          )}
+          {constructor && <div style={{ fontSize: '0.8em', textAlign: 'center' }}>{designer}</div>}
           {brigadesEntry && (
             <div style={{ fontSize: '0.8em', textAlign: 'center' }}>
               {getInitials(brigadesEntry.name)}

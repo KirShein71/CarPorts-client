@@ -190,16 +190,19 @@ function ChangeBrigade() {
                               fontSize: '17px',
                               fontWeight: '500',
                               color: brigadeDate.warranty
-                                ? 'blue'
+                                ? '#0000ff'
                                 : brigadeDate.weekend
-                                ? 'red'
-                                : 'black',
+                                ? '#9b2d30'
+                                : brigadeDate.downtime
+                                ? '#ff0000'
+                                : '#000000',
                             }}
                             key={brigadeDate.id}
                             onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
                             {brigadeDate.project?.name ||
                               brigadeDate.warranty ||
                               brigadeDate.weekend ||
+                              brigadeDate.downtime ||
                               ''}
                           </td>
                         );
