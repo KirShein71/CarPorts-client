@@ -639,7 +639,7 @@ function ProjectInfoList() {
             <CalendarProject
               brigadesDate={project.brigadesdate}
               designer={project.project.designer}
-              startDateConstructor={project.project.agreement_date}
+              startDateConstructor={project.project.design_start}
               endDateСonstructor={project.project.project_delivery}
               startDateDesing={project.project.agreement_date}
               endDateDesing={(() => {

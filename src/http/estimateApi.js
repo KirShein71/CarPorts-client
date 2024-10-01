@@ -15,13 +15,15 @@ export const createEstimate = async (estimate) => {
     return data
 }
 
+export const createEstimateBrigade = async (id, estimate) => {
+    const { data } = await authInstance.put(`estimate/createEstimateBrigade/${id}`, estimate)
+    return data
+}
+
 export const getOneEstimateColumn = async (id) => {
     const { data } = await guestInstance.get(`estimate/getone/${id}`)
     return data
 }
-
-
-
 
 export const updateEstimatePrice = async (id, estimate) => {
     const { data } = await guestInstance.put(`estimate/updateEstimatePrice/${id}`, estimate)

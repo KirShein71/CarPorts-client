@@ -86,6 +86,9 @@ function ChangeBrigade() {
     setOpenModalSelectedBrigade(!openModalSelectedBrigade);
   };
 
+  const todayString = new Date().toISOString().split('T')[0]; // Получаем строку даты для сравнения
+  console.log(todayString);
+
   return (
     <div className="calendar-brigade">
       <CreateBrigadeDate
@@ -169,7 +172,13 @@ function ChangeBrigade() {
             <tbody>
               {dates.map((date) => (
                 <tr key={date.id}>
-                  <td>
+                  <td
+                    style={{
+                      backgroundColor:
+                        date.date.toLocaleString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : 'transparent',
+                    }}>
                     {new Date(date.date).toLocaleDateString('ru-RU')} - {getDayName(date.date)}
                   </td>
                   {brigadesDates.filter(
@@ -196,6 +205,10 @@ function ChangeBrigade() {
                                 : brigadeDate.downtime
                                 ? '#ff0000'
                                 : '#000000',
+                              backgroundColor:
+                                date.date.toLocaleString().split('T')[0] === todayString
+                                  ? '#bbbbbb'
+                                  : 'transparent',
                             }}
                             key={brigadeDate.id}
                             onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
@@ -209,7 +222,13 @@ function ChangeBrigade() {
                       })
                   ) : (
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{
+                        cursor: 'pointer',
+                        backgroundColor:
+                          date.date.toLocaleString().split('T')[0] === todayString
+                            ? '#bbbbbb'
+                            : 'transparent',
+                      }}
                       onClick={() => handleOpenModalCreateBrigadeDate(selectedBrigade, date.id)}>
                       Добавить
                     </td>
