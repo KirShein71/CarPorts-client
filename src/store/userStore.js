@@ -6,6 +6,7 @@ class UserStore {
     isUser = false
     isAdmin = false
     isEmployee = false
+    isBrigade = false
 
     constructor() {
         makeAutoObservable(this)
@@ -17,6 +18,7 @@ class UserStore {
         this.isUser = role === 'USER'
         this.isAdmin = role === 'ADMIN'
         this.isEmployee = role === 'EMPLOYEE'
+        this.isBrigade = role === 'INSTALLER'
     }
 
     logout() {
@@ -25,6 +27,7 @@ class UserStore {
         this.isUser = false
         this.isAdmin = false
         this.isEmployee = false
+        this.isBrigade = false
     }
 }
 

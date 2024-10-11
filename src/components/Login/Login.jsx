@@ -19,7 +19,8 @@ const Login = observer(() => {
     if (user.isAdmin) navigate('/workingpage', { replace: true });
     if (user.isUser) navigate('/personalaccount', { replace: true });
     if (user.isEmployee) navigate('/workingpage', { replace: true });
-  }, [navigate, user.isAdmin, user.isUser, user.isEmployee]);
+    if (user.isBrigade) navigate('/installeraccount', { replace: true });
+  }, [navigate, user.isAdmin, user.isUser, user.isEmployee, user.isBrigade]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,6 +35,7 @@ const Login = observer(() => {
         if (user.isAdmin) navigate('/admin');
         if (user.isUser) navigate('/personalaccount');
         if (user.isEmployee) navigate('/');
+        if (user.isBrigade) navigate('/installeraccount');
       }
     } catch (error) {
       console.error(error);

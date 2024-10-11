@@ -26,7 +26,7 @@ import CreateInformationClient from '../pages/CreateInformationClient';
 import ViewingPersonalAccount from '../pages/ViewingPersonalAccount';
 import FinishProject from '../pages/FinishProject';
 import ChangeBrigadeDate from '../pages/ChangeBrigadeDate';
-import Test from '../pages/Test';
+import InstallerAccount from '../pages/InstallerAccount';
 
 import { observer } from 'mobx-react';
 
@@ -87,8 +87,10 @@ const adminRoutes = [
   { path: '/finishproject', Component: FinishProject },
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
-  { path: '/test', Component: Test },
+  { path: '/installeraccount', Component: InstallerAccount },
 ];
+
+const brigadesRoutes = [{ path: '/installeraccount', Component: InstallerAccount }];
 
 const routes = [{ path: '/', Component: Home }];
 
@@ -107,6 +109,10 @@ const AppRouter = observer(() => {
         ))}
       {user.isEmployee &&
         employeeRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
+      {user.isBrigade &&
+        brigadesRoutes.map(({ path, Component }) => (
           <Route key={path} path={path} element={<Component />} />
         ))}
       {routes.map(({ path, Component }) => (

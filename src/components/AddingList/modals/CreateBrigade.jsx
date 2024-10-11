@@ -3,11 +3,12 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createBrigade } from '../../../http/bragadeApi';
 import { getAllRegion } from '../../../http/regionApi';
 
-const defaultValue = { name: '', phone: '', region: '' };
+const defaultValue = { name: '', phone: '', region: '', password: '' };
 const defaultValid = {
   name: null,
   phone: null,
   region: null,
+  password: null,
 };
 
 const isValid = (value) => {
@@ -15,6 +16,7 @@ const isValid = (value) => {
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'password') result.password = value.password.trim() !== '';
     if (key === 'region') result.region = value.region;
   }
   return result;
@@ -59,6 +61,7 @@ const CreateBrigade = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
+      data.append('password', value.password.trim());
       data.append('image', image);
       data.append('regionId', value.region);
       createBrigade(data)
@@ -111,6 +114,19 @@ const CreateBrigade = (props) => {
               />
             </Col>
           </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="password"
+                value={value.password}
+                onChange={(e) => handleInputChange(e)}
+                onClick={handleInputClick}
+                isValid={valid.password === true}
+                isInvalid={valid.password === false}
+                placeholder="Введите пароль"
+              />
+            </Col>
+          </Row>
           <Row className="mb-3 mt-4">
             <Col>
               <Form.Select
@@ -129,14 +145,6 @@ const CreateBrigade = (props) => {
               </Form.Select>
             </Col>
           </Row>
-          <Col className="mb-3">
-            <Form.Control
-              name="image"
-              type="file"
-              onChange={(e) => handleImageChange(e)}
-              placeholder="Фото бригады (не более 1MB)..."
-            />
-          </Col>
           <Row>
             <Col>
               <Button variant="dark" type="submit">

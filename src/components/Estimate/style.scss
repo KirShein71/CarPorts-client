@@ -2,12 +2,46 @@
     display: flex;
     justify-content: center;
 
-    &__item {
-        display: flex;
+   
+
+    &__brigade {
+        margin-top: 15px;
+
+        &-title {
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+        }
     }
 
-    &__service {
-        font-size: 19px;
-        margin-right: 10px;
+    &__input {
+        border: none;
     }
+
+
+    &-brigade {
+        margin-top: 25px;
+
+        &__title {
+            font-size: 21px;
+            font-weight: 500;
+            @media(max-width: 460px){
+                font-size: 18px;
+            }
+        }
+
+        &__content {
+            margin-top: 15px;
+        }
+
+        &__name {
+            font-size: 20px;
+            font-weight: 500;
+            @media(max-width: 460px) {
+                font-size: 17px;
+            }
+        }
+    }
+
+
 }

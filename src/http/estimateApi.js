@@ -5,8 +5,18 @@ export const getEstimate = async () => {
     return data
 }
 
-export const getAllEstimateForBrigade = async () => {
-    const {data} = await guestInstance.get('estimate/getAllEstimateForBrigade')
+export const getAllEstimateForBrigade = async (id) => {
+    const {data} = await guestInstance.get(`estimate/getAllEstimateForBrigade/${id}`)
+    return data
+}
+
+export const getAllEstimateForBrigadeProject = async (id, project) => {
+    const {data} = await guestInstance.get(`estimate/getAllEstimateForBrigadeProject/${id}/${project}`)
+    return data
+}
+
+export const getAllEstimateForProject = async (id) => {
+    const {data} = await guestInstance.get(`estimate/getAllEstimateForProject/${id}`)
     return data
 }
 
@@ -25,11 +35,20 @@ export const getOneEstimateColumn = async (id) => {
     return data
 }
 
-export const updateEstimatePrice = async (id, estimate) => {
+export const updateEstimatePrice = async (id,  estimate) => {
     const { data } = await guestInstance.put(`estimate/updateEstimatePrice/${id}`, estimate)
     return data
 }
 
+export const updateBrigadeForProject = async (id, project, estimate) => {
+    const { data } = await guestInstance.put(`estimate/updateBrigadeForProject/${id}/${project}`, estimate)
+    return data
+}
+
+export const deleteEstimateBrigadeForProject= async(id, project) => {
+    const { data} = await guestInstance.delete(`estimate/deleteEstimateBrigadeForProject/${id}/${project}`)
+    return data
+}
 
 export const deleteEstimate = async(id) => {
     const { data} = await guestInstance.delete(`estimate/delete/${id}`)

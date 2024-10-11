@@ -2,6 +2,7 @@ import React from 'react';
 import CreateBrigade from './modals/CreateBrigade';
 import UpdateBridage from './modals/UpdateBrigade';
 import CreateRegionBrigade from './modals/CreateRegionBrigade';
+import CreatePasswordBrigade from './modals/CreatePasswordBrigade';
 import { Table, Button } from 'react-bootstrap';
 import { fetchBrigades, deleteBrigade } from '../../http/bragadeApi';
 
@@ -11,6 +12,7 @@ function Brigade() {
   const [brigadeModal, setBrigadeModal] = React.useState(false);
   const [brigadeUpdateModal, setBrigadeUpdateModal] = React.useState(false);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
+  const [createPasswordModal, setCreatePasswordModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
@@ -39,6 +41,11 @@ function Brigade() {
     setCreateRegionModal(true);
   };
 
+  const handleCreatePasswordBrigade = (id) => {
+    setBrigade(id);
+    setCreatePasswordModal(true);
+  };
+
   return (
     <div className="details">
       <h2 className="details__title">Монтажные бригады</h2>
@@ -55,6 +62,12 @@ function Brigade() {
         setChange={setChange}
         id={brigade}
       />
+      <CreatePasswordBrigade
+        show={createPasswordModal}
+        setShow={setCreatePasswordModal}
+        setChange={setChange}
+        id={brigade}
+      />
       <Button variant="dark" onClick={() => setBrigadeModal(true)} className="mt-3">
         Создать бригаду
       </Button>
@@ -65,7 +78,7 @@ function Brigade() {
               <th>Бригады</th>
               <th>Номер телефона</th>
               <th>Регион</th>
-              <th></th>
+              <th>Пароль</th>
               <th></th>
             </tr>
           </thead>
@@ -80,6 +93,11 @@ function Brigade() {
                     style={{ cursor: 'pointer' }}
                     onClick={() => hadleCreateRegionBrigade(brigade.id)}>
                     {brigade.region?.region}
+                  </td>
+                  <td>
+                    <Button variant="dark" onClick={() => handleCreatePasswordBrigade(brigade.id)}>
+                      {brigade.password ? 'Изменить' : 'Добавить'}
+                    </Button>
                   </td>
                   <td>
                     <Button variant="dark" onClick={() => handleUpdateBrigade(brigade.id)}>

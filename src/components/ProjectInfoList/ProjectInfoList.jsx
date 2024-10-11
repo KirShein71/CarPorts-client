@@ -678,7 +678,9 @@ function ProjectInfoList() {
             />
           </div>
         )}
-        {activeTab === 'estimate' && <Estimate projectId={id} />}
+        {activeTab === 'estimate' && (
+          <Estimate projectId={id} regionId={project.project.regionId} />
+        )}
         {activeTab === 'cabinet' && (
           <div className="cabinet">
             {project.userProject && project.userProject.length > 0 ? (
