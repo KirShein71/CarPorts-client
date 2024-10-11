@@ -77,11 +77,6 @@ function HomePageList() {
                 <div className="homepage__item">Админ</div>
               </Link>
             ) : null}
-            {user.isAdmin ? (
-              <Link to="/test">
-                <div className="homepage__item">Тестовая страница монтажников</div>
-              </Link>
-            ) : null}
             <div className="homepage__item" onClick={handleLogout}>
               {' '}
               Выйти
