@@ -17,6 +17,8 @@ function CalendarComponent(props) {
     designer,
   } = props;
 
+  console.log(brigadesDate);
+
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
     return new Date(Date.UTC(year, month - 1, day)).toISOString();
@@ -69,7 +71,7 @@ function CalendarComponent(props) {
     if (view === 'month') {
       const range = isDateInRange(date);
       const constructor = isDateConstructor(date);
-      const brigadesEntry = brigadesDate.find((entry) => {
+      const brigadesEntries = brigadesDate.filter((entry) => {
         // Сравнение только дат без учета времени
         const entryDate = new Date(entry.date);
         const tileDate = new Date(date);
@@ -86,9 +88,11 @@ function CalendarComponent(props) {
             <div style={{ backgroundColor: range.color, height: '10px', opacity: 0.5 }}></div>
           )}
           {constructor && <div style={{ fontSize: '0.8em', textAlign: 'center' }}>{designer}</div>}
-          {brigadesEntry && (
+          {brigadesEntries.length > 0 && (
             <div style={{ fontSize: '0.8em', textAlign: 'center' }}>
-              {getInitials(brigadesEntry.name)}
+              {brigadesEntries.map((brigade) => (
+                <div key={brigade.name}>{getInitials(brigade.name)}</div>
+              ))}
             </div>
           )}
         </>
@@ -127,14 +131,18 @@ function CalendarComponent(props) {
           ) : (
             ''
           )}
-          {brigadesDate.length > 0 ? (
-            <div className="calendar__tooltip-items">
-              <div className="calendar__tooltip-items__brigade">Бригада:</div>
-              <div className="calendar__tooltip-items__description">{brigadesDate[0].name}</div>
-            </div>
-          ) : (
-            ''
-          )}
+          {brigadesDate.length > 0
+            ? brigadesDate
+                .filter(
+                  (brigade, pos, self) => self.findIndex((b) => b.name === brigade.name) === pos,
+                )
+                .map((brigadeName) => (
+                  <div className="calendar__tooltip-items" key={brigadeName.id}>
+                    <div className="calendar__tooltip-items__brigade">Бригада:</div>
+                    <div className="calendar__tooltip-items__description">{brigadeName.name}</div>
+                  </div>
+                ))
+            : ''}
         </div>
       </div>
     </div>

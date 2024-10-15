@@ -25,6 +25,8 @@ function ChangeBrigade() {
   const [regions, setRegions] = React.useState([]);
   const [selectedRegion, setSelectedRegion] = React.useState(1);
   const modalRef = React.useRef();
+  const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +50,29 @@ function ChangeBrigade() {
 
     fetchData();
   }, [change, openUpdateBrigadeDate]);
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
+  const filteredDates = dates.filter((date) => {
+    const dateObj = new Date(date.date);
+    return dateObj.getMonth() === currentMonth && dateObj.getFullYear() === currentYear;
+  });
 
   React.useEffect(() => {
     const hadleClickOutside = (e) => {
@@ -87,7 +112,6 @@ function ChangeBrigade() {
   };
 
   const todayString = new Date().toISOString().split('T')[0]; // Получаем строку даты для сравнения
-  console.log(todayString);
 
   return (
     <div className="calendar-brigade">
@@ -158,85 +182,101 @@ function ChangeBrigade() {
           )}
         </div>
         {selectedBrigade !== null ? (
-          <Table bordered size="sm" className="calendar-brigade__table">
-            <thead>
-              <tr>
-                <th>Дата</th>
-                {brigades
-                  .filter((brigadeName) => brigadeName.name === selectedBrigadeName)
-                  .map((brigadeName) => (
-                    <th key={brigadeName.id}>{brigadeName.name}</th>
-                  ))}
-              </tr>
-            </thead>
-            <tbody>
-              {dates.map((date) => (
-                <tr key={date.id}>
-                  <td
-                    style={{
-                      backgroundColor:
-                        date.date.toLocaleString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : 'transparent',
-                    }}>
-                    {new Date(date.date).toLocaleDateString('ru-RU')} - {getDayName(date.date)}
-                  </td>
-                  {brigadesDates.filter(
-                    (brigadeDate) =>
-                      brigadeDate.brigadeId === selectedBrigade && brigadeDate.dateId === date.id,
-                  ).length > 0 ? (
-                    brigadesDates
-                      .filter(
-                        (brigadeDate) =>
-                          brigadeDate.brigadeId === selectedBrigade &&
-                          brigadeDate.dateId === date.id,
-                      )
-                      .map((brigadeDate) => {
-                        return (
-                          <td
-                            style={{
-                              cursor: 'pointer',
-                              fontSize: '17px',
-                              fontWeight: '500',
-                              color: brigadeDate.warranty
-                                ? '#0000ff'
-                                : brigadeDate.weekend
-                                ? '#9b2d30'
-                                : brigadeDate.downtime
-                                ? '#ff0000'
-                                : '#000000',
-                              backgroundColor:
-                                date.date.toLocaleString().split('T')[0] === todayString
-                                  ? '#bbbbbb'
-                                  : 'transparent',
-                            }}
-                            key={brigadeDate.id}
-                            onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
-                            {brigadeDate.project?.name ||
-                              brigadeDate.warranty ||
-                              brigadeDate.weekend ||
-                              brigadeDate.downtime ||
-                              ''}
-                          </td>
-                        );
-                      })
-                  ) : (
+          <>
+            <div className="calendar-brigade__month">
+              <div className="calendar-brigade__month-arrow" onClick={handlePrevMonth}>
+                <img src="./img/left.png" alt="left arrow" />
+              </div>
+              <p className="calendar-brigade__month-name">
+                {new Date(currentYear, currentMonth).toLocaleString('default', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
+              <div className="calendar-brigade__month-arrow" onClick={handleNextMonth}>
+                <img src="./img/right.png" alt="right arrow" />
+              </div>
+            </div>
+            <Table bordered size="sm" className="calendar-brigade__table">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  {brigades
+                    .filter((brigadeName) => brigadeName.name === selectedBrigadeName)
+                    .map((brigadeName) => (
+                      <th key={brigadeName.id}>{brigadeName.name}</th>
+                    ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredDates.map((date) => (
+                  <tr key={date.id}>
                     <td
                       style={{
-                        cursor: 'pointer',
                         backgroundColor:
                           date.date.toLocaleString().split('T')[0] === todayString
                             ? '#bbbbbb'
                             : 'transparent',
-                      }}
-                      onClick={() => handleOpenModalCreateBrigadeDate(selectedBrigade, date.id)}>
-                      Добавить
+                      }}>
+                      {new Date(date.date).toLocaleDateString('ru-RU')} - {getDayName(date.date)}
                     </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+                    {brigadesDates.filter(
+                      (brigadeDate) =>
+                        brigadeDate.brigadeId === selectedBrigade && brigadeDate.dateId === date.id,
+                    ).length > 0 ? (
+                      brigadesDates
+                        .filter(
+                          (brigadeDate) =>
+                            brigadeDate.brigadeId === selectedBrigade &&
+                            brigadeDate.dateId === date.id,
+                        )
+                        .map((brigadeDate) => {
+                          return (
+                            <td
+                              style={{
+                                cursor: 'pointer',
+                                fontSize: '17px',
+                                fontWeight: '500',
+                                color: brigadeDate.warranty
+                                  ? '#0000ff'
+                                  : brigadeDate.weekend
+                                  ? '#9b2d30'
+                                  : brigadeDate.downtime
+                                  ? '#ff0000'
+                                  : '#000000',
+                                backgroundColor:
+                                  date.date.toLocaleString().split('T')[0] === todayString
+                                    ? '#bbbbbb'
+                                    : 'transparent',
+                              }}
+                              key={brigadeDate.id}
+                              onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
+                              {brigadeDate.project?.name ||
+                                brigadeDate.warranty ||
+                                brigadeDate.weekend ||
+                                brigadeDate.downtime ||
+                                ''}
+                            </td>
+                          );
+                        })
+                    ) : (
+                      <td
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor:
+                            date.date.toLocaleString().split('T')[0] === todayString
+                              ? '#bbbbbb'
+                              : 'transparent',
+                        }}
+                        onClick={() => handleOpenModalCreateBrigadeDate(selectedBrigade, date.id)}>
+                        Добавить
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </>
         ) : (
           ''
         )}

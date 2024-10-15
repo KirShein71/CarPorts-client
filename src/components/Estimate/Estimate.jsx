@@ -58,11 +58,16 @@ function Estimate(props) {
   const handleSave = (event) => {
     event.preventDefault();
 
+    // Проверяем, выбрана ли бригада
+    if (selectedBrigade === null) {
+      alert('Вы забыли выбрать бригаду');
+      return; // Выходим из функции, если бригада не выбрана
+    }
+
     // Отправляем запросы для каждой услуги с установленной ценой
     const promises = Object.keys(prices).map((serviceId) => {
       const price = prices[serviceId];
       if (price) {
-        // Проверяем, что цена указана
         const data = new FormData();
         data.append('projectId', projectId);
         data.append('serviceId', serviceId);
@@ -217,7 +222,38 @@ function Estimate(props) {
                     .map((brigadeName) => (
                       <div className="estimate-brigade__name">Бригада: {brigadeName.name}</div>
                     ))}
-                  <Table bordered className="mt-3">
+                  <Table bordered className="estimate__table-sum">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: 'center' }}>Общая сумма</th>
+                        <th style={{ textAlign: 'center' }}>Сумма выполенных работ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ fontWeight: 'bold' }}>Итого</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalSum = estimateBrigade.estimates.reduce(
+                              (acc, cur) => acc + Number(cur.price),
+                              0,
+                            );
+                            return totalSum;
+                          })()}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalSum = estimateBrigade.estimates
+                              .filter((esCol) => esCol.done === 'true')
+                              .reduce((acc, cur) => acc + Number(cur.price), 0);
+                            return totalSum;
+                          })()}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                  <Table bordered>
                     <thead>
                       <tr>
                         <th>Наименование</th>

@@ -21,10 +21,29 @@
     }
 
     &__table {
-        margin-top: 25px;
+        
         width: 50%;
         @media(max-width: 460px) {
             width: 100%;
+        }
+    }
+
+    &__month {
+        margin-top: 15px;
+        display: flex;
+
+        &-arrow {
+            img {
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+            }
+        }
+
+        &-name {
+            font-size: 18px;
+            font-weight: 400;
+            padding: 0px 7px 0px 7px;
         }
     }
 }

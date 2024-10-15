@@ -6,6 +6,7 @@ import CheckboxInstallation from './checkbox/CheckboxInstallation';
 import { Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
+import ProjectInfo from './ProjectInfo';
 
 import './style.scss';
 
@@ -22,7 +23,6 @@ function InstallationPage() {
     const brigadeId = localStorage.getItem('id');
     getAllEstimateForBrigade(brigadeId).then((data) => {
       setServiceEstimate(data);
-      console.log(data);
       const initialChecked = {};
       data.map((col) => {
         col.estimates.forEach((colEst) => {
@@ -163,6 +163,7 @@ function InstallationPage() {
             </div>
           </>
         )}
+        <ProjectInfo projectId={selectedProject} />
         <div className="installation-page__logout" onClick={handleLogout}>
           {' '}
           Выйти

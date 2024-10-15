@@ -84,6 +84,11 @@ export const getProjectInfo = async (id) => {
     return data
 }
 
+export const getProjectInfoInstallation = async (id) => {
+    const { data } = await guestInstance.get(`project/getProjectInfoInstallation/${id}`)
+    return data
+}
+
 
 export const deleteProject = async (id) => {
     const {data} = await guestInstance.delete(`project/delete/${id}`)
