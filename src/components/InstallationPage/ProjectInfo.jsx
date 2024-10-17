@@ -125,21 +125,6 @@ function ProjectInfo({ projectId }) {
               })()}
             />
           </div>
-          <div className="projectinfo__note">
-            <div className="projectinfo__note-title">Комментарии</div>
-            <div className="projectinfo__note-content">
-              <pre className="projectinfo__note-field">
-                {isExpanded
-                  ? infoProject.project?.note
-                  : infoProject.project?.note && infoProject.project.note.slice(0, 255)}
-              </pre>
-              {infoProject.project?.note && infoProject.project.note.length > 255 && (
-                <div className="projectinfo__note-show" onClick={handleToggleText}>
-                  {isExpanded ? 'Скрыть' : 'Показать все...'}
-                </div>
-              )}
-            </div>
-          </div>
         </>
       ))}
     </div>
