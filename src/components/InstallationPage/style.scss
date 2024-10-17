@@ -14,7 +14,10 @@
 
     &__projects {
         display: flex;
-        justify-content: center;
+        overflow: auto;
+       
+        
+        
     }
 
     &__project {
@@ -27,9 +30,9 @@
         border-radius: 10px;
         list-style: none;
         transition: background-color 0.1s ease-in-out;
-        @media(max-width: 768px) {
-            white-space: nowrap
-        }
+   
+        white-space: nowrap;
+        
         @media(max-width: 575px) {
             font-size: 14px;
             padding: 10px 15px;
