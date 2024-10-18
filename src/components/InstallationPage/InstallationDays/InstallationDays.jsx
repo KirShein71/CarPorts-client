@@ -75,12 +75,14 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               onChange={(date) => setStartDate(date)}
               dateFormat="dd/MM/yyyy"
               placeholderText="ДД.ММ.ГГГГ"
+              className="installation-days__period-input"
             />
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date)}
               dateFormat="dd/MM/yyyy"
               placeholderText="ДД.ММ.ГГГГ"
+              className="installation-days__period-input"
             />
             <img
               width={20}
