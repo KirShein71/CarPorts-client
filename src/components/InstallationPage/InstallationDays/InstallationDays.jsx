@@ -8,6 +8,37 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
+  const [inputType, setInputType] = React.useState('text'); // Initial input type is 'text'
+
+  const handleInputStart = (e) => {
+    const value = e.target.value;
+    if (inputType === 'text') {
+      setStartDate(value); // Update startDate with the text input
+    } else {
+      // Format the date to dd/MM/yyyy
+      const formattedDate = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+      setStartDate(formattedDate); // Update startDate with the formatted date
+    }
+  };
+
+  const handleInputEnd = (e) => {
+    const value = e.target.value;
+    if (inputType === 'text') {
+      setEndDate(value); // Update startDate with the text input
+    } else {
+      // Format the date to dd/MM/yyyy
+      const formattedDate = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+      setEndDate(formattedDate); // Update startDate with the formatted date
+    }
+  };
+
+  const handleInputFocus = () => {
+    setInputType('date'); // Change input type to 'date' on focus
+  };
+
+  const handleInputBlur = () => {
+    setInputType('text'); // Change input type back to 'text' on blur
+  };
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -25,16 +56,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
     } else {
       setCurrentMonth(currentMonth + 1);
     }
-  };
-
-  const handleStartDateChange = (e) => {
-    const formattedDate = e.target.value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3'); // Format to dd/MM/yyyy
-    setStartDate(formattedDate);
-  };
-
-  const handleEndDateChange = (e) => {
-    const formattedDate = e.target.value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3'); // Format to dd/MM/yyyy
-    setEndDate(formattedDate);
   };
 
   const filteredDates = dates.filter((date) => {
@@ -82,13 +103,17 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               className="installation-days__period-input"
               type="date"
               value={startDate}
-              onChange={handleStartDateChange}
+              onChange={handleInputStart}
+              onFocus={handleInputFocus} // Change to date on focus
+              onBlur={handleInputBlur}
             />
             <input
               className="installation-days__period-input"
               type="date"
               value={endDate}
-              onChange={handleEndDateChange}
+              onChange={handleInputEnd}
+              onFocus={handleInputFocus} // Change to date on focus
+              onBlur={handleInputBlur}
             />
             <img
               width={20}
