@@ -1,5 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import './style.scss';
 
@@ -8,37 +10,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  const [inputType, setInputType] = React.useState('text'); // Initial input type is 'text'
-
-  const handleInputStart = (e) => {
-    const value = e.target.value;
-    if (inputType === 'text') {
-      setStartDate(value); // Update startDate with the text input
-    } else {
-      // Format the date to dd/MM/yyyy
-      const formattedDate = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
-      setStartDate(formattedDate); // Update startDate with the formatted date
-    }
-  };
-
-  const handleInputEnd = (e) => {
-    const value = e.target.value;
-    if (inputType === 'text') {
-      setEndDate(value); // Update startDate with the text input
-    } else {
-      // Format the date to dd/MM/yyyy
-      const formattedDate = value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
-      setEndDate(formattedDate); // Update startDate with the formatted date
-    }
-  };
-
-  const handleInputFocus = () => {
-    setInputType('date'); // Change input type to 'date' on focus
-  };
-
-  const handleInputBlur = () => {
-    setInputType('text'); // Change input type back to 'text' on blur
-  };
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -99,21 +70,17 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
             </div>
           </div>
           <div className="installation-days__period">
-            <input
-              className="installation-days__period-input"
-              type={inputType}
-              value={startDate}
-              onChange={handleInputStart}
-              onFocus={handleInputFocus} // Change to date on focus
-              onBlur={handleInputBlur}
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="ДД.ММ.ГГГГ"
             />
-            <input
-              className="installation-days__period-input"
-              type={inputType}
-              value={endDate}
-              onChange={handleInputEnd}
-              onFocus={handleInputFocus} // Change to date on focus
-              onBlur={handleInputBlur}
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="ДД.ММ.ГГГГ"
             />
             <img
               width={20}
