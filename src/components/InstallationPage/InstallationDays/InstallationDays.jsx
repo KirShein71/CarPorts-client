@@ -27,6 +27,16 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
     }
   };
 
+  const handleStartDateChange = (e) => {
+    const formattedDate = e.target.value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3'); // Format to dd/MM/yyyy
+    setStartDate(formattedDate);
+  };
+
+  const handleEndDateChange = (e) => {
+    const formattedDate = e.target.value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3'); // Format to dd/MM/yyyy
+    setEndDate(formattedDate);
+  };
+
   const filteredDates = dates.filter((date) => {
     const dateObj = new Date(date.date);
     const start = new Date(startDate);
@@ -72,13 +82,13 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               className="installation-days__period-input"
               type="date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={handleStartDateChange}
             />
             <input
               className="installation-days__period-input"
               type="date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={handleEndDateChange}
             />
             <img
               width={20}
