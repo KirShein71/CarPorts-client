@@ -8,6 +8,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
+  const [isDateInput, setIsDateInput] = React.useState(false);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -43,6 +44,16 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
     setEndDate('');
   };
 
+  const handleFocus = () => {
+    setIsDateInput(true);
+  };
+
+  const handleBlur = () => {
+    if (!endDate && !startDate) {
+      setIsDateInput(false);
+    }
+  };
+
   const getDayName = (date) => {
     return new Date(date).toLocaleDateString('ru-RU', { weekday: 'long' });
   };
@@ -70,15 +81,19 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
           <div className="installation-days__period">
             <input
               className="installation-days__period-input"
-              type="date"
+              type={isDateInput ? 'date' : 'text'}
               value={startDate}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               placeholder="дд.мм.гггг"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <input
               className="installation-days__period-input"
-              type="date"
+              type={isDateInput ? 'date' : 'text'}
               value={endDate}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               onChange={(e) => setEndDate(e.target.value)}
               placeholder="дд.мм.гггг"
             />
