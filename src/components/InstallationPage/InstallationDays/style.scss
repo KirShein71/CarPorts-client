@@ -1,0 +1,43 @@
+.installation-days {
+    margin-top: 15px;
+
+    &__filter {
+        display: flex;
+        justify-content: space-between;
+        @media(max-width: 460px) {
+            display: contents;
+        }
+    }
+
+    &__month {
+        margin-top: 15px;
+        display: flex;
+
+        &-arrow {
+            img {
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+            }
+        }
+
+        &-name {
+            font-size: 18px;
+            font-weight: 400;
+            padding: 0px 7px 0px 7px;
+        }
+    }
+
+    &__period {
+        display: flex;
+        margin-top: 15px;
+        @media(max-width: 450px) {
+            margin-top: 0px;
+        }
+
+        &-input {
+            height: 30px;
+            margin-right: 10px;
+        }
+    }
+}

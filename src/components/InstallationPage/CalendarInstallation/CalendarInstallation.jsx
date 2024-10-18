@@ -14,8 +14,10 @@ function CalendarInstallation(props) {
     startDateConstructor,
     endDateСonstructor,
     designer,
+    brigadesDate,
   } = props;
 
+  console.log(typeof brigadesDate);
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
     return new Date(Date.UTC(year, month - 1, day)).toISOString();
@@ -63,6 +65,16 @@ function CalendarInstallation(props) {
     if (view === 'month') {
       const range = isDateInRange(date);
       const constructor = isDateConstructor(date);
+      const brigadesEntries = brigadesDate.filter((entry) => {
+        // Сравнение только дат без учета времени
+        const entryDate = new Date(entry.date);
+        const tileDate = new Date(date);
+        return (
+          entryDate.getDate() === tileDate.getDate() &&
+          entryDate.getMonth() === tileDate.getMonth() &&
+          entryDate.getFullYear() === tileDate.getFullYear()
+        );
+      });
 
       return (
         <>
@@ -70,6 +82,11 @@ function CalendarInstallation(props) {
             <div style={{ backgroundColor: range.color, height: '10px', opacity: 0.5 }}></div>
           )}
           {constructor && <div style={{ fontSize: '0.8em', textAlign: 'center' }}>{designer}</div>}
+          {brigadesEntries.length > 0 && (
+            <div style={{ fontSize: '0.8em', textAlign: 'center' }}>
+              <div>Р</div>
+            </div>
+          )}
         </>
       );
     }
@@ -102,6 +119,14 @@ function CalendarInstallation(props) {
             <div className="calendar-installation__tooltip-items">
               <div className="calendar-installation__tooltip-items__brigade">Конструктор:</div>
               <div className="calendar-installation__tooltip-items__description">{designer}</div>
+            </div>
+          ) : (
+            ''
+          )}
+          {brigadesDate.length > 0 ? (
+            <div className="calendar-installation__tooltip-items">
+              <div className="calendar-installation__tooltip-items__brigade">Р:</div>
+              <div className="calendar-installation__tooltip-items__description">Рабочий день</div>
             </div>
           ) : (
             ''

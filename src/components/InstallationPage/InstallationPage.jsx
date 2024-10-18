@@ -1,22 +1,31 @@
 import React from 'react';
 import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
-import { getAllNumberOfDaysBrigade } from '../../http/brigadesDateApi';
+import {
+  getAllNumberOfDaysBrigade,
+  getAllOneBrigadesDate,
+  getAllDate,
+  getAllNumberOfDaysBrigadeForProject,
+} from '../../http/brigadesDateApi';
 import { logout } from '../../http/bragadeApi';
 import CheckboxInstallation from './checkbox/CheckboxInstallation';
 import { Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import ProjectInfo from './ProjectInfo';
+import InstallationDays from './InstallationDays/InstallationDays';
 
 import './style.scss';
 
 function InstallationPage() {
   const { user } = React.useContext(AppContext);
   const [serviceEstimate, setServiceEstimate] = React.useState([]);
+  const [daysBrigade, setDaysBrigade] = React.useState([]);
+  const [dates, setDates] = React.useState([]);
   const [checked, setChecked] = React.useState({});
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = React.useState(null);
   const [days, setDays] = React.useState();
+  const [daysProject, setDaysProject] = React.useState([]);
   const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
@@ -31,6 +40,9 @@ function InstallationPage() {
       });
       setChecked(initialChecked);
     });
+    getAllOneBrigadesDate(brigadeId).then((data) => setDaysBrigade(data));
+    getAllDate().then((data) => setDates(data));
+    getAllNumberOfDaysBrigadeForProject(brigadeId).then((data) => setDaysProject(data));
   }, [change]);
 
   React.useEffect(() => {
@@ -86,6 +98,7 @@ function InstallationPage() {
   return (
     <div className="installation-page">
       <div className="installation-page__content">
+        <InstallationDays dates={dates} daysBrigade={daysBrigade} daysProject={daysProject} />
         <div className="installation-page__projects">
           {serviceEstimate.map((estimateProject) => (
             <div

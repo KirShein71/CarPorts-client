@@ -4,7 +4,6 @@ import CalendarInstallation from './CalendarInstallation/CalendarInstallation';
 
 function ProjectInfo({ projectId }) {
   const [project, setProject] = React.useState([]);
-  const [isExpanded, setIsExpanded] = React.useState(false);
 
   React.useEffect(() => {
     if (projectId !== null) {
@@ -69,16 +68,13 @@ function ProjectInfo({ projectId }) {
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
 
-  const handleToggleText = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   return (
     <div className="projectinfo">
       {project.map((infoProject) => (
         <>
           <div className="projectinfo__calenadar">
             <CalendarInstallation
+              brigadesDate={infoProject.brigadesdate}
               designer={infoProject.project.designer}
               startDateConstructor={infoProject.project.design_start}
               endDateСonstructor={infoProject.project.project_delivery}

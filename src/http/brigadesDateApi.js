@@ -5,6 +5,11 @@ export const getAllBrigadesDate = async () => {
     return data
 }
 
+export const getAllOneBrigadesDate = async (brigadeId) => {
+    const { data } = await guestInstance.get(`brigadesdate/getAllForOneBrigade/${brigadeId}`)
+    return data
+}
+
 export const getAllCertainDays = async () => {
     const { data } = await guestInstance.get('brigadesdate/getAllCertainDays')
     return data
@@ -19,9 +24,6 @@ export const fetchOneBrigadesDate = async (id) => {
     const { data } = await guestInstance.get(`brigadesdate/getone/${id}`)
     return data
 }
-
-
-
 
 export const updateBrigadesDate = async (id, brigadesdate) => {
     const { data } = await guestInstance.put(`brigadesdate/updateBrigadesDate/${id}`, brigadesdate)
@@ -41,5 +43,10 @@ export const getAllDate = async () => {
 
 export const getAllNumberOfDaysBrigade = async (brigadeId, projectId) => {
     const { data } = await guestInstance.get(`brigadesdate/getAllNumberOfDaysBrigade/${brigadeId}/${projectId}`)
+    return data
+}
+
+export const getAllNumberOfDaysBrigadeForProject = async (brigadeId) => {
+    const { data } = await guestInstance.get(`brigadesdate/getAllNumberOfDaysBrigadeForProject/${brigadeId}`)
     return data
 }
