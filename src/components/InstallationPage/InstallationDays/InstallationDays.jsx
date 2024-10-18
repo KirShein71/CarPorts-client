@@ -72,6 +72,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               className="installation-days__period-input"
               type="date"
               value={startDate}
+              placeholder="дд.мм.гггг"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <input
@@ -79,6 +80,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              placeholder="дд.мм.гггг"
             />
             <img
               width={20}
