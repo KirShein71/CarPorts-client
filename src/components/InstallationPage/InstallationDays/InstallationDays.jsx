@@ -101,7 +101,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
           <div className="installation-days__period">
             <input
               className="installation-days__period-input"
-              type="date"
+              type={inputType}
               value={startDate}
               onChange={handleInputStart}
               onFocus={handleInputFocus} // Change to date on focus
@@ -109,7 +109,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
             />
             <input
               className="installation-days__period-input"
-              type="date"
+              type={inputType}
               value={endDate}
               onChange={handleInputEnd}
               onFocus={handleInputFocus} // Change to date on focus
