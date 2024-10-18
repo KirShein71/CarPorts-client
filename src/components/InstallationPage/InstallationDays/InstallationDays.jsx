@@ -8,7 +8,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  const [isDateInput, setIsDateInput] = React.useState(false);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -44,16 +43,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
     setEndDate('');
   };
 
-  const handleFocus = () => {
-    setIsDateInput(true);
-  };
-
-  const handleBlur = () => {
-    if (!endDate && !startDate) {
-      setIsDateInput(false);
-    }
-  };
-
   const getDayName = (date) => {
     return new Date(date).toLocaleDateString('ru-RU', { weekday: 'long' });
   };
@@ -79,24 +68,42 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
             </div>
           </div>
           <div className="installation-days__period">
-            <input
-              className="installation-days__period-input"
-              type={isDateInput ? 'date' : 'text'}
-              value={startDate}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              placeholder="дд.мм.гггг"
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <input
-              className="installation-days__period-input"
-              type={isDateInput ? 'date' : 'text'}
-              value={endDate}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              onChange={(e) => setEndDate(e.target.value)}
-              placeholder="дд.мм.гггг"
-            />
+            {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+              <>
+                <input
+                  className="installation-days__period-input"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+                <input
+                  className="installation-days__period-input"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              </>
+            ) : (
+              <>
+                <input
+                  className="installation-days__period-input"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <input
+                  className="installation-days__period-input"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </>
+            )}
+
             <img
               width={20}
               height={20}
