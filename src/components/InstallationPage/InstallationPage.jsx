@@ -98,88 +98,92 @@ function InstallationPage() {
   return (
     <div className="installation-page">
       <div className="installation-page__content">
+        <div className="installation-page__title">Календарь</div>
         <InstallationDays dates={dates} daysBrigade={daysBrigade} daysProject={daysProject} />
         <div className="installation-page__projects">
-          {serviceEstimate.map((estimateProject) => (
-            <div
-              key={estimateProject.id}
-              className={`installation-page__project ${
-                estimateProject.projectId === selectedProject ? 'active' : ''
-              }`}
-              onClick={() => setSelectedProject(estimateProject.projectId)}>
-              {estimateProject.projectName}
-            </div>
-          ))}
-        </div>
-        {selectedProject && (
-          <>
-            <Table bordered className="mt-3">
-              <thead>
-                <tr>
-                  <th className="installation-page__head">Наименование</th>
-                  <th className="installation-page__head">Стоимость</th>
-                  <th className="installation-page__head">Выполнение</th>
-                </tr>
-              </thead>
-              <tbody>
-                {serviceEstimate.map((col) =>
-                  col.estimates
-                    .filter(
-                      (estimateForProject) => estimateForProject.projectId === selectedProject,
-                    )
-                    .map((estimateForProject) => (
-                      <tr key={estimateForProject.id}>
-                        <td className="installation-page__body">
-                          {estimateForProject.service.name}
-                        </td>
-                        <td className="installation-page__body">{estimateForProject.price}</td>
-                        <td style={{ display: 'flex', justifyContent: 'center' }}>
-                          <CheckboxInstallation
-                            change={checked[estimateForProject.id]} // Передаем состояние чекбокса
-                            handle={() => handleCheckboxChange(estimateForProject.id)} // Обработчик изменения состояния
-                          />
-                        </td>
-                      </tr>
-                    )),
-                )}
-              </tbody>
-            </Table>
-            <form className="installation-page__form" onSubmit={handleSave}>
-              <Button variant="dark" size="sm" type="submit">
-                Сохранить
-              </Button>
-            </form>
-            <div className="installation-page__money">
-              {(() => {
-                const totalPrice = serviceEstimate.reduce((total, sumEst) => {
-                  const projectTotal = sumEst.estimates
-                    .filter(
-                      (estimateForProject) =>
-                        estimateForProject.done === 'true' &&
-                        estimateForProject.projectId === selectedProject,
-                    )
-                    .reduce((accumulator, current) => accumulator + Number(current.price), 0);
-                  return total + projectTotal;
-                }, 0);
+          <div className="installation-page__title">Проекты</div>
+          <div className="installation-page__projects-content">
+            {serviceEstimate.map((estimateProject) => (
+              <div
+                key={estimateProject.id}
+                className={`installation-page__project ${
+                  estimateProject.projectId === selectedProject ? 'active' : ''
+                }`}
+                onClick={() => setSelectedProject(estimateProject.projectId)}>
+                {estimateProject.projectName}
+              </div>
+            ))}
+          </div>
+          {selectedProject && (
+            <>
+              <Table bordered className="mt-5">
+                <thead>
+                  <tr>
+                    <th className="installation-page__head">Наименование</th>
+                    <th className="installation-page__head">Стоимость</th>
+                    <th className="installation-page__head">Выполнение</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {serviceEstimate.map((col) =>
+                    col.estimates
+                      .filter(
+                        (estimateForProject) => estimateForProject.projectId === selectedProject,
+                      )
+                      .map((estimateForProject) => (
+                        <tr key={estimateForProject.id}>
+                          <td className="installation-page__body">
+                            {estimateForProject.service.name}
+                          </td>
+                          <td className="installation-page__body">{estimateForProject.price}</td>
+                          <td style={{ display: 'flex', justifyContent: 'center' }}>
+                            <CheckboxInstallation
+                              change={checked[estimateForProject.id]} // Передаем состояние чекбокса
+                              handle={() => handleCheckboxChange(estimateForProject.id)} // Обработчик изменения состояния
+                            />
+                          </td>
+                        </tr>
+                      )),
+                  )}
+                </tbody>
+              </Table>
+              <form className="installation-page__form" onSubmit={handleSave}>
+                <Button variant="dark" size="sm" type="submit">
+                  Сохранить
+                </Button>
+              </form>
+              <div className="installation-page__money">
+                {(() => {
+                  const totalPrice = serviceEstimate.reduce((total, sumEst) => {
+                    const projectTotal = sumEst.estimates
+                      .filter(
+                        (estimateForProject) =>
+                          estimateForProject.done === 'true' &&
+                          estimateForProject.projectId === selectedProject,
+                      )
+                      .reduce((accumulator, current) => accumulator + Number(current.price), 0);
+                    return total + projectTotal;
+                  }, 0);
 
-                return (
-                  <>
-                    <div className="installation-page__money-general">
-                      Общая сумма: {totalPrice}₽
-                    </div>
-                    <div className="installation-page__money-daily">
-                      Заработок за день: {days > 0 ? Math.ceil(totalPrice / days) : 0}₽
-                    </div>
-                  </>
-                );
-              })()}{' '}
-            </div>
-          </>
-        )}
-        <ProjectInfo projectId={selectedProject} />
-        <div className="installation-page__logout" onClick={handleLogout}>
-          {' '}
-          Выйти
+                  return (
+                    <>
+                      <div className="installation-page__money-general">
+                        Общая сумма: {totalPrice}₽
+                      </div>
+                      <div className="installation-page__money-daily">
+                        Заработок за день: {days > 0 ? Math.ceil(totalPrice / days) : 0}₽
+                      </div>
+                    </>
+                  );
+                })()}{' '}
+              </div>
+            </>
+          )}
+          <ProjectInfo projectId={selectedProject} />
+          <div className="installation-page__logout" onClick={handleLogout}>
+            {' '}
+            Выйти
+          </div>
         </div>
       </div>
     </div>

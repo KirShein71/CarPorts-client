@@ -68,42 +68,18 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
             </div>
           </div>
           <div className="installation-days__period">
-            {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
-              <>
-                <input
-                  className="installation-days__period-input"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  onFocus={(e) => (e.target.type = 'date')}
-                  onBlur={(e) => (e.target.type = 'text')}
-                />
-                <input
-                  className="installation-days__period-input"
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  onFocus={(e) => (e.target.type = 'date')}
-                  onBlur={(e) => (e.target.type = 'text')}
-                />
-              </>
-            ) : (
-              <>
-                <input
-                  className="installation-days__period-input"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-                <input
-                  className="installation-days__period-input"
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </>
-            )}
-
+            <input
+              className="installation-days__period-input"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <input
+              className="installation-days__period-input"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
             <img
               width={20}
               height={20}
@@ -142,7 +118,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                       <td
                         style={{
                           textAlign: 'center',
-
                           color: dayBrigade.warranty
                             ? '#0000ff'
                             : dayBrigade.weekend
@@ -157,8 +132,8 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                         }}
                         key={dayBrigade.id}>
                         {dayBrigade.project?.name ||
-                          dayBrigade.warranty ||
                           dayBrigade.weekend ||
+                          dayBrigade.warranty ||
                           dayBrigade.downtime ||
                           ''}
                         {dayBrigade.project && dayBrigade.project.estimates ? (
@@ -190,6 +165,9 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                       </td>
                     );
                   })}
+                {/* Добавляем пустую ячейку, если нет соответствующих данных */}
+                {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === dateInstal.id).length ===
+                  0 && <td style={{ textAlign: 'center', backgroundColor: 'transparent' }}></td>}
               </tr>
             ))}
           </tbody>
