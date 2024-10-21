@@ -30,8 +30,16 @@ function InstallationPage() {
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
+
     getAllEstimateForBrigade(brigadeId).then((data) => {
       setServiceEstimate(data);
+      const activeProject = data[0].projectId;
+
+      // Устанавливаем selectedProject только если он еще не установлен
+      if (!selectedProject) {
+        setSelectedProject(activeProject);
+      }
+
       const initialChecked = {};
       data.map((col) => {
         col.estimates.forEach((colEst) => {
@@ -40,6 +48,7 @@ function InstallationPage() {
       });
       setChecked(initialChecked);
     });
+
     getAllOneBrigadesDate(brigadeId).then((data) => setDaysBrigade(data));
     getAllDate().then((data) => setDates(data));
     getAllNumberOfDaysBrigadeForProject(brigadeId).then((data) => setDaysProject(data));

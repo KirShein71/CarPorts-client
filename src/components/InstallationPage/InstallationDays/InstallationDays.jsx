@@ -2,8 +2,14 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import Moment from 'react-moment';
+import { registerLocale, setDefaultLocale } from 'react-datepicker';
+import ru from 'date-fns/locale/ru';
 
 import './style.scss';
+
+registerLocale('ru', ru); // Регистрируем локаль
+setDefaultLocale('ru');
 
 function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
@@ -51,6 +57,8 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
 
   const todayString = new Date().toISOString().split('T')[0];
 
+  let totalEarnings = 0;
+
   return (
     <div className="installation-days">
       <>
@@ -72,6 +80,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
           <div className="installation-days__period">
             <DatePicker
               selected={startDate}
+              locale="rus"
               onChange={(date) => setStartDate(date)}
               dateFormat="dd/MM/yyyy"
               placeholderText="ДД.ММ.ГГГГ"
@@ -83,6 +92,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               dateFormat="dd/MM/yyyy"
               placeholderText="ДД.ММ.ГГГГ"
               className="installation-days__period-input"
+              locale="ru"
             />
             <img
               width={20}
@@ -169,7 +179,6 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                       </td>
                     );
                   })}
-                {/* Добавляем пустую ячейку, если нет соответствующих данных */}
                 {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === dateInstal.id).length ===
                   0 && <td style={{ textAlign: 'center', backgroundColor: 'transparent' }}></td>}
               </tr>
@@ -177,6 +186,38 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
           </tbody>
         </Table>
       </>
+      {startDate !== '' && endDate !== '' ? (
+        <div>
+          <div className="installation-days__sumperiod">
+            За период с <Moment format="DD.MM.YYYY">{startDate}</Moment> по{' '}
+            <Moment format="DD.MM.YYYY">{endDate}</Moment>
+          </div>
+          {filteredDates.map((periodDay) =>
+            daysBrigade
+              .filter((periodBrigade) => periodBrigade.dateId === periodDay.id)
+              .map((periodBrigade) => {
+                if (periodBrigade.project && periodBrigade.project.estimates) {
+                  const projectTotal = periodBrigade.project.estimates
+                    .filter((estimateForProject) => estimateForProject.done === 'true')
+                    .reduce((accumulator, current) => accumulator + Number(current.price), 0);
+
+                  const projectDays = daysProject
+                    .filter((dayProject) => dayProject.projectId === periodBrigade.projectId)
+                    .map((dayProject) => dayProject.days);
+
+                  const earningsPerDay = Math.ceil(projectTotal / projectDays.length || 1); // Избегаем деления на 0
+                  totalEarnings += earningsPerDay; // Накопление общей суммы
+                }
+                return null; // Возвращаем null, если проект или оценки отсутствуют
+              }),
+          )}
+          <div className="installation-days__total-earnings">
+            Общая сумма заработка: {totalEarnings} руб.
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
