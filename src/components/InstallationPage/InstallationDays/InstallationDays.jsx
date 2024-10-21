@@ -4,12 +4,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Moment from 'react-moment';
 import { registerLocale, setDefaultLocale } from 'react-datepicker';
-import ru from 'date-fns/locale/ru';
+import rus from 'date-fns/locale/ru';
 
 import './style.scss';
 
-registerLocale('ru', ru); // Регистрируем локаль
-setDefaultLocale('ru');
+registerLocale('rus', rus); // Регистрируем локаль
+setDefaultLocale('rus');
 
 function InstallationDays({ dates, daysBrigade, daysProject }) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
@@ -92,7 +92,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               dateFormat="dd/MM/yyyy"
               placeholderText="ДД.ММ.ГГГГ"
               className="installation-days__period-input"
-              locale="ru"
+              locale="rus"
             />
             <img
               width={20}
@@ -205,7 +205,8 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                     .filter((dayProject) => dayProject.projectId === periodBrigade.projectId)
                     .map((dayProject) => dayProject.days);
 
-                  const earningsPerDay = Math.ceil(projectTotal / projectDays.length || 1); // Избегаем деления на 0
+                  const earningsPerDay = Math.ceil(projectTotal / projectDays); // Избегаем деления на 0
+
                   totalEarnings += earningsPerDay; // Накопление общей суммы
                 }
                 return null; // Возвращаем null, если проект или оценки отсутствуют

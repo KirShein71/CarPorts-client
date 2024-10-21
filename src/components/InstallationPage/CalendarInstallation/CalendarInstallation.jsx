@@ -17,7 +17,6 @@ function CalendarInstallation(props) {
     brigadesDate,
   } = props;
 
-  console.log(typeof brigadesDate);
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('.');
     return new Date(Date.UTC(year, month - 1, day)).toISOString();
