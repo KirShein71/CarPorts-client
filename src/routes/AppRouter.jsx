@@ -131,7 +131,7 @@ const managerProductionRoutes = [
 
 const brigadesRoutes = [{ path: '/installeraccount', Component: InstallerAccount }];
 
-const routes = [{ path: '/', Component: Home }];
+const routes = [{ path: '/workingpage', Component: WorkingPage }];
 
 const AppRouter = observer(() => {
   const { user } = React.useContext(AppContext);
