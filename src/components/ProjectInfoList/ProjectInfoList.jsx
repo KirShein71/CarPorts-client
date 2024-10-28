@@ -13,15 +13,17 @@ import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Table, Spinner, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment';
-
-import './style.scss';
 import CalendarProject from '../Calendar/CalendarProject';
 import Estimate from '../Estimate/Estimate';
+import { AppContext } from '../../context/AppContext';
+
+import './style.scss';
 
 function ProjectInfoList() {
   const { id } = useParams();
+  const { user } = React.useContext(AppContext);
   const [project, setProject] = React.useState();
-  const [user, setUser] = React.useState(null);
+  const [client, setClient] = React.useState(null);
   const [activeTab, setActiveTab] = React.useState('deadline');
   const [nameDetails, setNameDetails] = React.useState([]);
   const [createAccount, setCreateAccount] = React.useState(false);
@@ -65,7 +67,7 @@ function ProjectInfoList() {
   };
 
   const handleCreateMainImage = (userId) => {
-    setUser(userId);
+    setClient(userId);
     setCreateMainImageModal(true);
   };
 
@@ -193,7 +195,7 @@ function ProjectInfoList() {
         setChange={setChange}
       />
       <CreateMainImage
-        id={user}
+        id={client}
         show={createMainImageModal}
         setShow={setCreateMainImageModal}
         setChange={setChange}
@@ -309,13 +311,15 @@ function ProjectInfoList() {
                 onClick={() => handleTabClick('calendar')}>
                 Календарь
               </div>
-              <div
-                className={`projectinfo__filter-card__item ${
-                  activeTab === 'estimate' ? 'active' : ''
-                }`}
-                onClick={() => handleTabClick('estimate')}>
-                Смета
-              </div>
+              {user.isManagerSale ? null : (
+                <div
+                  className={`projectinfo__filter-card__item ${
+                    activeTab === 'estimate' ? 'active' : ''
+                  }`}
+                  onClick={() => handleTabClick('estimate')}>
+                  Смета
+                </div>
+              )}
               <div
                 className={`projectinfo__filter-card__item ${
                   activeTab === 'cabinet' ? 'active' : ''
@@ -678,9 +682,11 @@ function ProjectInfoList() {
             />
           </div>
         )}
-        {activeTab === 'estimate' && (
-          <Estimate projectId={id} regionId={project.project.regionId} />
-        )}
+        {user.isManagerSale
+          ? null
+          : activeTab === 'estimate' && (
+              <Estimate projectId={id} regionId={project.project.regionId} />
+            )}
         {activeTab === 'cabinet' && (
           <div className="cabinet">
             {project.userProject && project.userProject.length > 0 ? (

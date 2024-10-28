@@ -13,6 +13,9 @@ import moment from 'moment-business-days';
 import Checkbox from '../Checkbox/Checkbox';
 import { CSVLink } from 'react-csv';
 import { format } from 'date-fns';
+import { logout } from '../../http/userApi';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../context/AppContext';
 
 function PlanningList() {
   const [projects, setProjects] = React.useState([]);
@@ -33,6 +36,8 @@ function PlanningList() {
   const [projectNoDesignerCheckbox, setProjectNoDesignerCheckbox] = React.useState(false);
   const [projectInProgressCheckbox, setProjectInProgressCheckbox] = React.useState(false);
   const [selectedNote, setSelectedNote] = React.useState(null);
+  const navigate = useNavigate();
+  const { user } = React.useContext(AppContext);
 
   React.useEffect(() => {
     fetchAllProjects()
@@ -221,9 +226,22 @@ function PlanningList() {
     return <Spinner animation="border" />;
   }
 
+  const handleLogout = () => {
+    logout();
+    user.logout();
+    navigate('/', { replace: true });
+  };
+
   return (
     <div className="planninglist">
-      <Header title={'Проектирование'} />
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Header title={'Проектирование'} />
+        {user.isConstructor ? (
+          <div className="homepage__item" style={{ marginTop: '25px' }} onClick={handleLogout}>
+            Выйти
+          </div>
+        ) : null}
+      </div>
       <Col className="mt-3" sm={2}>
         <Form className="d-flex">
           <Form.Control

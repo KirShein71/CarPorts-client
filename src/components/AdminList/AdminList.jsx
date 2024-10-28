@@ -4,6 +4,10 @@ import { Table, Spinner, Button } from 'react-bootstrap';
 import CreateEmployee from './modals/CreateEmployee';
 import Header from '../Header/Header';
 import { Link } from 'react-router-dom';
+import ManagerSale from './managerSale/ManagerSale';
+import ManagerProject from './managerproject/ManagerProject';
+import Constructor from './constructor/Constructor';
+import ManagerProduction from './managerProduction/ManagerProduction';
 
 function Admin() {
   const [employees, setEmployees] = React.useState([]);
@@ -66,6 +70,10 @@ function Admin() {
           </tbody>
         </Table>
       </div>
+      <ManagerSale />
+      <ManagerProject />
+      <Constructor />
+      <ManagerProduction />
     </div>
   );
 }

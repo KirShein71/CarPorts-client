@@ -7,9 +7,11 @@ import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
 import Moment from 'react-moment';
+import { AppContext } from '../../context/AppContext';
 import './modals/styles.scss';
 
 function ShipmentList() {
+  const { user } = React.useContext(AppContext);
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
   const [updateShipmentDetailsModal, setUpdateShipmentDetailsModal] = React.useState(false);
@@ -194,13 +196,16 @@ function ShipmentList() {
                         <td
                           style={{ cursor: 'pointer' }}
                           onClick={() =>
-                            quantity
-                              ? handleUpdateShipmentDetailClick(detail.id)
-                              : handleCreateOneShipmentDetail(
-                                  part.id,
-                                  shipment.projectId,
-                                  shipment.shipment_date,
-                                )
+                            user.isProjectManager
+                              ? undefined
+                              : () =>
+                                  quantity
+                                    ? handleUpdateShipmentDetailClick(detail.id)
+                                    : handleCreateOneShipmentDetail(
+                                        part.id,
+                                        shipment.projectId,
+                                        shipment.shipment_date,
+                                      )
                           }>
                           {quantity}
                         </td>

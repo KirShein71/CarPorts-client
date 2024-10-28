@@ -20,7 +20,21 @@ const Login = observer(() => {
     if (user.isUser) navigate('/personalaccount', { replace: true });
     if (user.isEmployee) navigate('/workingpage', { replace: true });
     if (user.isBrigade) navigate('/installeraccount', { replace: true });
-  }, [navigate, user.isAdmin, user.isUser, user.isEmployee, user.isBrigade]);
+    if (user.isManagerSale) navigate('/workingpage', { replace: true });
+    if (user.isManagerProject) navigate('/workingpage', { replace: true });
+    if (user.isConstructor) navigate('/planning', { replace: true });
+    if (user.isManagerProduction) navigate('/workingpage', { replace: true });
+  }, [
+    navigate,
+    user.isAdmin,
+    user.isUser,
+    user.isEmployee,
+    user.isBrigade,
+    user.isManagerSale,
+    user.isManagerProject,
+    user.isConstructor,
+    user.isManagerProduction,
+  ]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,6 +50,10 @@ const Login = observer(() => {
         if (user.isUser) navigate('/personalaccount');
         if (user.isEmployee) navigate('/');
         if (user.isBrigade) navigate('/installeraccount');
+        if (user.isManagerSale) navigate('/workingpage');
+        if (user.isManagerProject) navigate('/workingpage');
+        if (user.isConstructor) navigate('/planning');
+        if (user.isManagerProduction) navigate('/workingpage');
       }
     } catch (error) {
       console.error(error);

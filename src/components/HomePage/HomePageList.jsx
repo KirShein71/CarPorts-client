@@ -8,6 +8,17 @@ import Counter from './Counter';
 
 import './style.scss';
 
+const MenuItems = ({ items }) => {
+  return items.map((item, index) => (
+    <div key={index}>
+      {item.title && <div className="homepage__title">{item.title}</div>}
+      <Link to={item.link}>
+        <div className="homepage__item">{item.label}</div>
+      </Link>
+    </div>
+  ));
+};
+
 function HomePageList() {
   const { user } = React.useContext(AppContext);
   const [createProjectModal, setCreateProjectModal] = React.useState(false);
@@ -24,6 +35,71 @@ function HomePageList() {
     setCreateProjectModal(true);
   };
 
+  const managerSaleItems = [
+    { label: 'Добавить проект', onClick: hadleOpenModal },
+    { label: 'Все проекты', link: '/project' },
+  ];
+
+  const managerProjectItems = [
+    { label: 'Все проекты', link: '/project' },
+    { label: 'Проектирование', link: '/planning' },
+    { title: 'Производство' },
+    { label: 'Заказы на производство', link: '/production' },
+    { label: 'Произведено', link: '/welders' },
+    { label: 'Отгрузки', link: '/shipment' },
+    { label: 'Итоговая производство', link: '/manufacture' },
+    { title: 'Снабжение' },
+    { label: 'Заказ материалов', link: '/ordermaterials' },
+    { title: 'Монтаж' },
+    { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { title: 'Администирование' },
+    { label: 'Справочники', link: '/adding' },
+  ];
+
+  const adminItems = [
+    { label: 'Все проекты', link: '/project' },
+    { label: 'Проектирование', link: '/planning' },
+    { title: 'Производство' },
+    { label: 'Заказы на производство', link: '/production' },
+    { label: 'Произведено', link: '/welders' },
+    { label: 'Отгрузки', link: '/shipment' },
+    { label: 'Итоговая производство', link: '/manufacture' },
+    { title: 'Снабжение' },
+    { label: 'Заказ материалов', link: '/ordermaterials' },
+    { title: 'Монтаж' },
+    { label: 'Монтажные работы', link: '/installation' },
+    { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { title: 'Администирование' },
+    { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
+    { label: 'Справочники', link: '/adding' },
+    { label: 'Админ', link: '/admin' },
+  ];
+
+  const managerProductionItems = [
+    { title: 'Производство' },
+    { label: 'Произведено', link: '/welders' },
+    { label: 'Отгрузки', link: '/shipment' },
+    { label: 'Итоговая производство', link: '/manufacture' },
+  ];
+
+  const employeeItems = [
+    { label: 'Все проекты', link: '/project' },
+    { label: 'Проектирование', link: '/planning' },
+    { title: 'Производство' },
+    { label: 'Заказы на производство', link: '/production' },
+    { label: 'Произведено', link: '/welders' },
+    { label: 'Отгрузки', link: '/shipment' },
+    { label: 'Итоговая производство', link: '/manufacture' },
+    { title: 'Снабжение' },
+    { label: 'Заказ материалов', link: '/ordermaterials' },
+    { title: 'Монтаж' },
+    { label: 'Монтажные работы', link: '/installation' },
+    { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { title: 'Администирование' },
+    { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
+    { label: 'Справочники', link: '/adding' },
+  ];
+
   return (
     <>
       <CreateProject
@@ -35,56 +111,26 @@ function HomePageList() {
         <Counter />
         <div className="homepage__content">
           <div className="homepage__items">
-            <Link to="/project">
-              <div className="homepage__title-1">Все проекты</div>
-            </Link>
-            <Link to="/planning">
-              <div className="homepage__title-1">Проектирование</div>
-            </Link>
-            <div className="homepage__title">Производство</div>
-            <Link to="/production">
-              <div className="homepage__item">Заказы на производство</div>
-            </Link>
-            <Link to="/welders">
-              <div className="homepage__item">Произведено</div>
-            </Link>
-            <Link to="/shipment">
-              <div className="homepage__item">Отгрузки</div>
-            </Link>
-            <Link to="/manufacture">
-              <div className="homepage__item">Итоговая производство</div>
-            </Link>
-            <div className="homepage__title">Снабжение</div>
-            <Link to="/ordermaterials">
-              <div className="homepage__item">Заказ материалов</div>
-            </Link>
-            <div className="homepage__title">Монтаж</div>
-            <Link to="/installation">
-              <div className="homepage__item">Монтажные работы</div>
-            </Link>
-            <Link to="/changebrigadedate">
-              <div className="homepage__item">Календарь монтажных работ</div>
-            </Link>
-            <div className="homepage__title">Администирование</div>
-            <Link to="/clientaccount">
-              <div className="homepage__item">Личные кабинеты заказчиков</div>
-            </Link>
-            <Link to="/adding">
-              <div className="homepage__item">Справочники</div>
-            </Link>
-            {user.isAdmin ? (
-              <Link to="/admin">
-                <div className="homepage__item">Админ</div>
-              </Link>
-            ) : null}
+            {user.isManagerSale && (
+              <>
+                <MenuItems items={managerSaleItems} />
+              </>
+            )}
+            {user.isManagerProject && <MenuItems items={managerProjectItems} />}
+            {user.isAdmin && <MenuItems items={adminItems} />}
+            {user.isManagerProduction && <MenuItems items={managerProductionItems} />}
+            {user.isEmployee && <MenuItems items={employeeItems} />}
             <div className="homepage__item" onClick={handleLogout}>
-              {' '}
               Выйти
+            </div>{' '}
+          </div>
+          {user.isManagerProduction ? (
+            ''
+          ) : (
+            <div className="homepage__bottom">
+              <TableBrigadeCalendar />
             </div>
-          </div>
-          <div className="homepage__bottom">
-            <TableBrigadeCalendar />
-          </div>
+          )}
         </div>
       </div>
     </>

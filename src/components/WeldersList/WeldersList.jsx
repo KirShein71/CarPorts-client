@@ -9,8 +9,10 @@ import UpdateStockDetails from './modals/updateStockDetails';
 import CreateOneStockDetail from './modals/createOneStockDetail';
 import './modals/style.scss';
 import CreateStockAntypical from './modals/createStockAntypical';
+import { AppContext } from '../../context/AppContext';
 
 function WeldersList() {
+  const { user } = React.useContext(AppContext);
   const [nameDetails, setNameDetails] = React.useState([]);
   const [stockDetails, setStockDetails] = React.useState([]);
   const [stockDetail, setStockDetail] = React.useState(null);
@@ -195,10 +197,13 @@ function WeldersList() {
                       return (
                         <td
                           style={{ cursor: 'pointer' }}
-                          onClick={() =>
-                            quantity
-                              ? handleUpdateDetailClick(detail.id)
-                              : handleCreateOneStockDetail(part.id, stock.stock_date)
+                          onClick={
+                            user.isManagerProduction
+                              ? undefined
+                              : () =>
+                                  quantity
+                                    ? handleUpdateDetailClick(detail.id)
+                                    : handleCreateOneStockDetail(part.id, stock.stock_date)
                           }>
                           {quantity}
                         </td>

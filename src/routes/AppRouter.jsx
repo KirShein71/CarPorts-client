@@ -90,6 +90,45 @@ const adminRoutes = [
   { path: '/installeraccount', Component: InstallerAccount },
 ];
 
+const managerSaleRoutes = [
+  { path: '/project', Component: Project },
+  { path: '/projectinfo/:id', Component: ProjectInfo },
+  { path: '/createinformationclient/:id', Component: CreateInformationClient },
+  { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
+  { path: '/workingpage', Component: WorkingPage },
+  { path: '/finishproject', Component: FinishProject },
+  { path: '/clientaccount', Component: ClientAccount },
+];
+
+const managerProjectRoutes = [
+  { path: '/project', Component: Project },
+  { path: '/projectinfo/:id', Component: ProjectInfo },
+  { path: '/createinformationclient/:id', Component: CreateInformationClient },
+  { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
+  { path: '/workingpage', Component: WorkingPage },
+  { path: '/finishproject', Component: FinishProject },
+  { path: '/planning', Component: Planning },
+  { path: '/production', Component: Production },
+  { path: '/productionchange', Component: ProductionChange },
+  { path: '/welders', Component: Welders },
+  { path: '/shipment', Component: Shipment },
+  { path: '/shipmentchange', Component: ShipmentChange },
+  { path: '/manufacture', Component: Manufacture },
+  { path: '/ordermaterials', Component: OrderMaterials },
+  { path: '/changebrigadedate', Component: ChangeBrigadeDate },
+  { path: '/adding', Component: Adding },
+];
+
+const constructorRoutes = [{ path: '/planning', Component: Planning }];
+
+const managerProductionRoutes = [
+  { path: '/welders', Component: Welders },
+  { path: '/manufacture', Component: Manufacture },
+  { path: '/workingpage', Component: WorkingPage },
+  { path: '/shipment', Component: Shipment },
+  { path: '/shipmentchange', Component: ShipmentChange },
+];
+
 const brigadesRoutes = [{ path: '/installeraccount', Component: InstallerAccount }];
 
 const routes = [{ path: '/', Component: Home }];
@@ -113,6 +152,23 @@ const AppRouter = observer(() => {
         ))}
       {user.isBrigade &&
         brigadesRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
+      {user.isManagerSale &&
+        managerSaleRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
+      {user.isManagerProject &&
+        managerProjectRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
+
+      {user.isConstructor &&
+        constructorRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} element={<Component />} />
+        ))}
+      {user.isManagerProduction &&
+        managerProductionRoutes.map(({ path, Component }) => (
           <Route key={path} path={path} element={<Component />} />
         ))}
       {routes.map(({ path, Component }) => (
