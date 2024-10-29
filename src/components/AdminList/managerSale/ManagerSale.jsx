@@ -58,7 +58,7 @@ function ManagerSale() {
       <div className="manager-sale__content">
         <h2 className="manager-sale__title">Менеджеры по продажам</h2>
         <Button variant="dark" onClick={handleCreateManagerSale} className="mt-3">
-          Добавить менеджера по прадажам
+          Добавить менеджера по продажам
         </Button>
         <div className="table-container">
           <Table bordered hover size="sm" className="mt-3">
