@@ -1,19 +1,43 @@
 import React from 'react';
 import { getProjectInfoInstallation } from '../../http/projectApi';
+import { getUserForBrigade } from '../../http/userApi';
+import { getAllUserImageByUserId, deleteUserImage } from '../../http/userImageApi';
 import CalendarInstallation from './CalendarInstallation/CalendarInstallation';
+import CreateUserImage from './modals/CreateUserImage';
+import { Button } from 'react-bootstrap';
 
 function ProjectInfo({ projectId }) {
   const [project, setProject] = React.useState([]);
+  const [user, setUser] = React.useState([]);
+  const [userImages, setUserImages] = React.useState([]);
+  const [imageCreateModal, setImageCreateModal] = React.useState(false);
+  const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
     if (projectId !== null) {
-      getProjectInfoInstallation(projectId)
-        .then((data) => setProject(data))
-        .catch((error) => {
-          console.error('Error fetching project info:', error);
-        });
+      const fetchData = async () => {
+        try {
+          // Получаем информацию о проекте
+          const projectData = await getProjectInfoInstallation(projectId);
+          setProject(projectData);
+
+          // Получаем пользователя для бригады
+          const userId = await getUserForBrigade(projectId);
+          setUser(userId);
+
+          // Если пользователь найден, получаем его изображения
+          if (userId) {
+            const userImages = await getAllUserImageByUserId(userId);
+            setUserImages(userImages);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      fetchData();
     }
-  }, [projectId]);
+  }, [projectId, change]);
 
   const holidays = [
     '2024-01-01',
@@ -68,8 +92,33 @@ function ProjectInfo({ projectId }) {
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
 
+  const handleCreateImage = () => {
+    setImageCreateModal(true);
+  };
+
+  const handleDeleteImage = (id) => {
+    const confirmed = window.confirm('Вы уверены, что хотите удалить изображение?');
+    if (confirmed) {
+      deleteUserImage(id)
+        .then((data) => {
+          setChange(!change);
+          // Удалить удаленное изображение из списка images
+          const updatedImages = userImages.filter((image) => image.id !== id);
+          setUserImages(updatedImages);
+          alert('Изображение удалено');
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+  };
+
   return (
     <div className="projectinfo">
+      <CreateUserImage
+        userId={user}
+        show={imageCreateModal}
+        setShow={setImageCreateModal}
+        setChange={setChange}
+      />
       {project.map((infoProject) => (
         <>
           <div className="projectinfo__calenadar">
@@ -120,6 +169,53 @@ function ProjectInfo({ projectId }) {
                 return formattedEndDate;
               })()}
             />
+          </div>
+          <div className="projectinfo__files">
+            <div
+              className="projectinfo__files-title"
+              style={{
+                marginTop: '25px',
+                color: 'rgb(7, 7, 7)',
+                fontSize: '22px',
+                fontWeight: '600',
+              }}>
+              Изображения хода работ
+            </div>
+            <Button
+              variant="dark"
+              className="mt-3"
+              size="sm"
+              onClick={() => handleCreateImage(user)}>
+              Добавить изображение
+            </Button>
+            <div
+              className="projectinfo__files-content"
+              style={{
+                marginTop: '25px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gridColumnGap: '5px',
+                gridRowGap: '5px',
+              }}>
+              {userImages.map((image) => (
+                <div key={image.id}>
+                  <div className="projectinfo__files-card">
+                    <img
+                      style={{ width: '70%', marginBottom: '10px' }}
+                      src={process.env.REACT_APP_IMG_URL + image.image}
+                      alt="photos of works"
+                    />
+                    <div>{image.date}</div>
+                    <div
+                      className="delete__image"
+                      style={{ color: 'red', cursor: 'pointer' }}
+                      onClick={() => handleDeleteImage(image.id)}>
+                      Удалить
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ))}

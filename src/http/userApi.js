@@ -76,7 +76,10 @@ export const createAccount = async (user) => {
         return data
     }
 
-   
+    export const getUserForBrigade = async(projectId) => {
+        const {data} = await guestInstance.get(`user/getUserForBrigade/${projectId}`);
+        return data;
+      }
 
     export const deleteUser = async(id) => {
         const { data } = await guestInstance.delete(`user/delete/${id}`);
