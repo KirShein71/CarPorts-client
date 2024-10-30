@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createProject } from '../../../http/projectApi';
+import { createAccount } from '../../../http/userApi';
 import { getAllRegion } from '../../../http/regionApi';
 import './styles.scss';
 const defaultValue = {
@@ -12,6 +13,8 @@ const defaultValue = {
   installation_period: '',
   note: '',
   region: '',
+  phone: '',
+  password: '',
 };
 const defaultValid = {
   name: null,
@@ -22,6 +25,8 @@ const defaultValid = {
   installation_period: null,
   note: null,
   region: null,
+  phone: null,
+  password: null,
 };
 
 const isValid = (value) => {
@@ -36,6 +41,8 @@ const isValid = (value) => {
       result.installation_period = value.installation_period.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'region') result.region = value.region;
+    if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'password') result.password = value.password.trim() !== '';
   }
   return result;
 };
@@ -45,6 +52,9 @@ const CreateProject = (props) => {
   const [regions, setRegions] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const form = React.useRef();
+  const [clicked, setClicked] = React.useState(false);
+  const [projectId, setProjectId] = React.useState(null);
 
   React.useEffect(() => {
     getAllRegion()
@@ -95,14 +105,39 @@ const CreateProject = (props) => {
           // приводим форму в изначальное состояние
           setValue(defaultValue);
           setValid(defaultValid);
+          setProjectId(data.id);
 
-          // закрываем модальное окно создания товара
-          setShow(false);
           // изменяем состояние, чтобы обновить список товаров
           setChange((state) => !state);
         })
         .catch((error) => alert(error.response.data.message));
     }
+  };
+
+  const handleInputClick = () => {
+    setClicked(true);
+  };
+
+  const handleCreateAccount = async (event) => {
+    event.preventDefault();
+    const correct = isValid(value);
+    setValid(correct);
+    if (correct.phone && correct.password) {
+      const data = new FormData();
+      data.append('phone', value.phone.trim());
+      data.append('password', value.password.trim());
+      data.append('projectId', projectId);
+
+      createAccount(data)
+        .then((data) => {
+          setValue(defaultValue);
+          setValid(defaultValid);
+          setShow(false);
+          setChange((state) => !state);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+    setShow(false);
   };
 
   return (
@@ -224,6 +259,43 @@ const CreateProject = (props) => {
                 isInvalid={valid.note === false}
                 placeholder="Примечание"
                 style={{ height: '200px', width: '100%' }}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button variant="dark" type="submit">
+                Сохранить
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+        <Modal.Title className="mt-3">Создать личный кабинет</Modal.Title>
+        <Form ref={form} noValidate onSubmit={handleCreateAccount}>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="phone"
+                value={clicked ? value.phone || '8' : ''}
+                onChange={(e) => handleInputChange(e)}
+                onClick={handleInputClick}
+                isValid={valid.phone === true}
+                isInvalid={valid.phone === false}
+                minLength="10"
+                maxLength="11"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="password"
+                value={value.password}
+                onChange={(e) => handleInputChange(e)}
+                onClick={handleInputClick}
+                isValid={valid.password === true}
+                isInvalid={valid.password === false}
+                placeholder="Введите пароль"
               />
             </Col>
           </Row>
