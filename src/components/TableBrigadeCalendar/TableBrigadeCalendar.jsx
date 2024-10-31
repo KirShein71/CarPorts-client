@@ -118,8 +118,9 @@ function TableBrigadeCalendar() {
                           ? '#bbbbbb'
                           : 'transparent',
                     }}>
-                    {dateSpb.brigade ? dateSpb.brigade.date : ''}
+                    {dateSpb.brigade ? dateSpb.brigade.name : ''}
                   </td>
+
                   <td
                     className="table-brigade__body"
                     style={{
