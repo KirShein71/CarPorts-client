@@ -10,8 +10,10 @@ import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
 import './styles.scss';
 import CreateAntypical from './modal/CreateAntypical';
 import ImageModal from './modal/ImageModal';
+import { AppContext } from '../../context/AppContext';
 
 function ProductionList() {
+  const { user } = React.useContext(AppContext);
   const [projectDetails, setProjectDetails] = React.useState([]);
   const [nameDetails, setNameDetails] = React.useState([]);
   const [projectDetail, setProjectDetail] = React.useState(null);
@@ -89,9 +91,13 @@ function ProductionList() {
   return (
     <div className="productionlist">
       <Header title={'Производство'} />
-      <Link to="/productionchange">
-        <Button>Внести данные в проект</Button>
-      </Link>
+      {user.isManagerProduction ? (
+        ''
+      ) : (
+        <Link to="/productionchange">
+          <Button>Внести данные в проект</Button>
+        </Link>
+      )}
       <Col className="mt-3" sm={3}>
         <Form className="d-flex">
           <Form.Control
@@ -170,10 +176,13 @@ function ProductionList() {
                         <td
                           key={part.id}
                           style={{ cursor: 'pointer' }}
-                          onClick={() =>
-                            quantity
-                              ? handleUpdateProjectDetailClick(detailProject.id)
-                              : handleCreateOneDetail(part.id, projectDetail.projectId)
+                          onClick={
+                            user.isManagerProduction
+                              ? undefined
+                              : () =>
+                                  quantity
+                                    ? handleUpdateProjectDetailClick(detailProject.id)
+                                    : handleCreateOneDetail(part.id, projectDetail.projectId)
                           }>
                           {quantity}
                         </td>
@@ -182,7 +191,11 @@ function ProductionList() {
                   <td>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <div
-                        onClick={() => handleCreateAntypical(projectDetail.projectId)}
+                        onClick={
+                          user.isManagerProduction
+                            ? undefined
+                            : () => handleCreateAntypical(projectDetail.projectId)
+                        }
                         style={{
                           cursor: 'pointer',
                           color: 'red',
@@ -206,7 +219,11 @@ function ProductionList() {
                     <Button
                       variant="dark"
                       size="sm"
-                      onClick={() => handleDeleteProjectDetails(projectDetail.projectId)}>
+                      onClick={
+                        user.isManagerProduction
+                          ? undefined
+                          : () => handleDeleteProjectDetails(projectDetail.projectId)
+                      }>
                       Удалить
                     </Button>
                   </td>

@@ -127,6 +127,7 @@ const managerProductionRoutes = [
   { path: '/workingpage', Component: WorkingPage },
   { path: '/shipment', Component: Shipment },
   { path: '/shipmentchange', Component: ShipmentChange },
+  { path: '/production', Component: Production },
 ];
 
 const brigadesRoutes = [{ path: '/installeraccount', Component: InstallerAccount }];

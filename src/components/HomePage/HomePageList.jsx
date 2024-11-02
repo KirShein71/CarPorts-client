@@ -77,6 +77,7 @@ function HomePageList() {
 
   const managerProductionItems = [
     { title: 'Производство' },
+    { label: 'Заказы на производство', link: '/production' },
     { label: 'Произведено', link: '/welders' },
     { label: 'Отгрузки', link: '/shipment' },
     { label: 'Итоговая производство', link: '/manufacture' },
