@@ -33,7 +33,7 @@ function InstallationPage() {
 
     getAllEstimateForBrigade(brigadeId).then((data) => {
       setServiceEstimate(data);
-      const activeProject = data[0].projectId;
+      const activeProject = data.length > 0 ? data[0].projectId : null;
 
       // Устанавливаем selectedProject только если он еще не установлен
       if (!selectedProject) {
