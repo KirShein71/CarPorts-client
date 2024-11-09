@@ -163,7 +163,7 @@ function PersonalAccountList() {
                         <div className="manager__content">
                           <div className="manager__title">Менеджер:</div>
                           <div className="manager__name">
-                            {userData.employeeId === 4
+                            {userData.employeeId === 4 && userData.managerProjectId === null
                               ? 'Алла Ким'
                               : userData.manager_project
                               ? userData.manager_project.name
@@ -175,12 +175,12 @@ function PersonalAccountList() {
                           <a
                             className="manager__phone"
                             href={`tel:${
-                              userData.employeeId === 4
+                              userData.employeeId === 4 && userData.managerProjectId === null
                                 ? '89164874942'
                                 : userData.manager_project.phone
                             }`}>
                             {formatPhoneNumber(
-                              userData.employeeId === 4
+                              userData.employeeId === 4 && userData.managerProjectId === null
                                 ? '89164874942'
                                 : userData.manager_project.phone,
                             )}
