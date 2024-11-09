@@ -181,14 +181,14 @@ function CreateInformatoinClientList() {
           <tbody>
             <tr>
               <td>
-                {userData.employeeId === 4 && userData.managerProjectId === null
+                {user.employeeId === 4 && user.managerProjectId === null
                   ? 'Алла Ким'
-                  : userData.manager_project.name}
+                  : user.manager_project.name}
               </td>
               <td>
-                {userData.employeeId === 4 && userData.managerProjectId === null
+                {user.employeeId === 4 && user.managerProjectId === null
                   ? '89164874942'
-                  : userData.manager_project.phone}
+                  : user.manager_project.phone}
               </td>
             </tr>
           </tbody>

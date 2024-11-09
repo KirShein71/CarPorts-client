@@ -99,7 +99,7 @@ function ViewingPersonalAccountList() {
             <div className="account__header">
               <div className="account__header-content">
                 <div className="account__header-icon">
-                  <img src="../logo.png" alt="logo__company" />
+                  <img src="../img/logo.png" alt="logo__company" />
                 </div>
 
                 <div className="account__header-logout" onClick={() => addToBack(id)}>
