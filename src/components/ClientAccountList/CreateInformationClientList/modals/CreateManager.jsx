@@ -1,18 +1,18 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createManager, getOneAccount } from '../../../../http/userApi';
-import { getManager } from '../../../../http/employeeApi';
+import { getAllManagerProject } from '../../../../http/managerProjectApi';
 import { useParams } from 'react-router-dom';
 
-const defaultValue = { employee: '' };
+const defaultValue = { managerproject: '' };
 const defaultValid = {
-  employee: null,
+  managerproject: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'employee') result.employee = value.employee.trim() !== '';
+    if (key === 'managerproject') result.managerproject = value.managerproject.trim() !== '';
   }
   return result;
 };
@@ -39,14 +39,14 @@ const CreateManager = (props) => {
           }
         });
     }
-    getManager().then((data) => setManagers(data));
+    getAllManagerProject().then((data) => setManagers(data));
   }, [id]);
 
   const handleInputChange = (e) => {
-    const employeeId = e.target.value;
+    const managerprojectId = e.target.value;
     setValue((prevValue) => ({
       ...prevValue,
-      employee: employeeId,
+      managerproject: managerprojectId,
     }));
   };
 
@@ -54,9 +54,9 @@ const CreateManager = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.employee) {
+    if (correct.managerproject) {
       const res = new FormData();
-      res.append('employeeId', value.employee.trim());
+      res.append('managerProjectId', value.managerproject.trim());
 
       createManager(id, res)
         .then((res) => {
@@ -84,11 +84,11 @@ const CreateManager = (props) => {
           <Row className="mb-3">
             <Col>
               <Form.Select
-                name="employee"
-                value={value.employee}
+                name="managerproject"
+                value={value.managerproject}
                 onChange={handleInputChange}
-                isValid={valid.employee === true}
-                isInvalid={valid.employee === false}>
+                isValid={valid.managerproject === true}
+                isInvalid={valid.managerproject === false}>
                 <option value="">Менеджеры</option>
                 {managers &&
                   managers.map((manager) => (

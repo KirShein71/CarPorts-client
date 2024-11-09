@@ -180,8 +180,8 @@ function CreateInformatoinClientList() {
           </thead>
           <tbody>
             <tr>
-              <td>{user.employee?.name}</td>
-              <td>{user.employee?.phone}</td>
+              <td>{user.manager_project?.name}</td>
+              <td>{user.manager_project?.phone}</td>
             </tr>
           </tbody>
         </Table>

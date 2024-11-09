@@ -163,13 +163,27 @@ function PersonalAccountList() {
                         <div className="manager__content">
                           <div className="manager__title">Менеджер:</div>
                           <div className="manager__name">
-                            {userData.employee ? userData.employee.name : ''}
+                            {userData.employeeId === 4
+                              ? 'Алла Ким'
+                              : userData.manager_project
+                              ? userData.manager_project.name
+                              : ''}
                           </div>
                         </div>
                         <div className="manager__content">
                           <div className="manager__title">Телефон:</div>
-                          <a className="manager__phone" href={`tel:${userData.employee?.phone}`}>
-                            {formatPhoneNumber(userData.employee?.phone)}
+                          <a
+                            className="manager__phone"
+                            href={`tel:${
+                              userData.employeeId === 4
+                                ? '89164874942'
+                                : userData.manager_project.phone
+                            }`}>
+                            {formatPhoneNumber(
+                              userData.employeeId === 4
+                                ? '89164874942'
+                                : userData.manager_project.phone,
+                            )}
                           </a>
                         </div>
                       </div>
