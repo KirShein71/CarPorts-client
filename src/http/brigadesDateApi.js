@@ -50,3 +50,11 @@ export const getAllNumberOfDaysBrigadeForProject = async (brigadeId) => {
     const { data } = await guestInstance.get(`brigadesdate/getAllNumberOfDaysBrigadeForProject/${brigadeId}`)
     return data
 }
+
+export const getAllNumberOfDaysBrigadeForRegion = async () => {
+    const { data } = await guestInstance.get('brigadesdate/getAllNumberOfDaysBrigadeForRegion')
+    return data
+}
+
+
+

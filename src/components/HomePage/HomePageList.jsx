@@ -7,6 +7,7 @@ import CreateProject from './modals/CreateProject';
 import Counter from './Counter';
 
 import './style.scss';
+import InstallationBilling from './InstallationBilling';
 
 const MenuItems = ({ items }) => {
   return items.map((item, index) => (
@@ -130,6 +131,7 @@ function HomePageList() {
           ) : (
             <div className="homepage__bottom">
               <TableBrigadeCalendar />
+              <InstallationBilling />
             </div>
           )}
         </div>

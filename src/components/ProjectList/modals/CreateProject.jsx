@@ -11,6 +11,7 @@ const defaultValue = {
   design_period: '',
   expiration_date: '',
   installation_period: '',
+  installation_billing: '',
   note: '',
   region: '',
   phone: '',
@@ -23,6 +24,7 @@ const defaultValid = {
   design_period: null,
   expiration_date: null,
   installation_period: null,
+  installation_billing: null,
   note: null,
   region: null,
   phone: null,
@@ -97,6 +99,7 @@ const CreateProject = (props) => {
       data.append('design_period', value.design_period.trim());
       data.append('expiration_date', value.expiration_date.trim());
       data.append('installation_period', value.installation_period.trim());
+      data.append('installation_billing', value.installation_billing.trim());
       data.append('note', value.note.trim());
       data.append('regionId', value.region);
 
@@ -248,6 +251,16 @@ const CreateProject = (props) => {
                 isValid={valid.installation_period === true}
                 isInvalid={valid.installation_period === false}
                 placeholder="Срок монтажа"
+              />
+            </Col>
+            <Col md={3} className="my-3">
+              <Form.Control
+                name="installation_billing"
+                value={value.installation_billing}
+                onChange={(e) => handleInputNumberChange(e)}
+                isValid={valid.installation_billing === true}
+                isInvalid={valid.installation_billing === false}
+                placeholder="Расчетный срок монтажа"
               />
             </Col>
             <Col md={12} className="my-3">

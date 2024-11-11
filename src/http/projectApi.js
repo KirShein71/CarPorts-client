@@ -22,6 +22,11 @@ export const createRegion = async (id, project) => {
     return data
 }
 
+export const createInstallationBilling = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createInstallationBilling/${id}`, project)
+    return data
+}
+
 export const fetchAllProjects = async () => {
     const { data } = await guestInstance.get('project/getall')
     return data
@@ -64,6 +69,7 @@ export const getAllWithNoAccount = async () => {
 }
 
 
+
 export const updateProject = async (id, project) => {
     const { data } = await authInstance.put(`project/update/${id}`, project)
     return data
@@ -88,6 +94,7 @@ export const getProjectInfoInstallation = async (id) => {
     const { data } = await guestInstance.get(`project/getProjectInfoInstallation/${id}`)
     return data
 }
+
 
 
 export const deleteProject = async (id) => {

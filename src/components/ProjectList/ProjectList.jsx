@@ -5,6 +5,7 @@ import UpdateNameProject from './modals/UpdateNameProject';
 import UpdateNumberProject from './modals/UpdateNumberProject';
 import UpdateDateProject from './modals/UpdateDateProject';
 import CreateRegion from './modals/CreateRegion';
+import CreateInstallationBilling from './modals/CreateInstallationBilling';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -25,6 +26,7 @@ function ProjectList() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
+  const [createInstallationBillingModal, setCreateInstallationBillingModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -90,6 +92,11 @@ function ProjectList() {
     setCreateRegionModal(true);
   };
 
+  const hadleCreateInstallationBilling = (id) => {
+    setProject(id);
+    setCreateInstallationBillingModal(true);
+  };
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -139,6 +146,13 @@ function ProjectList() {
         id={project}
         scrollPosition={scrollPosition}
       />
+      <CreateInstallationBilling
+        show={createInstallationBillingModal}
+        setShow={setCreateInstallationBillingModal}
+        setChange={setChange}
+        id={project}
+        scrollPosition={scrollPosition}
+      />
       <Row className="d-flex flex-column">
         <Col className="mt-3 align-items-start">
           <Button variant="dark" className="me-3 my-2" onClick={() => setCreateShow(true)}>
@@ -180,7 +194,7 @@ function ProjectList() {
                 />
               </th>
               <th>Регион</th>
-
+              <th>Расчетный срок монтажа</th>
               <th></th>
             </tr>
           </thead>
@@ -221,7 +235,11 @@ function ProjectList() {
                     onClick={() => hadleCreateRegionProject(item.id)}>
                     {item.region?.region}
                   </td>
-
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => hadleCreateInstallationBilling(item.id)}>
+                    {item.installation_billing}
+                  </td>
                   <td>
                     <Button variant="dark" size="sm" onClick={() => handleDeleteClick(item.id)}>
                       Удалить

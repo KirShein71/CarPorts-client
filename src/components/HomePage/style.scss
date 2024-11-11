@@ -102,3 +102,15 @@
         }
     }
 }
+
+//istallation-billing 
+
+.installation-billing {
+    margin-top: 25px;
+    &__title {
+        font-size: 18px;
+        font-weight: 600;
+        color: rgb(7,7,7);
+        margin-bottom: 25px;
+    }
+}
