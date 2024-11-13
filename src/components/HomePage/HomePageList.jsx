@@ -77,6 +77,8 @@ function HomePageList() {
   ];
 
   const managerProductionItems = [
+    { title: 'Снабжение' },
+    { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Производство' },
     { label: 'Заказы на производство', link: '/production' },
     { label: 'Произведено', link: '/welders' },
@@ -126,14 +128,10 @@ function HomePageList() {
               Выйти
             </div>{' '}
           </div>
-          {user.isManagerProduction ? (
-            ''
-          ) : (
-            <div className="homepage__bottom">
-              <TableBrigadeCalendar />
-              <InstallationBilling />
-            </div>
-          )}
+          <div className="homepage__bottom">
+            <TableBrigadeCalendar />
+            <InstallationBilling />
+          </div>
         </div>
       </div>
     </>

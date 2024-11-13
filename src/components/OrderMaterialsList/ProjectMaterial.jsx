@@ -21,6 +21,7 @@ function ProjectMaterial({
   handleCreateColor,
   projectNoDatePaymentCheckbox,
   projectNoColorCheckbox,
+  user,
 }) {
   return (
     <div className="projectmaterial">
@@ -35,7 +36,7 @@ function ProjectMaterial({
                 className="ms-3"
                 variant="dark"
                 style={{ whiteSpace: 'nowrap' }}
-                onClick={() => handleCreateMaterial(id)}>
+                onClick={user.isManagerProduction ? undefined : () => handleCreateMaterial(id)}>
                 Добавить материал
               </Button>
             </div>
@@ -71,7 +72,9 @@ function ProjectMaterial({
                         </td>
                         <td
                           style={{ cursor: 'pointer' }}
-                          onClick={() => handleUpdateClick(prop.id)}>
+                          onClick={
+                            user.isManagerProduction ? undefined : () => handleUpdateClick(prop.id)
+                          }>
                           {prop.check ? (
                             <>{prop.check}</>
                           ) : (
@@ -82,7 +85,9 @@ function ProjectMaterial({
                         </td>
                         <td
                           style={{ cursor: 'pointer' }}
-                          onClick={() => handlePaymentDate(prop.id)}>
+                          onClick={
+                            user.isManagerProduction ? undefined : () => handlePaymentDate(prop.id)
+                          }>
                           {prop.date_payment ? (
                             <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                           ) : (
@@ -102,7 +107,9 @@ function ProjectMaterial({
                         </td>
                         <td
                           style={{ cursor: 'pointer' }}
-                          onClick={() => hadleShippingDate(prop.id)}>
+                          onClick={
+                            user.isManagerProduction ? undefined : () => hadleShippingDate(prop.id)
+                          }>
                           {prop.shipping_date ? (
                             <Moment format="DD.MM.YYYY">{prop.shipping_date}</Moment>
                           ) : (
@@ -119,7 +126,9 @@ function ProjectMaterial({
                         </td>
                         <td
                           style={{ cursor: 'pointer' }}
-                          onClick={() => handleCreateColor(prop.id)}>
+                          onClick={
+                            user.isManagerProduction ? undefined : () => handleCreateColor(prop.id)
+                          }>
                           {prop.color ? (
                             <>{prop.color}</>
                           ) : (
@@ -132,7 +141,11 @@ function ProjectMaterial({
                           <Button
                             size="sm"
                             variant="dark"
-                            onClick={() => handleDeleteProjectMaterials(prop.id)}>
+                            onClick={
+                              user.isManagerProduction
+                                ? undefined
+                                : () => handleDeleteProjectMaterials(prop.id)
+                            }>
                             Удалить
                           </Button>
                         </td>

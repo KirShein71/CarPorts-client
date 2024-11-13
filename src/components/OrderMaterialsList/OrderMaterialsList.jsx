@@ -17,8 +17,10 @@ import CreateColor from './modals/createColor';
 import MaterialProject from './MaterialProject';
 import ProjectMaterial from './ProjectMaterial';
 import Checkbox from '../Checkbox/Checkbox';
+import { AppContext } from '../../context/AppContext';
 
 function OrderMaterialsList() {
+  const { user } = React.useContext(AppContext);
   const [projectsMaterials, setProjectsMaterials] = React.useState([]);
   const [materialProjects, setMaterialProjects] = React.useState([]);
   const [change, setChange] = React.useState(true);
@@ -226,11 +228,16 @@ function OrderMaterialsList() {
             Материалы
           </div>
         </div>
-        <Link to="/procurement">
-          <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
-            &bull; Показать новые проекты
-          </div>
-        </Link>
+        {user.isManagerProduction ? (
+          ''
+        ) : (
+          <Link to="/procurement">
+            <div
+              style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
+              &bull; Показать новые проекты
+            </div>
+          </Link>
+        )}
         <Col className="mt-3 mb-3" sm={2}>
           <Form className="d-flex">
             <Form.Control
@@ -270,6 +277,7 @@ function OrderMaterialsList() {
                 handleCreateColor={handleCreateColor}
                 projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
                 projectNoColorCheckbox={projectNoColorCheckbox}
+                user={user}
               />
             ))}
           </>
@@ -288,6 +296,7 @@ function OrderMaterialsList() {
                 handleCreateColor={handleCreateColor}
                 projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
                 projectNoColorCheckbox={projectNoColorCheckbox}
+                user={user}
               />
             ))}
           </>
