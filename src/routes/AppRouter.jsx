@@ -110,6 +110,7 @@ const managerProjectRoutes = [
   { path: '/planning', Component: Planning },
   { path: '/production', Component: Production },
   { path: '/productionchange', Component: ProductionChange },
+  { path: '/procurement', Component: Procurement },
   { path: '/welders', Component: Welders },
   { path: '/shipment', Component: Shipment },
   { path: '/shipmentchange', Component: ShipmentChange },
