@@ -36,10 +36,7 @@ function HomePageList() {
     setCreateProjectModal(true);
   };
 
-  const managerSaleItems = [
-    { label: 'Добавить проект', onClick: hadleOpenModal },
-    { label: 'Все проекты', link: '/project' },
-  ];
+  const managerSaleItems = [{ label: 'Все проекты', link: '/project' }];
 
   const managerProjectItems = [
     { label: 'Все проекты', link: '/project' },
@@ -115,6 +112,13 @@ function HomePageList() {
         <Counter />
         <div className="homepage__content">
           <div className="homepage__items">
+            {user.isManagerSale ? (
+              <div className="homepage__item" onClick={hadleOpenModal}>
+                Добавить проект
+              </div>
+            ) : (
+              ''
+            )}
             {user.isManagerSale && (
               <>
                 <MenuItems items={managerSaleItems} />
