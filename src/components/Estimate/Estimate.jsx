@@ -3,6 +3,7 @@ import { getAllService } from '../../http/serviceApi';
 import {
   createEstimate,
   getAllEstimateForProject,
+  createEstimateBrigade,
   deleteEstimateBrigadeForProject,
   deleteEstimate,
 } from '../../http/estimateApi';
@@ -11,6 +12,7 @@ import './style.scss';
 import { Button, Table } from 'react-bootstrap';
 import UpdateEstimatePrice from './modals/UpdateEstimatePrice';
 import UpdateEstimateBrigade from './modals/UpdateEstimateBrigade';
+import CheckboxInstallation from '../InstallationPage/checkbox/CheckboxInstallation';
 
 function Estimate(props) {
   const { projectId, regionId } = props;
@@ -27,19 +29,15 @@ function Estimate(props) {
   const [change, setChange] = React.useState(true);
   const [openModalUpdateBrigade, setOpenModalUpdateBrigade] = React.useState(false);
   const [project, setProject] = React.useState(null);
+  const [checked, setChecked] = React.useState({});
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [servicesData, brigadesData, estimatesData] = await Promise.all([
-          getAllService(),
-          fetchBrigades(),
-          getAllEstimateForProject(projectId),
-        ]);
+        const [servicesData, brigadesData] = await Promise.all([getAllService(), fetchBrigades()]);
 
         setServices(servicesData);
         setBrigades(brigadesData);
-        setEstimateBrigades(estimatesData);
       } catch (error) {
         console.error('Ошибка при загрузке данных:', error);
       }
@@ -47,6 +45,20 @@ function Estimate(props) {
 
     fetchData();
   }, [change, projectId]);
+
+  React.useEffect(() => {
+    getAllEstimateForProject(projectId).then((data) => {
+      setEstimateBrigades(data);
+
+      const initialChecked = {};
+      data.map((col) => {
+        col.estimates.forEach((colEst) => {
+          initialChecked[colEst.id] = colEst.done === 'true' ? true : false;
+        });
+      });
+      setChecked(initialChecked);
+    });
+  }, [change]);
 
   const handlePriceChange = (serviceId, value) => {
     setPrices((prev) => ({
@@ -65,7 +77,7 @@ function Estimate(props) {
     }
 
     // Отправляем запросы для каждой услуги с установленной ценой
-    const promises = Object.keys(prices).map((serviceId) => {
+    const promises = Object.keys(prices).map(async (serviceId) => {
       const price = prices[serviceId];
       if (price) {
         const data = new FormData();
@@ -74,11 +86,12 @@ function Estimate(props) {
         data.append('brigadeId', selectedBrigade);
         data.append('price', price);
 
-        return createEstimate(data)
-          .then((response) => {
-            setChange((state) => !state);
-          })
-          .catch((error) => alert(error.response.data.message));
+        try {
+          const response = await createEstimate(data);
+          setChange((state) => !state);
+        } catch (error) {
+          return alert(error.response.data.message);
+        }
       }
       return Promise.resolve(); // Возвращаем resolved Promise, если цена не указана
     });
@@ -87,6 +100,41 @@ function Estimate(props) {
     Promise.all(promises).then(() => {
       // Сбрасываем значения input после успешного сохранения
       setPrices({});
+    });
+  };
+
+  const handleCheckboxChange = (id) => {
+    setChecked((prev) => ({
+      ...prev,
+      [id]: !prev[id], // Меняем состояние чекбокса по его id
+    }));
+  };
+
+  const handleSaveDoneEstimate = (event) => {
+    event.preventDefault();
+
+    // Создаем плоский массив обновлений
+    const updates = estimateBrigades.flatMap((col) =>
+      col.estimates.map((colEst) => ({
+        id: colEst.id,
+        done: checked[colEst.id] ? 'true' : 'false',
+      })),
+    );
+
+    // Отправляем данные на бэк
+    Promise.all(
+      updates.map((update) =>
+        createEstimateBrigade(update.id, update.done)
+          .then((response) => {
+            setChange((state) => !state);
+          })
+          .catch((error) => {
+            alert(error.response.data.message);
+          }),
+      ),
+    ).then(() => {
+      // Обработка успешного завершения всех запросов, если нужно
+      console.log('Все изменения сохранены');
     });
   };
 
@@ -208,12 +256,11 @@ function Estimate(props) {
                             style={{ cursor: 'pointer', textAlign: 'center' }}>
                             {estimateCol.price}
                           </td>
-                          <td style={{ textAlign: 'center' }}>
-                            {estimateCol.done === 'true' ? (
-                              <img src="../img/done.png" alt="done" />
-                            ) : (
-                              ''
-                            )}
+                          <td style={{ display: 'flex', justifyContent: 'center' }}>
+                            <CheckboxInstallation
+                              change={checked[estimateCol.id]} // Передаем состояние чекбокса
+                              handle={() => handleCheckboxChange(estimateCol.id)}
+                            />
                           </td>
                           <td
                             style={{ cursor: 'pointer', textAlign: 'center' }}
@@ -225,24 +272,29 @@ function Estimate(props) {
                     </tbody>
                   </Table>
                 </>
-                <div>
+                <div style={{ display: 'flex' }}>
+                  <form className="estimate-done__form" onSubmit={handleSaveDoneEstimate}>
+                    <Button variant="dark" size="sm" type="submit" className="me-3 mb-3">
+                      Сохранить
+                    </Button>
+                  </form>
                   <Button
-                    className="me-3 mb-3"
+                    size="sm"
+                    className="mb-3 me-2 "
+                    variant="dark"
+                    onClick={() =>
+                      handleOpenModalUpdateBrigade(estimateBrigade.brigadeId, projectId)
+                    }>
+                    Переназначить бригаду
+                  </Button>
+                  <Button
+                    className="mb-3"
                     size="sm"
                     variant="dark"
                     onClick={() =>
                       handleDeleteEstimateBrigadeForProject(estimateBrigade.brigadeId, projectId)
                     }>
                     Удалить
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="mb-3"
-                    variant="dark"
-                    onClick={() =>
-                      handleOpenModalUpdateBrigade(estimateBrigade.brigadeId, projectId)
-                    }>
-                    Переназначить бригаду
                   </Button>
                 </div>
               </>
