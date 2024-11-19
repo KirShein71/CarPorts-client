@@ -148,69 +148,6 @@ function Estimate(props) {
         project={project}
       />
       <div className="estimate__content">
-        <form className="estimate__form" onSubmit={handleSave}>
-          <div className="estimate__brigade">
-            <div className="estimate__brigade-title" onClick={hadleOpenModalSelectedBrigade}>
-              Назначить бригаду: {brigadeName}
-            </div>
-            {openModalSelectedBrigade && (
-              <div className="dropdown__modal">
-                <div className="dropdown__modal-content">
-                  <ul className="dropdown__modal-items">
-                    <div
-                      className="dropdown__modal-item"
-                      onClick={() => {
-                        setBrigadeName('');
-                        setSelectedBrigade(null);
-                        setOpenModalSelectedBrigade(false);
-                      }}></div>
-                    {brigades
-                      .filter((brigadesName) => brigadesName.regionId === regionId)
-                      .map((brigadesName) => (
-                        <div key={brigadesName.id}>
-                          <li
-                            className="dropdown__modal-item"
-                            onClick={() => {
-                              setBrigadeName(brigadesName.name);
-                              setSelectedBrigade(brigadesName.id);
-                              setOpenModalSelectedBrigade(false);
-                            }}>
-                            {brigadesName.name}
-                          </li>
-                        </div>
-                      ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
-          <Table bordered className="mt-3">
-            <thead>
-              <tr>
-                <th>Наименование</th>
-                <th>Стоимость</th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((service) => (
-                <tr key={service.id}>
-                  <td>{service.name}</td>
-                  <td>
-                    <input
-                      className="estimate__input"
-                      placeholder="Стоимость"
-                      value={prices[service.id] || ''}
-                      onChange={(e) => handlePriceChange(service.id, e.target.value)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Button size="sm" variant="dark" type="submit">
-            Сохранить
-          </Button>
-        </form>
         <div className="estimate-brigade">
           <div className="estimate-brigade__title">Сметы по проекту</div>
           <div className="estimate-brigade__content">
@@ -311,6 +248,69 @@ function Estimate(props) {
               </>
             ))}
           </div>
+          <form className="estimate__form" onSubmit={handleSave}>
+            <div className="estimate__brigade">
+              <div className="estimate__brigade-title" onClick={hadleOpenModalSelectedBrigade}>
+                Назначить бригаду: {brigadeName}
+              </div>
+              {openModalSelectedBrigade && (
+                <div className="dropdown__modal">
+                  <div className="dropdown__modal-content">
+                    <ul className="dropdown__modal-items">
+                      <div
+                        className="dropdown__modal-item"
+                        onClick={() => {
+                          setBrigadeName('');
+                          setSelectedBrigade(null);
+                          setOpenModalSelectedBrigade(false);
+                        }}></div>
+                      {brigades
+                        .filter((brigadesName) => brigadesName.regionId === regionId)
+                        .map((brigadesName) => (
+                          <div key={brigadesName.id}>
+                            <li
+                              className="dropdown__modal-item"
+                              onClick={() => {
+                                setBrigadeName(brigadesName.name);
+                                setSelectedBrigade(brigadesName.id);
+                                setOpenModalSelectedBrigade(false);
+                              }}>
+                              {brigadesName.name}
+                            </li>
+                          </div>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+            <Table bordered className="mt-3">
+              <thead>
+                <tr>
+                  <th>Наименование</th>
+                  <th>Стоимость</th>
+                </tr>
+              </thead>
+              <tbody>
+                {services.map((service) => (
+                  <tr key={service.id}>
+                    <td>{service.name}</td>
+                    <td>
+                      <input
+                        className="estimate__input"
+                        placeholder="Стоимость"
+                        value={prices[service.id] || ''}
+                        onChange={(e) => handlePriceChange(service.id, e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+            <Button size="sm" variant="dark" type="submit">
+              Сохранить
+            </Button>
+          </form>
         </div>
       </div>
     </div>
