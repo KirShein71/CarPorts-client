@@ -48,5 +48,11 @@
         }
     }
 
+    &__button {
+        @media(max-width: 420px) {
+            font-size: 13px;
+        }
+    }
+
 
 }

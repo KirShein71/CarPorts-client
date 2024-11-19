@@ -274,13 +274,17 @@ function Estimate(props) {
                 </>
                 <div style={{ display: 'flex' }}>
                   <form className="estimate-done__form" onSubmit={handleSaveDoneEstimate}>
-                    <Button variant="dark" size="sm" type="submit" className="me-3 mb-3">
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      type="submit"
+                      className="me-3 mb-3 estimate__button">
                       Сохранить
                     </Button>
                   </form>
                   <Button
                     size="sm"
-                    className="mb-3 me-2 "
+                    className="mb-3 me-2 estimate__button"
                     variant="dark"
                     onClick={() =>
                       handleOpenModalUpdateBrigade(estimateBrigade.brigadeId, projectId)
@@ -288,7 +292,7 @@ function Estimate(props) {
                     Переназначить бригаду
                   </Button>
                   <Button
-                    className="mb-3"
+                    className="mb-3 estimate__button"
                     size="sm"
                     variant="dark"
                     onClick={() =>
