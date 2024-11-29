@@ -193,16 +193,16 @@ function ProjectList() {
                 Название
               </th>
               <th className="thead_column"></th>
-              <th
-                className="thead_column"
-                style={{ cursor: 'pointer', display: 'flex' }}
-                onClick={() => handleSort('agreement_date')}>
-                <div>Дата договора</div>{' '}
-                <img
-                  style={{ marginLeft: '10px', width: '24px', height: '24px' }}
-                  src="./img/sort.png"
-                  alt="icon_sort"
-                />
+              <th className="thead_column" onClick={() => handleSort('agreement_date')}>
+                <div style={{ cursor: 'pointer', display: 'flex' }}>
+                  {' '}
+                  Дата договора
+                  <img
+                    style={{ marginLeft: '10px', width: '24px', height: '24px' }}
+                    src="./img/sort.png"
+                    alt="icon_sort"
+                  />
+                </div>
               </th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
                 Регион
