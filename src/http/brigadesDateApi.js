@@ -5,6 +5,11 @@ export const getAllBrigadesDate = async () => {
     return data
 }
 
+export const getDaysInstallerForProjects = async () => {
+    const { data } = await guestInstance.get('brigadesdate/getDaysInstallerForProjects')
+    return data
+}
+
 export const getAllOneBrigadesDate = async (brigadeId) => {
     const { data } = await guestInstance.get(`brigadesdate/getAllForOneBrigade/${brigadeId}`)
     return data

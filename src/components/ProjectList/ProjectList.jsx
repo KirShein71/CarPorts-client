@@ -7,6 +7,7 @@ import UpdateDateProject from './modals/UpdateDateProject';
 import CreateRegion from './modals/CreateRegion';
 import CreateInstallationBilling from './modals/CreateInstallationBilling';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
+import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
 import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Moment from 'react-moment';
@@ -14,6 +15,7 @@ import Moment from 'react-moment';
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
   const [project, setProject] = React.useState(null);
+  const [projectDays, setProjectDays] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [createShow, setCreateShow] = React.useState(false);
   const [updateNameModal, setUpdateNameModal] = React.useState(false);
@@ -41,6 +43,10 @@ function ProjectList() {
   const handleScroll = () => {
     setScrollPosition(window.scrollY);
   };
+
+  React.useEffect(() => {
+    getDaysInstallerForProjects().then((data) => setProjectDays(data));
+  }, []);
 
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -180,8 +186,10 @@ function ProjectList() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th className="production_column">Номер проекта</th>
-              <th>Название</th>
+              <th style={{ textAlign: 'center' }} className="production_column">
+                Номер проекта
+              </th>
+              <th style={{ textAlign: 'center' }}>Название</th>
               <th></th>
               <th
                 style={{ cursor: 'pointer', display: 'flex' }}
@@ -193,8 +201,11 @@ function ProjectList() {
                   alt="icon_sort"
                 />
               </th>
-              <th>Регион</th>
-              <th>Расчетный срок монтажа</th>
+              <th style={{ textAlign: 'center' }}>Регион</th>
+              <th style={{ textAlign: 'center' }}>Расчетный срок монтажа</th>
+              <th style={{ textAlign: 'center' }}>Факт монтажа</th>
+              <th style={{ textAlign: 'center' }}>План монтажа</th>
+              <th style={{ textAlign: 'center' }}>Остаток</th>
               <th></th>
             </tr>
           </thead>
@@ -214,12 +225,14 @@ function ProjectList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleUpdateNumberProject(item.id)}
                     className="production_column">
                     {item.number}
                   </td>
-                  <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateNameProject(item.id)}>
+                  <td
+                    style={{ cursor: 'pointer', textAlign: 'left' }}
+                    onClick={() => hadleUpdateNameProject(item.id)}>
                     {item.name}
                   </td>
                   <td>
@@ -227,19 +240,40 @@ function ProjectList() {
                       Подробнее
                     </Button>
                   </td>
-                  <td style={{ cursor: 'pointer' }} onClick={() => hadleUpdateDateProject(item.id)}>
+                  <td
+                    style={{ cursor: 'pointer', textAlign: 'center' }}
+                    onClick={() => hadleUpdateDateProject(item.id)}>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleCreateRegionProject(item.id)}>
                     {item.region?.region}
                   </td>
                   <td
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleCreateInstallationBilling(item.id)}>
                     {item.installation_billing}
                   </td>
+                  {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
+                    projectDays
+                      .filter((projectDay) => projectDay.projectId === item.id)
+                      .map((projectDay) => (
+                        <>
+                          <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
+                          <td style={{ textAlign: 'center' }}>{projectDay.planDay}</td>
+                          <td style={{ textAlign: 'center' }}>
+                            {item.installation_billing - projectDay.factDay - projectDay.planDay}
+                          </td>
+                        </>
+                      ))
+                  ) : (
+                    <>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </>
+                  )}
                   <td>
                     <Button variant="dark" size="sm" onClick={() => handleDeleteClick(item.id)}>
                       Удалить
