@@ -182,16 +182,19 @@ function ProjectList() {
           &bull; Показать завершенные проекты
         </div>
       </Link>
-      <div className="table-container">
+      <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
               <th style={{ textAlign: 'center' }} className="production_column">
                 Номер проекта
               </th>
-              <th style={{ textAlign: 'center' }}>Название</th>
-              <th></th>
+              <th style={{ textAlign: 'center' }} className="thead_column">
+                Название
+              </th>
+              <th className="thead_column"></th>
               <th
+                className="thead_column"
                 style={{ cursor: 'pointer', display: 'flex' }}
                 onClick={() => handleSort('agreement_date')}>
                 <div>Дата договора</div>{' '}
@@ -201,12 +204,22 @@ function ProjectList() {
                   alt="icon_sort"
                 />
               </th>
-              <th style={{ textAlign: 'center' }}>Регион</th>
-              <th style={{ textAlign: 'center' }}>Расчетный срок монтажа</th>
-              <th style={{ textAlign: 'center' }}>Факт монтажа</th>
-              <th style={{ textAlign: 'center' }}>План монтажа</th>
-              <th style={{ textAlign: 'center' }}>Остаток</th>
-              <th></th>
+              <th className="thead_column" style={{ textAlign: 'center' }}>
+                Регион
+              </th>
+              <th className="thead_column" style={{ textAlign: 'center' }}>
+                Расчетный срок монтажа
+              </th>
+              <th className="thead_column" style={{ textAlign: 'center' }}>
+                Факт монтажа
+              </th>
+              <th className="thead_column" style={{ textAlign: 'center' }}>
+                План монтажа
+              </th>
+              <th className="thead_column" style={{ textAlign: 'center' }}>
+                Остаток
+              </th>
+              <th className="thead_column"></th>
             </tr>
           </thead>
           <tbody>
@@ -227,7 +240,7 @@ function ProjectList() {
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleUpdateNumberProject(item.id)}
-                    className="production_column">
+                    className="td_column">
                     {item.number}
                   </td>
                   <td
