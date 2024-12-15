@@ -1,5 +1,7 @@
 import React from 'react';
+import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
 import {
+  getAllNumberOfDaysBrigade,
   getAllOneBrigadesDate,
   getAllDate,
   getAllNumberOfDaysBrigadeForProject,
@@ -22,18 +24,33 @@ function InstallationPage() {
   const [dates, setDates] = React.useState([]);
   const navigate = useNavigate();
   const navigateInfoProject = useNavigate();
-  const location = useLocation();
   const [daysProject, setDaysProject] = React.useState([]);
   const [change, setChange] = React.useState(true);
   const [projectDays, setProjectDays] = React.useState([]);
+  const location = useLocation();
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
 
-    getAllOneBrigadesDate(brigadeId).then((data) => setDaysBrigade(data));
-    getAllDate().then((data) => setDates(data));
-    getAllNumberOfDaysBrigadeForProject(brigadeId).then((data) => setDaysProject(data));
-    getAllPaymentForBrigade(brigadeId).then((data) => setPaymentBrigade(data));
+    // Проверяем, есть ли brigadeId
+    if (!brigadeId) {
+      console.error('Brigade ID not found in localStorage');
+      return;
+    }
+
+    // Создаем массив промисов
+    const promises = [
+      getAllEstimateForBrigade(brigadeId).then(setServiceEstimate),
+      getAllOneBrigadesDate(brigadeId).then(setDaysBrigade),
+      getAllDate().then(setDates),
+      getAllNumberOfDaysBrigadeForProject(brigadeId).then(setDaysProject),
+      getAllPaymentForBrigade(brigadeId).then(setPaymentBrigade),
+    ];
+
+    // Используем Promise.all для ожидания завершения всех промисов
+    Promise.all(promises).catch((error) => {
+      console.error('Error fetching data:', error);
+    });
   }, [change]);
 
   React.useEffect(() => {
@@ -62,13 +79,25 @@ function InstallationPage() {
                   <th className="production_column" style={{ textAlign: 'center' }}>
                     Наименование
                   </th>
-                  <th style={{ textAlign: 'center' }}>Фото</th>
-                  <th></th>
-                  <th style={{ textAlign: 'center' }}>Расчетный срок монтажа</th>
-                  <th style={{ textAlign: 'center' }}>Факт монтажа</th>
-                  <th style={{ textAlign: 'center' }}>Сумма сметы</th>
-                  <th style={{ textAlign: 'center' }}>Выплачено</th>
-                  <th style={{ textAlign: 'center' }}>Остаток</th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Фото
+                  </th>
+                  <th className="thead_column"></th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Расчетный срок монтажа
+                  </th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Факт монтажа
+                  </th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Сумма сметы
+                  </th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Выплачено
+                  </th>
+                  <th style={{ textAlign: 'center' }} className="thead_column">
+                    Остаток
+                  </th>
                 </tr>
               </thead>
               <tbody>

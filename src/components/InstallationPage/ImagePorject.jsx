@@ -9,6 +9,7 @@ function ImageProject({ projectId }) {
   const [userImages, setUserImages] = React.useState([]);
   const [imageCreateModal, setImageCreateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [showImages, setShowImages] = React.useState(false);
 
   React.useEffect(() => {
     if (projectId !== null) {
@@ -51,6 +52,10 @@ function ImageProject({ projectId }) {
     }
   };
 
+  const toggleImagesVisibility = () => {
+    setShowImages((prev) => !prev); // Переключаем состояние
+  };
+
   return (
     <>
       <CreateUserImage
@@ -67,31 +72,41 @@ function ImageProject({ projectId }) {
             display: 'flex',
             flexDirection: 'column',
           }}>
-          {userImages.map((image) => (
-            <div key={image.id}>
-              <div style={{ display: 'flex' }}>
-                <img
-                  style={{ width: '100px', marginRight: '10px' }}
-                  src={process.env.REACT_APP_IMG_URL + image.image}
-                  alt="photos of works"
-                />
-                <div>
-                  <div>{image.date}</div>
-                  <div
-                    className="delete__image"
-                    style={{ color: 'red', cursor: 'pointer' }}
-                    onClick={() => handleDeleteImage(image.id)}>
-                    Удалить
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="dark"
+              className="mt-3"
+              size="sm"
+              onClick={() => handleCreateImage(user)}>
+              Добавить изображение
+            </Button>
+          </div>
+          <Button variant="link" className="mt-3" onClick={toggleImagesVisibility}>
+            {showImages ? 'Скрыть' : 'Показать все'}
+          </Button>
+
+          {/* Условный рендеринг изображений */}
+          {showImages &&
+            userImages.map((image) => (
+              <div key={image.id}>
+                <div style={{ display: 'flex', marginBottom: '15px' }}>
+                  <img
+                    style={{ width: '100px', marginRight: '10px' }}
+                    src={process.env.REACT_APP_IMG_URL + image.image}
+                    alt="photos of works"
+                  />
+                  <div>
+                    <div>{image.date}</div>
+                    <div
+                      className="delete__image"
+                      style={{ color: 'red', cursor: 'pointer' }}
+                      onClick={() => handleDeleteImage(image.id)}>
+                      Удалить
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="dark" className="mt-3" size="sm" onClick={() => handleCreateImage(user)}>
-            Добавить изображение
-          </Button>
+            ))}
         </div>
       </div>
     </>
