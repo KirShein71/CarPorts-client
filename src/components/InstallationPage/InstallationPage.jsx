@@ -1,7 +1,5 @@
 import React from 'react';
-import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
 import {
-  getAllNumberOfDaysBrigade,
   getAllOneBrigadesDate,
   getAllDate,
   getAllNumberOfDaysBrigadeForProject,
@@ -9,7 +7,7 @@ import {
 } from '../../http/brigadesDateApi';
 import { logout } from '../../http/bragadeApi';
 import { Button, Table } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import InstallationDays from './InstallationDays/InstallationDays';
 import { getAllPaymentForBrigade } from '../../http/paymentApi';
@@ -24,31 +22,13 @@ function InstallationPage() {
   const [dates, setDates] = React.useState([]);
   const navigate = useNavigate();
   const navigateInfoProject = useNavigate();
-  const [selectedProject, setSelectedProject] = React.useState(null);
+  const location = useLocation();
   const [daysProject, setDaysProject] = React.useState([]);
   const [change, setChange] = React.useState(true);
   const [projectDays, setProjectDays] = React.useState([]);
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
-
-    getAllEstimateForBrigade(brigadeId).then((data) => {
-      setServiceEstimate(data);
-      const activeProject = data.length > 0 ? data[0].projectId : null;
-
-      // Устанавливаем selectedProject только если он еще не установлен
-      if (!selectedProject) {
-        setSelectedProject(activeProject);
-      }
-
-      const initialChecked = {};
-      data.map((col) => {
-        col.estimates.forEach((colEst) => {
-          initialChecked[colEst.id] = colEst.done === 'true' ? true : false;
-        });
-      });
-      setChecked(initialChecked);
-    });
 
     getAllOneBrigadesDate(brigadeId).then((data) => setDaysBrigade(data));
     getAllDate().then((data) => setDates(data));
