@@ -65,7 +65,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
         <div className="installation-days__filter">
           <div className="installation-days__month">
             <div className="installation-days__month-arrow" onClick={handlePrevMonth}>
-              <img src="./img/left.png" alt="left arrow" />
+              <img src="../img/left.png" alt="left arrow" />
             </div>
             <p className="installation-days__month-name">
               {new Date(currentYear, currentMonth).toLocaleString('default', {
@@ -74,7 +74,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               })}
             </p>
             <div className="installation-days__month-arrow" onClick={handleNextMonth}>
-              <img src="./img/right.png" alt="right arrow" />
+              <img src="../img/right.png" alt="right arrow" />
             </div>
           </div>
           <div className="installation-days__period">

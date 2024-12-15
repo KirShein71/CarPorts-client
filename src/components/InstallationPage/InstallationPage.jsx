@@ -5,28 +5,29 @@ import {
   getAllOneBrigadesDate,
   getAllDate,
   getAllNumberOfDaysBrigadeForProject,
+  getDaysInstallerForProjects,
 } from '../../http/brigadesDateApi';
 import { logout } from '../../http/bragadeApi';
-import CheckboxInstallation from './checkbox/CheckboxInstallation';
 import { Button, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
-import ProjectInfo from './ProjectInfo';
 import InstallationDays from './InstallationDays/InstallationDays';
-
+import { getAllPaymentForBrigade } from '../../http/paymentApi';
 import './style.scss';
+import ImageProject from './ImagePorject';
 
 function InstallationPage() {
   const { user } = React.useContext(AppContext);
   const [serviceEstimate, setServiceEstimate] = React.useState([]);
+  const [paymentBrigade, setPaymentBrigade] = React.useState([]);
   const [daysBrigade, setDaysBrigade] = React.useState([]);
   const [dates, setDates] = React.useState([]);
-  const [checked, setChecked] = React.useState({});
   const navigate = useNavigate();
+  const navigateInfoProject = useNavigate();
   const [selectedProject, setSelectedProject] = React.useState(null);
-  const [days, setDays] = React.useState();
   const [daysProject, setDaysProject] = React.useState([]);
   const [change, setChange] = React.useState(true);
+  const [projectDays, setProjectDays] = React.useState([]);
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
@@ -52,51 +53,12 @@ function InstallationPage() {
     getAllOneBrigadesDate(brigadeId).then((data) => setDaysBrigade(data));
     getAllDate().then((data) => setDates(data));
     getAllNumberOfDaysBrigadeForProject(brigadeId).then((data) => setDaysProject(data));
+    getAllPaymentForBrigade(brigadeId).then((data) => setPaymentBrigade(data));
   }, [change]);
 
   React.useEffect(() => {
-    const brigadeId = localStorage.getItem('id');
-    const projectId = selectedProject;
-
-    if (projectId !== null) {
-      getAllNumberOfDaysBrigade(brigadeId, projectId).then((data) => setDays(data));
-    }
-  }, [selectedProject, change]);
-
-  const handleCheckboxChange = (id) => {
-    setChecked((prev) => ({
-      ...prev,
-      [id]: !prev[id], // Меняем состояние чекбокса по его id
-    }));
-  };
-
-  const handleSave = (event) => {
-    event.preventDefault();
-
-    // Создаем плоский массив обновлений
-    const updates = serviceEstimate.flatMap((col) =>
-      col.estimates.map((colEst) => ({
-        id: colEst.id,
-        done: checked[colEst.id] ? 'true' : 'false',
-      })),
-    );
-
-    // Отправляем данные на бэк
-    Promise.all(
-      updates.map((update) =>
-        createEstimateBrigade(update.id, update.done)
-          .then((response) => {
-            setChange((state) => !state);
-          })
-          .catch((error) => {
-            alert(error.response.data.message);
-          }),
-      ),
-    ).then(() => {
-      // Обработка успешного завершения всех запросов, если нужно
-      console.log('Все изменения сохранены');
-    });
-  };
+    getDaysInstallerForProjects().then((data) => setProjectDays(data));
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -104,96 +66,143 @@ function InstallationPage() {
     navigate('/', { replace: true });
   };
 
+  const addToInfo = (id) => {
+    navigateInfoProject(`/projectinformation/${id}`, { state: { from: location.pathname } });
+  };
+
   return (
     <div className="installation-page">
       <div className="installation-page__content">
-        <div className="installation-page__title">Календарь</div>
-        <InstallationDays dates={dates} daysBrigade={daysBrigade} daysProject={daysProject} />
         <div className="installation-page__projects">
-          <div className="installation-page__title">Проекты</div>
-          <div className="installation-page__projects-content">
-            {serviceEstimate.map((estimateProject) => (
-              <div
-                key={estimateProject.id}
-                className={`installation-page__project ${
-                  estimateProject.projectId === selectedProject ? 'active' : ''
-                }`}
-                onClick={() => setSelectedProject(estimateProject.projectId)}>
-                {estimateProject.projectName}
-              </div>
-            ))}
-          </div>
-          {selectedProject && (
-            <>
-              <Table bordered className="mt-5">
-                <thead>
+          <div className="installation-page__title">Активные проекты</div>
+          <div className="table-scrollable">
+            <Table bordered>
+              <thead>
+                <tr>
+                  <th className="production_column" style={{ textAlign: 'center' }}>
+                    Наименование
+                  </th>
+                  <th style={{ textAlign: 'center' }}>Фото</th>
+                  <th></th>
+                  <th style={{ textAlign: 'center' }}>Расчетный срок монтажа</th>
+                  <th style={{ textAlign: 'center' }}>Факт монтажа</th>
+                  <th style={{ textAlign: 'center' }}>Сумма сметы</th>
+                  <th style={{ textAlign: 'center' }}>Выплачено</th>
+                  <th style={{ textAlign: 'center' }}>Остаток</th>
+                </tr>
+              </thead>
+              <tbody>
+                {serviceEstimate.map((estimateProject) => (
                   <tr>
-                    <th className="installation-page__head">Наименование</th>
-                    <th className="installation-page__head">Стоимость</th>
-                    <th className="installation-page__head">Выполнение</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {serviceEstimate.map((col) =>
-                    col.estimates
-                      .filter(
-                        (estimateForProject) => estimateForProject.projectId === selectedProject,
-                      )
-                      .map((estimateForProject) => (
-                        <tr key={estimateForProject.id}>
-                          <td className="installation-page__body">
-                            {estimateForProject.service.name}
-                          </td>
-                          <td className="installation-page__body">{estimateForProject.price}</td>
-                          <td style={{ display: 'flex', justifyContent: 'center' }}>
-                            <CheckboxInstallation
-                              change={checked[estimateForProject.id]} // Передаем состояние чекбокса
-                              handle={() => handleCheckboxChange(estimateForProject.id)} // Обработчик изменения состояния
-                            />
-                          </td>
-                        </tr>
-                      )),
-                  )}
-                </tbody>
-              </Table>
-              <form className="installation-page__form" onSubmit={handleSave}>
-                <Button variant="dark" size="sm" type="submit">
-                  Сохранить
-                </Button>
-              </form>
-              <div className="installation-page__money">
-                {(() => {
-                  const totalPrice = serviceEstimate.reduce((total, sumEst) => {
-                    const projectTotal = sumEst.estimates
-                      .filter(
-                        (estimateForProject) =>
-                          estimateForProject.done === 'true' &&
-                          estimateForProject.projectId === selectedProject,
-                      )
-                      .reduce((accumulator, current) => accumulator + Number(current.price), 0);
-                    return total + projectTotal;
-                  }, 0);
+                    <td className="td_column" style={{ textAlign: 'center' }}>
+                      {estimateProject.projectName}
+                    </td>
+                    <td>
+                      <ImageProject projectId={estimateProject.projectId} />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <Button
+                        variant="dark"
+                        size="sm"
+                        onClick={() => addToInfo(estimateProject.projectId)}>
+                        Подробнее
+                      </Button>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>{estimateProject.installationBilling}</td>
+                    {projectDays.some(
+                      (projectDay) => projectDay.projectId === estimateProject.projectId,
+                    ) ? (
+                      projectDays
+                        .filter((projectDay) => projectDay.projectId === estimateProject.projectId)
+                        .map((projectDay) => (
+                          <>
+                            <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
+                          </>
+                        ))
+                    ) : (
+                      <>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </>
+                    )}
+                    <td>
+                      {' '}
+                      {(() => {
+                        const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
+                          const projectTotal = sumEst.estimates
+                            .filter(
+                              (estimateForProject) =>
+                                estimateForProject.done === 'true' &&
+                                estimateForProject.projectId === estimateProject.projectId,
+                            )
+                            .reduce(
+                              (accumulator, current) => accumulator + Number(current.price),
+                              0,
+                            );
+                          return total + projectTotal;
+                        }, 0);
 
-                  return (
-                    <>
-                      <div className="installation-page__money-general">
-                        Общая сумма: {totalPrice}₽
-                      </div>
-                      <div className="installation-page__money-daily">
-                        Заработок за день: {days > 0 ? Math.ceil(totalPrice / days) : 0}₽
-                      </div>
-                    </>
-                  );
-                })()}{' '}
-              </div>
-            </>
-          )}
-          <ProjectInfo projectId={selectedProject} />
-          <div className="installation-page__logout" onClick={handleLogout}>
-            {' '}
-            Выйти
+                        return <div style={{ textAlign: 'center' }}>{totalEstimate}₽</div>;
+                      })()}{' '}
+                    </td>
+                    <td>
+                      {(() => {
+                        const totalPayment = paymentBrigade
+                          .filter(
+                            (paymentForBrigade) =>
+                              paymentForBrigade.projectId === estimateProject.projectId,
+                          )
+                          .reduce((total, sumEst) => {
+                            return total + Number(sumEst.sum); // Замените 'amount' на нужное вам свойство
+                          }, 0);
+
+                        return <div style={{ textAlign: 'center' }}>{totalPayment}₽</div>; // Отображаем итоговую сумму
+                      })()}
+                    </td>
+                    <td>
+                      {(() => {
+                        const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
+                          const projectTotal = sumEst.estimates
+                            .filter(
+                              (estimateForProject) =>
+                                estimateForProject.done === 'true' &&
+                                estimateForProject.projectId === estimateProject.projectId,
+                            )
+                            .reduce(
+                              (accumulator, current) => accumulator + Number(current.price),
+                              0,
+                            );
+                          return total + projectTotal;
+                        }, 0);
+
+                        const totalPayment = paymentBrigade
+                          .filter(
+                            (paymentForBrigade) =>
+                              paymentForBrigade.projectId === estimateProject.projectId,
+                          )
+                          .reduce((total, sumEst) => {
+                            return total + Number(sumEst.sum); // Замените 'sum' на нужное вам свойство
+                          }, 0);
+                        return (
+                          <div style={{ textAlign: 'center' }}>
+                            {totalEstimate - totalPayment} ₽
+                          </div>
+                        );
+                      })()}{' '}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
         </div>
+      </div>
+      <div className="installation-page__title">Календарь</div>
+      <InstallationDays dates={dates} daysBrigade={daysBrigade} daysProject={daysProject} />
+      <div className="installation-page__logout" onClick={handleLogout}>
+        {' '}
+        Выйти
       </div>
     </div>
   );

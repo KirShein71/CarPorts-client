@@ -13,6 +13,11 @@ import { Button, Table } from 'react-bootstrap';
 import UpdateEstimatePrice from './modals/UpdateEstimatePrice';
 import UpdateEstimateBrigade from './modals/UpdateEstimateBrigade';
 import CheckboxInstallation from '../InstallationPage/checkbox/CheckboxInstallation';
+import CreatePayment from './modals/CreatePayment';
+import UpdatePaymentDate from './modals/UpdatePaymentDate';
+import UpdatePaymentSum from './modals/UpdatePaymentSum';
+import { deletePayment } from '../../http/paymentApi';
+import Moment from 'react-moment';
 
 function Estimate(props) {
   const { projectId, regionId } = props;
@@ -30,6 +35,10 @@ function Estimate(props) {
   const [openModalUpdateBrigade, setOpenModalUpdateBrigade] = React.useState(false);
   const [project, setProject] = React.useState(null);
   const [checked, setChecked] = React.useState({});
+  const [openModalCreatePayment, setOpenModalCreatePayment] = React.useState(false);
+  const [openModalUpdatePaymentDate, setOpenModalUpdatePaymentDate] = React.useState(false);
+  const [openModalUpdatePaymentSum, setOpenModalUpdatePaymentSum] = React.useState(false);
+  const [paymentColId, setPaymentColId] = React.useState(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -179,6 +188,37 @@ function Estimate(props) {
     }
   };
 
+  const handleOpenModalCreatePayment = (id, projectId) => {
+    setBrigadeId(id);
+    setProject(projectId);
+    setOpenModalCreatePayment(true);
+  };
+
+  const handleOpenModalUpdatePaymentDate = (id) => {
+    setPaymentColId(id);
+    setOpenModalUpdatePaymentDate(true);
+  };
+
+  const handleOpenModalUpdatePaymentSum = (id) => {
+    setPaymentColId(id);
+    setOpenModalUpdatePaymentSum(true);
+  };
+
+  const handleDeletePaymentColumn = (id) => {
+    console.log(id);
+    const confirmed = window.confirm(
+      'Вы уверены, что хотите удалить строку выплаты по данной бригаде?',
+    );
+    if (confirmed) {
+      deletePayment(id)
+        .then((data) => {
+          setChange(!change);
+          alert(`Строка выплаты будет удалена`);
+        })
+        .catch((error) => alert(error.response.data.message));
+    }
+  };
+
   return (
     <div className="estimate">
       <UpdateEstimatePrice
@@ -195,6 +235,25 @@ function Estimate(props) {
         regionId={regionId}
         project={project}
       />
+      <CreatePayment
+        show={openModalCreatePayment}
+        setShow={setOpenModalCreatePayment}
+        project={projectId}
+        brigade={brigadeId}
+        setChange={setChange}
+      />
+      <UpdatePaymentDate
+        show={openModalUpdatePaymentDate}
+        setShow={setOpenModalUpdatePaymentDate}
+        setChange={setChange}
+        id={paymentColId}
+      />
+      <UpdatePaymentSum
+        show={openModalUpdatePaymentSum}
+        setShow={setOpenModalUpdatePaymentSum}
+        setChange={setChange}
+        id={paymentColId}
+      />
       <div className="estimate__content">
         <div className="estimate-brigade">
           <div className="estimate-brigade__title">Сметы по проекту</div>
@@ -202,103 +261,152 @@ function Estimate(props) {
             {estimateBrigades?.map((estimateBrigade) => (
               <>
                 <>
-                  {brigades
-                    .filter((brigadeName) => brigadeName.id === estimateBrigade.brigadeId)
-                    .map((brigadeName) => (
-                      <div className="estimate-brigade__name">Бригада: {brigadeName.name}</div>
-                    ))}
-                  <Table bordered className="estimate__table-sum">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th style={{ textAlign: 'center' }}>Общая сумма</th>
-                        <th style={{ textAlign: 'center' }}>Сумма выполенных работ</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style={{ fontWeight: 'bold' }}>Итого</td>
-                        <td style={{ textAlign: 'center' }}>
-                          {(() => {
-                            const totalSum = estimateBrigade.estimates.reduce(
-                              (acc, cur) => acc + Number(cur.price),
-                              0,
-                            );
-                            return totalSum;
-                          })()}
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          {(() => {
-                            const totalSum = estimateBrigade.estimates
-                              .filter((esCol) => esCol.done === 'true')
-                              .reduce((acc, cur) => acc + Number(cur.price), 0);
-                            return totalSum;
-                          })()}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                  <>
+                    <>
+                      {brigades
+                        .filter((brigadeName) => brigadeName.id === estimateBrigade.brigadeId)
+                        .map((brigadeName) => (
+                          <div className="estimate-brigade__name">Бригада: {brigadeName.name}</div>
+                        ))}
+                      <Table bordered className="estimate__table-sum">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th style={{ textAlign: 'center' }}>Общая сумма</th>
+                            <th style={{ textAlign: 'center' }}>Сумма выполенных работ</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style={{ fontWeight: 'bold' }}>Итого</td>
+                            <td style={{ textAlign: 'center' }}>
+                              {(() => {
+                                const totalSum = estimateBrigade.estimates.reduce(
+                                  (acc, cur) => acc + Number(cur.price),
+                                  0,
+                                );
+                                return totalSum;
+                              })()}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {(() => {
+                                const totalSum = estimateBrigade.estimates
+                                  .filter((esCol) => esCol.done === 'true')
+                                  .reduce((acc, cur) => acc + Number(cur.price), 0);
+                                return totalSum;
+                              })()}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                      <Table bordered>
+                        <thead>
+                          <tr>
+                            <th>Наименование</th>
+                            <th>Стоимость</th>
+                            <th>Выполнено</th>
+                            <th>Удалить строку</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {estimateBrigade.estimates.map((estimateCol) => (
+                            <tr key={estimateCol.id}>
+                              <td>{estimateCol.service?.name}</td>
+                              <td
+                                onClick={() => handleOpenModalUpdatePrice(estimateCol.id)}
+                                style={{ cursor: 'pointer', textAlign: 'center' }}>
+                                {estimateCol.price}
+                              </td>
+                              <td style={{ display: 'flex', justifyContent: 'center' }}>
+                                <CheckboxInstallation
+                                  change={checked[estimateCol.id]} // Передаем состояние чекбокса
+                                  handle={() => handleCheckboxChange(estimateCol.id)}
+                                />
+                              </td>
+                              <td
+                                style={{ cursor: 'pointer', textAlign: 'center' }}
+                                onClick={() => handleDeleteEstimateColumn(estimateCol.id)}>
+                                <img src="../img/delete.png" alt="delete" />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </>
+                    <div style={{ display: 'flex' }}>
+                      <form className="estimate-done__form" onSubmit={handleSaveDoneEstimate}>
+                        <Button
+                          variant="dark"
+                          size="sm"
+                          type="submit"
+                          className="me-3 mb-3 estimate__button">
+                          Сохранить
+                        </Button>
+                      </form>
+                      <Button
+                        size="sm"
+                        className="mb-3 me-2 estimate__button"
+                        variant="dark"
+                        onClick={() =>
+                          handleOpenModalUpdateBrigade(estimateBrigade.brigadeId, projectId)
+                        }>
+                        Переназначить бригаду
+                      </Button>
+                      <Button
+                        className="mb-3 estimate__button"
+                        size="sm"
+                        variant="dark"
+                        onClick={() =>
+                          handleDeleteEstimateBrigadeForProject(
+                            estimateBrigade.brigadeId,
+                            projectId,
+                          )
+                        }>
+                        Удалить
+                      </Button>
+                    </div>
+                  </>
+                </>
+                <div className="estimate-payment">
+                  <div className="estimate-payment__title">Выплаты</div>
                   <Table bordered>
                     <thead>
                       <tr>
-                        <th>Наименование</th>
-                        <th>Стоимость</th>
-                        <th>Выполнено</th>
-                        <th>Удалить строку</th>
+                        <th style={{ textAlign: 'center' }}>Дата</th>
+                        <th style={{ textAlign: 'center' }}>Сумма выплаты</th>
+                        <th style={{ textAlign: 'center' }}>Удалить строку</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {estimateBrigade.estimates.map((estimateCol) => (
-                        <tr key={estimateCol.id}>
-                          <td>{estimateCol.service?.name}</td>
+                      {estimateBrigade.payments?.map((payment) => (
+                        <tr key={payment.id}>
                           <td
-                            onClick={() => handleOpenModalUpdatePrice(estimateCol.id)}
-                            style={{ cursor: 'pointer', textAlign: 'center' }}>
-                            {estimateCol.price}
-                          </td>
-                          <td style={{ display: 'flex', justifyContent: 'center' }}>
-                            <CheckboxInstallation
-                              change={checked[estimateCol.id]} // Передаем состояние чекбокса
-                              handle={() => handleCheckboxChange(estimateCol.id)}
-                            />
+                            style={{ textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => handleOpenModalUpdatePaymentDate(payment.id)}>
+                            <Moment format="DD.MM.YYYY">{payment.date}</Moment>
                           </td>
                           <td
-                            style={{ cursor: 'pointer', textAlign: 'center' }}
-                            onClick={() => handleDeleteEstimateColumn(estimateCol.id)}>
+                            style={{ textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => handleOpenModalUpdatePaymentSum(payment.id)}>
+                            {payment.sum}
+                          </td>
+                          <td
+                            style={{ textAlign: 'center', cursor: 'pointer' }}
+                            onClick={() => handleDeletePaymentColumn(payment.id)}>
                             <img src="../img/delete.png" alt="delete" />
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
-                </>
-                <div style={{ display: 'flex' }}>
-                  <form className="estimate-done__form" onSubmit={handleSaveDoneEstimate}>
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      type="submit"
-                      className="me-3 mb-3 estimate__button">
-                      Сохранить
-                    </Button>
-                  </form>
                   <Button
-                    size="sm"
-                    className="mb-3 me-2 estimate__button"
-                    variant="dark"
-                    onClick={() =>
-                      handleOpenModalUpdateBrigade(estimateBrigade.brigadeId, projectId)
-                    }>
-                    Переназначить бригаду
-                  </Button>
-                  <Button
-                    className="mb-3 estimate__button"
+                    className="mt-1 mb-2 payment__button"
                     size="sm"
                     variant="dark"
                     onClick={() =>
-                      handleDeleteEstimateBrigadeForProject(estimateBrigade.brigadeId, projectId)
+                      handleOpenModalCreatePayment(estimateBrigade.brigadeId, projectId)
                     }>
-                    Удалить
+                    Добавить выплату
                   </Button>
                 </div>
               </>

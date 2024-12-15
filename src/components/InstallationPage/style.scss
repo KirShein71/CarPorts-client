@@ -1,21 +1,31 @@
 .installation-page {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     
     
     &__content {
         margin-top: 25px;
-        width: 750px;
-        @media(max-width: 768px) {
-            width: 100%;
-        }
+        width: 100%;
+        
         
     }
 
     &__title {
-        text-align: center;
-        font-size: 20px;
-        font-weight: 500;
+        font-size: 27px;
+        font-weight: 700;
+        color: rgb(7, 7, 7);
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        @media (max-width: 768px) {
+            font-size: 27px;
+        }
+        @media(max-width: 575px) {
+            font-size: 24px;
+        }
+        @media(max-width: 480px) {
+            font-size: 18px;
+        }
     }
 
     &__projects {
@@ -101,22 +111,7 @@
         justify-content: center;
     }
 
-    &__money {
-        margin-top: 25px;
-
-        &-general {
-            font-size: 18px;
-            font-weight: 500;
-            color: #272833;
-        }
-
-        &-daily {
-            margin-top: 7px;
-            font-size: 18px;
-            font-weight: 500;
-            color: #272833;
-        }
-    }
+    
 
     &__logout {
         margin-top: 25px;
@@ -134,6 +129,47 @@
 
 .projectinfo {
     margin-top: 15px;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      
+
+        &-title {
+            margin-top: 15px;
+            font-size: 25px;
+            color: rgb(7, 7, 7);
+            font-weight: 600;
+            @media(max-width: 460px) {
+                font-size: 20px;
+            }
+        }
+
+        &-table {
+            width: 50%;
+            @media(max-width: 460px) {
+                width: 100%;
+            }
+        }
+
+        &-money {
+            margin-top: 25px;
+    
+            &__general {
+                font-size: 18px;
+                font-weight: 500;
+                color: #272833;
+            }
+    
+            &__daily {
+                margin-top: 3px;
+                font-size: 18px;
+                font-weight: 500;
+                color: #272833;
+            }
+        }
+    }
 
     .projectinfo__note {
         margin-bottom: 25px;

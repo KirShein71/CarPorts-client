@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import Home from '../pages/Home';
 import Production from '../pages/Production';
-import Payment from '../pages/Payment';
 import Project from '../pages/Project';
 import Procurement from '../pages/Procurement';
 import ProjectInfo from '../pages/ProjectInfo';
@@ -27,6 +26,7 @@ import ViewingPersonalAccount from '../pages/ViewingPersonalAccount';
 import FinishProject from '../pages/FinishProject';
 import ChangeBrigadeDate from '../pages/ChangeBrigadeDate';
 import InstallerAccount from '../pages/InstallerAccount';
+import InstallationProjectInfo from '../pages/InstallationProjectInfo';
 
 import { observer } from 'mobx-react';
 
@@ -38,7 +38,6 @@ const userRoutes = [
 const employeeRoutes = [
   { path: '/', Component: Home },
   { path: '/production', Component: Production },
-  { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
@@ -64,7 +63,6 @@ const employeeRoutes = [
 const adminRoutes = [
   { path: '/', Component: Home },
   { path: '/production', Component: Production },
-  { path: '/payment', Component: Payment },
   { path: '/project', Component: Project },
   { path: '/procurement', Component: Procurement },
   { path: '/projectinfo/:id', Component: ProjectInfo },
@@ -88,6 +86,7 @@ const adminRoutes = [
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: '/installeraccount', Component: InstallerAccount },
+  { path: '/projectinformation/:id', Component: InstallationProjectInfo },
 ];
 
 const managerSaleRoutes = [
@@ -132,7 +131,10 @@ const managerProductionRoutes = [
   { path: '/ordermaterials', Component: OrderMaterials },
 ];
 
-const brigadesRoutes = [{ path: '/installeraccount', Component: InstallerAccount }];
+const brigadesRoutes = [
+  { path: '/installeraccount', Component: InstallerAccount },
+  { path: '/projectinformation/:id', Component: InstallationProjectInfo },
+];
 
 const routes = [{ path: '/', Component: Home }];
 

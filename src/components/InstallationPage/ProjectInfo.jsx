@@ -1,35 +1,50 @@
 import React from 'react';
 import { getProjectInfoInstallation } from '../../http/projectApi';
-import { getUserForBrigade } from '../../http/userApi';
-import { getAllUserImageByUserId, deleteUserImage } from '../../http/userImageApi';
 import CalendarInstallation from './CalendarInstallation/CalendarInstallation';
-import CreateUserImage from './modals/CreateUserImage';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
+import { useParams, Link } from 'react-router-dom';
+import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
+import { getAllNumberOfDaysBrigade, getAllDate } from '../../http/brigadesDateApi';
+import CheckboxInstallation from './checkbox/CheckboxInstallation';
+import { getAllPaymentForBrigade } from '../../http/paymentApi';
+import Moment from 'react-moment';
 
-function ProjectInfo({ projectId }) {
+function ProjectInfo() {
+  const { id } = useParams();
   const [project, setProject] = React.useState([]);
-  const [user, setUser] = React.useState([]);
-  const [userImages, setUserImages] = React.useState([]);
-  const [imageCreateModal, setImageCreateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [serviceEstimate, setServiceEstimate] = React.useState([]);
+  const [checked, setChecked] = React.useState({});
+  const [dates, setDates] = React.useState([]);
+  const [days, setDays] = React.useState();
+  const [paymentBrigade, setPaymentBrigade] = React.useState([]);
 
   React.useEffect(() => {
+    const brigadeId = localStorage.getItem('id');
+
+    getAllEstimateForBrigade(brigadeId).then((data) => {
+      setServiceEstimate(data);
+
+      const initialChecked = {};
+      data.map((col) => {
+        col.estimates.forEach((colEst) => {
+          initialChecked[colEst.id] = colEst.done === 'true' ? true : false;
+        });
+      });
+      setChecked(initialChecked);
+    });
+    getAllDate().then((data) => setDates(data));
+    getAllPaymentForBrigade(brigadeId).then((data) => setPaymentBrigade(data));
+  }, [change]);
+
+  React.useEffect(() => {
+    const projectId = Number(id);
     if (projectId !== null) {
       const fetchData = async () => {
         try {
           // Получаем информацию о проекте
           const projectData = await getProjectInfoInstallation(projectId);
           setProject(projectData);
-
-          // Получаем пользователя для бригады
-          const userId = await getUserForBrigade(projectId);
-          setUser(userId);
-
-          // Если пользователь найден, получаем его изображения
-          if (userId) {
-            const userImages = await getAllUserImageByUserId(userId);
-            setUserImages(userImages);
-          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -37,7 +52,51 @@ function ProjectInfo({ projectId }) {
 
       fetchData();
     }
-  }, [projectId, change]);
+  }, [change]);
+
+  React.useEffect(() => {
+    const brigadeId = localStorage.getItem('id');
+    const projectId = Number(id);
+
+    if (projectId !== null) {
+      getAllNumberOfDaysBrigade(brigadeId, projectId).then((data) => setDays(data));
+    }
+  }, [change]);
+
+  const handleCheckboxChange = (id) => {
+    setChecked((prev) => ({
+      ...prev,
+      [id]: !prev[id], // Меняем состояние чекбокса по его id
+    }));
+  };
+
+  const handleSave = (event) => {
+    event.preventDefault();
+
+    // Создаем плоский массив обновлений
+    const updates = serviceEstimate.flatMap((col) =>
+      col.estimates.map((colEst) => ({
+        id: colEst.id,
+        done: checked[colEst.id] ? 'true' : 'false',
+      })),
+    );
+
+    // Отправляем данные на бэк
+    Promise.all(
+      updates.map((update) =>
+        createEstimateBrigade(update.id, update.done)
+          .then((response) => {
+            setChange((state) => !state);
+          })
+          .catch((error) => {
+            alert(error.response.data.message);
+          }),
+      ),
+    ).then(() => {
+      // Обработка успешного завершения всех запросов, если нужно
+      console.log('Все изменения сохранены');
+    });
+  };
 
   const holidays = [
     '2024-01-01',
@@ -92,133 +151,156 @@ function ProjectInfo({ projectId }) {
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
 
-  const handleCreateImage = () => {
-    setImageCreateModal(true);
-  };
-
-  const handleDeleteImage = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить изображение?');
-    if (confirmed) {
-      deleteUserImage(id)
-        .then((data) => {
-          setChange(!change);
-          // Удалить удаленное изображение из списка images
-          const updatedImages = userImages.filter((image) => image.id !== id);
-          setUserImages(updatedImages);
-          alert('Изображение удалено');
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
-  };
-
   return (
     <div className="projectinfo">
-      <CreateUserImage
-        userId={user}
-        show={imageCreateModal}
-        setShow={setImageCreateModal}
-        setChange={setChange}
-      />
-      {project.map((infoProject) => (
+      <div className="header">
+        <Link to="/installeraccount">
+          <img className="header__icon" src="../img/back.png" alt="back" />
+        </Link>
+        <h1 className="header__title">Подробная информация</h1>
+      </div>
+      <div className="projectinfo__content">
         <>
-          <div className="projectinfo__calenadar">
-            <CalendarInstallation
-              brigadesDate={infoProject.brigadesdate}
-              designer={infoProject.project.designer}
-              startDateConstructor={infoProject.project.design_start}
-              endDateСonstructor={infoProject.project.project_delivery}
-              startDateDesing={infoProject.project.agreement_date}
-              endDateDesing={(() => {
-                const agreementDate = new Date(
-                  infoProject.project && infoProject.project.agreement_date,
-                );
-                const designPeriod = infoProject.project && infoProject.project.design_period;
-
-                const endDate = addWorkingDays(agreementDate, designPeriod);
-                const formattedEndDate = formatDate(endDate);
-                return formattedEndDate;
-              })()}
-              startDateProduction={infoProject.project.agreement_date}
-              endDateProduction={(() => {
-                const agreementDate = new Date(
-                  infoProject.project && infoProject.project.agreement_date,
-                );
-                const designPeriod = infoProject.project && infoProject.project.design_period;
-
-                const expirationDate = infoProject.project && infoProject.project.expiration_date;
-
-                const sumDays = designPeriod + expirationDate;
-
-                const endDate = addWorkingDays(agreementDate, sumDays);
-                const formattedEndDate = formatDate(endDate);
-                return formattedEndDate;
-              })()}
-              startDateInstallation={infoProject.project.agreement_date}
-              endDateInstallation={(() => {
-                const agreementDate = new Date(
-                  infoProject.project && infoProject.project.agreement_date,
-                );
-                const designPeriod = infoProject.project && infoProject.project.design_period;
-                const expirationDate = infoProject.project && infoProject.project.expiration_date;
-                const installationPeriod =
-                  infoProject.project && infoProject.project.installation_period;
-                const sumDays = designPeriod + expirationDate + installationPeriod;
-
-                const endDate = addWorkingDays(agreementDate, sumDays);
-                const formattedEndDate = formatDate(endDate);
-                return formattedEndDate;
-              })()}
-            />
+          <div className="projectinfo__content-title">Смета</div>
+          <div className="projectinfo__content-table">
+            <Table bordered className="mt-3">
+              <thead>
+                <tr>
+                  <th className="installation-page__head">Наименование</th>
+                  <th className="installation-page__head">Стоимость</th>
+                  <th className="installation-page__head">Выполнение</th>
+                </tr>
+              </thead>
+              <tbody>
+                {serviceEstimate.map((col) =>
+                  col.estimates
+                    .filter((estimateForProject) => estimateForProject.projectId === Number(id))
+                    .map((estimateForProject) => (
+                      <tr key={estimateForProject.id}>
+                        <td className="installation-page__body">
+                          {estimateForProject.service.name}
+                        </td>
+                        <td className="installation-page__body">{estimateForProject.price}</td>
+                        <td style={{ display: 'flex', justifyContent: 'center' }}>
+                          <CheckboxInstallation
+                            change={checked[estimateForProject.id]} // Передаем состояние чекбокса
+                            handle={() => handleCheckboxChange(estimateForProject.id)} // Обработчик изменения состояния
+                          />
+                        </td>
+                      </tr>
+                    )),
+                )}
+              </tbody>
+            </Table>
+            <form className="installation-page__form" onSubmit={handleSave}>
+              <Button variant="dark" size="sm" type="submit">
+                Сохранить
+              </Button>
+            </form>
           </div>
-          <div className="projectinfo__files">
-            <div
-              className="projectinfo__files-title"
-              style={{
-                marginTop: '25px',
-                color: 'rgb(7, 7, 7)',
-                fontSize: '22px',
-                fontWeight: '600',
-              }}>
-              Изображения хода работ
-            </div>
-            <Button
-              variant="dark"
-              className="mt-3"
-              size="sm"
-              onClick={() => handleCreateImage(user)}>
-              Добавить изображение
-            </Button>
-            <div
-              className="projectinfo__files-content"
-              style={{
-                marginTop: '25px',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr',
-                gridColumnGap: '5px',
-                gridRowGap: '5px',
-              }}>
-              {userImages.map((image) => (
-                <div key={image.id}>
-                  <div className="projectinfo__files-card">
-                    <img
-                      style={{ width: '70%', marginBottom: '10px' }}
-                      src={process.env.REACT_APP_IMG_URL + image.image}
-                      alt="photos of works"
-                    />
-                    <div>{image.date}</div>
-                    <div
-                      className="delete__image"
-                      style={{ color: 'red', cursor: 'pointer' }}
-                      onClick={() => handleDeleteImage(image.id)}>
-                      Удалить
-                    </div>
+          <div className="projectinfo__content-money">
+            {(() => {
+              const totalPrice = serviceEstimate.reduce((total, sumEst) => {
+                const projectTotal = sumEst.estimates
+                  .filter(
+                    (estimateForProject) =>
+                      estimateForProject.done === 'true' &&
+                      estimateForProject.projectId === Number(id),
+                  )
+                  .reduce((accumulator, current) => accumulator + Number(current.price), 0);
+                return total + projectTotal;
+              }, 0);
+
+              return (
+                <>
+                  <div className="projectinfo__content-money__general">
+                    Общая сумма: {totalPrice}₽
                   </div>
-                </div>
-              ))}
-            </div>
+                  <div className="projectinfo__content-money__daily">
+                    Заработок за день: {days > 0 ? Math.ceil(totalPrice / days) : 0}₽
+                  </div>
+                </>
+              );
+            })()}{' '}
           </div>
         </>
-      ))}
+        <div className="projectinfo__content-title">Выплаты</div>
+        <div className="projectinfo__content-table">
+          <Table bordered className="mt-3">
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Сумма</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paymentBrigade
+                .filter((sumProject) => sumProject.projectId === Number(id))
+                .map((sumProject) => (
+                  <tr key={sumProject.id}>
+                    <td>
+                      <Moment format="DD.MM.YYYY">{sumProject.date}</Moment>
+                    </td>
+                    <td>{sumProject.sum}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
+        {project.map((infoProject) => (
+          <>
+            <div className="projectinfo__calenadar">
+              <CalendarInstallation
+                brigadesDate={infoProject.brigadesdate}
+                designer={infoProject.project.designer}
+                startDateConstructor={infoProject.project.design_start}
+                endDateСonstructor={infoProject.project.project_delivery}
+                startDateDesing={infoProject.project.agreement_date}
+                endDateDesing={(() => {
+                  const agreementDate = new Date(
+                    infoProject.project && infoProject.project.agreement_date,
+                  );
+                  const designPeriod = infoProject.project && infoProject.project.design_period;
+
+                  const endDate = addWorkingDays(agreementDate, designPeriod);
+                  const formattedEndDate = formatDate(endDate);
+                  return formattedEndDate;
+                })()}
+                startDateProduction={infoProject.project.agreement_date}
+                endDateProduction={(() => {
+                  const agreementDate = new Date(
+                    infoProject.project && infoProject.project.agreement_date,
+                  );
+                  const designPeriod = infoProject.project && infoProject.project.design_period;
+
+                  const expirationDate = infoProject.project && infoProject.project.expiration_date;
+
+                  const sumDays = designPeriod + expirationDate;
+
+                  const endDate = addWorkingDays(agreementDate, sumDays);
+                  const formattedEndDate = formatDate(endDate);
+                  return formattedEndDate;
+                })()}
+                startDateInstallation={infoProject.project.agreement_date}
+                endDateInstallation={(() => {
+                  const agreementDate = new Date(
+                    infoProject.project && infoProject.project.agreement_date,
+                  );
+                  const designPeriod = infoProject.project && infoProject.project.design_period;
+                  const expirationDate = infoProject.project && infoProject.project.expiration_date;
+                  const installationPeriod =
+                    infoProject.project && infoProject.project.installation_period;
+                  const sumDays = designPeriod + expirationDate + installationPeriod;
+
+                  const endDate = addWorkingDays(agreementDate, sumDays);
+                  const formattedEndDate = formatDate(endDate);
+                  return formattedEndDate;
+                })()}
+              />
+            </div>
+          </>
+        ))}
+      </div>
     </div>
   );
 }

@@ -54,5 +54,16 @@
         }
     }
 
+    &-payment {
+        &__title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            @media(max-width: 460px) {
+                font-size: 17px;
+            }
+        }
+    }
+
 
 }
