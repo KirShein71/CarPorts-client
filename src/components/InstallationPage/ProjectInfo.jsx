@@ -3,7 +3,11 @@ import { getProjectInfoInstallation } from '../../http/projectApi';
 import CalendarInstallation from './CalendarInstallation/CalendarInstallation';
 import { Button, Table } from 'react-bootstrap';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
+import {
+  getAllEstimateForBrigade,
+  getAllEstimateForBrigadeFinishProject,
+  createEstimateBrigade,
+} from '../../http/estimateApi';
 import { getAllNumberOfDaysBrigade, getAllDate } from '../../http/brigadesDateApi';
 import CheckboxInstallation from './checkbox/CheckboxInstallation';
 import { getAllPaymentForBrigade } from '../../http/paymentApi';
@@ -23,20 +27,40 @@ function ProjectInfo() {
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
 
-    getAllEstimateForBrigade(brigadeId).then((data) => {
-      setServiceEstimate(data);
+    const fetchData = async () => {
+      try {
+        if (location.state && location.state.from) {
+          let data;
+          if (location.state.from === '/installeraccount') {
+            data = await getAllEstimateForBrigade(brigadeId);
+          } else if (location.state.from === '/project-finish') {
+            data = await getAllEstimateForBrigadeFinishProject(brigadeId);
+          }
 
-      const initialChecked = {};
-      data.map((col) => {
-        col.estimates.forEach((colEst) => {
-          initialChecked[colEst.id] = colEst.done === 'true' ? true : false;
-        });
-      });
-      setChecked(initialChecked);
-    });
-    getAllDate().then((data) => setDates(data));
-    getAllPaymentForBrigade(brigadeId).then((data) => setPaymentBrigade(data));
-  }, [change]);
+          if (data) {
+            setServiceEstimate(data);
+            const initialChecked = {};
+            data.forEach((col) => {
+              col.estimates.forEach((colEst) => {
+                initialChecked[colEst.id] = colEst.done === 'true';
+              });
+            });
+            setChecked(initialChecked);
+          }
+        }
+
+        const datesData = await getAllDate();
+        setDates(datesData);
+
+        const paymentData = await getAllPaymentForBrigade(brigadeId);
+        setPaymentBrigade(paymentData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [location.state, change]);
 
   React.useEffect(() => {
     const projectId = Number(id);
