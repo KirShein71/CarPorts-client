@@ -57,6 +57,15 @@
             &__content {
                 display: flex;
                 justify-content: space-between;
+                @media(max-width: 460px) {
+                    width: 385px;
+                }
+                @media(max-width: 400px) {
+                    width: 350px;
+                }
+                @media(max-width: 350px) {
+                    width: 300px;
+                }
             }
 
             &__item {
