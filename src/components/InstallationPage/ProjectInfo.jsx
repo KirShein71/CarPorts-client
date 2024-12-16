@@ -207,7 +207,9 @@ function ProjectInfo() {
                         <td className="installation-page__body">
                           {estimateForProject.service.name}
                         </td>
-                        <td className="installation-page__body">{estimateForProject.price}</td>
+                        <td className="installation-page__body">
+                          {new Intl.NumberFormat('ru-RU').format(estimateForProject.price)}
+                        </td>
                         <td style={{ display: 'flex', justifyContent: 'center' }}>
                           <CheckboxInstallation
                             change={checked[estimateForProject.id]} // Передаем состояние чекбокса
@@ -241,10 +243,14 @@ function ProjectInfo() {
               return (
                 <>
                   <div className="projectinfo__content-money__general">
-                    Общая сумма: {totalPrice}₽
+                    Общая сумма: {new Intl.NumberFormat('ru-RU').format(totalPrice)}₽
                   </div>
                   <div className="projectinfo__content-money__daily">
-                    Заработок за день: {days > 0 ? Math.ceil(totalPrice / days) : 0}₽
+                    Заработок за день:{' '}
+                    {days > 0
+                      ? new Intl.NumberFormat('ru-RU').format(Math.ceil(totalPrice / days))
+                      : 0}
+                    ₽
                   </div>
                 </>
               );
@@ -268,7 +274,7 @@ function ProjectInfo() {
                     <td>
                       <Moment format="DD.MM.YYYY">{sumProject.date}</Moment>
                     </td>
-                    <td>{sumProject.sum}</td>
+                    <td>{new Intl.NumberFormat('ru-RU').format(sumProject.sum)}</td>
                   </tr>
                 ))}
             </tbody>

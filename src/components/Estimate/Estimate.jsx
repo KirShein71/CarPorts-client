@@ -286,7 +286,7 @@ function Estimate(props) {
                                   (acc, cur) => acc + Number(cur.price),
                                   0,
                                 );
-                                return totalSum;
+                                return new Intl.NumberFormat('ru-RU').format(totalSum);
                               })()}
                             </td>
                             <td style={{ textAlign: 'center' }}>
@@ -294,7 +294,7 @@ function Estimate(props) {
                                 const totalSum = estimateBrigade.estimates
                                   .filter((esCol) => esCol.done === 'true')
                                   .reduce((acc, cur) => acc + Number(cur.price), 0);
-                                return totalSum;
+                                return new Intl.NumberFormat('ru-RU').format(totalSum);
                               })()}
                             </td>
                             <td style={{ textAlign: 'center' }}>
@@ -303,7 +303,7 @@ function Estimate(props) {
                                   (acc, cur) => acc + Number(cur.sum),
                                   0,
                                 );
-                                return totalSum;
+                                return new Intl.NumberFormat('ru-RU').format(totalSum);
                               })()}
                             </td>
                           </tr>
@@ -325,7 +325,7 @@ function Estimate(props) {
                               <td
                                 onClick={() => handleOpenModalUpdatePrice(estimateCol.id)}
                                 style={{ cursor: 'pointer', textAlign: 'center' }}>
-                                {estimateCol.price}
+                                {new Intl.NumberFormat('ru-RU').format(estimateCol.price)}
                               </td>
                               <td style={{ display: 'flex', justifyContent: 'center' }}>
                                 <CheckboxInstallation
@@ -398,7 +398,7 @@ function Estimate(props) {
                           <td
                             style={{ textAlign: 'center', cursor: 'pointer' }}
                             onClick={() => handleOpenModalUpdatePaymentSum(payment.id)}>
-                            {payment.sum}
+                            {new Intl.NumberFormat('ru-RU').format(payment.sum)}
                           </td>
                           <td
                             style={{ textAlign: 'center', cursor: 'pointer' }}

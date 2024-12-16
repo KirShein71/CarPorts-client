@@ -168,7 +168,10 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
 
                               return (
                                 <div>
-                                  Заработок за день: {Math.ceil(projectTotal / projectDays)}
+                                  Заработок за день:{' '}
+                                  {new Intl.NumberFormat('ru-RU').format(
+                                    Math.ceil(projectTotal / projectDays),
+                                  )}
                                 </div>
                               );
                             })()}

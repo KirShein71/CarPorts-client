@@ -168,7 +168,11 @@ function InstallationPage() {
                           return total + projectTotal;
                         }, 0);
 
-                        return <div style={{ textAlign: 'center' }}>{totalEstimate}₽</div>;
+                        return (
+                          <div style={{ textAlign: 'center' }}>
+                            {new Intl.NumberFormat('ru-RU').format(totalEstimate)}₽
+                          </div>
+                        );
                       })()}{' '}
                     </td>
                     <td>
@@ -182,7 +186,11 @@ function InstallationPage() {
                             return total + Number(sumEst.sum);
                           }, 0);
 
-                        return <div style={{ textAlign: 'center' }}>{totalPayment}₽</div>; // Отображаем итоговую сумму
+                        return (
+                          <div style={{ textAlign: 'center' }}>
+                            {new Intl.NumberFormat('ru-RU').format(totalPayment)}₽
+                          </div>
+                        ); // Отображаем итоговую сумму
                       })()}
                     </td>
                     <td>
@@ -211,7 +219,7 @@ function InstallationPage() {
                           }, 0);
                         return (
                           <div style={{ textAlign: 'center' }}>
-                            {totalEstimate - totalPayment} ₽
+                            {new Intl.NumberFormat('ru-RU').format(totalEstimate - totalPayment)} ₽
                           </div>
                         );
                       })()}{' '}
