@@ -2,7 +2,7 @@ import React from 'react';
 import { getProjectInfoInstallation } from '../../http/projectApi';
 import CalendarInstallation from './CalendarInstallation/CalendarInstallation';
 import { Button, Table } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
 import { getAllNumberOfDaysBrigade, getAllDate } from '../../http/brigadesDateApi';
 import CheckboxInstallation from './checkbox/CheckboxInstallation';
@@ -18,6 +18,7 @@ function ProjectInfo() {
   const [dates, setDates] = React.useState([]);
   const [days, setDays] = React.useState();
   const [paymentBrigade, setPaymentBrigade] = React.useState([]);
+  const location = useLocation();
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
@@ -153,12 +154,14 @@ function ProjectInfo() {
 
   return (
     <div className="projectinfo">
-      <div className="header">
-        <Link to="/installeraccount">
-          <img className="header__icon" src="../img/back.png" alt="back" />
-        </Link>
-        <h1 className="header__title">Подробная информация</h1>
-      </div>
+      {location.state && location.state.from ? (
+        <div className="header">
+          <Link to={location.state.from}>
+            <img className="header__icon" src="../img/back.png" alt="back" />
+          </Link>
+          <h1 className="header__title">Подробная информация</h1>
+        </div>
+      ) : null}
       <div className="projectinfo__content">
         <>
           <div className="projectinfo__content-title">Смета</div>

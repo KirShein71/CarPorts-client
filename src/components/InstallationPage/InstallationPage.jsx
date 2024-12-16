@@ -1,15 +1,14 @@
 import React from 'react';
 import { getAllEstimateForBrigade, createEstimateBrigade } from '../../http/estimateApi';
 import {
-  getAllNumberOfDaysBrigade,
   getAllOneBrigadesDate,
   getAllDate,
   getAllNumberOfDaysBrigadeForProject,
   getDaysInstallerForProjects,
 } from '../../http/brigadesDateApi';
-import { logout } from '../../http/bragadeApi';
+import { logout, fetchOneBrigade } from '../../http/bragadeApi';
 import { Button, Table } from 'react-bootstrap';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import InstallationDays from './InstallationDays/InstallationDays';
 import { getAllPaymentForBrigade } from '../../http/paymentApi';
@@ -18,6 +17,7 @@ import ImageProject from './ImagePorject';
 
 function InstallationPage() {
   const { user } = React.useContext(AppContext);
+  const [brigade, setBrigade] = React.useState([]);
   const [serviceEstimate, setServiceEstimate] = React.useState([]);
   const [paymentBrigade, setPaymentBrigade] = React.useState([]);
   const [daysBrigade, setDaysBrigade] = React.useState([]);
@@ -45,6 +45,7 @@ function InstallationPage() {
       getAllDate().then(setDates),
       getAllNumberOfDaysBrigadeForProject(brigadeId).then(setDaysProject),
       getAllPaymentForBrigade(brigadeId).then(setPaymentBrigade),
+      fetchOneBrigade(brigadeId).then((data) => setBrigade(data)),
     ];
 
     // Используем Promise.all для ожидания завершения всех промисов
@@ -69,9 +70,24 @@ function InstallationPage() {
 
   return (
     <div className="installation-page">
+      {[brigade].map((nameBrigade) => (
+        <div className="installation-page__name">{nameBrigade.name}</div>
+      ))}
       <div className="installation-page__content">
         <div className="installation-page__projects">
           <div className="installation-page__title">Активные проекты</div>
+          <Link to="/project-finish">
+            <div
+              style={{
+                fontSize: '18px',
+                paddingTop: '10px',
+                paddingBottom: '10px',
+                cursor: 'pointer',
+                color: 'black',
+              }}>
+              &bull; Показать завершенные проекты
+            </div>
+          </Link>
           <div className="table-scrollable">
             <Table bordered>
               <thead>
@@ -163,7 +179,7 @@ function InstallationPage() {
                               paymentForBrigade.projectId === estimateProject.projectId,
                           )
                           .reduce((total, sumEst) => {
-                            return total + Number(sumEst.sum); // Замените 'amount' на нужное вам свойство
+                            return total + Number(sumEst.sum);
                           }, 0);
 
                         return <div style={{ textAlign: 'center' }}>{totalPayment}₽</div>; // Отображаем итоговую сумму

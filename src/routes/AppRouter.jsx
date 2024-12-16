@@ -27,6 +27,7 @@ import FinishProject from '../pages/FinishProject';
 import ChangeBrigadeDate from '../pages/ChangeBrigadeDate';
 import InstallerAccount from '../pages/InstallerAccount';
 import InstallationProjectInfo from '../pages/InstallationProjectInfo';
+import InstallationFinishProject from '../pages/InstallationFinishProject';
 
 import { observer } from 'mobx-react';
 
@@ -87,6 +88,7 @@ const adminRoutes = [
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: '/installeraccount', Component: InstallerAccount },
   { path: '/projectinformation/:id', Component: InstallationProjectInfo },
+  { path: '/project-finish/: id', Component: InstallationFinishProject },
 ];
 
 const managerSaleRoutes = [
@@ -134,6 +136,7 @@ const managerProductionRoutes = [
 const brigadesRoutes = [
   { path: '/installeraccount', Component: InstallerAccount },
   { path: '/projectinformation/:id', Component: InstallationProjectInfo },
+  { path: '/project-finish', Component: InstallationFinishProject },
 ];
 
 const routes = [{ path: '/', Component: Home }];

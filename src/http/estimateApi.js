@@ -10,6 +10,11 @@ export const getAllEstimateForBrigade = async (id) => {
     return data
 }
 
+export const getAllEstimateForBrigadeFinishProject = async (id) => {
+    const {data} = await guestInstance.get(`estimate/getAllEstimateForBrigadeFinishProject/${id}`)
+    return data
+}
+
 export const getAllEstimateForBrigadeProject = async (id, project) => {
     const {data} = await guestInstance.get(`estimate/getAllEstimateForBrigadeProject/${id}/${project}`)
     return data
