@@ -274,6 +274,7 @@ function Estimate(props) {
                             <th></th>
                             <th style={{ textAlign: 'center' }}>Общая сумма</th>
                             <th style={{ textAlign: 'center' }}>Сумма выполенных работ</th>
+                            <th style={{ textAlign: 'center' }}>Выплаты</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -293,6 +294,15 @@ function Estimate(props) {
                                 const totalSum = estimateBrigade.estimates
                                   .filter((esCol) => esCol.done === 'true')
                                   .reduce((acc, cur) => acc + Number(cur.price), 0);
+                                return totalSum;
+                              })()}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {(() => {
+                                const totalSum = estimateBrigade.payments.reduce(
+                                  (acc, cur) => acc + Number(cur.sum),
+                                  0,
+                                );
                                 return totalSum;
                               })()}
                             </td>
