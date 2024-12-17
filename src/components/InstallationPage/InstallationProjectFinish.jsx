@@ -84,7 +84,6 @@ function InstallationProjectFinish() {
                 <th style={{ textAlign: 'center' }} className="thead_column">
                   Фото
                 </th>
-                <th className="thead_column"></th>
                 <th style={{ textAlign: 'center' }} className="thead_column">
                   Расчетный срок монтажа
                 </th>
@@ -109,15 +108,20 @@ function InstallationProjectFinish() {
                     {estimateProject.projectName}
                   </td>
                   <td>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Button
+                        variant="link"
+                        style={{
+                          color: 'black',
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          padding: '0px',
+                        }}
+                        onClick={() => addToInfo(estimateProject.projectId)}>
+                        Подробнее
+                      </Button>
+                    </div>
                     <ImageProject projectId={estimateProject.projectId} />
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      onClick={() => addToInfo(estimateProject.projectId)}>
-                      Подробнее
-                    </Button>
                   </td>
                   <td style={{ textAlign: 'center' }}>{estimateProject.installationBilling}</td>
                   {projectDays.some(
