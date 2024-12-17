@@ -68,20 +68,21 @@ function ImageProject({ projectId }) {
         <div
           className="projectinfo__files-content"
           style={{
-            marginTop: '25px',
             display: 'flex',
             flexDirection: 'column',
           }}>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              variant="dark"
-              className="mt-3"
-              size="sm"
-              onClick={() => handleCreateImage(user)}>
-              Добавить изображение
+              variant="link"
+              onClick={() => handleCreateImage(user)}
+              style={{ color: 'black', fontSize: '16px', fontWeight: '600', padding: '0px' }}>
+              Загрузить
             </Button>
           </div>
-          <Button variant="link" className="mt-3" onClick={toggleImagesVisibility}>
+          <Button
+            variant="link"
+            onClick={toggleImagesVisibility}
+            style={{ color: 'black', fontSize: '16px', fontWeight: '600', padding: '0px' }}>
             {showImages ? 'Скрыть' : 'Показать все'}
           </Button>
 
