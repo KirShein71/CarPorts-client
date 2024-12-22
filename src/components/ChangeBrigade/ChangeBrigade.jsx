@@ -296,48 +296,54 @@ function ChangeBrigade() {
                         Добавить
                       </td>
                     )}
-                    {daysBrigade
-                      .filter((dayBrigade) => dayBrigade.dateId === date.id)
-                      .map((dayBrigadeSum) => {
-                        return (
-                          <td
-                            style={{
-                              textAlign: 'right',
-                            }}
-                            key={dayBrigadeSum.id}>
-                            {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
-                              <div>
-                                {(() => {
-                                  const projectTotal = dayBrigadeSum.project.estimates
-                                    .filter(
-                                      (estimateForProject) => estimateForProject.done === 'true',
-                                    )
-                                    .reduce(
-                                      (accumulator, current) => accumulator + Number(current.price),
-                                      0,
-                                    );
+                    {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === date.id).length >
+                    0 ? (
+                      daysBrigade
+                        .filter((dayBrigade) => dayBrigade.dateId === date.id)
+                        .map((dayBrigadeSum) => {
+                          return (
+                            <td
+                              style={{
+                                textAlign: 'right',
+                              }}
+                              key={dayBrigadeSum.id}>
+                              {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                                <div>
+                                  {(() => {
+                                    const projectTotal = dayBrigadeSum.project.estimates
+                                      .filter(
+                                        (estimateForProject) => estimateForProject.done === 'true',
+                                      )
+                                      .reduce(
+                                        (accumulator, current) =>
+                                          accumulator + Number(current.price),
+                                        0,
+                                      );
 
-                                  const projectDays = daysProject
-                                    .filter(
-                                      (dayProject) =>
-                                        dayProject.projectId === dayBrigadeSum.projectId,
-                                    )
-                                    .map((dayProject) => dayProject.days);
-                                  return (
-                                    <div>
-                                      {new Intl.NumberFormat('ru-RU').format(
-                                        Math.ceil(projectTotal / projectDays),
-                                      )}
-                                    </div>
-                                  );
-                                })()}
-                              </div>
-                            ) : (
-                              ''
-                            )}
-                          </td>
-                        );
-                      })}
+                                    const projectDays = daysProject
+                                      .filter(
+                                        (dayProject) =>
+                                          dayProject.projectId === dayBrigadeSum.projectId,
+                                      )
+                                      .map((dayProject) => dayProject.days);
+                                    return (
+                                      <div>
+                                        {new Intl.NumberFormat('ru-RU').format(
+                                          Math.ceil(projectTotal / projectDays),
+                                        )}
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                              ) : (
+                                ''
+                              )}
+                            </td>
+                          );
+                        })
+                    ) : (
+                      <td></td>
+                    )}
                   </tr>
                 ))}
               </tbody>
