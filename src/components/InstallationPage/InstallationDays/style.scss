@@ -1,17 +1,12 @@
 .installation-days {
     margin-top: 15px;
 
-    &__filter {
-        display: flex;
-        justify-content: space-between;
-        @media(max-width: 460px) {
-            display: contents;
-        }
-    }
+   
 
     &__month {
         margin-top: 15px;
         display: flex;
+        justify-content: center;
 
         &-arrow {
             img {
@@ -30,7 +25,7 @@
 
     &__period {
         display: flex;
-        margin-top: 15px;
+        justify-content: center;
         @media(max-width: 450px) {
             margin-top: 0px;
         }

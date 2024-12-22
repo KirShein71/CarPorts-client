@@ -108,7 +108,8 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
           <thead>
             <tr>
               <th style={{ textAlign: 'center' }}>Дата</th>
-              <th></th>
+              <th style={{ textAlign: 'center' }}>Проект</th>
+              <th style={{ textAlign: 'center' }}>За день</th>
             </tr>
           </thead>
           <tbody>
@@ -116,14 +117,14 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
               <tr key={dateInstal.id}>
                 <td
                   style={{
-                    textAlign: 'center',
+                    textAlign: 'left',
                     backgroundColor:
                       dateInstal.date.toLocaleString().split('T')[0] === todayString
                         ? '#bbbbbb'
                         : 'transparent',
                   }}>
                   {new Date(dateInstal.date).toLocaleDateString('ru-RU')} -{' '}
-                  {getDayName(dateInstal.date)}
+                  <div> {getDayName(dateInstal.date)}</div>
                 </td>
                 {daysBrigade
                   .filter((dayBrigade) => dayBrigade.dateId === dateInstal.id)
@@ -131,7 +132,7 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                     return (
                       <td
                         style={{
-                          textAlign: 'center',
+                          textAlign: 'left',
                           color: dayBrigade.warranty
                             ? '#0000ff'
                             : dayBrigade.weekend
@@ -146,14 +147,29 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                         }}
                         key={dayBrigade.id}>
                         {dayBrigade.project?.name ||
-                          dayBrigade.weekend ||
-                          dayBrigade.warranty ||
-                          dayBrigade.downtime ||
-                          ''}
-                        {dayBrigade.project && dayBrigade.project.estimates ? (
+                          (dayBrigade.weekend
+                            ? 'Выходной'
+                            : dayBrigade.warranty
+                            ? 'Гарантия'
+                            : dayBrigade.downtime
+                            ? 'Время простоя'
+                            : '')}
+                      </td>
+                    );
+                  })}
+                {daysBrigade
+                  .filter((dayBrigade) => dayBrigade.dateId === dateInstal.id)
+                  .map((dayBrigadeSum) => {
+                    return (
+                      <td
+                        style={{
+                          textAlign: 'right',
+                        }}
+                        key={dayBrigadeSum.id}>
+                        {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
                           <div>
                             {(() => {
-                              const projectTotal = dayBrigade.project.estimates
+                              const projectTotal = dayBrigadeSum.project.estimates
                                 .filter((estimateForProject) => estimateForProject.done === 'true')
                                 .reduce(
                                   (accumulator, current) => accumulator + Number(current.price),
@@ -162,13 +178,11 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
 
                               const projectDays = daysProject
                                 .filter(
-                                  (dayProject) => dayProject.projectId === dayBrigade.projectId,
+                                  (dayProject) => dayProject.projectId === dayBrigadeSum.projectId,
                                 )
                                 .map((dayProject) => dayProject.days);
-
                               return (
                                 <div>
-                                  Заработок за день:{' '}
                                   {new Intl.NumberFormat('ru-RU').format(
                                     Math.ceil(projectTotal / projectDays),
                                   )}
