@@ -1,7 +1,12 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import { fetchBrigades } from '../../http/bragadeApi';
-import { getAllBrigadesDate, getAllDate } from '../../http/brigadesDateApi';
+import {
+  getAllBrigadesDate,
+  getAllDate,
+  getAllOneBrigadesDate,
+  getAllNumberOfDaysBrigadeForProject,
+} from '../../http/brigadesDateApi';
 import { getAllRegion } from '../../http/regionApi';
 import CreateBrigadeDate from './modals/CreateBrigadeDate';
 import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
@@ -13,6 +18,8 @@ function ChangeBrigade() {
   const [brigades, setBrigades] = React.useState([]);
   const [dates, setDates] = React.useState([]);
   const [brigadesDates, setBrigadesDates] = React.useState([]);
+  const [daysBrigade, setDaysBrigade] = React.useState([]);
+  const [daysProject, setDaysProject] = React.useState([]);
   const [bridaDateId, setBrigadeDateId] = React.useState(null);
   const [selectedBrigade, setSelectedBrigade] = React.useState(null);
   const [selectedBrigadeName, setSelectedBrigadeName] = React.useState(null);
@@ -49,7 +56,27 @@ function ChangeBrigade() {
     };
 
     fetchData();
-  }, [change, openUpdateBrigadeDate]);
+  }, [change]);
+
+  React.useEffect(() => {
+    const fetchBrigadeData = async () => {
+      if (selectedBrigade !== null) {
+        try {
+          const [daysData, projectDaysData] = await Promise.all([
+            getAllOneBrigadesDate(selectedBrigade),
+            getAllNumberOfDaysBrigadeForProject(selectedBrigade),
+          ]);
+
+          setDaysBrigade(daysData);
+          setDaysProject(projectDaysData);
+        } catch (error) {
+          console.error('Error fetching brigade data:', error);
+        }
+      }
+    };
+
+    fetchBrigadeData();
+  }, [selectedBrigade]);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -201,11 +228,8 @@ function ChangeBrigade() {
               <thead>
                 <tr>
                   <th>Дата</th>
-                  {brigades
-                    .filter((brigadeName) => brigadeName.name === selectedBrigadeName)
-                    .map((brigadeName) => (
-                      <th key={brigadeName.id}>{brigadeName.name}</th>
-                    ))}
+                  <th>Проект</th>
+                  <th>За день</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,7 +242,7 @@ function ChangeBrigade() {
                             ? '#bbbbbb'
                             : 'transparent',
                       }}>
-                      {new Date(date.date).toLocaleDateString('ru-RU')} - {getDayName(date.date)}
+                      {new Date(date.date).toLocaleDateString('ru-RU')} -{getDayName(date.date)}
                     </td>
                     {brigadesDates.filter(
                       (brigadeDate) =>
@@ -272,6 +296,48 @@ function ChangeBrigade() {
                         Добавить
                       </td>
                     )}
+                    {daysBrigade
+                      .filter((dayBrigade) => dayBrigade.dateId === date.id)
+                      .map((dayBrigadeSum) => {
+                        return (
+                          <td
+                            style={{
+                              textAlign: 'right',
+                            }}
+                            key={dayBrigadeSum.id}>
+                            {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                              <div>
+                                {(() => {
+                                  const projectTotal = dayBrigadeSum.project.estimates
+                                    .filter(
+                                      (estimateForProject) => estimateForProject.done === 'true',
+                                    )
+                                    .reduce(
+                                      (accumulator, current) => accumulator + Number(current.price),
+                                      0,
+                                    );
+
+                                  const projectDays = daysProject
+                                    .filter(
+                                      (dayProject) =>
+                                        dayProject.projectId === dayBrigadeSum.projectId,
+                                    )
+                                    .map((dayProject) => dayProject.days);
+                                  return (
+                                    <div>
+                                      {new Intl.NumberFormat('ru-RU').format(
+                                        Math.ceil(projectTotal / projectDays),
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            ) : (
+                              ''
+                            )}
+                          </td>
+                        );
+                      })}
                   </tr>
                 ))}
               </tbody>
