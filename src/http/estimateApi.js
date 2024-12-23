@@ -5,6 +5,11 @@ export const getEstimate = async () => {
     return data
 }
 
+export const getAllEstimatesForAllProjects = async () => {
+    const { data } = await guestInstance.get('estimate/getAllEstimatesForAllProjects')
+    return data
+}
+
 export const getAllEstimateForBrigade = async (id) => {
     const {data} = await guestInstance.get(`estimate/getAllEstimateForBrigade/${id}`)
     return data

@@ -67,6 +67,7 @@ function HomePageList() {
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { title: 'Администирование' },
+    { label: 'Сметы', link: '/distribution' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
     { label: 'Справочники', link: '/adding' },
     { label: 'Админ', link: '/admin' },
