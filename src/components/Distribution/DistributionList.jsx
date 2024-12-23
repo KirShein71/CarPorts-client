@@ -42,11 +42,13 @@ function DistributionList() {
                       <div key={brigadeName.id} className="brigade-name">
                         {brigadeName.brigadeName}
                       </div>
-                      {brigadeName.payments.map((paymentDate) => (
-                        <div key={paymentDate.id} className="brigade-date">
-                          <Moment format="DD.MM.YYYY">{paymentDate.date}</Moment>
-                        </div>
-                      ))}
+                      <div style={{ marginTop: '15px' }}>
+                        {brigadeName.payments.map((paymentDate) => (
+                          <div key={paymentDate.id} className="brigade-date">
+                            <Moment format="DD.MM.YYYY">{paymentDate.date}</Moment>
+                          </div>
+                        ))}
+                      </div>
                     </>
                   ))}
                 </td>
@@ -75,11 +77,13 @@ function DistributionList() {
                           return new Intl.NumberFormat('ru-RU').format(totalSum);
                         })()}
                       </div>
-                      {brigade.payments.map((brigadePayment) => (
-                        <div key={brigadePayment.id} className="brigade-payment">
-                          {new Intl.NumberFormat('ru-RU').format(brigadePayment.sum)}
-                        </div>
-                      ))}
+                      <div style={{ marginTop: '15px' }}>
+                        {brigade.payments.map((brigadePayment) => (
+                          <div key={brigadePayment.id} className="brigade-payment">
+                            {new Intl.NumberFormat('ru-RU').format(brigadePayment.sum)}
+                          </div>
+                        ))}
+                      </div>
                     </>
                   ))}
                 </td>

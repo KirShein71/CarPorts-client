@@ -1,3 +1,20 @@
 .project-sum, .project-name, .brigade-name, .brigade-sum, .brigade-payment, .head-distribution {
     white-space: nowrap;
 }
+
+.project-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.brigade-name {
+    padding-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.brigade-sum {
+    padding-top: 20px;
+}
+
+
