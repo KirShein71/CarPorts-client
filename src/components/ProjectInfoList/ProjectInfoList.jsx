@@ -231,7 +231,7 @@ function ProjectInfoList() {
         setChange={setChange}
       />
       <div className="header">
-        <Link to="/project">
+        <Link to={location.state.from}>
           <img className="header__icon" src="../img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Подробная информация</h1>
