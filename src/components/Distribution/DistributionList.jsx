@@ -3,13 +3,14 @@ import Header from '../Header/Header';
 import { Table } from 'react-bootstrap';
 import { getAllEstimatesForAllProjects } from '../../http/estimateApi';
 import Moment from 'react-moment';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import './style.scss';
 
 function DistributionList() {
   const [calculations, setCalculations] = React.useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     getAllEstimatesForAllProjects().then((data) => setCalculations(data));
@@ -60,14 +61,14 @@ function DistributionList() {
                   {calculation.brigades.map((brigade) => (
                     <>
                       <div className="brigade-sum">
-                        Сумма сметы:
+                        Смета:
                         {(() => {
                           const totalSum = brigade.estimates
                             .filter((esCol) => esCol.done === 'true')
                             .reduce((acc, cur) => acc + Number(cur.price), 0);
                           return new Intl.NumberFormat('ru-RU').format(totalSum);
                         })()}
-                        /Сумма выплаты:{' '}
+                        /Выплаты:{' '}
                         {(() => {
                           const totalSum = brigade.payments.reduce(
                             (acc, cur) => acc + Number(cur.sum),
