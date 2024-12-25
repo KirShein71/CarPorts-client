@@ -121,6 +121,7 @@ const managerProjectRoutes = [
   { path: '/ordermaterials', Component: OrderMaterials },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: '/adding', Component: Adding },
+  { path: '/distribution', Component: Distrbution },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];

@@ -52,6 +52,7 @@ function HomePageList() {
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { title: 'Администирование' },
     { label: 'Справочники', link: '/adding' },
+    { label: 'Сметы', link: '/distribution' },
   ];
 
   const adminItems = [
