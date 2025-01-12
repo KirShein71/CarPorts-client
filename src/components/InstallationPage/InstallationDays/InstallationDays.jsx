@@ -11,11 +11,12 @@ import './style.scss';
 registerLocale('rus', rus); // Регистрируем локаль
 setDefaultLocale('rus');
 
-function InstallationDays({ dates, daysBrigade, daysProject }) {
+function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
+  console.log(serviceEstimate);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -171,9 +172,15 @@ function InstallationDays({ dates, daysBrigade, daysProject }) {
                           {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
                             <div>
                               {(() => {
-                                const projectTotal = dayBrigadeSum.project.estimates
+                                const projectTotal = serviceEstimate
                                   .filter(
-                                    (estimateForProject) => estimateForProject.done === 'true',
+                                    (estimateForProject) =>
+                                      estimateForProject.projectId === dayBrigadeSum.projectId,
+                                  )
+                                  .flatMap((estimateForProject) =>
+                                    estimateForProject.estimates.filter(
+                                      (est) => est.done === 'true',
+                                    ),
                                   )
                                   .reduce(
                                     (accumulator, current) => accumulator + Number(current.price),

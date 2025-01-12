@@ -236,7 +236,12 @@ function InstallationPage() {
         </div>
       </div>
       <div className="installation-page__title">Календарь</div>
-      <InstallationDays dates={dates} daysBrigade={daysBrigade} daysProject={daysProject} />
+      <InstallationDays
+        dates={dates}
+        daysBrigade={daysBrigade}
+        daysProject={daysProject}
+        serviceEstimate={serviceEstimate}
+      />
       <div className="installation-page__logout" onClick={handleLogout}>
         {' '}
         Выйти
