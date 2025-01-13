@@ -7,6 +7,7 @@ import {
   getAllOneBrigadesDate,
   getAllNumberOfDaysBrigadeForProject,
 } from '../../http/brigadesDateApi';
+import { getAllEstimateForBrigade } from '../../http/estimateApi';
 import { getAllRegion } from '../../http/regionApi';
 import CreateBrigadeDate from './modals/CreateBrigadeDate';
 import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
@@ -18,6 +19,7 @@ function ChangeBrigade() {
   const [brigades, setBrigades] = React.useState([]);
   const [dates, setDates] = React.useState([]);
   const [brigadesDates, setBrigadesDates] = React.useState([]);
+  const [serviceEstimate, setServiceEstimate] = React.useState([]);
   const [daysBrigade, setDaysBrigade] = React.useState([]);
   const [daysProject, setDaysProject] = React.useState([]);
   const [bridaDateId, setBrigadeDateId] = React.useState(null);
@@ -62,13 +64,16 @@ function ChangeBrigade() {
     const fetchBrigadeData = async () => {
       if (selectedBrigade !== null) {
         try {
-          const [daysData, projectDaysData] = await Promise.all([
+          const [daysData, projectDaysData, estimateData] = await Promise.all([
             getAllOneBrigadesDate(selectedBrigade),
             getAllNumberOfDaysBrigadeForProject(selectedBrigade),
+            getAllEstimateForBrigade(selectedBrigade),
           ]);
 
           setDaysBrigade(daysData);
           setDaysProject(projectDaysData);
+          setServiceEstimate(estimateData);
+          console.log(estimateData);
         } catch (error) {
           console.error('Error fetching brigade data:', error);
         }
@@ -76,6 +81,16 @@ function ChangeBrigade() {
     };
 
     fetchBrigadeData();
+  }, [selectedBrigade]);
+
+  React.useEffect(() => {
+    if (selectedBrigade !== null) {
+      try {
+        getAllEstimateForBrigade(selectedBrigade).then((data) => setServiceEstimate(data));
+      } catch (error) {
+        console.error('Error fetching brigade data:', error);
+      }
+    }
   }, [selectedBrigade]);
 
   const handlePrevMonth = () => {
@@ -310,9 +325,15 @@ function ChangeBrigade() {
                               {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
                                 <div>
                                   {(() => {
-                                    const projectTotal = dayBrigadeSum.project.estimates
+                                    const projectTotal = serviceEstimate
                                       .filter(
-                                        (estimateForProject) => estimateForProject.done === 'true',
+                                        (estimateForProject) =>
+                                          estimateForProject.projectId === dayBrigadeSum.projectId,
+                                      )
+                                      .flatMap((estimateForProject) =>
+                                        estimateForProject.estimates.filter(
+                                          (est) => est.done === 'true',
+                                        ),
                                       )
                                       .reduce(
                                         (accumulator, current) =>
