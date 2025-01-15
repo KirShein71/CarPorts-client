@@ -7,7 +7,7 @@ import {
   getAllOneBrigadesDate,
   getAllNumberOfDaysBrigadeForProject,
 } from '../../http/brigadesDateApi';
-import { getAllEstimateForBrigade } from '../../http/estimateApi';
+import { getAllEstimateForBrigadeAllProject } from '../../http/estimateApi';
 import { getAllRegion } from '../../http/regionApi';
 import CreateBrigadeDate from './modals/CreateBrigadeDate';
 import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
@@ -67,7 +67,7 @@ function ChangeBrigade() {
           const [daysData, projectDaysData, estimateData] = await Promise.all([
             getAllOneBrigadesDate(selectedBrigade),
             getAllNumberOfDaysBrigadeForProject(selectedBrigade),
-            getAllEstimateForBrigade(selectedBrigade),
+            getAllEstimateForBrigadeAllProject(selectedBrigade),
           ]);
 
           setDaysBrigade(daysData);
@@ -86,7 +86,9 @@ function ChangeBrigade() {
   React.useEffect(() => {
     if (selectedBrigade !== null) {
       try {
-        getAllEstimateForBrigade(selectedBrigade).then((data) => setServiceEstimate(data));
+        getAllEstimateForBrigadeAllProject(selectedBrigade).then((data) =>
+          setServiceEstimate(data),
+        );
       } catch (error) {
         console.error('Error fetching brigade data:', error);
       }
