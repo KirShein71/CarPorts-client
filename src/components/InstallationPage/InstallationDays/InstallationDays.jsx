@@ -11,12 +11,12 @@ import './style.scss';
 registerLocale('rus', rus); // Регистрируем локаль
 setDefaultLocale('rus');
 
-function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) {
+function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, paymentBrigade }) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  console.log(serviceEstimate);
+  console.log(paymentBrigade);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -110,7 +110,9 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) 
             <tr>
               <th style={{ textAlign: 'center' }}>Дата</th>
               <th style={{ textAlign: 'center' }}>Проект</th>
-              <th style={{ textAlign: 'center' }}>За день</th>
+              <th style={{ textAlign: 'center' }}>Смета</th>
+              <th style={{ textAlign: 'center' }}>Выполнено</th>
+              <th style={{ textAlign: 'center' }}>Выплачено</th>
             </tr>
           </thead>
           <tbody>
@@ -179,6 +181,50 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) 
                                   )
                                   .flatMap((estimateForProject) =>
                                     estimateForProject.estimates.filter(
+                                      (est) => est.done === 'true' || est.done === 'false',
+                                    ),
+                                  )
+                                  .reduce(
+                                    (accumulator, current) => accumulator + Number(current.price),
+                                    0,
+                                  );
+                                return (
+                                  <div>
+                                    {new Intl.NumberFormat('ru-RU').format(Math.ceil(projectTotal))}
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                        </td>
+                      );
+                    })
+                ) : (
+                  <td></td>
+                )}
+                {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === dateInstal.id).length >
+                0 ? (
+                  daysBrigade
+                    .filter((dayBrigade) => dayBrigade.dateId === dateInstal.id)
+                    .map((dayBrigadeSum) => {
+                      return (
+                        <td
+                          style={{
+                            textAlign: 'right',
+                          }}
+                          key={dayBrigadeSum.id}>
+                          {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                            <div>
+                              {(() => {
+                                const projectTotal = serviceEstimate
+                                  .filter(
+                                    (estimateForProject) =>
+                                      estimateForProject.projectId === dayBrigadeSum.projectId,
+                                  )
+                                  .flatMap((estimateForProject) =>
+                                    estimateForProject.estimates.filter(
                                       (est) => est.done === 'true',
                                     ),
                                   )
@@ -187,17 +233,15 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) 
                                     0,
                                   );
 
-                                const projectDays = daysProject
-                                  .filter(
-                                    (dayProject) =>
-                                      dayProject.projectId === dayBrigadeSum.projectId,
-                                  )
-                                  .map((dayProject) => dayProject.days);
+                                // const projectDays = daysProject
+                                //   .filter(
+                                //     (dayProject) =>
+                                //       dayProject.projectId === dayBrigadeSum.projectId,
+                                //   )
+                                //   .map((dayProject) => dayProject.days);
                                 return (
                                   <div>
-                                    {new Intl.NumberFormat('ru-RU').format(
-                                      Math.ceil(projectTotal / projectDays),
-                                    )}
+                                    {new Intl.NumberFormat('ru-RU').format(Math.ceil(projectTotal))}
                                   </div>
                                 );
                               })()}
@@ -205,6 +249,33 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate }) 
                           ) : (
                             ''
                           )}
+                        </td>
+                      );
+                    })
+                ) : (
+                  <td></td>
+                )}
+                {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === dateInstal.id).length >
+                0 ? (
+                  daysBrigade
+                    .filter((dayBrigade) => dayBrigade.dateId === dateInstal.id)
+                    .map((dayBrigadeSum) => {
+                      const payments = paymentBrigade.filter(
+                        (paymentForProject) =>
+                          paymentForProject.projectId === dayBrigadeSum.projectId,
+                      );
+
+                      // Суммируем все значения sum
+                      const totalSum = payments.reduce(
+                        (acc, paymentForProject) => acc + paymentForProject.sum,
+                        0,
+                      );
+
+                      return (
+                        <td style={{ textAlign: 'right' }} key={dayBrigadeSum.id}>
+                          {payments.length > 0
+                            ? new Intl.NumberFormat('ru-RU').format(Math.ceil(totalSum))
+                            : 0}
                         </td>
                       );
                     })

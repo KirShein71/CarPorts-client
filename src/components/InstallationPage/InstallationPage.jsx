@@ -241,6 +241,7 @@ function InstallationPage() {
         daysBrigade={daysBrigade}
         daysProject={daysProject}
         serviceEstimate={serviceEstimate}
+        paymentBrigade={paymentBrigade}
       />
       <div className="installation-page__logout" onClick={handleLogout}>
         {' '}
