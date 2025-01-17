@@ -16,7 +16,6 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  console.log(paymentBrigade);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -188,9 +187,17 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
                                     (accumulator, current) => accumulator + Number(current.price),
                                     0,
                                   );
+                                const projectDays = daysProject
+                                  .filter(
+                                    (dayProject) =>
+                                      dayProject.projectId === dayBrigadeSum.projectId,
+                                  )
+                                  .map((dayProject) => dayProject.days);
                                 return (
                                   <div>
-                                    {new Intl.NumberFormat('ru-RU').format(Math.ceil(projectTotal))}
+                                    {new Intl.NumberFormat('ru-RU').format(
+                                      Math.ceil(projectTotal / projectDays),
+                                    )}
                                   </div>
                                 );
                               })()}
@@ -233,15 +240,17 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
                                     0,
                                   );
 
-                                // const projectDays = daysProject
-                                //   .filter(
-                                //     (dayProject) =>
-                                //       dayProject.projectId === dayBrigadeSum.projectId,
-                                //   )
-                                //   .map((dayProject) => dayProject.days);
+                                const projectDays = daysProject
+                                  .filter(
+                                    (dayProject) =>
+                                      dayProject.projectId === dayBrigadeSum.projectId,
+                                  )
+                                  .map((dayProject) => dayProject.days);
                                 return (
                                   <div>
-                                    {new Intl.NumberFormat('ru-RU').format(Math.ceil(projectTotal))}
+                                    {new Intl.NumberFormat('ru-RU').format(
+                                      Math.ceil(projectTotal / projectDays),
+                                    )}
                                   </div>
                                 );
                               })()}
@@ -270,11 +279,16 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
                         (acc, paymentForProject) => acc + paymentForProject.sum,
                         0,
                       );
+                      const projectDays = daysProject
+                        .filter((dayProject) => dayProject.projectId === dayBrigadeSum.projectId)
+                        .map((dayProject) => dayProject.days);
 
                       return (
                         <td style={{ textAlign: 'right' }} key={dayBrigadeSum.id}>
                           {payments.length > 0
-                            ? new Intl.NumberFormat('ru-RU').format(Math.ceil(totalSum))
+                            ? new Intl.NumberFormat('ru-RU').format(
+                                Math.ceil(totalSum / projectDays),
+                              )
                             : 0}
                         </td>
                       );

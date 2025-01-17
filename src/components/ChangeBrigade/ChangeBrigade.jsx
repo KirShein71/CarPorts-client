@@ -8,6 +8,7 @@ import {
   getAllNumberOfDaysBrigadeForProject,
 } from '../../http/brigadesDateApi';
 import { getAllEstimateForBrigadeAllProject } from '../../http/estimateApi';
+import { getAllPaymentForBrigade } from '../../http/paymentApi';
 import { getAllRegion } from '../../http/regionApi';
 import CreateBrigadeDate from './modals/CreateBrigadeDate';
 import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
@@ -22,6 +23,7 @@ function ChangeBrigade() {
   const [serviceEstimate, setServiceEstimate] = React.useState([]);
   const [daysBrigade, setDaysBrigade] = React.useState([]);
   const [daysProject, setDaysProject] = React.useState([]);
+  const [paymentBrigade, setPaymentBrigade] = React.useState([]);
   const [bridaDateId, setBrigadeDateId] = React.useState(null);
   const [selectedBrigade, setSelectedBrigade] = React.useState(null);
   const [selectedBrigadeName, setSelectedBrigadeName] = React.useState(null);
@@ -51,7 +53,7 @@ function ChangeBrigade() {
         setBrigadesDates(brigadesDatesData);
         setDates(datesData);
         setRegions(regionsData);
-        openUpdateBrigadeDate(false);
+        setOpenUpdateBrigadeDate(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -73,7 +75,6 @@ function ChangeBrigade() {
           setDaysBrigade(daysData);
           setDaysProject(projectDaysData);
           setServiceEstimate(estimateData);
-          console.log(estimateData);
         } catch (error) {
           console.error('Error fetching brigade data:', error);
         }
@@ -89,6 +90,16 @@ function ChangeBrigade() {
         getAllEstimateForBrigadeAllProject(selectedBrigade).then((data) =>
           setServiceEstimate(data),
         );
+      } catch (error) {
+        console.error('Error fetching brigade data:', error);
+      }
+    }
+  }, [selectedBrigade]);
+
+  React.useEffect(() => {
+    if (selectedBrigade !== null) {
+      try {
+        getAllPaymentForBrigade(selectedBrigade).then((data) => setPaymentBrigade(data));
       } catch (error) {
         console.error('Error fetching brigade data:', error);
       }
@@ -241,136 +252,274 @@ function ChangeBrigade() {
                 <img src="./img/right.png" alt="right arrow" />
               </div>
             </div>
-            <Table bordered size="sm" className="calendar-brigade__table">
-              <thead>
-                <tr>
-                  <th>Дата</th>
-                  <th>Проект</th>
-                  <th>За день</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredDates.map((date) => (
-                  <tr key={date.id}>
-                    <td
-                      style={{
-                        backgroundColor:
-                          date.date.toLocaleString().split('T')[0] === todayString
-                            ? '#bbbbbb'
-                            : 'transparent',
-                      }}>
-                      {new Date(date.date).toLocaleDateString('ru-RU')} -{getDayName(date.date)}
-                    </td>
-                    {brigadesDates.filter(
-                      (brigadeDate) =>
-                        brigadeDate.brigadeId === selectedBrigade && brigadeDate.dateId === date.id,
-                    ).length > 0 ? (
-                      brigadesDates
-                        .filter(
-                          (brigadeDate) =>
-                            brigadeDate.brigadeId === selectedBrigade &&
-                            brigadeDate.dateId === date.id,
-                        )
-                        .map((brigadeDate) => {
-                          return (
-                            <td
-                              style={{
-                                cursor: 'pointer',
-                                fontSize: '17px',
-                                fontWeight: '500',
-                                color: brigadeDate.warranty
-                                  ? '#0000ff'
-                                  : brigadeDate.weekend
-                                  ? '#9b2d30'
-                                  : brigadeDate.downtime
-                                  ? '#ff0000'
-                                  : '#000000',
-                                backgroundColor:
-                                  date.date.toLocaleString().split('T')[0] === todayString
-                                    ? '#bbbbbb'
-                                    : 'transparent',
-                              }}
-                              key={brigadeDate.id}
-                              onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
-                              {brigadeDate.project?.name ||
-                                brigadeDate.warranty ||
-                                brigadeDate.weekend ||
-                                brigadeDate.downtime ||
-                                ''}
-                            </td>
-                          );
-                        })
-                    ) : (
+            <div className="table-scrollable">
+              <Table bordered size="sm" className="calendar-brigade__table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Проект</th>
+                    <th>Смета</th>
+                    <th>Выполнено</th>
+                    <th>Выплачено</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredDates.map((date) => (
+                    <tr key={date.id}>
                       <td
                         style={{
-                          cursor: 'pointer',
                           backgroundColor:
                             date.date.toLocaleString().split('T')[0] === todayString
                               ? '#bbbbbb'
                               : 'transparent',
-                        }}
-                        onClick={() => handleOpenModalCreateBrigadeDate(selectedBrigade, date.id)}>
-                        Добавить
+                        }}>
+                        {new Date(date.date).toLocaleDateString('ru-RU')} -{getDayName(date.date)}
                       </td>
-                    )}
-                    {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === date.id).length >
-                    0 ? (
-                      daysBrigade
-                        .filter((dayBrigade) => dayBrigade.dateId === date.id)
-                        .map((dayBrigadeSum) => {
-                          return (
-                            <td
-                              style={{
-                                textAlign: 'right',
-                              }}
-                              key={dayBrigadeSum.id}>
-                              {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
-                                <div>
-                                  {(() => {
-                                    const projectTotal = serviceEstimate
-                                      .filter(
-                                        (estimateForProject) =>
-                                          estimateForProject.projectId === dayBrigadeSum.projectId,
-                                      )
-                                      .flatMap((estimateForProject) =>
-                                        estimateForProject.estimates.filter(
-                                          (est) => est.done === 'true',
-                                        ),
-                                      )
-                                      .reduce(
-                                        (accumulator, current) =>
-                                          accumulator + Number(current.price),
-                                        0,
+                      {brigadesDates.filter(
+                        (brigadeDate) =>
+                          brigadeDate.brigadeId === selectedBrigade &&
+                          brigadeDate.dateId === date.id,
+                      ).length > 0 ? (
+                        brigadesDates
+                          .filter(
+                            (brigadeDate) =>
+                              brigadeDate.brigadeId === selectedBrigade &&
+                              brigadeDate.dateId === date.id,
+                          )
+                          .map((brigadeDate) => {
+                            return (
+                              <td
+                                style={{
+                                  cursor: 'pointer',
+                                  fontSize: '17px',
+                                  fontWeight: '500',
+                                  color: brigadeDate.warranty
+                                    ? '#0000ff'
+                                    : brigadeDate.weekend
+                                    ? '#9b2d30'
+                                    : brigadeDate.downtime
+                                    ? '#ff0000'
+                                    : '#000000',
+                                  backgroundColor:
+                                    date.date.toLocaleString().split('T')[0] === todayString
+                                      ? '#bbbbbb'
+                                      : 'transparent',
+                                }}
+                                key={brigadeDate.id}
+                                onClick={() => handleOpenModalUpdateBrigadeDate(brigadeDate.id)}>
+                                {brigadeDate.project?.name ||
+                                  brigadeDate.warranty ||
+                                  brigadeDate.weekend ||
+                                  brigadeDate.downtime ||
+                                  ''}
+                              </td>
+                            );
+                          })
+                      ) : (
+                        <td
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor:
+                              date.date.toLocaleString().split('T')[0] === todayString
+                                ? '#bbbbbb'
+                                : 'transparent',
+                          }}
+                          onClick={() =>
+                            handleOpenModalCreateBrigadeDate(selectedBrigade, date.id)
+                          }>
+                          Добавить
+                        </td>
+                      )}
+                      {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === date.id).length >
+                      0 ? (
+                        daysBrigade
+                          .filter((dayBrigade) => dayBrigade.dateId === date.id)
+                          .map((dayBrigadeSum) => {
+                            return (
+                              <td
+                                style={{
+                                  textAlign: 'right',
+                                }}
+                                key={dayBrigadeSum.id}>
+                                {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const projectTotal = serviceEstimate
+                                        .filter(
+                                          (estimateForProject) =>
+                                            estimateForProject.projectId ===
+                                            dayBrigadeSum.projectId,
+                                        )
+                                        .flatMap((estimateForProject) =>
+                                          estimateForProject.estimates.filter(
+                                            (est) => est.done === 'true' || est.done === 'false',
+                                          ),
+                                        )
+                                        .reduce(
+                                          (accumulator, current) =>
+                                            accumulator + Number(current.price),
+                                          0,
+                                        );
+
+                                      const projectDays = daysProject
+                                        .filter(
+                                          (dayProject) =>
+                                            dayProject.projectId === dayBrigadeSum.projectId,
+                                        )
+                                        .map((dayProject) => dayProject.days);
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(projectTotal),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(projectTotal / projectDays),
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : (
+                                  ''
+                                )}
+                              </td>
+                            );
+                          })
+                      ) : (
+                        <td></td>
+                      )}
+                      {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === date.id).length >
+                      0 ? (
+                        daysBrigade
+                          .filter((dayBrigade) => dayBrigade.dateId === date.id)
+                          .map((dayBrigadeSum) => {
+                            return (
+                              <td
+                                style={{
+                                  textAlign: 'right',
+                                }}
+                                key={dayBrigadeSum.id}>
+                                {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const projectTotal = serviceEstimate
+                                        .filter(
+                                          (estimateForProject) =>
+                                            estimateForProject.projectId ===
+                                            dayBrigadeSum.projectId,
+                                        )
+                                        .flatMap((estimateForProject) =>
+                                          estimateForProject.estimates.filter(
+                                            (est) => est.done === 'true',
+                                          ),
+                                        )
+                                        .reduce(
+                                          (accumulator, current) =>
+                                            accumulator + Number(current.price),
+                                          0,
+                                        );
+
+                                      const projectDays = daysProject
+                                        .filter(
+                                          (dayProject) =>
+                                            dayProject.projectId === dayBrigadeSum.projectId,
+                                        )
+                                        .map((dayProject) => dayProject.days);
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(projectTotal),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(projectTotal / projectDays),
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : (
+                                  ''
+                                )}
+                              </td>
+                            );
+                          })
+                      ) : (
+                        <td></td>
+                      )}
+                      {daysBrigade.filter((dayBrigade) => dayBrigade.dateId === date.id).length >
+                      0 ? (
+                        daysBrigade
+                          .filter((dayBrigade) => dayBrigade.dateId === date.id)
+                          .map((dayBrigadeSum) => {
+                            return (
+                              <td
+                                style={{
+                                  textAlign: 'right',
+                                }}
+                                key={dayBrigadeSum.id}>
+                                {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const payments = paymentBrigade.filter(
+                                        (paymentForProject) =>
+                                          paymentForProject.projectId === dayBrigadeSum.projectId,
                                       );
 
-                                    const projectDays = daysProject
-                                      .filter(
-                                        (dayProject) =>
-                                          dayProject.projectId === dayBrigadeSum.projectId,
-                                      )
-                                      .map((dayProject) => dayProject.days);
-                                    return (
-                                      <div>
-                                        {new Intl.NumberFormat('ru-RU').format(
-                                          Math.ceil(projectTotal / projectDays),
-                                        )}
-                                      </div>
-                                    );
-                                  })()}
-                                </div>
-                              ) : (
-                                ''
-                              )}
-                            </td>
-                          );
-                        })
-                    ) : (
-                      <td></td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                                      // Суммируем все значения sum
+                                      const totalSum = payments.reduce(
+                                        (acc, paymentForProject) => acc + paymentForProject.sum,
+                                        0,
+                                      );
+                                      const projectDays = daysProject
+                                        .filter(
+                                          (dayProject) =>
+                                            dayProject.projectId === dayBrigadeSum.projectId,
+                                        )
+                                        .map((dayProject) => dayProject.days);
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(totalSum),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(totalSum / projectDays),
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : (
+                                  ''
+                                )}
+                              </td>
+                            );
+                          })
+                      ) : (
+                        <td></td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           </>
         ) : (
           ''
