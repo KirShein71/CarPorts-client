@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAllEstimateForBrigade } from '../../http/estimateApi';
+import { getAllEstimateForBrigadeAllProject } from '../../http/estimateApi';
 import {
   getAllOneBrigadesDate,
   getAllDate,
@@ -40,7 +40,7 @@ function InstallationPage() {
 
     // Создаем массив промисов
     const promises = [
-      getAllEstimateForBrigade(brigadeId).then(setServiceEstimate),
+      getAllEstimateForBrigadeAllProject(brigadeId).then(setServiceEstimate),
       getAllOneBrigadesDate(brigadeId).then(setDaysBrigade),
       getAllDate().then(setDates),
       getAllNumberOfDaysBrigadeForProject(brigadeId).then(setDaysProject),
