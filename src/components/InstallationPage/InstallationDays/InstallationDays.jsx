@@ -11,7 +11,13 @@ import './style.scss';
 registerLocale('rus', rus); // Регистрируем локаль
 setDefaultLocale('rus');
 
-function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, paymentBrigade }) {
+function InstallationDays({
+  dates,
+  daysBrigade,
+  daysProject,
+  serviceEstimateAllProject,
+  paymentBrigade,
+}) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
   const [startDate, setStartDate] = React.useState('');
@@ -173,7 +179,7 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
                           {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
                             <div>
                               {(() => {
-                                const projectTotal = serviceEstimate
+                                const projectTotal = serviceEstimateAllProject
                                   .filter(
                                     (estimateForProject) =>
                                       estimateForProject.projectId === dayBrigadeSum.projectId,
@@ -225,7 +231,7 @@ function InstallationDays({ dates, daysBrigade, daysProject, serviceEstimate, pa
                           {dayBrigadeSum.project && dayBrigadeSum.project.estimates ? (
                             <div>
                               {(() => {
-                                const projectTotal = serviceEstimate
+                                const projectTotal = serviceEstimateAllProject
                                   .filter(
                                     (estimateForProject) =>
                                       estimateForProject.projectId === dayBrigadeSum.projectId,

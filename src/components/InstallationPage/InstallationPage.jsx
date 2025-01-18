@@ -1,5 +1,8 @@
 import React from 'react';
-import { getAllEstimateForBrigadeAllProject } from '../../http/estimateApi';
+import {
+  getAllEstimateForBrigadeAllProject,
+  getAllEstimateForBrigade,
+} from '../../http/estimateApi';
 import {
   getAllOneBrigadesDate,
   getAllDate,
@@ -19,6 +22,7 @@ function InstallationPage() {
   const { user } = React.useContext(AppContext);
   const [brigade, setBrigade] = React.useState([]);
   const [serviceEstimate, setServiceEstimate] = React.useState([]);
+  const [serviceEstimateAllProject, setServiceEstimateAllProject] = React.useState([]);
   const [paymentBrigade, setPaymentBrigade] = React.useState([]);
   const [daysBrigade, setDaysBrigade] = React.useState([]);
   const [dates, setDates] = React.useState([]);
@@ -40,7 +44,8 @@ function InstallationPage() {
 
     // Создаем массив промисов
     const promises = [
-      getAllEstimateForBrigadeAllProject(brigadeId).then(setServiceEstimate),
+      getAllEstimateForBrigade(brigadeId).then(setServiceEstimate),
+      getAllEstimateForBrigadeAllProject(brigadeId).then(setServiceEstimateAllProject),
       getAllOneBrigadesDate(brigadeId).then(setDaysBrigade),
       getAllDate().then(setDates),
       getAllNumberOfDaysBrigadeForProject(brigadeId).then(setDaysProject),
@@ -240,7 +245,7 @@ function InstallationPage() {
         dates={dates}
         daysBrigade={daysBrigade}
         daysProject={daysProject}
-        serviceEstimate={serviceEstimate}
+        serviceEstimateAllProject={serviceEstimateAllProject}
         paymentBrigade={paymentBrigade}
       />
       <div className="installation-page__logout" onClick={handleLogout}>
