@@ -256,11 +256,11 @@ function ChangeBrigade() {
               <Table bordered size="sm" className="calendar-brigade__table">
                 <thead>
                   <tr>
-                    <th>Дата</th>
-                    <th>Проект</th>
-                    <th>Смета</th>
-                    <th>Выполнено</th>
-                    <th>Выплачено</th>
+                    <th className="thead_column">Дата</th>
+                    <th className="thead_column">Проект</th>
+                    <th className="thead_column">Смета</th>
+                    <th className="thead_column">Выполнено</th>
+                    <th className="thead_column">Выплачено</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -350,14 +350,12 @@ function ChangeBrigade() {
                                             estimateForProject.projectId ===
                                             dayBrigadeSum.projectId,
                                         )
-                                        .flatMap((estimateForProject) =>
-                                          estimateForProject.estimates.filter(
-                                            (est) => est.done === 'true' || est.done === 'false',
-                                          ),
+                                        .flatMap(
+                                          (estimateForProject) => estimateForProject.estimates,
                                         )
                                         .reduce(
                                           (accumulator, current) =>
-                                            accumulator + Number(current.price),
+                                            accumulator + Number(current.price), // Суммируем все цены
                                           0,
                                         );
 

@@ -184,15 +184,12 @@ function InstallationDays({
                                     (estimateForProject) =>
                                       estimateForProject.projectId === dayBrigadeSum.projectId,
                                   )
-                                  .flatMap((estimateForProject) =>
-                                    estimateForProject.estimates.filter(
-                                      (est) => est.done === 'true' || est.done === 'false',
-                                    ),
-                                  )
+                                  .flatMap((estimateForProject) => estimateForProject.estimates)
                                   .reduce(
                                     (accumulator, current) => accumulator + Number(current.price),
                                     0,
                                   );
+
                                 const projectDays = daysProject
                                   .filter(
                                     (dayProject) =>
