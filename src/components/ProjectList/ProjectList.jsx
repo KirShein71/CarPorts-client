@@ -10,6 +10,7 @@ import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
 import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import Checkbox from '../Checkbox/Checkbox';
 import Moment from 'react-moment';
 
 function ProjectList() {
@@ -29,6 +30,8 @@ function ProjectList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
   const [createInstallationBillingModal, setCreateInstallationBillingModal] = React.useState(false);
+  const [projectMoscowCheckbox, setProjectMoscowCheckbox] = React.useState(false);
+  const [projectSpbCheckbox, setProjectSpbCheckbox] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -65,6 +68,36 @@ function ProjectList() {
     );
     setFilteredProjects(filtered);
   }, [projects, searchQuery]);
+
+  const handleMoscowCheckboxChange = () => {
+    setProjectMoscowCheckbox((prev) => !prev);
+  };
+
+  React.useEffect(() => {
+    if (projectMoscowCheckbox) {
+      // Фильтруем проекты только если чекбокс активен
+      const filtered = projects.filter((project) => project.regionId === 2);
+      setFilteredProjects(filtered);
+    } else {
+      // Если чекбокс не активен, показываем все проекты
+      setFilteredProjects(projects);
+    }
+  }, [projects, projectMoscowCheckbox]);
+
+  const handleSpbCheckboxChange = () => {
+    setProjectSpbCheckbox((prev) => !prev);
+  };
+
+  React.useEffect(() => {
+    if (projectSpbCheckbox) {
+      // Фильтруем проекты только если чекбокс активен
+      const filtered = projects.filter((project) => project.regionId === 1);
+      setFilteredProjects(filtered);
+    } else {
+      // Если чекбокс не активен, показываем все проекты
+      setFilteredProjects(projects);
+    }
+  }, [projects, projectSpbCheckbox]);
 
   const handleDeleteClick = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить проект?');
@@ -182,8 +215,20 @@ function ProjectList() {
           &bull; Показать завершенные проекты
         </div>
       </Link>
+      <Checkbox
+        change={projectMoscowCheckbox}
+        handle={handleMoscowCheckboxChange}
+        name={'Регион Москва'}
+        label={'chbxMoscow'}
+      />
+      <Checkbox
+        change={projectSpbCheckbox}
+        handle={handleSpbCheckboxChange}
+        name={'Регион Санкт-Петербург'}
+        label={'chbxSpb'}
+      />
       <div className="table-scrollable">
-        <Table bordered hover size="sm" className="mt-3">
+        <Table bordered hover size="sm" className="mt-4">
           <thead>
             <tr>
               <th style={{ textAlign: 'center' }} className="production_column">
