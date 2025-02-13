@@ -197,38 +197,41 @@ function ManufactureList() {
                 <td></td>
               </tr>
             ))}
-            {waitShipmentDetail.map((waitShipment) => (
-              <tr key={waitShipment.id}>
-                <td>{waitShipment.project.number}</td>
-                <td className="manufacture_td">{waitShipment.project.name}</td>
-                {nameDetails
-                  .sort((a, b) => a.id - b.id)
-                  .map((part) => (
-                    <td key={part.id}>
-                      {waitShipment.props.find((el) => el.detailId === part.id)
-                        ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity !==
-                          null
+            {waitShipmentDetail
+              .filter((waitShipment) => waitShipment.project.date_finish === null)
+              .map((waitShipment) => (
+                <tr key={waitShipment.id}>
+                  <td>{waitShipment.project.number}</td>
+                  <td className="manufacture_td">{waitShipment.project.name}</td>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => (
+                      <td key={part.id}>
+                        {waitShipment.props.find((el) => el.detailId === part.id)
                           ? waitShipment.props.find((el) => el.detailId === part.id)
-                              .dif_quantity !== 0
-                            ? waitShipment.props.find((el) => el.detailId === part.id).dif_quantity
-                            : ''
-                          : waitShipment.props.find((el) => el.detailId === part.id).quantity
-                        : ''}
-                    </td>
-                  ))}
-                <td>
-                  {waitShipment.antypical?.length > 0 ? (
-                    <span
-                      style={{ color: 'red', cursor: 'pointer' }}
-                      onClick={() => handleOpenImage(waitShipment.antypical)}>
-                      Файлы
-                    </span>
-                  ) : (
-                    ''
-                  )}
-                </td>
-              </tr>
-            ))}
+                              .dif_quantity !== null
+                            ? waitShipment.props.find((el) => el.detailId === part.id)
+                                .dif_quantity !== 0
+                              ? waitShipment.props.find((el) => el.detailId === part.id)
+                                  .dif_quantity
+                              : ''
+                            : waitShipment.props.find((el) => el.detailId === part.id).quantity
+                          : ''}
+                      </td>
+                    ))}
+                  <td>
+                    {waitShipment.antypical?.length > 0 ? (
+                      <span
+                        style={{ color: 'red', cursor: 'pointer' }}
+                        onClick={() => handleOpenImage(waitShipment.antypical)}>
+                        Файлы
+                      </span>
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
