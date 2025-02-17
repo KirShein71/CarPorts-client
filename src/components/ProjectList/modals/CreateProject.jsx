@@ -109,9 +109,6 @@ const CreateProject = (props) => {
           setValue(defaultValue);
           setValid(defaultValid);
           setProjectId(data.id);
-
-          // изменяем состояние, чтобы обновить список товаров
-          setChange((state) => !state);
         })
         .catch((error) => alert(error.response.data.message));
     }
@@ -140,13 +137,15 @@ const CreateProject = (props) => {
         })
         .catch((error) => alert(error.response.data.message));
     }
-    setShow(false);
   };
 
   return (
     <Modal
       show={show}
-      onHide={() => setShow(false)}
+      onHide={() => {
+        setShow(false);
+        setChange((state) => !state);
+      }}
       size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered

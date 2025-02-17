@@ -21,7 +21,7 @@ const UpdateDateProject = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
@@ -38,7 +38,7 @@ const UpdateDateProject = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show, id]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };

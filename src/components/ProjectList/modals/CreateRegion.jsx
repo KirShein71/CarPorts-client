@@ -23,7 +23,7 @@ const CreateRegion = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       Promise.all([fetchOneProject(id), getAllRegion()])
         .then(([projectData, regionsData]) => {
           const prod = {
@@ -41,7 +41,7 @@ const CreateRegion = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };

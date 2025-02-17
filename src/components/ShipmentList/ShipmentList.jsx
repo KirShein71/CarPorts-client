@@ -26,6 +26,8 @@ function ShipmentList() {
   const [sortField, setSortField] = React.useState('shipment_date');
   const [searchQuery, setSearchQuery] = React.useState('');
 
+  console.log(createOneShipmentDetailModal);
+
   React.useEffect(() => {
     fetchAllShipmentDetails()
       .then((data) => {
@@ -196,7 +198,7 @@ function ShipmentList() {
                         <td
                           style={{ cursor: 'pointer' }}
                           onClick={() =>
-                            user.isProjectManager
+                            user.isProjectManager || user.isAdmin
                               ? undefined
                               : () =>
                                   quantity

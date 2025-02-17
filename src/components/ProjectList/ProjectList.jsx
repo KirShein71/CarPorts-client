@@ -6,11 +6,11 @@ import UpdateNumberProject from './modals/UpdateNumberProject';
 import UpdateDateProject from './modals/UpdateDateProject';
 import CreateRegion from './modals/CreateRegion';
 import CreateInstallationBilling from './modals/CreateInstallationBilling';
+import GearModal from './modals/gearModal';
 import { fetchAllProjects, deleteProject } from '../../http/projectApi';
 import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
-import { Spinner, Table, Button, Col, Row, Form } from 'react-bootstrap';
+import { Spinner, Table, Button, Col, Row, Form, ButtonGroup } from 'react-bootstrap';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import Checkbox from '../Checkbox/Checkbox';
 import Moment from 'react-moment';
 
 function ProjectList() {
@@ -30,12 +30,16 @@ function ProjectList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
   const [createInstallationBillingModal, setCreateInstallationBillingModal] = React.useState(false);
-  const [projectMoscowCheckbox, setProjectMoscowCheckbox] = React.useState(false);
-  const [projectSpbCheckbox, setProjectSpbCheckbox] = React.useState(false);
+  const [buttonMskProject, setButtonMskProject] = React.useState(true);
+  const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [openGearModal, setOpenGearModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    setFetching(true);
     fetchAllProjects()
       .then((data) => {
         setProjects(data);
@@ -43,6 +47,55 @@ function ProjectList() {
       .finally(() => setFetching(false));
   }, [change]);
 
+  React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+      isMsk: buttonMskProject,
+      isSpb: buttonSpbProject,
+    };
+
+    const filteredProjects = projects.filter((project) => {
+      // Условие для поиска по имени
+      const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Проверяем активные проекты в зависимости от состояния кнопок
+      const isActiveProject = filters.isActive
+        ? project.date_finish === null
+        : filters.isClosed
+        ? project.date_finish !== null
+        : true; // Если ни одна кнопка не активна, показываем все проекты
+
+      // Проверяем, активны ли оба региона
+      const isBothRegionsActive = filters.isMsk && filters.isSpb;
+
+      // Проверяем, соответствует ли регион проекту
+      const isRegionMatch =
+        (filters.isMsk && project.regionId === 2) || (filters.isSpb && project.regionId === 1);
+
+      // Логика фильтрации
+      if (filters.isActive && filters.isClosed) {
+        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
+        return matchesSearch && (isBothRegionsActive || isRegionMatch);
+      }
+
+      // Если одна из кнопок активна (либо только активные, либо только закрытые)
+      return (
+        matchesSearch &&
+        isActiveProject &&
+        (isBothRegionsActive || (filters.isMsk || filters.isSpb ? isRegionMatch : true))
+      );
+    });
+
+    setFilteredProjects(filteredProjects);
+  }, [
+    projects,
+    buttonActiveProject,
+    buttonClosedProject,
+    buttonMskProject,
+    buttonSpbProject,
+    searchQuery,
+  ]);
   const handleScroll = () => {
     setScrollPosition(window.scrollY);
   };
@@ -62,52 +115,39 @@ function ProjectList() {
     setSearchQuery(event.target.value);
   };
 
-  React.useEffect(() => {
-    const filtered = projects.filter((project) =>
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setFilteredProjects(filtered);
-  }, [projects, searchQuery]);
+  const handleButtonActiveProject = () => {
+    const newButtonActiveProject = !buttonActiveProject;
+    setButtonActiveProject(newButtonActiveProject);
 
-  const handleMoscowCheckboxChange = () => {
-    setProjectMoscowCheckbox((prev) => !prev);
+    if (!newButtonActiveProject) {
+      setButtonClosedProject(true);
+    }
   };
 
-  React.useEffect(() => {
-    if (projectMoscowCheckbox) {
-      // Фильтруем проекты только если чекбокс активен
-      const filtered = projects.filter((project) => project.regionId === 2);
-      setFilteredProjects(filtered);
-    } else {
-      // Если чекбокс не активен, показываем все проекты
-      setFilteredProjects(projects);
-    }
-  }, [projects, projectMoscowCheckbox]);
+  const handleButtonClosedProject = () => {
+    const newButtonClosedProject = !buttonClosedProject;
+    setButtonClosedProject(newButtonClosedProject);
 
-  const handleSpbCheckboxChange = () => {
-    setProjectSpbCheckbox((prev) => !prev);
+    if (!newButtonClosedProject) {
+      setButtonActiveProject(true);
+    }
   };
 
-  React.useEffect(() => {
-    if (projectSpbCheckbox) {
-      // Фильтруем проекты только если чекбокс активен
-      const filtered = projects.filter((project) => project.regionId === 1);
-      setFilteredProjects(filtered);
-    } else {
-      // Если чекбокс не активен, показываем все проекты
-      setFilteredProjects(projects);
-    }
-  }, [projects, projectSpbCheckbox]);
+  const handleButtonMskProject = () => {
+    const newButtonMskProject = !buttonMskProject;
+    setButtonMskProject(newButtonMskProject);
 
-  const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить проект?');
-    if (confirmed) {
-      deleteProject(id)
-        .then((data) => {
-          setChange(!change);
-          alert(`Проект «${data.name}» был удален`);
-        })
-        .catch((error) => alert(error.response.data.message));
+    if (!newButtonMskProject) {
+      setButtonSpbProject(true);
+    }
+  };
+
+  const handleButtonSpbProject = () => {
+    const newButtonSpbProject = !buttonSpbProject;
+    setButtonSpbProject(newButtonSpbProject);
+
+    if (!newButtonSpbProject) {
+      setButtonMskProject(true);
     }
   };
 
@@ -136,6 +176,11 @@ function ProjectList() {
     setCreateInstallationBillingModal(true);
   };
 
+  const hadleOpenGearModal = (id) => {
+    setProject(id);
+    setOpenGearModal(true);
+  };
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -144,6 +189,73 @@ function ProjectList() {
       setSortOrder('asc');
     }
   };
+
+  const holidays = [
+    '2024-01-01',
+    '2024-01-02',
+    '2024-01-03',
+    '2024-01-04',
+    '2024-01-05',
+    '2024-01-08',
+    '2024-02-23',
+    '2024-03-08',
+    '2024-04-29',
+    '2024-04-30',
+    '2024-05-01',
+    '2024-05-09',
+    '2024-05-10',
+    '2024-06-12',
+    '2024-11-04',
+    '2025-01-01',
+    '2025-01-02',
+    '2025-01-03',
+    '2025-01-06',
+    '2025-01-07',
+    '2025-01-08',
+    '2025-05-01',
+    '2025-05-02',
+    '2025-05-08',
+    '2025-05-09',
+    '2025-06-12',
+    '2025-06-13',
+    '2025-11-03',
+    '2025-11-04',
+  ].map((date) => new Date(date));
+
+  // Функция для проверки, является ли дата выходным или праздничным днем
+  function isWorkingDay(date) {
+    const dayOfWeek = date.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
+    const isHoliday = holidays.some((holiday) => {
+      const holidayString = holiday.toDateString();
+      const dateString = date.toDateString();
+      return holidayString === dateString;
+    });
+
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday; // Не выходной и не праздник
+  }
+  // Функция для добавления рабочих дней к дате
+  function addWorkingDays(startDate, daysToAdd) {
+    let currentDate = new Date(startDate);
+    let addedDays = 0;
+
+    while (addedDays < daysToAdd) {
+      currentDate.setDate(currentDate.getDate() + 1); // Переходим на следующий день
+      if (isWorkingDay(currentDate)) {
+        addedDays++;
+      }
+    }
+
+    return currentDate;
+  }
+
+  // Функция для форматирования даты в формате ДД.ММ.ГГГГ
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
+  }
 
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
@@ -192,56 +304,104 @@ function ProjectList() {
         id={project}
         scrollPosition={scrollPosition}
       />
-      <Row className="d-flex flex-column">
-        <Col className="mt-3 align-items-start">
-          <Button variant="dark" className="me-3 my-2" onClick={() => setCreateShow(true)}>
-            Добавить проект
-          </Button>
+      <GearModal
+        show={openGearModal}
+        setShow={setOpenGearModal}
+        change={change}
+        setChange={setChange}
+        id={project}
+        scrollPosition={scrollPosition}
+      />
+      <Row>
+        <Col>
+          <div className="d-flex flex-column flex-md-row">
+            {/* Кнопка "Добавить проект" */}
+            <Button
+              variant="dark"
+              className="mb-3 mb-md-0 me-2"
+              style={{ borderRadius: '0', width: '160px' }}
+              onClick={() => setCreateShow(true)}>
+              Добавить проект
+            </Button>
+
+            {/* Кнопки "Активные" и "Завершенные" */}
+            <ButtonGroup className="mb-3 mb-md-0 me-2">
+              <Button
+                variant={buttonActiveProject ? 'dark' : 'light'}
+                className="me-2"
+                style={{
+                  border: '1px solid black',
+                  borderRadius: '0',
+                  width: '100px',
+                }}
+                onClick={() => handleButtonActiveProject()}>
+                Активные
+              </Button>
+              <Button
+                variant={buttonClosedProject ? 'dark' : 'light'}
+                style={{
+                  border: '1px solid black',
+                  borderRadius: '0',
+                  width: '140px',
+                }}
+                onClick={() => handleButtonClosedProject()}>
+                Завершенные
+              </Button>
+            </ButtonGroup>
+
+            {/* Кнопки "МО" и "ЛО" */}
+            <ButtonGroup className="mb-3 mb-md-0 me-2">
+              <Button
+                variant={buttonMskProject ? 'dark' : 'light'}
+                className="me-2"
+                style={{
+                  border: '1px solid black',
+                  borderRadius: '0',
+                  width: '50px',
+                }}
+                onClick={() => handleButtonMskProject()}>
+                МО
+              </Button>
+              <Button
+                variant={buttonSpbProject ? 'dark' : 'light'}
+                style={{
+                  border: '1px solid black',
+                  borderRadius: '0',
+                  width: '50px',
+                }}
+                onClick={() => handleButtonSpbProject()}>
+                ЛО
+              </Button>
+            </ButtonGroup>
+
+            {/* Поиск */}
+            <Form className="d-flex mt-3 mt-md-0">
+              <Form.Control
+                type="search"
+                placeholder="Поиск"
+                value={searchQuery}
+                onChange={handleSearch}
+                aria-label="Search"
+                style={{ borderRadius: '0', width: '200px' }}
+              />
+            </Form>
+          </div>
         </Col>
       </Row>
-      <Col className="mt-3" sm={2}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={handleSearch}
-            aria-label="Search"
-          />
-        </Form>
-      </Col>
-      <Link to="/finishproject">
-        <div style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
-          &bull; Показать завершенные проекты
-        </div>
-      </Link>
-      <Checkbox
-        change={projectMoscowCheckbox}
-        handle={handleMoscowCheckboxChange}
-        name={'Регион Москва'}
-        label={'chbxMoscow'}
-      />
-      <Checkbox
-        change={projectSpbCheckbox}
-        handle={handleSpbCheckboxChange}
-        name={'Регион Санкт-Петербург'}
-        label={'chbxSpb'}
-      />
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-4">
           <thead>
             <tr>
               <th style={{ textAlign: 'center' }} className="production_column">
-                Номер проекта
+                Номер
               </th>
               <th style={{ textAlign: 'center' }} className="thead_column">
                 Название
               </th>
-              <th className="thead_column"></th>
               <th className="thead_column" onClick={() => handleSort('agreement_date')}>
                 <div style={{ cursor: 'pointer', display: 'flex' }}>
                   {' '}
-                  Дата договора
+                  Дата дог.
                   <img
                     style={{ marginLeft: '10px', width: '24px', height: '24px' }}
                     src="./img/sort.png"
@@ -249,17 +409,18 @@ function ProjectList() {
                   />
                 </div>
               </th>
+              <th className="thead_column">Дедлайн</th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
                 Регион
               </th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
-                Расчетный срок монтажа
+                Срок
               </th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
-                Факт монтажа
+                Факт
               </th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
-                План монтажа
+                План
               </th>
               <th className="thead_column" style={{ textAlign: 'center' }}>
                 Остаток
@@ -284,25 +445,38 @@ function ProjectList() {
                 <tr key={item.id}>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => hadleUpdateNumberProject(item.id)}
+                    onClick={() => {
+                      addToInfo(item.id);
+                    }}
                     className="td_column">
                     {item.number}
                   </td>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'left' }}
-                    onClick={() => hadleUpdateNameProject(item.id)}>
+                    onClick={() => {
+                      addToInfo(item.id);
+                    }}>
                     {item.name}
-                  </td>
-                  <td>
-                    <Button variant="dark" size="sm" onClick={() => addToInfo(item.id)}>
-                      Подробнее
-                    </Button>
                   </td>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleUpdateDateProject(item.id)}>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
+                  <td>
+                    {(() => {
+                      const agreementDate = new Date(item && item.agreement_date);
+                      const designPeriod = item && item.design_period;
+                      const expirationDate = item && item.expiration_date;
+                      const installationPeriod = item && item.installation_period;
+                      const sumDays = designPeriod + expirationDate + installationPeriod;
+
+                      const endDate = addWorkingDays(agreementDate, sumDays);
+                      const formattedEndDate = formatDate(endDate);
+                      return formattedEndDate;
+                    })()}
+                  </td>
+
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => hadleCreateRegionProject(item.id)}>
@@ -333,9 +507,21 @@ function ProjectList() {
                     </>
                   )}
                   <td>
-                    <Button variant="dark" size="sm" onClick={() => handleDeleteClick(item.id)}>
-                      Удалить
-                    </Button>
+                    {item.installation_billing === null || item.regionId === null ? (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/gear-red.png"
+                        alt="gear"
+                        onClick={() => hadleOpenGearModal(item.id)}
+                      />
+                    ) : (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/gear.png"
+                        alt="gear"
+                        onClick={() => hadleOpenGearModal(item.id)}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
