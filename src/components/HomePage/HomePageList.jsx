@@ -14,7 +14,9 @@ const MenuItems = ({ items }) => {
     <div key={index}>
       {item.title && <div className="homepage__title">{item.title}</div>}
       <Link to={item.link}>
-        <div className="homepage__item">{item.label}</div>
+        <div className={`homepage__item ${item.label === 'Все проекты' ? 'bold' : ''}`}>
+          {item.label}
+        </div>
       </Link>
     </div>
   ));

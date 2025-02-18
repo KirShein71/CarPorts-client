@@ -65,6 +65,15 @@
         }
     }
 
+    .bold {
+        font-size: 20px;
+        font-weight: 600;
+        color: rgb(7,7,7);
+        &:hover {
+            color: #6600ff;
+        }
+    }
+
    
 }
 

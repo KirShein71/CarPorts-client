@@ -442,7 +442,12 @@ function ProjectList() {
                 }
               })
               .map((item) => (
-                <tr key={item.id}>
+                <tr
+                  key={item.id}
+                  style={{
+                    backgroundColor:
+                      item.date_finish !== null ? 'rgb(187, 187, 187)' : 'transparent',
+                  }}>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => {
