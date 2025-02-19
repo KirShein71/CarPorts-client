@@ -315,7 +315,7 @@ function ProjectList() {
         scrollPosition={scrollPosition}
       />
 
-      <div className="d-flex align-items-center">
+      <div style={{ display: 'flex' }}>
         <button className="button__addproject" onClick={() => setCreateShow(true)}>
           Добавить
         </button>
