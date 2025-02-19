@@ -314,37 +314,35 @@ function ProjectList() {
         id={project}
         scrollPosition={scrollPosition}
       />
-      <Row>
-        <Col>
-          <div className="d-flex align-items-center">
-            <button className="button__addproject" onClick={() => setCreateShow(true)}>
-              Добавить
-            </button>
-            <button
-              className={`button__active ${buttonActiveProject === true ? 'active' : 'inactive'}`}
-              onClick={handleButtonActiveProject}>
-              Активные
-            </button>
-            <button
-              className={`button__noactive ${buttonClosedProject === true ? 'active' : 'inactive'}`}
-              onClick={handleButtonClosedProject}>
-              Завершенные
-            </button>
-            <button
-              className={`button__msk ${buttonMskProject === true ? 'active' : 'inactive'}`}
-              onClick={handleButtonMskProject}>
-              МО
-            </button>
-            <button
-              className={`button__spb ${buttonSpbProject === true ? 'active' : 'inactive'}`}
-              onClick={handleButtonSpbProject}>
-              ЛО
-            </button>
 
-            <input placeholder="Поиск" value={searchQuery} onChange={handleSearch} />
-          </div>
-        </Col>
-      </Row>
+      <div className="d-flex align-items-center">
+        <button className="button__addproject" onClick={() => setCreateShow(true)}>
+          Добавить
+        </button>
+        <button
+          className={`button__active ${buttonActiveProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonActiveProject}>
+          Активные
+        </button>
+        <button
+          className={`button__noactive ${buttonClosedProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonClosedProject}>
+          Завершенные
+        </button>
+        <button
+          className={`button__msk ${buttonMskProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonMskProject}>
+          МО
+        </button>
+        <button
+          className={`button__spb ${buttonSpbProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonSpbProject}>
+          ЛО
+        </button>
+
+        <input placeholder="Поиск" value={searchQuery} onChange={handleSearch} />
+      </div>
+
       <div className="table-scrollable">
         <Table bordered hover size="sm" className="mt-4">
           <thead>
