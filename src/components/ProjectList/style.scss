@@ -1,0 +1,107 @@
+.button__addproject {
+    width: 150px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px;
+    @media(max-width: 460px) {
+        width: 60px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+.button__active {
+    width: 150px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px;
+    @media(max-width: 460px) {
+        width: 60px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+.button__noactive {
+    width: 150px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px;
+    @media(max-width: 460px) {
+        width: 80px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+.button__msk {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px;
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+.button__spb {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px;
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+.active {
+    background-color: #212529; /* Черный фон для активной кнопки */
+    color: #ffffff; /* Белый текст для активной кнопки */
+}
+
+.inactive {
+    background-color: #ffffff; /* Белый фон для неактивной кнопки */
+    color: #212529; /* Черный текст для неактивной кнопки */
+}
+
+input {
+    height: 30px;
+    width: 100px;
+    font-size: 14px;
+     outline: none; 
+     @media(max-width: 460px) {
+        width: 60px;
+        height: 20px;
+        font-size: 10px;
+     }
+
+}

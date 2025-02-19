@@ -13,6 +13,8 @@ import { Spinner, Table, Button, Col, Row, Form, ButtonGroup } from 'react-boots
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Moment from 'react-moment';
 
+import './style.scss';
+
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
   const [project, setProject] = React.useState(null);
@@ -314,77 +316,32 @@ function ProjectList() {
       />
       <Row>
         <Col>
-          <div className="d-flex flex-column flex-md-row">
-            {/* Кнопка "Добавить проект" */}
-            <Button
-              variant="dark"
-              className="mb-3 mb-md-0 me-2"
-              style={{ borderRadius: '0', width: '160px' }}
-              onClick={() => setCreateShow(true)}>
-              Добавить проект
-            </Button>
+          <div className="d-flex align-items-center">
+            <button className="button__addproject" onClick={() => setCreateShow(true)}>
+              Добавить
+            </button>
+            <button
+              className={`button__active ${buttonActiveProject === true ? 'active' : 'inactive'}`}
+              onClick={handleButtonActiveProject}>
+              Активные
+            </button>
+            <button
+              className={`button__noactive ${buttonClosedProject === true ? 'active' : 'inactive'}`}
+              onClick={handleButtonClosedProject}>
+              Завершенные
+            </button>
+            <button
+              className={`button__msk ${buttonMskProject === true ? 'active' : 'inactive'}`}
+              onClick={handleButtonMskProject}>
+              МО
+            </button>
+            <button
+              className={`button__spb ${buttonSpbProject === true ? 'active' : 'inactive'}`}
+              onClick={handleButtonSpbProject}>
+              ЛО
+            </button>
 
-            {/* Кнопки "Активные" и "Завершенные" */}
-            <ButtonGroup className="mb-3 mb-md-0 me-2">
-              <Button
-                variant={buttonActiveProject ? 'dark' : 'light'}
-                className="me-2"
-                style={{
-                  border: '1px solid black',
-                  borderRadius: '0',
-                  width: '100px',
-                }}
-                onClick={() => handleButtonActiveProject()}>
-                Активные
-              </Button>
-              <Button
-                variant={buttonClosedProject ? 'dark' : 'light'}
-                style={{
-                  border: '1px solid black',
-                  borderRadius: '0',
-                  width: '140px',
-                }}
-                onClick={() => handleButtonClosedProject()}>
-                Завершенные
-              </Button>
-            </ButtonGroup>
-
-            {/* Кнопки "МО" и "ЛО" */}
-            <ButtonGroup className="mb-3 mb-md-0 me-2">
-              <Button
-                variant={buttonMskProject ? 'dark' : 'light'}
-                className="me-2"
-                style={{
-                  border: '1px solid black',
-                  borderRadius: '0',
-                  width: '50px',
-                }}
-                onClick={() => handleButtonMskProject()}>
-                МО
-              </Button>
-              <Button
-                variant={buttonSpbProject ? 'dark' : 'light'}
-                style={{
-                  border: '1px solid black',
-                  borderRadius: '0',
-                  width: '50px',
-                }}
-                onClick={() => handleButtonSpbProject()}>
-                ЛО
-              </Button>
-            </ButtonGroup>
-
-            {/* Поиск */}
-            <Form className="d-flex mt-3 mt-md-0">
-              <Form.Control
-                type="search"
-                placeholder="Поиск"
-                value={searchQuery}
-                onChange={handleSearch}
-                aria-label="Search"
-                style={{ borderRadius: '0', width: '200px' }}
-              />
-            </Form>
+            <input placeholder="Поиск" value={searchQuery} onChange={handleSearch} />
           </div>
         </Col>
       </Row>
@@ -393,10 +350,10 @@ function ProjectList() {
           <thead>
             <tr>
               <th style={{ textAlign: 'center' }} className="production_column">
-                Номер
+                Название
               </th>
               <th style={{ textAlign: 'center' }} className="thead_column">
-                Название
+                Номер
               </th>
               <th className="thead_column" onClick={() => handleSort('agreement_date')}>
                 <div style={{ cursor: 'pointer', display: 'flex' }}>
@@ -445,23 +402,22 @@ function ProjectList() {
                 <tr
                   key={item.id}
                   style={{
-                    backgroundColor:
-                      item.date_finish !== null ? 'rgb(187, 187, 187)' : 'transparent',
+                    color: item.date_finish !== null ? '#808080' : 'black',
                   }}>
                   <td
-                    style={{ cursor: 'pointer', textAlign: 'center' }}
+                    style={{ cursor: 'pointer', textAlign: 'left' }}
                     onClick={() => {
                       addToInfo(item.id);
                     }}
                     className="td_column">
-                    {item.number}
+                    {item.name}
                   </td>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'left' }}
                     onClick={() => {
                       addToInfo(item.id);
                     }}>
-                    {item.name}
+                    {item.number}
                   </td>
                   <td
                     style={{ cursor: 'pointer', textAlign: 'center' }}
