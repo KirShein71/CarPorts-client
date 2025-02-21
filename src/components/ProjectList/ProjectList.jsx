@@ -340,7 +340,12 @@ function ProjectList() {
           ЛО
         </button>
 
-        <input placeholder="Поиск" value={searchQuery} onChange={handleSearch} />
+        <input
+          class="project__search"
+          placeholder="Поиск"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
       </div>
 
       <div className="table-scrollable">
