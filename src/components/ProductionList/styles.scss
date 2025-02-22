@@ -91,11 +91,10 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 133px;
+        width: 140px;
         height: 20px;
         font-size: 10px;
         margin-right: 5px;
-        justify-content: left;
     }
 
     &-active {
