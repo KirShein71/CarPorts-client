@@ -7,10 +7,10 @@ import UpdateDateProject from './modals/UpdateDateProject';
 import CreateRegion from './modals/CreateRegion';
 import CreateInstallationBilling from './modals/CreateInstallationBilling';
 import GearModal from './modals/gearModal';
-import { fetchAllProjects, deleteProject } from '../../http/projectApi';
+import { fetchAllProjects } from '../../http/projectApi';
 import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
-import { Spinner, Table, Button, Col, Row, Form, ButtonGroup } from 'react-bootstrap';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { Spinner, Table } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 
 import './style.scss';
@@ -98,6 +98,7 @@ function ProjectList() {
     buttonSpbProject,
     searchQuery,
   ]);
+
   const handleScroll = () => {
     setScrollPosition(window.scrollY);
   };

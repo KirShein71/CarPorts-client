@@ -10,12 +10,13 @@ import { fetchAllProjects } from '../../http/projectApi';
 import { Spinner, Table, Form, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
-import Checkbox from '../Checkbox/Checkbox';
 import { CSVLink } from 'react-csv';
 import { format } from 'date-fns';
 import { logout } from '../../http/userApi';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
+
+import './style.scss';
 
 function PlanningList() {
   const [projects, setProjects] = React.useState([]);
@@ -33,9 +34,12 @@ function PlanningList() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [filteredProjects, setFilteredProjects] = React.useState([]);
-  const [projectNoDesignerCheckbox, setProjectNoDesignerCheckbox] = React.useState(false);
-  const [projectInProgressCheckbox, setProjectInProgressCheckbox] = React.useState(false);
   const [selectedNote, setSelectedNote] = React.useState(null);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [buttonNoDesignerProject, setButtonNoDesignerProject] = React.useState(true);
+  const [buttonInProgressProject, setButtonInProgressProject] = React.useState(true);
+  const [buttonCompletedProject, setButtonCompletedProject] = React.useState(true);
   const navigate = useNavigate();
   const { user } = React.useContext(AppContext);
 
@@ -46,6 +50,64 @@ function PlanningList() {
       })
       .finally(() => setFetching(false));
   }, [change]);
+
+  React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+      isNoDesigner: buttonNoDesignerProject,
+      isProgress: buttonInProgressProject,
+      isCompleted: buttonCompletedProject,
+    };
+
+    const filteredProjects = projects.filter((project) => {
+      // Условие для поиска по имени
+      const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Проверяем активные проекты в зависимости от состояния кнопок
+      const isActiveProject = filters.isActive
+        ? project.date_finish === null
+        : filters.isClosed
+        ? project.date_finish !== null
+        : true; // Если ни одна кнопка не активна, показываем все проекты
+
+      // Проверяем, активны ли оба региона
+      const isButtonPlanningActive =
+        filters.isNoDesigner && filters.isProgress && filters.isCompleted;
+
+      // Проверяем, соответствует ли регион проекту
+      const isButtonMatch =
+        (filters.isNoDesigner && project.designer === null) ||
+        (filters.isProgress && project.date_inspection === null && project.designer !== null) ||
+        (filters.isCompleted && project.project_delivery !== null);
+
+      // Логика фильтрации
+      if (filters.isActive && filters.isClosed) {
+        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
+        return matchesSearch && (isButtonPlanningActive || isButtonMatch);
+      }
+
+      // Если одна из кнопок активна (либо только активные, либо только закрытые)
+      return (
+        matchesSearch &&
+        isActiveProject &&
+        (isButtonPlanningActive ||
+          (filters.isNoDesigner || filters.isProgress || filters.isCompleted
+            ? isButtonMatch
+            : true))
+      );
+    });
+
+    setFilteredProjects(filteredProjects);
+  }, [
+    projects,
+    buttonActiveProject,
+    buttonClosedProject,
+    buttonCompletedProject,
+    buttonInProgressProject,
+    buttonNoDesignerProject,
+    searchQuery,
+  ]);
 
   const handleUpdateProjectDelivery = (id) => {
     setProject(id);
@@ -101,44 +163,35 @@ function PlanningList() {
     setSearchQuery(event.target.value);
   };
 
-  React.useEffect(() => {
-    const filtered = projects.filter((project) =>
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setFilteredProjects(filtered);
-  }, [projects, searchQuery]);
+  const handleButtonActiveProject = () => {
+    const newButtonActiveProject = !buttonActiveProject;
+    setButtonActiveProject(newButtonActiveProject);
 
-  const handleNoDesignerCheckboxChange = () => {
-    setProjectNoDesignerCheckbox((prev) => !prev);
+    if (!newButtonActiveProject) {
+      setButtonClosedProject(true);
+    }
   };
 
-  React.useEffect(() => {
-    if (projectNoDesignerCheckbox) {
-      // Фильтруем проекты только если чекбокс активен
-      const filtered = projects.filter((project) => project.designer === null);
-      setFilteredProjects(filtered);
-    } else {
-      // Если чекбокс не активен, показываем все проекты
-      setFilteredProjects(projects);
-    }
-  }, [projects, projectNoDesignerCheckbox]);
+  const handleButtonClosedProject = () => {
+    const newButtonClosedProject = !buttonClosedProject;
+    setButtonClosedProject(newButtonClosedProject);
 
-  const handleInProgressCheckboxChange = () => {
-    setProjectInProgressCheckbox((prev) => !prev);
+    if (!newButtonClosedProject) {
+      setButtonActiveProject(true);
+    }
   };
 
-  React.useEffect(() => {
-    if (projectInProgressCheckbox) {
-      // Фильтруем проекты только если чекбокс активен
-      const filtered = projects.filter(
-        (project) => project.date_inspection === null && project.designer !== null,
-      );
-      setFilteredProjects(filtered);
-    } else {
-      // Если чекбокс не активен, показываем все проекты
-      setFilteredProjects(projects);
-    }
-  }, [projects, projectInProgressCheckbox]);
+  const handleNoDisegnerProject = () => {
+    setButtonNoDesignerProject(!buttonNoDesignerProject);
+  };
+
+  const handleButtonInProgressPorject = () => {
+    setButtonInProgressProject(!buttonInProgressProject);
+  };
+
+  const handleCompletedProject = () => {
+    setButtonCompletedProject(!buttonCompletedProject);
+  };
 
   const handleToggleText = (id) => {
     if (selectedNote === id) {
@@ -206,7 +259,7 @@ function PlanningList() {
     const isHoliday = holidays.some((holiday) => {
       const holidayString = holiday.toDateString();
       const dateString = date.toDateString();
-      console.log(`${holidayString} с ${dateString}`); // Выводим сравниваемые даты
+
       return holidayString === dateString;
     });
 
@@ -256,18 +309,49 @@ function PlanningList() {
           </div>
         ) : null}
       </div>
-      <Col className="mt-3" sm={2}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="mb-2"
-            aria-label="Search"
-          />
-        </Form>
-      </Col>
+      <div style={{ display: 'flex' }}>
+        <button
+          className={`button__nodesigner ${
+            buttonNoDesignerProject === true ? 'active' : 'inactive'
+          }`}
+          onClick={handleNoDisegnerProject}>
+          Новые
+        </button>
+        <button
+          className={`button__inprogress ${
+            buttonInProgressProject === true ? 'active' : 'inactive'
+          }`}
+          onClick={handleButtonInProgressPorject}>
+          В работе
+        </button>
+        <button
+          className={`button__completed ${buttonCompletedProject === true ? 'active' : 'inactive'}`}
+          onClick={handleCompletedProject}>
+          Сданные
+        </button>
+        <button
+          className={`button__active ${buttonActiveProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonActiveProject}>
+          Активные
+        </button>
+        <button
+          className={`button__noactive ${buttonClosedProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonClosedProject}>
+          Завершенные
+        </button>
+        <input
+          class="planning__search"
+          placeholder="Поиск"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+      </div>
+      <input
+        class="planning__search mobile"
+        placeholder="Поиск"
+        value={searchQuery}
+        onChange={handleSearch}
+      />
       <CreateProjectDelivery
         id={project}
         show={updateShow}
@@ -309,18 +393,6 @@ function PlanningList() {
         setShow={setUpdateNote}
         setChange={setChange}
         scrollPosition={scrollPosition}
-      />
-      <Checkbox
-        change={projectNoDesignerCheckbox}
-        handle={handleNoDesignerCheckboxChange}
-        name={'Новые проекты'}
-        label={'chbxNoDesigner'}
-      />
-      <Checkbox
-        change={projectInProgressCheckbox}
-        handle={handleInProgressCheckboxChange}
-        name={'В работе'}
-        label={'chbxNoDateInspection'}
       />
       <div className="table-scrollable">
         <Table bordered size="sm" className="mt-3">
