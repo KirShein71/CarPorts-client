@@ -25,6 +25,9 @@ function ShipmentList() {
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [sortField, setSortField] = React.useState('shipment_date');
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [filteredProjects, setFilteredProjects] = React.useState([]);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
 
   console.log(createOneShipmentDetailModal);
 
@@ -40,6 +43,36 @@ function ShipmentList() {
     fetchAllDetails().then((data) => setNameDetails(data));
   }, []);
 
+  React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+    };
+
+    const filteredProjects = shipmentDetails.filter((project) => {
+      // Условие для поиска по имени
+      const matchesSearch = project.project.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Проверяем активные проекты в зависимости от состояния кнопок
+      const isActiveProject = filters.isActive
+        ? project.project.date_finish === null
+        : filters.isClosed
+        ? project.project.date_finish !== null
+        : true; // Если ни одна кнопка не активна, показываем все проекты
+
+      // Логика фильтрации
+      if (filters.isActive && filters.isClosed) {
+        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
+        return matchesSearch;
+      }
+
+      // Если одна из кнопок активна (либо только активные, либо только закрытые)
+      return matchesSearch && isActiveProject;
+    });
+
+    setFilteredProjects(filteredProjects);
+  }, [shipmentDetails, buttonActiveProject, buttonClosedProject, searchQuery]);
+
   const handleUpdateShipmentDetailClick = (id) => {
     setShipmentDetail(id);
     setUpdateShipmentDetailsModal(true);
@@ -50,6 +83,24 @@ function ShipmentList() {
     setProject(project);
     setShipmentDate(shipmentDate);
     setCreateOneShipmentDetailModal(true);
+  };
+
+  const handleButtonActiveProject = () => {
+    const newButtonActiveProject = !buttonActiveProject;
+    setButtonActiveProject(newButtonActiveProject);
+
+    if (!newButtonActiveProject) {
+      setButtonClosedProject(true);
+    }
+  };
+
+  const handleButtonClosedProject = () => {
+    const newButtonClosedProject = !buttonClosedProject;
+    setButtonClosedProject(newButtonClosedProject);
+
+    if (!newButtonClosedProject) {
+      setButtonActiveProject(true);
+    }
   };
 
   const handleSearch = (event) => {
@@ -96,38 +147,38 @@ function ShipmentList() {
     }
   };
 
-  const sortedShipmentDetails = shipmentDetails.slice().sort((a, b) => {
-    const dateA = new Date(a[sortField]);
-    const dateB = new Date(b[sortField]);
-
-    if (sortOrder === 'desc') {
-      return dateB - dateA;
-    } else {
-      return dateA - dateB;
-    }
-  });
-
   if (fetching) {
     return <Spinner animation="border" />;
   }
   return (
     <div className="shipmentlist">
       <Header title={'Отгрузка деталей'} />
-      <Link to="/shipmentchange">
-        <Button>Внести данные на отгрузку</Button>
-      </Link>
-      <Col className="mt-3" sm={2}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="me-2"
-            aria-label="Search"
-          />
-        </Form>
-      </Col>
+      <div style={{ display: 'flex' }}>
+        <Link to="/shipmentchange">
+          <button className="button__shipment">Внести данные</button>
+        </Link>
+
+        <button
+          className={`button__shipment-active ${
+            buttonActiveProject === true ? 'active' : 'inactive'
+          }`}
+          onClick={handleButtonActiveProject}>
+          Активные
+        </button>
+        <button
+          className={`button__shipment-noactive ${
+            buttonClosedProject === true ? 'active' : 'inactive'
+          }`}
+          onClick={handleButtonClosedProject}>
+          Завершенные
+        </button>
+        <input
+          class="shipment__search"
+          placeholder="Поиск"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+      </div>
       <UpdateShipmentDetails
         id={shipmentDetail}
         show={updateShipmentDetailsModal}
@@ -176,12 +227,24 @@ function ShipmentList() {
             </tr>
           </thead>
           <tbody>
-            {sortedShipmentDetails
-              .filter((shipment) =>
-                shipment.project.name.toLowerCase().includes(searchQuery.toLowerCase()),
-              )
+            {filteredProjects
+              .slice()
+              .sort((a, b) => {
+                const dateA = new Date(a[sortField]);
+                const dateB = new Date(b[sortField]);
+
+                if (sortOrder === 'desc') {
+                  return dateB - dateA;
+                } else {
+                  return dateA - dateB;
+                }
+              })
               .map((shipment) => (
-                <tr key={shipment.id}>
+                <tr
+                  key={shipment.id}
+                  style={{
+                    color: shipment.project.date_finish !== null ? '#808080' : 'black',
+                  }}>
                   <td className="shipment_column">
                     {shipment.project ? shipment.project.number : ''}
                   </td>

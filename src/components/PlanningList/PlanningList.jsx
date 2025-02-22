@@ -437,7 +437,9 @@ function PlanningList() {
                 }
               })
               .map((item) => (
-                <tr key={item.id}>
+                <tr
+                  style={{ color: item.date_finish !== null ? '#808080' : 'black' }}
+                  key={item.id}>
                   <td>{item.number}</td>
                   <td className="td_column">
                     {item.name}

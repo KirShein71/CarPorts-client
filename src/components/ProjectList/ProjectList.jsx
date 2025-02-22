@@ -154,16 +154,6 @@ function ProjectList() {
     }
   };
 
-  const hadleUpdateNameProject = (id) => {
-    setProject(id);
-    setUpdateNameModal(true);
-  };
-
-  const hadleUpdateNumberProject = (id) => {
-    setProject(id);
-    setUpdateNumberProjectModal(true);
-  };
-
   const hadleUpdateDateProject = (id) => {
     setProject(id);
     setUpdateDateProject(true);

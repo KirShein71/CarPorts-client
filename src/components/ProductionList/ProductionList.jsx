@@ -223,8 +223,17 @@ function ProductionList() {
             return (
               <tbody key={projectDetail.id}>
                 <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
-                  <td>{projectDetail.project ? projectDetail.project.number : ''}</td>
-                  <td className="production_td">
+                  <td
+                    style={{
+                      color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                    }}>
+                    {projectDetail.project ? projectDetail.project.number : ''}
+                  </td>
+                  <td
+                    style={{
+                      color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                    }}
+                    className="production_td">
                     {projectDetail.project ? projectDetail.project.name : ''}
                   </td>
                   {nameDetails
@@ -237,7 +246,10 @@ function ProductionList() {
                       return (
                         <td
                           key={part.id}
-                          style={{ cursor: 'pointer' }}
+                          style={{
+                            cursor: 'pointer',
+                            color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                          }}
                           onClick={
                             user.isManagerProduction
                               ? undefined
