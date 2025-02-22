@@ -28,6 +28,9 @@ function ProductionList() {
   const [change, setChange] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
+  const [filteredProjects, setFilteredProjects] = React.useState([]);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
 
   React.useEffect(() => {
     fetchAllProjectDetails().then((data) => {
@@ -41,6 +44,36 @@ function ProductionList() {
   React.useEffect(() => {
     fetchAllDetails().then((data) => setNameDetails(data));
   }, []);
+
+  React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+    };
+
+    const filteredProjects = projectDetails.filter((project) => {
+      // Условие для поиска по имени
+      const matchesSearch = project.project.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Проверяем активные проекты в зависимости от состояния кнопок
+      const isActiveProject = filters.isActive
+        ? project.project.date_finish === null
+        : filters.isClosed
+        ? project.project.date_finish !== null
+        : true; // Если ни одна кнопка не активна, показываем все проекты
+
+      // Логика фильтрации
+      if (filters.isActive && filters.isClosed) {
+        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
+        return matchesSearch;
+      }
+
+      // Если одна из кнопок активна (либо только активные, либо только закрытые)
+      return matchesSearch && isActiveProject;
+    });
+
+    setFilteredProjects(filteredProjects);
+  }, [projectDetails, buttonActiveProject, buttonClosedProject, searchQuery]);
 
   const handleUpdateProjectDetailClick = (id) => {
     setProjectDetail(id);
@@ -61,6 +94,24 @@ function ProductionList() {
   const handleOpenImage = (images, id) => {
     setImages(images, id);
     setImageModal(true);
+  };
+
+  const handleButtonActiveProject = () => {
+    const newButtonActiveProject = !buttonActiveProject;
+    setButtonActiveProject(newButtonActiveProject);
+
+    if (!newButtonActiveProject) {
+      setButtonClosedProject(true);
+    }
+  };
+
+  const handleButtonClosedProject = () => {
+    const newButtonClosedProject = !buttonClosedProject;
+    setButtonClosedProject(newButtonClosedProject);
+
+    if (!newButtonClosedProject) {
+      setButtonActiveProject(true);
+    }
   };
 
   const handleSearch = (event) => {
@@ -94,22 +145,33 @@ function ProductionList() {
       {user.isManagerProduction ? (
         ''
       ) : (
-        <Link to="/productionchange">
-          <Button>Внести данные в проект</Button>
-        </Link>
-      )}
-      <Col className="mt-3" sm={3}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
+        <div style={{ display: 'flex' }}>
+          <Link to="/productionchange">
+            <button className="button__production">Внести данные в проект</button>
+          </Link>
+
+          <button
+            className={`button__production-active ${
+              buttonActiveProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonActiveProject}>
+            Активные
+          </button>
+          <button
+            className={`button__production-noactive ${
+              buttonClosedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonClosedProject}>
+            Завершенные
+          </button>
+          <input
+            class="production__search"
             placeholder="Поиск"
             value={searchQuery}
             onChange={handleSearch}
-            className="me-2"
-            aria-label="Search"
           />
-        </Form>
-      </Col>
+        </div>
+      )}
       <UpdateProjectDetails
         id={projectDetail}
         show={updateProjectDetailsModal}
@@ -154,7 +216,7 @@ function ProductionList() {
               <th className="thead_column"></th>
             </tr>
           </thead>
-          {projectDetails.map((projectDetail) => {
+          {filteredProjects.map((projectDetail) => {
             const correspondingShipment = shipmentDetails.find(
               (shipment) => shipment.projectId === projectDetail.projectId,
             );
