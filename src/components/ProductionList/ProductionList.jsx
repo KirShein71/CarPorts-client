@@ -147,7 +147,7 @@ function ProductionList() {
       ) : (
         <div style={{ display: 'flex' }}>
           <Link to="/productionchange">
-            <button className="button__production">Внести данные в проект</button>
+            <button className="button__production">Внести данные</button>
           </Link>
 
           <button
