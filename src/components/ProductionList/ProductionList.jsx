@@ -305,7 +305,13 @@ function ProductionList() {
                 {correspondingShipment && (
                   <tr>
                     <td></td>
-                    <td className="production_td">Отгрузка</td>
+                    <td
+                      style={{
+                        color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                      }}
+                      className="production_td">
+                      Отгрузка
+                    </td>
                     {nameDetails
                       .sort((a, b) => a.id - b.id)
                       .map((part) => {
@@ -313,7 +319,16 @@ function ProductionList() {
                           (el) => el.detailId === part.id,
                         );
                         const quantity = detail ? detail.shipment_quantity : '';
-                        return <td key={part.id}>{quantity}</td>;
+                        return (
+                          <td
+                            style={{
+                              color:
+                                projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                            }}
+                            key={part.id}>
+                            {quantity}
+                          </td>
+                        );
                       })}
                     <td></td>
                     <td></td>
