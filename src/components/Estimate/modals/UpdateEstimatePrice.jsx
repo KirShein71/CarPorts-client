@@ -19,6 +19,7 @@ const UpdateEstimatePrice = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -53,6 +54,7 @@ const UpdateEstimatePrice = (props) => {
     if (correct.price) {
       const data = new FormData();
       data.append('price', value.price);
+      setIsLoading(true);
       updateEstimatePrice(id, data)
         .then((data) => {
           const prod = {
@@ -69,6 +71,9 @@ const UpdateEstimatePrice = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -100,8 +105,8 @@ const UpdateEstimatePrice = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

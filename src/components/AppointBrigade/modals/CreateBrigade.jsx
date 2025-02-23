@@ -30,6 +30,7 @@ const CreateBrigade = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [brigades, setBrigades] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     fetchBrigades().then((data) => setBrigades(data));
@@ -51,6 +52,7 @@ const CreateBrigade = (props) => {
       data.append('plan_finish', value.plan_finish);
       data.append('brigadeId', value.brigade);
       data.append('projectId', projectId);
+      setIsLoading(true);
 
       createProjectBrigades(data)
         .then((data) => {
@@ -59,7 +61,10 @@ const CreateBrigade = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -162,8 +167,8 @@ const CreateBrigade = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

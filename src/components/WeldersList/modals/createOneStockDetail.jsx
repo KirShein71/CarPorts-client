@@ -21,6 +21,7 @@ const CreateOneStockDetail = (props) => {
   const { show, setShow, setChange, detailId, stockDate } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const regex = /^[0-9]*$/;
@@ -39,7 +40,7 @@ const CreateOneStockDetail = (props) => {
       data.append('stock_quantity', value.stock_quantity.trim());
       data.append('detailId', detailId);
       data.append('stock_date', stockDate);
-
+      setIsLoading(true);
       createStockDetails(data)
         .then((data) => {
           setValue(defaultValue);
@@ -47,7 +48,10 @@ const CreateOneStockDetail = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -79,8 +83,8 @@ const CreateOneStockDetail = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

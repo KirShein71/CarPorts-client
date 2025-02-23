@@ -19,6 +19,7 @@ const UpdatePasswordManagerProduction = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -51,6 +52,7 @@ const UpdatePasswordManagerProduction = (props) => {
     if (correct.password) {
       const data = new FormData();
       data.append('password', value.password);
+      setIsLoading(true);
       updatePassword(id, data)
         .then((data) => {
           const prod = {
@@ -67,6 +69,9 @@ const UpdatePasswordManagerProduction = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -98,8 +103,8 @@ const UpdatePasswordManagerProduction = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

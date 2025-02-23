@@ -23,6 +23,7 @@ const UpdateShipmentDetails = (props) => {
   const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -59,7 +60,7 @@ const UpdateShipmentDetails = (props) => {
     if (correct.shipment_quantity) {
       const data = new FormData();
       data.append('shipment_quantity', value.shipment_quantity.trim());
-
+      setIsLoading(true);
       updateShipmentDetails(id, data)
         .then((data) => {
           const prod = {
@@ -75,6 +76,9 @@ const UpdateShipmentDetails = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
     setShow(false);
@@ -105,8 +109,8 @@ const UpdateShipmentDetails = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

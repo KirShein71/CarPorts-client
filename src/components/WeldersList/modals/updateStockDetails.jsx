@@ -22,6 +22,7 @@ const UpdateStockDetails = (props) => {
   const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -58,7 +59,7 @@ const UpdateStockDetails = (props) => {
     if (correct.stock_quantity) {
       const data = new FormData();
       data.append('stock_quantity', value.stock_quantity.trim());
-
+      setIsLoading(true);
       updateStockDetails(id, data)
         .then((data) => {
           const prod = {
@@ -74,6 +75,9 @@ const UpdateStockDetails = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
     setShow(false);
@@ -105,9 +109,9 @@ const UpdateStockDetails = (props) => {
             </Col>
           </Row>
           <Row>
-            <Col>
-              <Button type="submit">Сохранить</Button>
-            </Col>
+            <Button variant="dark" type="submit" disabled={isLoading}>
+              {isLoading ? 'Сохранение...' : 'Сохранить'}
+            </Button>
           </Row>
         </Form>
       </Modal.Body>

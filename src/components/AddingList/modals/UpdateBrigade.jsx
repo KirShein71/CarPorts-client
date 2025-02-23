@@ -24,6 +24,7 @@ const UpdateBrigade = (props) => {
   const [image, setImage] = React.useState(null);
   const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -69,6 +70,7 @@ const UpdateBrigade = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('image', image, image.name);
+      setIsLoading(true);
       updateBrigade(id, data)
         .then((data) => {
           setValue(defaultValue);
@@ -76,7 +78,10 @@ const UpdateBrigade = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -130,8 +135,8 @@ const UpdateBrigade = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

@@ -21,6 +21,7 @@ const CreateOneProjectDetail = (props) => {
   const { show, setShow, setChange, detailId, projectId } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const regex = /^[0-9]*$/;
@@ -40,6 +41,8 @@ const CreateOneProjectDetail = (props) => {
       data.append('detailId', detailId);
       data.append('projectId', projectId);
 
+      setIsLoading(true);
+
       createProjectDetails(data)
         .then((data) => {
           setValue(defaultValue);
@@ -47,7 +50,10 @@ const CreateOneProjectDetail = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -79,8 +85,8 @@ const CreateOneProjectDetail = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

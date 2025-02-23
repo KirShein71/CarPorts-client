@@ -20,6 +20,7 @@ const CreateInspectionDesigner = (props) => {
   const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -61,6 +62,7 @@ const CreateInspectionDesigner = (props) => {
     if (correct.inspection_designer) {
       const data = new FormData();
       data.append('inspection_designer', value.inspection_designer.trim());
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -77,6 +79,9 @@ const CreateInspectionDesigner = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -107,8 +112,8 @@ const CreateInspectionDesigner = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

@@ -21,6 +21,7 @@ const CreateFile = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const [file, setFile] = React.useState(null);
   const [selectedFiles, setSelectedFiles] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -52,6 +53,7 @@ const CreateFile = (props) => {
       formData.append('file', file.file);
       return formData;
     });
+    setIsLoading(true);
 
     Promise.all(data.map(createUserFile))
       .then(() => {
@@ -59,7 +61,10 @@ const CreateFile = (props) => {
         setShow(false);
         setChange((state) => !state);
       })
-      .catch((error) => alert(error.response.data.message));
+      .catch((error) => alert(error.response.data.message))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const handleRemoveFile = (index) => {

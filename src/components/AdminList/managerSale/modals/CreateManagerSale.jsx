@@ -25,6 +25,7 @@ const CreateManagerSale = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -45,6 +46,7 @@ const CreateManagerSale = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('password', value.password.trim());
+      setIsLoading(true);
       createManagerSale(data)
         .then((data) => {
           setValue(defaultValue);
@@ -52,7 +54,10 @@ const CreateManagerSale = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -110,8 +115,8 @@ const CreateManagerSale = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

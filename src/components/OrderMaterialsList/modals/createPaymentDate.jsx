@@ -23,6 +23,7 @@ const CreatePaymentDate = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -62,6 +63,7 @@ const CreatePaymentDate = (props) => {
     if (correct.date_payment) {
       const data = new FormData();
       data.append('date_payment', value.date_payment.trim());
+      setIsLoading(true);
       createPaymentDateProjectMaterials(id, data)
         .then((data) => {
           const prod = {
@@ -78,6 +80,9 @@ const CreatePaymentDate = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -123,8 +128,8 @@ const CreatePaymentDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" className="me-3 mb-3" type="submit">
-                Сохранить
+              <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
               <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
                 Удалить

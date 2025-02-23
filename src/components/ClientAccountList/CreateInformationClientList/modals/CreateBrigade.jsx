@@ -23,6 +23,7 @@ const CreateBrigade = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [brigades, setBridades] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -57,7 +58,7 @@ const CreateBrigade = (props) => {
     if (correct.brigade) {
       const res = new FormData();
       res.append('brigadeId', value.brigade.trim());
-
+      setIsLoading(true);
       createBrigade(id, res)
         .then((res) => {
           setValue(defaultValue);
@@ -102,8 +103,8 @@ const CreateBrigade = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" className="mt-3" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

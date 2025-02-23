@@ -19,6 +19,7 @@ const CreatePlanFinishDate = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -53,6 +54,7 @@ const CreatePlanFinishDate = (props) => {
     if (correct.plan_finish) {
       const data = new FormData();
       data.append('plan_finish', value.plan_finish.trim());
+      setIsLoading(true);
       createPlanFinish(id, data)
         .then((data) => {
           const prod = {
@@ -69,6 +71,9 @@ const CreatePlanFinishDate = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -101,8 +106,8 @@ const CreatePlanFinishDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" className="me-3 mb-3" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

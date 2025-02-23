@@ -19,6 +19,7 @@ const CreatePasswordBrigade = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -51,6 +52,7 @@ const CreatePasswordBrigade = (props) => {
     if (correct.password) {
       const data = new FormData();
       data.append('password', value.password);
+      setIsLoading(true);
       createPassword(id, data)
         .then((data) => {
           const prod = {
@@ -67,6 +69,9 @@ const CreatePasswordBrigade = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -98,8 +103,8 @@ const CreatePasswordBrigade = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

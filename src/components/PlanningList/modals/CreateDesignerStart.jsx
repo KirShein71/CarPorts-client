@@ -19,6 +19,7 @@ const CreateDesingStart = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -54,7 +55,7 @@ const CreateDesingStart = (props) => {
     if (correct.design_start) {
       const data = new FormData();
       data.append('design_start', value.design_start.trim());
-
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -70,6 +71,9 @@ const CreateDesingStart = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
     setShow(false);
@@ -103,8 +107,8 @@ const CreateDesingStart = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

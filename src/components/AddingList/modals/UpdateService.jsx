@@ -19,6 +19,7 @@ const UpdateService = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -54,6 +55,7 @@ const UpdateService = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
 
+      setIsLoading(true);
       updateService(id, data)
         .then((data) => {
           const prod = {
@@ -69,6 +71,9 @@ const UpdateService = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
     setShow(false);
@@ -102,8 +107,8 @@ const UpdateService = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

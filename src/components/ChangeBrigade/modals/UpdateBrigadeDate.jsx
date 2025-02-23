@@ -27,6 +27,7 @@ const UpdateBrigadeDate = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [projects, setProjects] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -139,7 +140,7 @@ const UpdateBrigadeDate = (props) => {
     data.append('projectId', value.project === '' ? 0 : value.project);
     data.append('warranty', value.warranty);
     data.append('downtime', value.downtime);
-
+    setIsLoading(true);
     updateBrigadesDate(id, data)
       .then((data) => {
         setValue(defaultValue);
@@ -153,6 +154,9 @@ const UpdateBrigadeDate = (props) => {
         } else {
           console.log('An error occurred');
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -235,8 +239,8 @@ const UpdateBrigadeDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit" onClick={() => setShow(false)}>
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

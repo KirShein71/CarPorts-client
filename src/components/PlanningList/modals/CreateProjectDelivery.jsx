@@ -21,6 +21,7 @@ const CreateProjectDelivery = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -61,6 +62,7 @@ const CreateProjectDelivery = (props) => {
     if (correct.project_delivery) {
       const data = new FormData();
       data.append('project_delivery', value.project_delivery.trim());
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -77,6 +79,9 @@ const CreateProjectDelivery = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -107,8 +112,8 @@ const CreateProjectDelivery = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

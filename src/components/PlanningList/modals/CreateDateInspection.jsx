@@ -21,6 +21,7 @@ const CreateDateInspection = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -61,6 +62,7 @@ const CreateDateInspection = (props) => {
     if (correct.date_inspection) {
       const data = new FormData();
       data.append('date_inspection', value.date_inspection.trim());
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -77,6 +79,9 @@ const CreateDateInspection = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -107,8 +112,8 @@ const CreateDateInspection = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

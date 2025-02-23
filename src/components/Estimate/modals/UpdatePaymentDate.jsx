@@ -19,6 +19,7 @@ const UpdatePaymentDate = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -53,6 +54,7 @@ const UpdatePaymentDate = (props) => {
     if (correct.date) {
       const data = new FormData();
       data.append('date', value.date);
+      setIsLoading(true);
       updatePaymentDate(id, data)
         .then((data) => {
           const prod = {
@@ -69,6 +71,9 @@ const UpdatePaymentDate = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -101,8 +106,8 @@ const UpdatePaymentDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

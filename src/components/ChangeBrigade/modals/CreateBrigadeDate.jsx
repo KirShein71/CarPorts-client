@@ -32,6 +32,7 @@ const CreateBrigadeDate = (props) => {
   const [projects, setProjects] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     fetchAllProjects().then((data) => setProjects(data));
@@ -124,7 +125,7 @@ const CreateBrigadeDate = (props) => {
     data.append('regionId', regionId);
     data.append('warranty', value.warranty);
     data.append('downtime', value.downtime);
-
+    setIsLoading(true);
     createBrigadesDate(data)
       .then((data) => {
         setValue(defaultValue);
@@ -132,7 +133,10 @@ const CreateBrigadeDate = (props) => {
         setShow(false);
         setChange((state) => !state);
       })
-      .catch((error) => alert(error.response.data.message));
+      .catch((error) => alert(error.response.data.message))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -214,8 +218,8 @@ const CreateBrigadeDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

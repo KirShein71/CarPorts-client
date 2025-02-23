@@ -19,6 +19,7 @@ const CreateService = (props) => {
   const { show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -33,6 +34,7 @@ const CreateService = (props) => {
     if (correct.name) {
       const data = new FormData();
       data.append('name', value.name.trim());
+      setIsLoading(true);
       createService(data)
         .then((data) => {
           setValue(defaultValue);
@@ -40,7 +42,10 @@ const CreateService = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
     setShow(false);
   };
@@ -72,8 +77,8 @@ const CreateService = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

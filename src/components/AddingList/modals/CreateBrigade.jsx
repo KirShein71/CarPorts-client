@@ -30,6 +30,7 @@ const CreateBrigade = (props) => {
   const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
   const [regions, setRegions] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     getAllRegion()
@@ -64,6 +65,8 @@ const CreateBrigade = (props) => {
       data.append('password', value.password.trim());
       data.append('image', image);
       data.append('regionId', value.region);
+
+      setIsLoading(true); // Устанавливаем состояние загрузки
       createBrigade(data)
         .then((data) => {
           setValue(defaultValue);
@@ -71,7 +74,10 @@ const CreateBrigade = (props) => {
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => alert(error.response.data.message))
+        .finally(() => {
+          setIsLoading(false); // Сбрасываем состояние загрузки
+        });
     }
   };
 
@@ -147,8 +153,8 @@ const CreateBrigade = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

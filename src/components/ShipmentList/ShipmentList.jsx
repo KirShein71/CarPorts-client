@@ -208,8 +208,8 @@ function ShipmentList() {
           </thead>
           <thead>
             <tr>
-              <th className="shipment_column">Номер проекта</th>
-              <th>Название проекта</th>
+              <th>Номер проекта</th>
+              <th className="shipment_column">Название проекта</th>
               <th
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
@@ -245,10 +245,10 @@ function ShipmentList() {
                   style={{
                     color: shipment.project.date_finish !== null ? '#808080' : 'black',
                   }}>
+                  <td>{shipment.project ? shipment.project.number : ''}</td>
                   <td className="shipment_column">
-                    {shipment.project ? shipment.project.number : ''}
+                    {shipment.project ? shipment.project.name : ''}
                   </td>
-                  <td>{shipment.project ? shipment.project.name : ''}</td>
                   <td>
                     <Moment format="DD.MM.YYYY">{shipment.shipment_date}</Moment>
                   </td>

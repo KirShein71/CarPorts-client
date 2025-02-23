@@ -21,6 +21,7 @@ const UpdateProjectDetails = (props) => {
   const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -57,7 +58,7 @@ const UpdateProjectDetails = (props) => {
     if (correct.quantity) {
       const data = new FormData();
       data.append('quantity', value.quantity.trim());
-
+      setIsLoading(true);
       updateProjectDetails(id, data)
         .then((data) => {
           const prod = {
@@ -73,6 +74,9 @@ const UpdateProjectDetails = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
     setShow(false);
@@ -103,8 +107,8 @@ const UpdateProjectDetails = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

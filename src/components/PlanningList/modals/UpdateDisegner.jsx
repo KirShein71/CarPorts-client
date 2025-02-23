@@ -21,6 +21,7 @@ const UpdateDesigner = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -61,6 +62,7 @@ const UpdateDesigner = (props) => {
     if (correct.designer) {
       const data = new FormData();
       data.append('designer', value.designer.trim());
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -77,6 +79,9 @@ const UpdateDesigner = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -107,8 +112,8 @@ const UpdateDesigner = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

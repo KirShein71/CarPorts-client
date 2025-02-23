@@ -23,6 +23,7 @@ const CreateCheck = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -62,7 +63,7 @@ const CreateCheck = (props) => {
     if (correct.check) {
       const data = new FormData();
       data.append('check', value.check.trim());
-
+      setIsLoading(true);
       createCheckProjectMaterials(id, data)
         .then((data) => {
           const prod = {
@@ -80,6 +81,9 @@ const CreateCheck = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -124,8 +128,8 @@ const CreateCheck = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" className="me-3 mb-3" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
               <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
                 Удалить

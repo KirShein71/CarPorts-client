@@ -23,6 +23,7 @@ const CreatePayment = (props) => {
   const { project, brigade, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -40,6 +41,7 @@ const CreatePayment = (props) => {
       data.append('sum', value.sum.trim());
       data.append('projectId', project);
       data.append('brigadeId', brigade);
+      setIsLoading(true);
       createPayment(data)
         .then((data) => {
           setValue(defaultValue);
@@ -93,8 +95,8 @@ const CreatePayment = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

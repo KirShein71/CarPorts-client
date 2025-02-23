@@ -19,6 +19,7 @@ const UpdateNote = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -58,6 +59,7 @@ const UpdateNote = (props) => {
     if (correct.note) {
       const data = new FormData();
       data.append('note', value.note.trim());
+      setIsLoading(true);
       updateProject(id, data)
         .then((data) => {
           const prod = {
@@ -74,6 +76,9 @@ const UpdateNote = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -104,8 +109,8 @@ const UpdateNote = (props) => {
           </Col>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>

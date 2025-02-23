@@ -23,6 +23,7 @@ const CreateShippingDate = (props) => {
   const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -62,6 +63,7 @@ const CreateShippingDate = (props) => {
     if (correct.shipping_date) {
       const data = new FormData();
       data.append('shipping_date', value.shipping_date.trim());
+      setIsLoading(true);
       createShippingDateProjectMaterials(id, data)
         .then((data) => {
           const prod = {
@@ -78,6 +80,9 @@ const CreateShippingDate = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -123,8 +128,8 @@ const CreateShippingDate = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" className="me-3 mb-3" type="submit">
-                Сохранить
+              <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
               <Button className="mb-3" variant="dark" onClick={() => handleDeleteShippingDate()}>
                 Удалить

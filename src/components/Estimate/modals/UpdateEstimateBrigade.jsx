@@ -24,6 +24,7 @@ const UpdateEstimateBrigade = (props) => {
   const [brigades, setBrigades] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -59,6 +60,7 @@ const UpdateEstimateBrigade = (props) => {
     if (correct.brigade) {
       const data = new FormData();
       data.append('brigadeId', value.brigade);
+      setIsLoading(true);
       updateBrigadeForProject(id, project, data)
         .then((data) => {
           const prod = {
@@ -75,6 +77,9 @@ const UpdateEstimateBrigade = (props) => {
           } else {
             console.log('An error occurred');
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -114,8 +119,8 @@ const UpdateEstimateBrigade = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
+              <Button variant="dark" type="submit" disabled={isLoading}>
+                {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
             </Col>
           </Row>
