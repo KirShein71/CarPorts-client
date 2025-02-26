@@ -29,7 +29,7 @@
     text-align: center;
     width: 120px;
     @media(max-width: 460px) {
-        font-size: 14px;
+        font-size: 12px;
         width: 50px;
     }
 }
@@ -41,17 +41,11 @@
     text-align: center;
     width: 180px;
     @media(max-width: 460px) {
-        font-size: 14px;
+        font-size: 12px;
         width: 100px;
     }
 }
 
 
-.table-container {
-    @media(max-width: 460px) {
-        overflow-x: auto;
-        width: 100%;
-    }
-}
 
 

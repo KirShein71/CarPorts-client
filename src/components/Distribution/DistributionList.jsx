@@ -80,133 +80,131 @@ function DistributionList() {
             </div>
           )}
         </div>
-        <div className="table-container">
-          <Table className="mt-4" style={{ maxWidth: '750px' }}>
-            <thead>
-              <tr>
-                <th className="distribution__thead-project">Проекты</th>
-                <th className="distribution__thead">Смета</th>
-                <th className="distribution__thead">Выполнено</th>
-                <th className="distribution__thead">Выплачено</th>
-                <th className="distribution__thead">Остаток</th>
-              </tr>
-            </thead>
-            {calculations.map((calculation) => (
-              <>
-                <thead style={{ backgroundColor: 'rgb(187, 187, 187)' }}>
-                  <tr key={calculation.id}>
-                    <th className="project-name" onClick={() => addToInfo(calculation.projectId)}>
-                      {calculation.projectName}
-                    </th>
-                    <th style={{ textAlign: 'center' }}>
-                      {new Intl.NumberFormat('ru-RU').format(calculation.totalPrice)}
-                    </th>
-                    <th style={{ textAlign: 'center' }}>
-                      {new Intl.NumberFormat('ru-RU').format(calculation.totalSumDone)}
-                    </th>
-                    <th style={{ textAlign: 'center' }}>
-                      {new Intl.NumberFormat('ru-RU').format(calculation.totalPaymentSum)}
-                    </th>
-                    <th style={{ textAlign: 'center' }}>
-                      {isNaN(calculation.totalPaymentSum - calculation.totalSumDone)
-                        ? '—'
-                        : new Intl.NumberFormat('ru-RU').format(
-                            calculation.totalPaymentSum - calculation.totalSumDone,
-                          )}
-                    </th>
-                  </tr>
-                </thead>
-                {calculation.brigades
-                  .filter((brigade) => {
-                    // Если выбрана конкретная бригада, фильтруем по её ID
-                    if (selectedBrigade) {
-                      return brigade.brigadeId === selectedBrigade;
-                    }
-                    // Если выбрано "Все", показываем все бригады
-                    return true;
-                  })
-                  .map((brigade) => (
-                    <>
-                      <tbody>
-                        <tr key={brigade.id} style={{ borderBottom: '2px solid #000' }}>
-                          <td
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => addToInstallationPage(brigade.brigadeId)}>
-                            {brigade.brigadeName}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            {(() => {
-                              const totalSum = brigade.estimates.reduce(
-                                (acc, cur) => acc + Number(cur.price),
-                                0,
-                              );
-                              return new Intl.NumberFormat('ru-RU').format(totalSum);
-                            })()}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            {(() => {
-                              const totalSum = brigade.estimates
-                                .filter((esCol) => esCol.done === 'true')
-                                .reduce((acc, cur) => acc + Number(cur.price), 0);
-                              return new Intl.NumberFormat('ru-RU').format(totalSum);
-                            })()}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            {(() => {
-                              const totalSum = brigade.payments.reduce(
-                                (acc, cur) => acc + Number(cur.sum),
-                                0,
-                              );
-                              return new Intl.NumberFormat('ru-RU').format(totalSum);
-                            })()}
-                          </td>
-                          <td style={{ textAlign: 'center' }}>
-                            {(() => {
-                              const totalPayments = brigade.payments.reduce(
-                                (acc, cur) => acc + Number(cur.sum),
-                                0,
-                              );
+        <Table className="mt-4" style={{ maxWidth: '750px' }}>
+          <thead>
+            <tr>
+              <th className="distribution__thead-project">Проекты</th>
+              <th className="distribution__thead">Смета</th>
+              <th className="distribution__thead">Выполнено</th>
+              <th className="distribution__thead">Выплачено</th>
+              <th className="distribution__thead">Остаток</th>
+            </tr>
+          </thead>
+          {calculations.map((calculation) => (
+            <>
+              <thead style={{ backgroundColor: 'rgb(187, 187, 187)' }}>
+                <tr key={calculation.id}>
+                  <th className="project-name" onClick={() => addToInfo(calculation.projectId)}>
+                    {calculation.projectName}
+                  </th>
+                  <th style={{ textAlign: 'center' }}>
+                    {new Intl.NumberFormat('ru-RU').format(calculation.totalPrice)}
+                  </th>
+                  <th style={{ textAlign: 'center' }}>
+                    {new Intl.NumberFormat('ru-RU').format(calculation.totalSumDone)}
+                  </th>
+                  <th style={{ textAlign: 'center' }}>
+                    {new Intl.NumberFormat('ru-RU').format(calculation.totalPaymentSum)}
+                  </th>
+                  <th style={{ textAlign: 'center' }}>
+                    {isNaN(calculation.totalPaymentSum - calculation.totalSumDone)
+                      ? '—'
+                      : new Intl.NumberFormat('ru-RU').format(
+                          calculation.totalPaymentSum - calculation.totalSumDone,
+                        )}
+                  </th>
+                </tr>
+              </thead>
+              {calculation.brigades
+                .filter((brigade) => {
+                  // Если выбрана конкретная бригада, фильтруем по её ID
+                  if (selectedBrigade) {
+                    return brigade.brigadeId === selectedBrigade;
+                  }
+                  // Если выбрано "Все", показываем все бригады
+                  return true;
+                })
+                .map((brigade) => (
+                  <>
+                    <tbody>
+                      <tr key={brigade.id} style={{ borderBottom: '2px solid #000' }}>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => addToInstallationPage(brigade.brigadeId)}>
+                          {brigade.brigadeName}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalSum = brigade.estimates.reduce(
+                              (acc, cur) => acc + Number(cur.price),
+                              0,
+                            );
+                            return new Intl.NumberFormat('ru-RU').format(totalSum);
+                          })()}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalSum = brigade.estimates
+                              .filter((esCol) => esCol.done === 'true')
+                              .reduce((acc, cur) => acc + Number(cur.price), 0);
+                            return new Intl.NumberFormat('ru-RU').format(totalSum);
+                          })()}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalSum = brigade.payments.reduce(
+                              (acc, cur) => acc + Number(cur.sum),
+                              0,
+                            );
+                            return new Intl.NumberFormat('ru-RU').format(totalSum);
+                          })()}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {(() => {
+                            const totalPayments = brigade.payments.reduce(
+                              (acc, cur) => acc + Number(cur.sum),
+                              0,
+                            );
 
-                              const totalEstimates = brigade.estimates
-                                .filter((esCol) => esCol.done === 'true')
-                                .reduce((acc, cur) => acc + Number(cur.price), 0);
+                            const totalEstimates = brigade.estimates
+                              .filter((esCol) => esCol.done === 'true')
+                              .reduce((acc, cur) => acc + Number(cur.price), 0);
 
-                              // Выполняем вычитание до форматирования
-                              const difference = totalPayments - totalEstimates;
+                            // Выполняем вычитание до форматирования
+                            const difference = totalPayments - totalEstimates;
 
-                              // Форматируем только результат разности
-                              const formattedDifference = new Intl.NumberFormat('ru-RU').format(
-                                difference,
-                              );
-                              return formattedDifference; // Возвращаем только отформатированную строку
-                            })()}
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tbody>
-                        {brigade.payments
-                          .sort((a, b) => new Date(a.date) - new Date(b.date))
-                          .map((paymentDate) => (
-                            <tr key={paymentDate.id}>
-                              <td style={{ textAlign: 'right' }}>
-                                {' '}
-                                <Moment format="DD.MM.YYYY">{paymentDate.date}</Moment>
-                              </td>
-                              <td></td>
-                              <td></td>
-                              <td style={{ textAlign: 'center' }}>
-                                {new Intl.NumberFormat('ru-RU').format(paymentDate.sum)}
-                              </td>
-                              <td></td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </>
-                  ))}
-              </>
-            ))}
-          </Table>
-        </div>
+                            // Форматируем только результат разности
+                            const formattedDifference = new Intl.NumberFormat('ru-RU').format(
+                              difference,
+                            );
+                            return formattedDifference; // Возвращаем только отформатированную строку
+                          })()}
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      {brigade.payments
+                        .sort((a, b) => new Date(a.date) - new Date(b.date))
+                        .map((paymentDate) => (
+                          <tr key={paymentDate.id}>
+                            <td style={{ textAlign: 'right' }}>
+                              {' '}
+                              <Moment format="DD.MM.YYYY">{paymentDate.date}</Moment>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td style={{ textAlign: 'center' }}>
+                              {new Intl.NumberFormat('ru-RU').format(paymentDate.sum)}
+                            </td>
+                            <td></td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </>
+                ))}
+            </>
+          ))}
+        </Table>
       </div>
     </div>
   );
