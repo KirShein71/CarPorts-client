@@ -80,7 +80,7 @@ function DistributionList() {
             </div>
           )}
         </div>
-        <Table className="mt-4" style={{ width: '750px' }}>
+        <Table className="mt-4" style={{ maxWidth: '750px' }}>
           <thead>
             <tr>
               <th className="distribution__thead" style={{ width: '180px' }}>
