@@ -47,3 +47,11 @@
 }
 
 
+.table-container {
+    @media(max-width: 460px) {
+        overflow-x: auto;
+        width: 100%;
+    }
+}
+
+
