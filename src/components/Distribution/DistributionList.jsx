@@ -138,7 +138,9 @@ function DistributionList() {
                   <>
                     <tbody>
                       <tr key={brigade.id} style={{ borderBottom: '2px solid #000' }}>
-                        <td onClick={() => addToInstallationPage(brigade.brigadeId)}>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => addToInstallationPage(brigade.brigadeId)}>
                           {brigade.brigadeName}
                         </td>
                         <td style={{ textAlign: 'center' }}>
