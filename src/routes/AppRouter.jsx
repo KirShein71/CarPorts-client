@@ -29,6 +29,7 @@ import InstallerAccount from '../pages/InstallerAccount';
 import InstallationProjectInfo from '../pages/InstallationProjectInfo';
 import InstallationFinishProject from '../pages/InstallationFinishProject';
 import Distrbution from '../pages/Distribution';
+import ViewingInstallationPage from '../pages/ViewingInstallationPage';
 
 import { observer } from 'mobx-react';
 
@@ -89,8 +90,9 @@ const adminRoutes = [
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: '/installeraccount', Component: InstallerAccount },
   { path: '/projectinformation/:id', Component: InstallationProjectInfo },
-  { path: '/project-finish/: id', Component: InstallationFinishProject },
+  { path: '/project-finish/:id', Component: InstallationFinishProject },
   { path: '/distribution', Component: Distrbution },
+  { path: '/viewinginstallationpage/:id', Component: ViewingInstallationPage },
 ];
 
 const managerSaleRoutes = [
