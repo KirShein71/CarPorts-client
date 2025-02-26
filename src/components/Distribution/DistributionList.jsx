@@ -83,7 +83,7 @@ function DistributionList() {
         <Table className="mt-4" style={{ maxWidth: '750px' }}>
           <thead>
             <tr>
-              <th className="distribution__thead" style={{ width: '180px' }}>
+              <th className="distribution__thead-project" style={{ width: '180px' }}>
                 Проекты
               </th>
               <th className="distribution__thead" style={{ width: '120px' }}>
