@@ -83,21 +83,11 @@ function DistributionList() {
         <Table className="mt-4" style={{ maxWidth: '750px' }}>
           <thead>
             <tr>
-              <th className="distribution__thead-project" style={{ width: '180px' }}>
-                Проекты
-              </th>
-              <th className="distribution__thead" style={{ width: '120px' }}>
-                Смета
-              </th>
-              <th className="distribution__thead" style={{ width: '120px' }}>
-                Выполнено
-              </th>
-              <th className="distribution__thead" style={{ width: '120px' }}>
-                Выплачено
-              </th>
-              <th className="distribution__thead" style={{ width: '120px' }}>
-                Остаток
-              </th>
+              <th className="distribution__thead-project">Проекты</th>
+              <th className="distribution__thead">Смета</th>
+              <th className="distribution__thead">Выполнено</th>
+              <th className="distribution__thead">Выплачено</th>
+              <th className="distribution__thead">Остаток</th>
             </tr>
           </thead>
           {calculations.map((calculation) => (
