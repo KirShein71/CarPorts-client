@@ -451,7 +451,7 @@ function ProjectInfoList() {
               </tbody>
               <tbody>
                 <tr>
-                  <th>Проверяет проек</th>
+                  <th>Проверяет проект</th>
                   <td>{project.project && project.project.inspection_designer}</td>
                 </tr>
               </tbody>

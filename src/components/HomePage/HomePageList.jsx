@@ -14,7 +14,10 @@ const MenuItems = ({ items }) => {
     <div key={index}>
       {item.title && <div className="homepage__title">{item.title}</div>}
       <Link to={item.link}>
-        <div className={`homepage__item ${item.label === 'Все проекты' ? 'bold' : ''}`}>
+        <div
+          className={`homepage__item ${
+            item.label === 'Все проекты' || item.label === 'Рекламация' ? 'bold' : ''
+          }`}>
           {item.label}
         </div>
       </Link>
@@ -69,6 +72,7 @@ function HomePageList() {
     { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Рекламация' },
     { title: 'Администирование' },
     { label: 'Сметы', link: '/distribution' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
