@@ -28,7 +28,7 @@ function Estimate(props) {
   const [brigadeName, setBrigadeName] = React.useState('');
   const [openModalSelectedBrigade, setOpenModalSelectedBrigade] = React.useState(false);
   const [estimateBrigades, setEstimateBrigades] = React.useState([]);
-  const [prices, setPrices] = React.useState({}); // Состояние для хранения цен
+  const [prices, setPrices] = React.useState({});
   const [openModalUpdatePrice, setOpenModalUpdatePrice] = React.useState(false);
   const [estimateColId, setEstimateColId] = React.useState(null);
   const [change, setChange] = React.useState(true);

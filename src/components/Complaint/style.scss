@@ -1,0 +1,248 @@
+.button__addcomplaint {
+    width: 110px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-right: 10px;
+    &.active {
+        background-color: #212529; /* Черный фон для активной кнопки */
+        color: #ffffff; /* Белый текст для активной кнопки */
+    }
+    @media(max-width: 460px) {
+        width: 60px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+    }
+}
+
+
+//complaint-info 
+.complaint-info  {
+    &__content {
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+    &__image {
+        img {
+            display: block;
+            margin: 0 auto;
+            height: 200px;
+            border-radius: 10px;
+            @media(max-width: 575px) {
+                width: 450px;
+                height: 150px;
+            }
+            @media(max-width: 470px) {
+                width: 400px;
+            }
+            @media(max-width: 410px) {
+                width: 350px;
+            }
+        }  
+
+    }
+
+    &__information {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        
+    } 
+
+    &__number, &__name, &__date {
+        font-size: 22px;
+        font-weight: 400;
+        color: rgb(7, 7, 7);
+        padding-right: 15px;
+        @media(max-width: 575px) {
+            font-size: 18px;
+        }
+    }
+
+    &__filter {
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &-card {
+            
+           @media(max-width: 768px){
+           
+            overflow-x: auto;
+           }
+            
+
+            &__content {
+                display: flex;
+                justify-content: space-between;
+                @media(max-width: 460px) {
+                    width: 385px;
+                }
+                @media(max-width: 400px) {
+                    width: 350px;
+                }
+                @media(max-width: 350px) {
+                    width: 300px;
+                }
+            }
+
+            &__item {
+                font-size: 18px;
+                font-weight: 400;
+                color: rgb(7,7,7);
+                cursor: pointer;
+                padding: 10px 20px;
+                border-radius: 10px;
+                list-style: none;
+                transition: background-color 0.1s ease-in-out;
+                @media(max-width: 768px) {
+                    white-space: nowrap
+                }
+                @media(max-width: 575px) {
+                    font-size: 14px;
+                    padding: 10px 15px;
+                }
+                @media (max-width: 500px) {
+                    padding: 5px 12px;
+                }
+                @media (max-width: 450px) {
+                    padding: 5px 13px;
+                }
+                @media (max-width: 450px) {
+                    padding: 5px 12px;
+                }
+                @media (max-width: 400px) {
+                    font-size: 13px;
+                }
+          
+                &:hover {
+                  background-color: darken(#272833, 2%);
+                  color: #ffff;
+                }
+          
+                &:active {
+                  background-color: darken(#272833, 5%);
+                 
+                }
+          
+                &.active {
+                    background-color: darken(#272833, 5%);
+                    color: #ffff;
+                  }
+            }
+        }
+    }
+
+    .cabinet {
+        &__item {
+            font-size: 22px;
+            font-weight: 400;
+            color: #0000ff;
+            padding-right: 15px;
+            cursor: pointer;
+            &:hover {
+                color: #f80000;
+            }
+            @media(max-width: 575px) {
+                font-size: 18px;
+                padding-top: 20px;
+            }
+
+
+        }
+    }
+
+    // information
+
+    .information {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+       
+
+        &__content {
+            margin: 25px 0px 15px 0px;
+            padding: 20px;
+            width: 60%;
+            min-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #9da1aa;
+            
+        }
+
+        &__field {
+            font-size: 19px;
+            font-weight: 400;
+            color: rgb(7,7,7);
+            font-family: "Open Sans", sans-serif;
+            white-space: pre-wrap; /* сохраняет абзацы и переносит текст по словам */
+            word-break: break-word;
+            @media(max-width: 1024px) {
+                white-space: pre-wrap;
+            }
+            @media(max-width: 768px) {
+                font-size: 16px;
+            }
+            @media(max-width: 480px) {
+                font-size: 14px;
+            }
+        }
+
+        &__show {
+            font-size: 17px;
+            font-weight: 400;
+            color: #7d7f7d;
+            text-align: center;
+            cursor: pointer;
+            @media(max-width: 768px) {
+                font-size: 14px;
+            }
+        }
+    }
+
+    //images 
+    .images {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 25px;
+
+        &__content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr;
+            grid-column-gap: 10px;
+            grid-row-gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        &__image {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            img {
+                width: 350px;
+                height: 250px;
+                margin-bottom: 10px;
+            }
+        }
+
+        &__delete {
+            font-size: 18px;
+            font-weight: 400;
+            color: red;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,17 +1,16 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Button, Table, Spinner, Col, Form } from 'react-bootstrap';
+import { Button, Table, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fetchAllShipmentDetails, deleteShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
 import Moment from 'react-moment';
-import { AppContext } from '../../context/AppContext';
+
 import './modals/styles.scss';
 
 function ShipmentList() {
-  const { user } = React.useContext(AppContext);
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
   const [updateShipmentDetailsModal, setUpdateShipmentDetailsModal] = React.useState(false);
@@ -261,16 +260,13 @@ function ShipmentList() {
                         <td
                           style={{ cursor: 'pointer' }}
                           onClick={() =>
-                            user.isProjectManager || user.isAdmin
-                              ? undefined
-                              : () =>
-                                  quantity
-                                    ? handleUpdateShipmentDetailClick(detail.id)
-                                    : handleCreateOneShipmentDetail(
-                                        part.id,
-                                        shipment.projectId,
-                                        shipment.shipment_date,
-                                      )
+                            quantity
+                              ? handleUpdateShipmentDetailClick(detail.id)
+                              : handleCreateOneShipmentDetail(
+                                  part.id,
+                                  shipment.projectId,
+                                  shipment.shipment_date,
+                                )
                           }>
                           {quantity}
                         </td>
