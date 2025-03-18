@@ -7,7 +7,17 @@ export const getComplaintEstimate = async () => {
 
 
 export const getAllEstimateForComplaint = async (id) => {
-    const {data} = await guestInstance.get(`complaint_estimate/getAllEstimateForProject/${id}`)
+    const {data} = await guestInstance.get(`complaintestimate/getAllEstimateForComplaint/${id}`)
+    return data
+}
+
+export const getAllEstimateForBrigadeComplaint = async (id, complaint) => {
+    const {data} = await guestInstance.get(`complaintestimate/getAllEstimateForBrigadeComplaint/${id}/${complaint}`)
+    return data
+}
+
+export const getAllComplaintEstimateForBrigadeForAllProject = async (id) => {
+    const {data} = await guestInstance.get(`complaintestimate/getAllComplaintEstimateForBrigadeForAllProject/${id}`)
     return data
 }
 
@@ -16,33 +26,35 @@ export const createComplaintEstimate = async (complaintestimate) => {
     return data
 }
 
-export const createComplaintEstimateBrigade = async (id, complaint_estimate) => {
-    const { data } = await authInstance.put(`complaint_estimate/createEstimateBrigade/${id}`, complaint_estimate)
+export const createComplaintEstimateBrigade = async (id, complaintestimate) => {
+    const { data } = await authInstance.put(`complaintestimate/createEstimateBrigade/${id}`, complaintestimate)
     return data
 }
 
 export const getOneComplaintEstimateColumn = async (id) => {
-    const { data } = await guestInstance.get(`complaint_estimate/getone/${id}`)
+    const { data } = await guestInstance.get(`complaintestimate/getone/${id}`)
     return data
 }
 
-export const updateComplaintEstimatePrice = async (id,  complaint_estimate) => {
-    const { data } = await guestInstance.put(`complaint_estimate/updateEstimatePrice/${id}`, complaint_estimate)
+export const updateComplaintEstimatePrice = async (id,  complaintestimate) => {
+    const { data } = await guestInstance.put(`complaintestimate/updateEstimatePrice/${id}`, complaintestimate)
     return data
 }
 
-export const updateBrigadeForComplaint = async (id, complaint, complaint_estimate) => {
-    const { data } = await guestInstance.put(`complaint_estimate/updateBrigadeForComplaint/${id}/${complaint}`, complaint_estimate)
+export const updateBrigadeForComplaint = async (id, complaint, complaintestimate) => {
+    const { data } = await guestInstance.put(`complaintestimate/updateBrigadeForComplaint/${id}/${complaint}`, complaintestimate)
     return data
 }
 
 export const deleteEstimateBrigadeForComplaint= async(id, complaint) => {
-    const { data} = await guestInstance.delete(`complaint_estimate/deleteEstimateBrigadeForProject/${id}/${complaint}`)
+    const { data} = await guestInstance.delete(`complaintestimate/deleteEstimateBrigadeForComplaint/${id}/${complaint}`)
     return data
 }
 
-export const deleteEstimate = async(id) => {
-    const { data} = await guestInstance.delete(`complaint_estimate/delete/${id}`)
+export const deleteComplaintEstimate = async(id) => {
+    const { data} = await guestInstance.delete(`complaintestimate/delete/${id}`)
     return data
 }
+
+
 

@@ -81,18 +81,18 @@ function InstallationPage() {
       <div className="installation-page__content">
         <div className="installation-page__projects">
           <div className="installation-page__title">Активные проекты</div>
-          <Link to="/project-finish">
-            <div
-              style={{
-                fontSize: '18px',
-                paddingTop: '10px',
-                paddingBottom: '10px',
-                cursor: 'pointer',
-                color: 'black',
-              }}>
-              &bull; Показать завершенные проекты
-            </div>
-          </Link>
+          <div style={{ display: 'flex' }}>
+            <Link to="/project-finish">
+              <Button variant="dark" size="sm" className="mt-3 mb-3 me-3">
+                Завершенные проекты
+              </Button>
+            </Link>
+            <Link to="/installation-complaint">
+              <Button variant="dark" size="sm" className="mt-3 mb-3 ">
+                Рекламация
+              </Button>
+            </Link>
+          </div>
           <div className="table-scrollable">
             <Table bordered>
               <thead>

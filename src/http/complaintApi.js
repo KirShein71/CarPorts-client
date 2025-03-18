@@ -15,6 +15,16 @@ export const getOneComplaint = async (id) => {
     return data
 }
 
+export const createDateFinish = async (id, complaint) => {
+    const { data} = await guestInstance.put(`complaint/createDateFinish/${id}`, complaint)
+    return data
+}
+
+export const deleteDateFinish = async (id) => {
+    const { data} = await guestInstance.delete(`complaint/deleteDateFinish/${id}`)
+    return data
+}
+
 
 export const updateNote = async (id, complaint) => {
     const { data } = await authInstance.put(`complaint/updateNote/${id}`, complaint)

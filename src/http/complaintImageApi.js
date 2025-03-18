@@ -7,8 +7,8 @@ export const fetchComplaintImages = async () => {
     return data
 }
 
-export const getAllComplaintImageByUserId = async (complaintId) => {
-    const { data } = await guestInstance.get(`complaintimage/getall/${complaintId}`);
+export const getAllByComplaintId = async (complaintId) => {
+    const { data } = await guestInstance.get(`complaintimage/getAllByComplaintId/${complaintId}`);
     return data;
 }
 

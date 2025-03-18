@@ -5,7 +5,7 @@ function CheckboxInstallation({ handle, change, label }) {
   return (
     <div className="checkbox" style={{ display: 'flex' }}>
       <div class="cntr">
-        <label for={label} class="label-cbx">
+        <label htmlFor={label} class="label-cbx">
           <input
             id={label}
             type="checkbox"

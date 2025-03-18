@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createPayment } from '../../../http/paymentApi';
+import { createComplaintPayment } from '../../../http/complaintPaymentApi';
 
-const defaultValue = { date: '', sum: '', project: '', brigade: '' };
+const defaultValue = { date: '', sum: '', complaint: '', brigade: '' };
 const defaultValid = {
   date: null,
   sum: null,
-  project: null,
+  complaint: null,
   brigade: null,
 };
 
@@ -19,8 +19,8 @@ const isValid = (value) => {
   return result;
 };
 
-const CreatePayment = (props) => {
-  const { project, brigade, show, setShow, setChange } = props;
+const CreateComplaintPayment = (props) => {
+  const { complaint, brigade, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -40,10 +40,10 @@ const CreatePayment = (props) => {
       const data = new FormData();
       data.append('date', value.date.trim());
       data.append('sum', value.sum.trim());
-      data.append('projectId', project);
+      data.append('complaintId', complaint);
       data.append('brigadeId', brigade);
 
-      createPayment(data)
+      createComplaintPayment(data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -110,4 +110,4 @@ const CreatePayment = (props) => {
   );
 };
 
-export default CreatePayment;
+export default CreateComplaintPayment;

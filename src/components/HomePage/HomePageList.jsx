@@ -72,7 +72,7 @@ function HomePageList() {
     { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
-    // { label: 'Рекламация', link: '/complaint' },
+    { label: 'Рекламация', link: '/complaint' },
     { title: 'Администирование' },
     { label: 'Сметы', link: '/distribution' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },

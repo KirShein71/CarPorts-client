@@ -7,11 +7,11 @@
   
   .production_column {
     position: relative;
-  position: sticky;
-  left: 0;
-  top: 0;
-  z-index: 4;
-  background-color: white !important; 
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
   
     }
 
@@ -32,11 +32,12 @@
     top: 0;
     z-index: 3;
     background-color: white !important; 
+    border-top: 1px solid #dee2e6;
       }
       .production_td::after {
         content: '';
         position: absolute;
-        top: 0;
+        top: 0px;
         right: 0px;
         width: 1px;
         height: 100%;
@@ -66,9 +67,9 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 1px;
+    width: 2px;
     height: 100%;
-    border-bottom: 1px solid #dee2e6; 
+    border-bottom: 2px solid #dee2e6; 
     width: 100%;
     
   }

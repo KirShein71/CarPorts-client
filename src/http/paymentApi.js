@@ -5,8 +5,8 @@ export const getAllPayment = async () => {
     return data
 }
 
-export const createPayment = async (estimate) => {
-    const { data } = await authInstance.post(`payment/create`, estimate)
+export const createPayment = async (payment) => {
+    const { data } = await authInstance.post(`payment/create`, payment)
     return data
 }
 

@@ -4,7 +4,13 @@ import { Button } from 'react-bootstrap';
 function Images({ complaintProject, hadleCreateImages, handleDeleteImage }) {
   const imageCount = complaintProject.complaintImages.length;
   const gridTemplateColumns =
-    imageCount === 1 ? 'repeat(1, 1fr)' : imageCount === 2 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)';
+    window.innerWidth < 610
+      ? 'repeat(1, 1fr)'
+      : imageCount === 1
+      ? 'repeat(1, 1fr)'
+      : imageCount === 2
+      ? 'repeat(2, 1fr)'
+      : 'repeat(3, 1fr)';
 
   return (
     <div className="images">

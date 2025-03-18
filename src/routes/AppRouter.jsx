@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import Home from '../pages/Home';
@@ -32,6 +32,7 @@ import Distrbution from '../pages/Distribution';
 import ViewingInstallationPage from '../pages/ViewingInstallationPage';
 import Complaint from '../pages/Complaint';
 import ComplaintProject from '../pages/ComplaintProject';
+import InstallationComplaint from '../pages/InstallationComplaint';
 
 import { observer } from 'mobx-react';
 
@@ -146,6 +147,7 @@ const brigadesRoutes = [
   { path: '/installeraccount', Component: InstallerAccount },
   { path: '/projectinformation/:id', Component: InstallationProjectInfo },
   { path: '/project-finish', Component: InstallationFinishProject },
+  { path: '/installation-complaint', Component: InstallationComplaint },
 ];
 
 const routes = [{ path: '/', Component: Home }];

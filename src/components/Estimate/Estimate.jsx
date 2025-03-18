@@ -205,7 +205,6 @@ function Estimate(props) {
   };
 
   const handleDeletePaymentColumn = (id) => {
-    console.log(id);
     const confirmed = window.confirm(
       'Вы уверены, что хотите удалить строку выплаты по данной бригаде?',
     );
