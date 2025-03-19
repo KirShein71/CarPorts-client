@@ -6,17 +6,18 @@ import {
   createComplaintEstimate,
   getAllEstimateForComplaint,
   createComplaintEstimateBrigade,
-  deleteEstimateBrigadeForComplaint,
-  deleteComplaintEstimate,
 } from '../../http/complaintEstimateApi';
-import { deleteComplaintPayment } from '../../http/complaintPaymentApi';
 import UpdateComplaintEstimatePrice from './modals/UpdateComplaintEstimatePrice';
 import UpdateComplaintEstimateBriagde from './modals/UpdateComplaintEstimateBrigade';
 import CreateComplaintPayment from './modals/CreateComplaintPayment';
 import UpdateComplaintPaymentDate from './modals/UpdateComplaintPaymentDate';
 import UpdateComplaintPaymentSum from './modals/UpdateComplaintPaymentSum';
 import CheckboxInstallation from '../InstallationPage/checkbox/CheckboxInstallation';
+import DeleteComplaintEstimateBrigade from './modals/DeleteComplaintEstimateBrigade';
+import DeleteComplaintColEstimate from './modals/DeleteComplaintColEstimate';
+import DelteComplaintPayment from './modals/DeleteComplaintPayment';
 import Moment from 'react-moment';
+import DeleteComplaintPayment from './modals/DeleteComplaintPayment';
 
 function ComplaintEstimate(props) {
   const { complaintId, regionId } = props;
@@ -41,6 +42,12 @@ function ComplaintEstimate(props) {
   const [complaintPaymentColId, setComplaintPaymentColId] = React.useState(null);
   const [modalUpdateComplaintPaymentSum, setModalUpdateComplaintPaymentSum] = React.useState(false);
   const [checked, setChecked] = React.useState({});
+  const [modalDeleteCompaintEstimateBrigade, setModalDeleteComplaintEstimateBrigade] =
+    React.useState(false);
+  const [colEstimate, setColEstimate] = React.useState(null);
+  const [modalDeleteColEstimate, setModalDeleteColEstimate] = React.useState(false);
+  const [paymentId, setPaymentId] = React.useState(null);
+  const [modalDeletePayment, setModalDeletePayment] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -164,30 +171,20 @@ function ComplaintEstimate(props) {
     setModalUpdateComplaintEstimateBrigade(true);
   };
 
-  const handleDeleteComplaintEstimateBrigadeForCompaint = (id, compaint) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить смету по данной бригаде?');
-    if (confirmed) {
-      deleteEstimateBrigadeForComplaint(id, compaint)
-        .then((data) => {
-          setChange(!change);
-          alert(`Смета будет удалена`);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalDeleteComplaintEstimateBrigade = (id, complaintId) => {
+    setBrigadeId(id);
+    setComplaint(complaintId);
+    setModalDeleteComplaintEstimateBrigade(true);
   };
 
-  const handleDeleteComplaintEstimateColumn = (id) => {
-    const confirmed = window.confirm(
-      'Вы уверены, что хотите удалить строку сметы по данной бригаде?',
-    );
-    if (confirmed) {
-      deleteComplaintEstimate(id)
-        .then((data) => {
-          setChange(!change);
-          alert(`Строка сметы будет удалена`);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalDeleteColEstimate = (id) => {
+    setColEstimate(id);
+    setModalDeleteColEstimate(true);
+  };
+
+  const handleOpenModalDeletePayment = (id) => {
+    setPaymentId(id);
+    setModalDeletePayment(true);
   };
 
   const handleOpenModalCreateComplaintPayment = (id, complaintId) => {
@@ -204,20 +201,6 @@ function ComplaintEstimate(props) {
   const handleOpenModalUpdateComplaintPaymentSum = (id) => {
     setComplaintPaymentColId(id);
     setModalUpdateComplaintPaymentSum(true);
-  };
-
-  const handleDeleteComplaintPaymentColumn = (id) => {
-    const confirmed = window.confirm(
-      'Вы уверены, что хотите удалить строку выплаты по данной бригаде?',
-    );
-    if (confirmed) {
-      deleteComplaintPayment(id)
-        .then((data) => {
-          setChange(!change);
-          alert(`Строка выплаты будет удалена`);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
   };
 
   return (
@@ -255,7 +238,25 @@ function ComplaintEstimate(props) {
         setChange={setChange}
         id={complaintPaymentColId}
       />
-
+      <DeleteComplaintEstimateBrigade
+        show={modalDeleteCompaintEstimateBrigade}
+        setShow={setModalDeleteComplaintEstimateBrigade}
+        setChange={setChange}
+        complaint={complaint}
+        brigadeId={brigadeId}
+      />
+      <DeleteComplaintColEstimate
+        show={modalDeleteColEstimate}
+        setShow={setModalDeleteColEstimate}
+        setChange={setChange}
+        colEstimate={colEstimate}
+      />
+      <DeleteComplaintPayment
+        show={modalDeletePayment}
+        setShow={setModalDeletePayment}
+        setChange={setChange}
+        paymentId={paymentId}
+      />
       <div className="complaint-estimate__content">
         <div className="estimate-brigade__content">
           {estimateBrigades?.map((estimateBrigade) => (
@@ -337,7 +338,7 @@ function ComplaintEstimate(props) {
                             </td>
                             <td
                               style={{ cursor: 'pointer', textAlign: 'center' }}
-                              onClick={() => handleDeleteComplaintEstimateColumn(estimateCol.id)}>
+                              onClick={() => handleOpenModalDeleteColEstimate(estimateCol.id)}>
                               <img src="../img/delete.png" alt="delete" />
                             </td>
                           </tr>
@@ -372,7 +373,7 @@ function ComplaintEstimate(props) {
                       size="sm"
                       variant="dark"
                       onClick={() =>
-                        handleDeleteComplaintEstimateBrigadeForCompaint(
+                        handleOpenModalDeleteComplaintEstimateBrigade(
                           estimateBrigade.brigadeId,
                           complaintId,
                         )
@@ -407,7 +408,7 @@ function ComplaintEstimate(props) {
                         </td>
                         <td
                           style={{ textAlign: 'center', cursor: 'pointer' }}
-                          onClick={() => handleDeleteComplaintPaymentColumn(payment.id)}>
+                          onClick={() => handleOpenModalDeletePayment(payment.id)}>
                           <img src="../img/delete.png" alt="delete" />
                         </td>
                       </tr>
