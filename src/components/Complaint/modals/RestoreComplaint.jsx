@@ -19,7 +19,7 @@ function RestoreComplaint(props) {
 
   return (
     <>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <ModalTitle>Восстановление рекламации</ModalTitle>
         </Modal.Header>

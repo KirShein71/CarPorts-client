@@ -19,7 +19,7 @@ function DeleteComplaint(props) {
 
   return (
     <>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <ModalTitle>Удаление рекламации</ModalTitle>
         </Modal.Header>
