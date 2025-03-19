@@ -41,7 +41,10 @@ function HomePageList() {
     setCreateProjectModal(true);
   };
 
-  const managerSaleItems = [{ label: 'Все проекты', link: '/project' }];
+  const managerSaleItems = [
+    { label: 'Все проекты', link: '/project' },
+    { label: 'Рекламация', link: '/complaint' },
+  ];
 
   const managerProjectItems = [
     { label: 'Все проекты', link: '/project' },
@@ -55,6 +58,7 @@ function HomePageList() {
     { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Рекламация', link: '/complaint' },
     { title: 'Администирование' },
     { label: 'Справочники', link: '/adding' },
     { label: 'Сметы', link: '/distribution' },
@@ -88,6 +92,7 @@ function HomePageList() {
     { label: 'Произведено', link: '/welders' },
     { label: 'Отгрузки', link: '/shipment' },
     { label: 'Итоговая производство', link: '/manufacture' },
+    { label: 'Рекламация', link: '/complaint' },
   ];
 
   const employeeItems = [

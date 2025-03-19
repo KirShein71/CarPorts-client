@@ -110,6 +110,7 @@ const managerSaleRoutes = [
   { path: '/workingpage', Component: WorkingPage },
   { path: '/finishproject', Component: FinishProject },
   { path: '/clientaccount', Component: ClientAccount },
+  { path: '/complaint', Component: Complaint },
 ];
 
 const managerProjectRoutes = [
@@ -131,6 +132,7 @@ const managerProjectRoutes = [
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: '/adding', Component: Adding },
   { path: '/distribution', Component: Distrbution },
+  { path: '/complaint', Component: Complaint },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -143,6 +145,7 @@ const managerProductionRoutes = [
   { path: '/shipmentchange', Component: ShipmentChange },
   { path: '/production', Component: Production },
   { path: '/ordermaterials', Component: OrderMaterials },
+  { path: '/complaint', Component: Complaint },
 ];
 
 const brigadesRoutes = [
