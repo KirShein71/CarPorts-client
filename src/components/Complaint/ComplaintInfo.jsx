@@ -10,6 +10,7 @@ import UpdateNote from './modals/UpdateNote';
 import CreateImages from './modals/CreateImages';
 import ComplaintEstimate from './ComplaintEstimate';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import DeleteComplaintImage from './modals/DeleteComplaintImage';
 
 function ComplaintInfo() {
   const { id } = useParams();
@@ -19,7 +20,9 @@ function ComplaintInfo() {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [openModalUpdateNote, setOpenModalUpdateNote] = React.useState(false);
   const [openModalCreateImages, setOpenModalCreateImages] = React.useState(false);
-  const navigate = useNavigate();
+  const [imageId, setImageId] = React.useState(null);
+  const [modaleDeleteImage, setModalDeleteImage] = React.useState(false);
+
   const location = useLocation();
 
   React.useEffect(() => {
@@ -42,16 +45,9 @@ function ComplaintInfo() {
     setIsExpanded(!isExpanded);
   };
 
-  const handleDeleteImage = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить изображение?');
-    if (confirmed) {
-      deleteComplaintImage(id)
-        .then((data) => {
-          setChange(!change);
-          alert('Изображение удалено');
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalDeleteImage = (id) => {
+    setImageId(id);
+    setModalDeleteImage(true);
   };
 
   if (!complaintProject) {
@@ -70,6 +66,12 @@ function ComplaintInfo() {
         complaintId={id}
         show={openModalCreateImages}
         setShow={setOpenModalCreateImages}
+        setChange={setChange}
+      />
+      <DeleteComplaintImage
+        imageId={imageId}
+        show={modaleDeleteImage}
+        setShow={setModalDeleteImage}
         setChange={setChange}
       />
       <div className="header">
@@ -149,7 +151,7 @@ function ComplaintInfo() {
           <Images
             complaintProject={complaintProject}
             hadleCreateImages={hadleCreateImages}
-            handleDeleteImage={handleDeleteImage}
+            handleDeleteImage={handleOpenModalDeleteImage}
           />
         )}
         {activeTab === 'estimate' && (

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Button, ModalTitle } from 'react-bootstrap';
-import { deleteComplaintPayment } from '../../../http/complaintPaymentApi';
+import { deleteComplaintImage } from '../../../http/complaintImageApi';
 
-function DeleteComplaintPayment(props) {
-  const { show, setShow, setChange, paymentId } = props;
+function DeleteComplaintImage(props) {
+  const { show, setShow, setChange, imageId } = props;
 
-  const handleDeleteComplaintPaymentColumn = () => {
-    deleteComplaintPayment(paymentId)
+  const handleDeleteComplaintImage = () => {
+    deleteComplaintImage(imageId)
       .then((data) => {
         setChange((state) => !state);
         setShow(false);
@@ -21,16 +21,16 @@ function DeleteComplaintPayment(props) {
     <>
       <Modal show={show} onHide={() => setShow(false)} centered>
         <Modal.Header closeButton>
-          <ModalTitle>Удаление выплаты</ModalTitle>
+          <ModalTitle>Удаление изображения</ModalTitle>
         </Modal.Header>
         <Modal.Body>
-          <p className="modal__text">Вы уверены, что хотите удалить выплату?</p>
+          <p className="modal__text">Вы уверены, что хотите удалить изображение?</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShow(false)}>
             Закрыть
           </Button>
-          <Button variant="primary" onClick={handleDeleteComplaintPaymentColumn}>
+          <Button variant="primary" onClick={handleDeleteComplaintImage}>
             Удалить
           </Button>
         </Modal.Footer>
@@ -39,4 +39,4 @@ function DeleteComplaintPayment(props) {
   );
 }
 
-export default DeleteComplaintPayment;
+export default DeleteComplaintImage;
