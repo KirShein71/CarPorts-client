@@ -1,15 +1,14 @@
 import React from 'react';
 import Header from '../Header/Header';
-import {
-  getAllComplaint,
-  deleteComplaint,
-  createDateFinish,
-  deleteDateFinish,
-} from '../../http/complaintApi';
+import { getAllComplaint } from '../../http/complaintApi';
 import { Table, Spinner, Button } from 'react-bootstrap';
 import CreateComplaint from './modals/CreateComplaint';
 import Moment from 'react-moment';
 import { useLocation, useNavigate } from 'react-router-dom';
+import DeleteComplaint from './modals/DeleteComplaint';
+import ClosedComplaint from './modals/ClosedComplaint';
+import RestoreComplaint from './modals/RestoreComplaint';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import './style.scss';
 
@@ -22,6 +21,10 @@ function ComplaintList() {
   const [buttonNewComplaint, setButtonNewComplaint] = React.useState(true);
   const [buttonClosedComplaint, setButtonClosedComplaint] = React.useState(false);
   const [buttonWorkComplaint, setButtonWorkComplaint] = React.useState(false);
+  const [modalDeleteComplaint, setModalDeleteComplaint] = React.useState(false);
+  const [complaintId, setComplaintId] = React.useState(null);
+  const [modalClosedComplaint, setModalClosedComplaint] = React.useState(false);
+  const [modalRestoreComplaint, setModalRestoreComplaint] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -63,40 +66,19 @@ function ComplaintList() {
     setOpenModalCreateComplaint(true);
   };
 
-  const handleDeleteComplaint = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить рекламационную заявку?');
-    if (confirmed) {
-      deleteComplaint(id)
-        .then((data) => {
-          setChange(!change);
-          alert(`Рекламационная заявка будет удалена`);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalDeleteComplaint = (id) => {
+    setComplaintId(id);
+    setModalDeleteComplaint(true);
   };
 
-  const handleFinishComplaint = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите закрыть рекламационную заявку?');
-    if (confirmed) {
-      createDateFinish(id, { date_finish: new Date().toISOString() })
-        .then(() => {
-          setChange(!change);
-          alert('Заявка закрыта');
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalClosedComplaint = (id) => {
+    setComplaintId(id);
+    setModalClosedComplaint(true);
   };
 
-  const handleRestoreComplaint = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите восстановить рекламационную заявку?');
-    if (confirmed) {
-      deleteDateFinish(id)
-        .then(() => {
-          setChange(!change);
-          alert('Заявка восстановлена');
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleOpenModalRestoreComplaint = (id) => {
+    setComplaintId(id);
+    setModalRestoreComplaint(true);
   };
 
   const handleButtonNewComplaint = () => {
@@ -149,11 +131,32 @@ function ComplaintList() {
   return (
     <div className="complaintlist">
       <Header title={'Рекламация'} />
-
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
+        <Breadcrumb.Item active>Рекламация</Breadcrumb.Item>
+      </Breadcrumb>
       <CreateComplaint
         show={openModalCreateComplaint}
         setShow={setOpenModalCreateComplaint}
         setChange={setChange}
+      />
+      <DeleteComplaint
+        showModal={modalDeleteComplaint}
+        setShowModal={setModalDeleteComplaint}
+        setChange={setChange}
+        complaintId={complaintId}
+      />
+      <ClosedComplaint
+        showModal={modalClosedComplaint}
+        setShowModal={setModalClosedComplaint}
+        setChange={setChange}
+        complaintId={complaintId}
+      />
+      <RestoreComplaint
+        showModal={modalRestoreComplaint}
+        setShowModal={setModalRestoreComplaint}
+        setChange={setChange}
+        complaintId={complaintId}
       />
       <div style={{ display: 'flex' }}>
         <button className="button__addcomplaint" onClick={handleModalCreateComplaint}>
@@ -216,7 +219,7 @@ function ComplaintList() {
                       variant="dark"
                       size="sm"
                       style={{ display: 'block', margin: '0 auto' }}
-                      onClick={() => handleRestoreComplaint(complaint.id)}>
+                      onClick={() => handleOpenModalRestoreComplaint(complaint.id)}>
                       Восстановить
                     </Button>
                   ) : (
@@ -224,14 +227,14 @@ function ComplaintList() {
                       variant="dark"
                       size="sm"
                       style={{ display: 'block', margin: '0 auto' }}
-                      onClick={() => handleFinishComplaint(complaint.id)}>
+                      onClick={() => handleOpenModalClosedComplaint(complaint.id)}>
                       Закрыть
                     </Button>
                   )}
                 </td>
                 <td
                   style={{ textAlign: 'center', cursor: 'pointer' }}
-                  onClick={() => handleDeleteComplaint(complaint.id)}>
+                  onClick={() => handleOpenModalDeleteComplaint(complaint.id)}>
                   <img src="../img/delete.png" alt="delete" />
                 </td>
               </tr>

@@ -125,6 +125,11 @@ const CreateComplaint = (props) => {
     setSelectedImages([]);
   };
 
+  const handleClosedModal = () => {
+    setShow(false);
+    setChange((state) => !state);
+  };
+
   const projectOptions = projects.map((project) => ({
     value: project.id,
     label: project.name,
@@ -133,7 +138,7 @@ const CreateComplaint = (props) => {
   return (
     <Modal
       show={show}
-      onHide={() => setShow(false)}
+      onHide={handleClosedModal}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered

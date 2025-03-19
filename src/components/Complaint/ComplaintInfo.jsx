@@ -9,6 +9,7 @@ import Images from './Images';
 import UpdateNote from './modals/UpdateNote';
 import CreateImages from './modals/CreateImages';
 import ComplaintEstimate from './ComplaintEstimate';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 function ComplaintInfo() {
   const { id } = useParams();
@@ -77,6 +78,11 @@ function ComplaintInfo() {
         </Link>
         <h1 className="header__title">Подробная информация</h1>
       </div>
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
+        <Breadcrumb.Item href="/complaint">Рекламация</Breadcrumb.Item>
+        <Breadcrumb.Item active>Подробная информация</Breadcrumb.Item>
+      </Breadcrumb>
       <div className="complaint-info__content">
         <div className="complaint-info__image">
           {complaintProject &&
