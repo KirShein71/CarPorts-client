@@ -116,23 +116,23 @@
 }
 .complaint-thead {
     &__number {
-        width: 1auto;
+        width: 150px;
         text-align: center;
     }
     &__name {
-        width: 2auto;
+        width: 200px;
         text-align: center;
     }
     &__date {
-        width: 1auto;
+        width: 150px;
         text-align: center;
     }
     &__closed {
-        width: 2auto;
+        width: 200px;
         text-align: center;
     }
     &__delete {
-        width: auto;
+        width: 100px;
         text-align: center;
     }
 }
