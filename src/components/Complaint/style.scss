@@ -14,7 +14,7 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 60px;
+        width: auto;
         height: 20px;
         font-size: 10px;
         margin-right: 5px;
@@ -37,7 +37,7 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 60px;
+        width: auto;
         height: 20px;
         font-size: 10px;
         margin-right: 5px;
@@ -61,7 +61,7 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 60px;
+        width: auto;
         height: 20px;
         font-size: 10px;
         margin-right: 5px;
@@ -84,7 +84,7 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 60px;
+        width: auto;
         height: 20px;
         font-size: 10px;
     }
@@ -116,23 +116,23 @@
 }
 .complaint-thead {
     &__number {
-        width: 150px;
+        width: 1auto;
         text-align: center;
     }
     &__name {
-        width: 200px;
+        width: 2auto;
         text-align: center;
     }
     &__date {
-        width: 150px;
+        width: 1auto;
         text-align: center;
     }
     &__closed {
-        width: 200px;
+        width: 2auto;
         text-align: center;
     }
     &__delete {
-        width: 50px;
+        width: auto;
         text-align: center;
     }
 }

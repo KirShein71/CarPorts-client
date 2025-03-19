@@ -15,7 +15,6 @@ function DistributionList() {
   const [selectedBrigadeName, setSelectedBrigadeName] = React.useState(null);
   const [openModalSelectedBrigade, setOpenModalSelectedBrigade] = React.useState(false);
   const navigate = useNavigate();
-  const navigateToInstallationPage = useNavigate();
   const location = useLocation();
   const modalRef = React.useRef();
 

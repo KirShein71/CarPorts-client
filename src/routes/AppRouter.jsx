@@ -33,6 +33,7 @@ import ViewingInstallationPage from '../pages/ViewingInstallationPage';
 import Complaint from '../pages/Complaint';
 import ComplaintProject from '../pages/ComplaintProject';
 import InstallationComplaint from '../pages/InstallationComplaint';
+import ViewingInstallationComplaintPage from '../pages/ViewingInstallationComplaintPage';
 
 import { observer } from 'mobx-react';
 
@@ -98,6 +99,7 @@ const adminRoutes = [
   { path: '/viewinginstallationpage/:id', Component: ViewingInstallationPage },
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
+  { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
 ];
 
 const managerSaleRoutes = [

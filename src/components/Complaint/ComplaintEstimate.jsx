@@ -15,6 +15,7 @@ import UpdateComplaintEstimateBriagde from './modals/UpdateComplaintEstimateBrig
 import CreateComplaintPayment from './modals/CreateComplaintPayment';
 import UpdateComplaintPaymentDate from './modals/UpdateComplaintPaymentDate';
 import UpdateComplaintPaymentSum from './modals/UpdateComplaintPaymentSum';
+import CheckboxInstallation from '../InstallationPage/checkbox/CheckboxInstallation';
 import Moment from 'react-moment';
 
 function ComplaintEstimate(props) {
@@ -39,6 +40,7 @@ function ComplaintEstimate(props) {
     React.useState(false);
   const [complaintPaymentColId, setComplaintPaymentColId] = React.useState(null);
   const [modalUpdateComplaintPaymentSum, setModalUpdateComplaintPaymentSum] = React.useState(false);
+  const [checked, setChecked] = React.useState({});
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -65,6 +67,7 @@ function ComplaintEstimate(props) {
           initialChecked[colEst.id] = colEst.done === 'true' ? true : false;
         });
       });
+      setChecked(initialChecked);
     });
   }, [change]);
 
@@ -108,6 +111,41 @@ function ComplaintEstimate(props) {
     Promise.all(promises).then(() => {
       // Сбрасываем значения input после успешного сохранения
       setPrices({});
+    });
+  };
+
+  const handleCheckboxChange = (id) => {
+    setChecked((prev) => ({
+      ...prev,
+      [id]: !prev[id], // Меняем состояние чекбокса по его id
+    }));
+  };
+
+  const handleSaveDoneEstimate = (event) => {
+    event.preventDefault();
+
+    // Создаем плоский массив обновлений
+    const updates = estimateBrigades.flatMap((col) =>
+      col.estimates.map((colEst) => ({
+        id: colEst.id,
+        done: checked[colEst.id] ? 'true' : 'false',
+      })),
+    );
+
+    // Отправляем данные на бэк
+    Promise.all(
+      updates.map((update) =>
+        createComplaintEstimateBrigade(update.id, update.done)
+          .then((response) => {
+            setChange((state) => !state);
+          })
+          .catch((error) => {
+            alert(error.response.data.message);
+          }),
+      ),
+    ).then(() => {
+      // Обработка успешного завершения всех запросов, если нужно
+      console.log('Все изменения сохранены');
     });
   };
 
@@ -291,7 +329,12 @@ function ComplaintEstimate(props) {
                               style={{ cursor: 'pointer', textAlign: 'center' }}>
                               {new Intl.NumberFormat('ru-RU').format(estimateCol.price)}
                             </td>
-                            <td style={{ display: 'flex', justifyContent: 'center' }}></td>
+                            <td style={{ display: 'flex', justifyContent: 'center' }}>
+                              <CheckboxInstallation
+                                change={checked[estimateCol.id]}
+                                handle={() => handleCheckboxChange(estimateCol.id)}
+                              />
+                            </td>
                             <td
                               style={{ cursor: 'pointer', textAlign: 'center' }}
                               onClick={() => handleDeleteComplaintEstimateColumn(estimateCol.id)}>
@@ -303,7 +346,7 @@ function ComplaintEstimate(props) {
                     </Table>
                   </>
                   <div style={{ display: 'flex' }}>
-                    <form className="estimate-done__form">
+                    <form className="estimate-done__form" onSubmit={handleSaveDoneEstimate}>
                       <Button
                         variant="dark"
                         size="sm"
