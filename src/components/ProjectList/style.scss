@@ -147,11 +147,7 @@
     overflow-y: auto;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    @media(max-width: 768px) {
-        -webkit-overflow-scrolling: touch; /* Для плавной прокрутки на iOS */
-        touch-action: pan-x pan-y; /* Разрешаем обе прокрутки */
-        overscroll-behavior: contain;
-       }
+   
    
   
 }
