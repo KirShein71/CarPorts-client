@@ -140,17 +140,18 @@
 .project-table-container {
     position: relative;
     margin-top: 20px; 
+    overflow: hidden;
 }
   
 .project-table-wrapper {
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: calc(100vh - var(--table-offset, 120px));
     border: 1px solid #dee2e6;
     border-radius: 4px;
+    overflow: auto; /* Внутренняя прокрутка */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     @media(max-width: 768px) {
-        overflow-y: auto;
-        overflow-x: auto;
-        max-height: 60vh;
+        touch-action: pan-x pan-y;
     }
    
    

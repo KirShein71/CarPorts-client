@@ -37,6 +37,7 @@ function ProjectList() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [openGearModal, setOpenGearModal] = React.useState(false);
+  const [isScrolling, setIsScrolling] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -250,6 +251,23 @@ function ProjectList() {
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
 
+  const handleTouchStart = (e) => {
+    const tableWrapper = e.currentTarget;
+    const isScrollable =
+      tableWrapper.scrollWidth > tableWrapper.clientWidth ||
+      tableWrapper.scrollHeight > tableWrapper.clientHeight;
+
+    if (isScrollable) {
+      setIsScrolling(true);
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsScrolling(false);
+    document.body.style.overflow = '';
+  };
+
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
   };
@@ -339,7 +357,11 @@ function ProjectList() {
         />
       </div>
       <div className="project-table-container">
-        <div className="project-table-wrapper">
+        <div
+          className="project-table-wrapper"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}>
           <Table bordered hover size="sm">
             <thead>
               <tr>
