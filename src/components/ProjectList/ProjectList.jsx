@@ -37,7 +37,6 @@ function ProjectList() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [openGearModal, setOpenGearModal] = React.useState(false);
-  const [containerHeight, setContainerHeight] = React.useState('calc(100vh - 150px)');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -250,20 +249,6 @@ function ProjectList() {
 
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
-
-  React.useEffect(() => {
-    const calculateHeight = () => {
-      const header = document.querySelector('header');
-      const controls = document.querySelector('.controls');
-      const offset = (header?.offsetHeight || 0) + (controls?.offsetHeight || 0) + 20;
-      setContainerHeight(`calc(100vh - ${offset}px)`);
-    };
-
-    calculateHeight();
-    window.addEventListener('resize', calculateHeight);
-
-    return () => window.removeEventListener('resize', calculateHeight);
-  }, []);
 
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
