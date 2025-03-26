@@ -34,7 +34,7 @@ function TableBrigadeCalendar() {
   return (
     <div className="table-brigade" style={{ marginTop: '25px', width: '360px' }}>
       {dates.map((date) => (
-        <Table size="sm" key={date.toISOString()}>
+        <Table borderless size="sm" key={date.toISOString()}>
           <thead>
             <tr>
               <th

@@ -338,150 +338,142 @@ function ProjectList() {
           onChange={handleSearch}
         />
       </div>
+      <div className="project-table-container">
+        <div className="project-table-wrapper">
+          <Table bordered hover size="sm">
+            <thead>
+              <tr>
+                <th className="project-th mobile">Название</th>
+                <th className="project-th">Номер</th>
+                <th className="project-th" onClick={() => handleSort('agreement_date')}>
+                  <div style={{ cursor: 'pointer', display: 'flex' }}>
+                    {' '}
+                    Дата дог.
+                    <img
+                      style={{
+                        marginLeft: '10px',
+                        width: '24px',
+                        height: '24px',
+                        cursor: 'pointer',
+                      }}
+                      src="./img/sort.png"
+                      alt="icon_sort"
+                    />
+                  </div>
+                </th>
+                <th className="project-th">Дедлайн</th>
+                <th className="project-th">Регион</th>
+                <th className="project-th">Срок</th>
+                <th className="project-th">Факт</th>
+                <th className="project-th">План</th>
+                <th className="project-th">Остаток</th>
+                <th className="project-th"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProjects
+                .slice()
+                .sort((a, b) => {
+                  const dateA = new Date(a[sortField]);
+                  const dateB = new Date(b[sortField]);
 
-      <div className="table-scrollable">
-        <Table bordered hover size="sm" className="mt-4">
-          <thead>
-            <tr>
-              <th style={{ textAlign: 'center' }} className="production_column">
-                Название
-              </th>
-              <th style={{ textAlign: 'center' }} className="thead_column">
-                Номер
-              </th>
-              <th className="thead_column" onClick={() => handleSort('agreement_date')}>
-                <div style={{ cursor: 'pointer', display: 'flex' }}>
-                  {' '}
-                  Дата дог.
-                  <img
-                    style={{ marginLeft: '10px', width: '24px', height: '24px' }}
-                    src="./img/sort.png"
-                    alt="icon_sort"
-                  />
-                </div>
-              </th>
-              <th className="thead_column">Дедлайн</th>
-              <th className="thead_column" style={{ textAlign: 'center' }}>
-                Регион
-              </th>
-              <th className="thead_column" style={{ textAlign: 'center' }}>
-                Срок
-              </th>
-              <th className="thead_column" style={{ textAlign: 'center' }}>
-                Факт
-              </th>
-              <th className="thead_column" style={{ textAlign: 'center' }}>
-                План
-              </th>
-              <th className="thead_column" style={{ textAlign: 'center' }}>
-                Остаток
-              </th>
-              <th className="thead_column"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProjects
-              .slice()
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
-
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
-              })
-              .map((item) => (
-                <tr
-                  key={item.id}
-                  style={{
-                    color: item.date_finish !== null ? '#808080' : 'black',
-                  }}>
-                  <td
-                    style={{ cursor: 'pointer', textAlign: 'left' }}
-                    onClick={() => {
-                      addToInfo(item.id);
-                    }}
-                    className="td_column">
-                    {item.name}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer', textAlign: 'left' }}
-                    onClick={() => {
-                      addToInfo(item.id);
+                  if (sortOrder === 'desc') {
+                    return dateB - dateA;
+                  } else {
+                    return dateA - dateB;
+                  }
+                })
+                .map((item) => (
+                  <tr
+                    key={item.id}
+                    style={{
+                      color: item.date_finish !== null ? '#808080' : 'black',
                     }}>
-                    {item.number}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => hadleUpdateDateProject(item.id)}>
-                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                  </td>
-                  <td>
-                    {(() => {
-                      const agreementDate = new Date(item && item.agreement_date);
-                      const designPeriod = item && item.design_period;
-                      const expirationDate = item && item.expiration_date;
-                      const installationPeriod = item && item.installation_period;
-                      const sumDays = designPeriod + expirationDate + installationPeriod;
+                    <td
+                      className="project-td mobile"
+                      style={{ cursor: 'pointer', textAlign: 'left' }}
+                      onClick={() => {
+                        addToInfo(item.id);
+                      }}>
+                      {item.name}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer', textAlign: 'left' }}
+                      onClick={() => {
+                        addToInfo(item.id);
+                      }}>
+                      {item.number}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
+                      onClick={() => hadleUpdateDateProject(item.id)}>
+                      <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                    </td>
+                    <td>
+                      {(() => {
+                        const agreementDate = new Date(item && item.agreement_date);
+                        const designPeriod = item && item.design_period;
+                        const expirationDate = item && item.expiration_date;
+                        const installationPeriod = item && item.installation_period;
+                        const sumDays = designPeriod + expirationDate + installationPeriod;
 
-                      const endDate = addWorkingDays(agreementDate, sumDays);
-                      const formattedEndDate = formatDate(endDate);
-                      return formattedEndDate;
-                    })()}
-                  </td>
+                        const endDate = addWorkingDays(agreementDate, sumDays);
+                        const formattedEndDate = formatDate(endDate);
+                        return formattedEndDate;
+                      })()}
+                    </td>
 
-                  <td
-                    style={{ cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => hadleCreateRegionProject(item.id)}>
-                    {item.region?.region}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => hadleCreateInstallationBilling(item.id)}>
-                    {item.installation_billing}
-                  </td>
-                  {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
-                    projectDays
-                      .filter((projectDay) => projectDay.projectId === item.id)
-                      .map((projectDay) => (
-                        <>
-                          <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
-                          <td style={{ textAlign: 'center' }}>{projectDay.planDay}</td>
-                          <td style={{ textAlign: 'center' }}>
-                            {item.installation_billing - projectDay.factDay - projectDay.planDay}
-                          </td>
-                        </>
-                      ))
-                  ) : (
-                    <>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </>
-                  )}
-                  <td>
-                    {item.installation_billing === null || item.regionId === null ? (
-                      <img
-                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                        src="./img/gear-red.png"
-                        alt="gear"
-                        onClick={() => hadleOpenGearModal(item.id)}
-                      />
+                    <td
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
+                      onClick={() => hadleCreateRegionProject(item.id)}>
+                      {item.region?.region}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
+                      onClick={() => hadleCreateInstallationBilling(item.id)}>
+                      {item.installation_billing}
+                    </td>
+                    {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
+                      projectDays
+                        .filter((projectDay) => projectDay.projectId === item.id)
+                        .map((projectDay) => (
+                          <>
+                            <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
+                            <td style={{ textAlign: 'center' }}>{projectDay.planDay}</td>
+                            <td style={{ textAlign: 'center' }}>
+                              {item.installation_billing - projectDay.factDay - projectDay.planDay}
+                            </td>
+                          </>
+                        ))
                     ) : (
-                      <img
-                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                        src="./img/gear.png"
-                        alt="gear"
-                        onClick={() => hadleOpenGearModal(item.id)}
-                      />
+                      <>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </>
                     )}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    <td>
+                      {item.installation_billing === null || item.regionId === null ? (
+                        <img
+                          style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                          src="./img/gear-red.png"
+                          alt="gear"
+                          onClick={() => hadleOpenGearModal(item.id)}
+                        />
+                      ) : (
+                        <img
+                          style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                          src="./img/gear.png"
+                          alt="gear"
+                          onClick={() => hadleOpenGearModal(item.id)}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );

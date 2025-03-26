@@ -27,7 +27,7 @@ function DeleteComplaint(props) {
           <p className="modal__text">Вы уверены, что хотитет удалить рекламационную заявку?</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShow(false)}>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
             Закрыть
           </Button>
           <Button variant="primary" onClick={handleDeleteComplaint}>
