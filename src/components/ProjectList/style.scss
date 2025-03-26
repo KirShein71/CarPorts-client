@@ -144,7 +144,7 @@
 }
   
 .project-table-wrapper {
-    max-height: calc(100vh - var(--table-offset, 70px));
+    max-height: calc(100vh - var(--table-offset, 100px));
     border: 1px solid #dee2e6;
     border-radius: 4px;
     overflow: auto; /* Внутренняя прокрутка */
