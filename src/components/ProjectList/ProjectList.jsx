@@ -340,7 +340,7 @@ function ProjectList() {
       </div>
       <div className="project-table-container">
         <div className="project-table-wrapper">
-          <Table bordered hover size="sm">
+          <Table bordered hover size="sm" className="project-table">
             <thead>
               <tr>
                 <th className="project-th mobile">Название</th>
