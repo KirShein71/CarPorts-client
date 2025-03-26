@@ -141,14 +141,15 @@
     position: relative;
     margin-top: 20px; 
     overflow: hidden;
+    height: calc(100vh - var(--header-height, 150px));
 }
   
 .project-table-wrapper {
-    max-height: calc(100vh - var(--table-offset, 100px));
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    overflow: auto; /* Внутренняя прокрутка */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
+    border: 1px solid #dee2e6;
     overscroll-behavior: contain;
     @media(max-width: 768px) {
         max-height: calc(100vh - var(--table-offset, 120px));
