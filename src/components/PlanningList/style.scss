@@ -154,9 +154,12 @@
 .planning-table-wrapper {
     max-height: 90vh;
     overflow-y: auto;
-    overflow-x: auto;
+    
     border: 1px solid #dee2e6;
     border-radius: 4px;
+    @media(max-width: 768px) {
+        max-height: auto;
+    }
   
    
   
