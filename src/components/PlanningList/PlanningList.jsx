@@ -394,194 +394,196 @@ function PlanningList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
-      <div className="table-scrollable">
-        <Table bordered size="sm" className="mt-3">
-          <thead>
-            <tr>
-              <th className="thead_column">Номер проекта </th>
-              <th className="production_column">
-                Название<div className="border_bottom"></div>
-              </th>
-              <th className="thead_column">Примечание</th>
-              <th className="thead_column" onClick={() => handleSort('agreement_date')}>
-                <div style={{ display: 'flex', cursor: 'pointer' }}>
-                  Дата договора{' '}
-                  <img
-                    style={{ marginLeft: '5px', height: '100%' }}
-                    src="./img/sort.png"
-                    alt="icon_sort"
-                  />
-                </div>
-              </th>
-              <th className="thead_column">Срок проектирования</th>
-              <th className="thead_column">Дедлайн</th>
-              <th className="thead_column">Дата начала</th>
-              <th className="thead_column">Дата сдачи</th>
-              <th className="thead_column">Дата проверки</th>
-              <th className="thead_column">Осталось дней</th>
-              <th className="thead_column">Проектировщик</th>
-              <th className="thead_column">Проверяет проект</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProjects
-              .slice()
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
+      <div className="planning-table-container">
+        <div className="planning-table-wrapper">
+          <Table Table bordered hover size="sm">
+            <thead>
+              <tr>
+                <th className="planning-th">Номер проекта </th>
+                <th className="planning-th mobile">
+                  Название<div className="border_bottom"></div>
+                </th>
+                <th className="planning-th">Примечание</th>
+                <th className="planning-th" onClick={() => handleSort('agreement_date')}>
+                  <div style={{ display: 'flex', cursor: 'pointer' }}>
+                    Дата договора{' '}
+                    <img
+                      style={{ marginLeft: '5px', height: '100%' }}
+                      src="./img/sort.png"
+                      alt="icon_sort"
+                    />
+                  </div>
+                </th>
+                <th className="planning-th">Срок проектирования</th>
+                <th className="planning-th">Дедлайн</th>
+                <th className="planning-th">Дата начала</th>
+                <th className="planning-th">Дата сдачи</th>
+                <th className="planning-th">Дата проверки</th>
+                <th className="planning-th">Осталось дней</th>
+                <th className="planning-th">Проектировщик</th>
+                <th className="planning-th">Проверяет проект</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProjects
+                .slice()
+                .sort((a, b) => {
+                  const dateA = new Date(a[sortField]);
+                  const dateB = new Date(b[sortField]);
 
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
-              })
-              .map((item) => (
-                <tr
-                  style={{ color: item.date_finish !== null ? '#808080' : 'black' }}
-                  key={item.id}>
-                  <td>{item.number}</td>
-                  <td className="td_column">
-                    {item.name}
-                    <div className="border_top"></div>
-                  </td>
-                  <td style={{ cursor: 'pointer' }}>
-                    {item.note && (
-                      <div onClick={() => handleUpdateNote(item.id)}>
-                        {selectedNote === item.id ? item.note : item.note.slice(0, 180)}
-                      </div>
-                    )}
-                    {item.note.length > 180 && (
-                      <div className="show" onClick={() => handleToggleText(item.id)}>
-                        {selectedNote === item.id ? 'Скрыть' : '...'}
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                  </td>
-                  <td>{item.design_period}</td>
-                  <td>
-                    {(() => {
-                      const agreementDate = new Date(item.agreement_date);
-                      const designPeriod = item.design_period;
+                  if (sortOrder === 'desc') {
+                    return dateB - dateA;
+                  } else {
+                    return dateA - dateB;
+                  }
+                })
+                .map((item) => (
+                  <tr
+                    style={{ color: item.date_finish !== null ? '#808080' : 'black' }}
+                    key={item.id}>
+                    <td>{item.number}</td>
+                    <td className="planning-td mobile">
+                      {item.name}
+                      <div className="border_top"></div>
+                    </td>
+                    <td style={{ cursor: 'pointer' }}>
+                      {item.note && (
+                        <div onClick={() => handleUpdateNote(item.id)}>
+                          {selectedNote === item.id ? item.note : item.note.slice(0, 180)}
+                        </div>
+                      )}
+                      {item.note.length > 180 && (
+                        <div className="show" onClick={() => handleToggleText(item.id)}>
+                          {selectedNote === item.id ? 'Скрыть' : '...'}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                    </td>
+                    <td>{item.design_period}</td>
+                    <td>
+                      {(() => {
+                        const agreementDate = new Date(item.agreement_date);
+                        const designPeriod = item.design_period;
 
-                      const endDate = addWorkingDays(agreementDate, designPeriod);
-                      const formattedEndDate = formatDate(endDate);
-                      return formattedEndDate;
-                    })()}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleCreateDesignerStart(item.id)}>
-                    {item.design_start ? (
-                      <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
-                    ) : (
-                      <span
-                        style={{
-                          color: 'red',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}>
-                        +
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleUpdateProjectDelivery(item.id)}>
-                    {item.project_delivery ? (
-                      <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
-                    ) : (
-                      <span
-                        style={{
-                          color: 'red',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}>
-                        +
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleCreateDateInspection(item.id)}>
-                    {item.date_inspection ? (
-                      <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
-                        {item.date_inspection}
-                      </Moment>
-                    ) : (
-                      <span
-                        style={{
-                          color: 'red',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}>
-                        +
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {(() => {
-                      const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
-                        item.design_period,
-                        'days',
-                      );
+                        const endDate = addWorkingDays(agreementDate, designPeriod);
+                        const formattedEndDate = formatDate(endDate);
+                        return formattedEndDate;
+                      })()}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleCreateDesignerStart(item.id)}>
+                      {item.design_start ? (
+                        <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
+                      ) : (
+                        <span
+                          style={{
+                            color: 'red',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}>
+                          +
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleUpdateProjectDelivery(item.id)}>
+                      {item.project_delivery ? (
+                        <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
+                      ) : (
+                        <span
+                          style={{
+                            color: 'red',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}>
+                          +
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleCreateDateInspection(item.id)}>
+                      {item.date_inspection ? (
+                        <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
+                          {item.date_inspection}
+                        </Moment>
+                      ) : (
+                        <span
+                          style={{
+                            color: 'red',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}>
+                          +
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {(() => {
+                        const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                          item.design_period,
+                          'days',
+                        );
 
-                      function subtractDaysUntilZero(targetDate) {
-                        const today = moment();
-                        let daysLeft = 0;
+                        function subtractDaysUntilZero(targetDate) {
+                          const today = moment();
+                          let daysLeft = 0;
 
-                        while (targetDate.diff(today, 'days') > 0) {
-                          daysLeft++;
-                          targetDate.subtract(1, 'day');
+                          while (targetDate.diff(today, 'days') > 0) {
+                            daysLeft++;
+                            targetDate.subtract(1, 'day');
+                          }
+
+                          return daysLeft;
                         }
 
-                        return daysLeft;
-                      }
-
-                      return subtractDaysUntilZero(targetDate);
-                    })()}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleUpdateDisegnerModal(item.id)}>
-                    {item.designer ? (
-                      <div>{item.designer}</div>
-                    ) : (
-                      <span
-                        style={{
-                          color: 'red',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}>
-                        +
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleCreateInspectionDesigner(item.id)}>
-                    {item.inspection_designer ? (
-                      <div>{item.inspection_designer}</div>
-                    ) : (
-                      <span
-                        style={{
-                          color: 'red',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}>
-                        +
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-        <CSVLink data={flattenedProjects} headers={headers} filename={'данные.csv'}>
-          Экспорт в CSV
-        </CSVLink>
+                        return subtractDaysUntilZero(targetDate);
+                      })()}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleUpdateDisegnerModal(item.id)}>
+                      {item.designer ? (
+                        <div>{item.designer}</div>
+                      ) : (
+                        <span
+                          style={{
+                            color: 'red',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}>
+                          +
+                        </span>
+                      )}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleCreateInspectionDesigner(item.id)}>
+                      {item.inspection_designer ? (
+                        <div>{item.inspection_designer}</div>
+                      ) : (
+                        <span
+                          style={{
+                            color: 'red',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}>
+                          +
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+          {/* <CSVLink data={flattenedProjects} headers={headers} filename={'данные.csv'}>
+            Экспорт в CSV
+          </CSVLink> */}
+        </div>
       </div>
     </div>
   );

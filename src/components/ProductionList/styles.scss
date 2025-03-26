@@ -26,24 +26,7 @@
     border-bottom: 1px solid #dee2e6 !important; 
   }
 
-  .production_td {
-    position: sticky;
-    left: 0;
-    top: 0;
-    z-index: 3;
-    background-color: white !important; 
-    border-top: 1px solid #dee2e6;
-      }
-      .production_td::after {
-        content: '';
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        width: 1px;
-        height: 100%;
-        background-color: #dee2e6; 
-        
-      }
+
 
 
 .production__eye {
@@ -161,6 +144,114 @@
     }
 }
 
+
+.production-table-container {
+    position: relative;
+    margin-top: 20px; 
+}
+  
+.production-table-wrapper {
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    @media(max-width: 768px) {
+        -webkit-overflow-scrolling: touch; /* Для плавной прокрутки на iOS */
+        touch-action: pan-x pan-y; /* Разрешаем обе прокрутки */
+        overscroll-behavior: contain;
+       }
+   
+  
+}
+
+
+    
+.production-th {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background-color: white !important; 
+   
+}
+
+.production-th::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+    
+}
+
+.production-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+}
+
+.production-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+.production__td.mobile {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background-color: white !important; 
+    border-top: 2px solid #dee2e6;
+    @media(max-width: 768px) {
+        border-top: 1px solid #dee2e6;
+    }
+}
+
+.production__td.mobile::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #dee2e6; 
+ 
+        
+}
+
+.production__td.production {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background-color: white !important; 
+    
+    
+}
+
+.production__td.production::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #dee2e6; 
+   
+        
+}
 
 
 

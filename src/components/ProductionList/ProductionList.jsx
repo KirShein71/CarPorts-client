@@ -199,145 +199,148 @@ function ProductionList() {
         setChange={setChange}
         change={change}
       />
-      <div className="table-scrollable">
-        <Table bordered size="md" className="mt-3">
-          <thead>
-            <tr>
-              <th className="thead_column">Номер проекта</th>
-              <th className="production_column">Проект</th>
-              {nameDetails
-                .sort((a, b) => a.id - b.id)
-                .map((part) => (
-                  <th className="thead_column" key={part.id}>
-                    {part.name}
-                  </th>
-                ))}
-              <th className="thead_column">Нетипичные детали</th>
-              <th className="thead_column"></th>
-            </tr>
-          </thead>
-          {filteredProjects.map((projectDetail) => {
-            const correspondingShipment = shipmentDetails.find(
-              (shipment) => shipment.projectId === projectDetail.projectId,
-            );
-            return (
-              <tbody key={projectDetail.id}>
-                <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
-                  <td
-                    style={{
-                      color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
-                    }}>
-                    {projectDetail.project ? projectDetail.project.number : ''}
-                  </td>
-                  <td
-                    style={{
-                      color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
-                    }}
-                    className="production_td">
-                    {projectDetail.project ? projectDetail.project.name : ''}
-                  </td>
-                  {nameDetails
-                    .sort((a, b) => a.id - b.id)
-                    .map((part) => {
-                      const detailProject = projectDetail.props.find(
-                        (prop) => prop.detailId === part.id,
-                      );
-                      const quantity = detailProject ? detailProject.quantity : '';
-                      return (
-                        <td
-                          key={part.id}
-                          style={{
-                            cursor: 'pointer',
-                            color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
-                          }}
-                          onClick={
-                            user.isManagerProduction
-                              ? undefined
-                              : () =>
-                                  quantity
-                                    ? handleUpdateProjectDetailClick(detailProject.id)
-                                    : handleCreateOneDetail(part.id, projectDetail.projectId)
-                          }>
-                          {quantity}
-                        </td>
-                      );
-                    })}
-                  <td>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <div
-                        onClick={
-                          user.isManagerProduction
-                            ? undefined
-                            : () => handleCreateAntypical(projectDetail.projectId)
-                        }
-                        style={{
-                          cursor: 'pointer',
-                          color: 'red',
-                          fontWeight: 600,
-                          paddingRight: '15px',
-                        }}>
-                        +
-                      </div>
-                      <div
-                        onClick={() => handleOpenImage(projectDetail.antypical)}
-                        className="production__eye">
-                        {projectDetail.antypical.length > 0 ? (
-                          <img src="./eye.png" alt="eye" />
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      onClick={
-                        user.isManagerProduction
-                          ? undefined
-                          : () => handleDeleteProjectDetails(projectDetail.projectId)
-                      }>
-                      Удалить
-                    </Button>
-                  </td>
-                </tr>
-                {correspondingShipment && (
-                  <tr>
-                    <td></td>
+      <div className="production-table-container">
+        <div className="production-table-wrapper">
+          <Table bordered size="md">
+            <thead>
+              <tr>
+                <th className="production-th">Номер проекта</th>
+                <th className="production-th mobile">Проект</th>
+                {nameDetails
+                  .sort((a, b) => a.id - b.id)
+                  .map((part) => (
+                    <th className="production-th" key={part.id}>
+                      {part.name}
+                    </th>
+                  ))}
+                <th className="production-th">Нетипичные детали</th>
+                <th className="production-th"></th>
+              </tr>
+            </thead>
+            {filteredProjects.map((projectDetail) => {
+              const correspondingShipment = shipmentDetails.find(
+                (shipment) => shipment.projectId === projectDetail.projectId,
+              );
+              return (
+                <tbody key={projectDetail.id}>
+                  <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
+                    <td
+                      style={{
+                        color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                      }}>
+                      {projectDetail.project ? projectDetail.project.number : ''}
+                    </td>
                     <td
                       style={{
                         color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
                       }}
-                      className="production_td">
-                      Отгрузка
+                      className="production__td mobile">
+                      {projectDetail.project ? projectDetail.project.name : ''}
                     </td>
                     {nameDetails
                       .sort((a, b) => a.id - b.id)
                       .map((part) => {
-                        const detail = correspondingShipment.props.find(
-                          (el) => el.detailId === part.id,
+                        const detailProject = projectDetail.props.find(
+                          (prop) => prop.detailId === part.id,
                         );
-                        const quantity = detail ? detail.shipment_quantity : '';
+                        const quantity = detailProject ? detailProject.quantity : '';
                         return (
                           <td
+                            key={part.id}
                             style={{
+                              cursor: 'pointer',
                               color:
                                 projectDetail.project.date_finish !== null ? '#808080' : 'black',
                             }}
-                            key={part.id}>
+                            onClick={
+                              user.isManagerProduction
+                                ? undefined
+                                : () =>
+                                    quantity
+                                      ? handleUpdateProjectDetailClick(detailProject.id)
+                                      : handleCreateOneDetail(part.id, projectDetail.projectId)
+                            }>
                             {quantity}
                           </td>
                         );
                       })}
-                    <td></td>
-                    <td></td>
+                    <td>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <div
+                          onClick={
+                            user.isManagerProduction
+                              ? undefined
+                              : () => handleCreateAntypical(projectDetail.projectId)
+                          }
+                          style={{
+                            cursor: 'pointer',
+                            color: 'red',
+                            fontWeight: 600,
+                            paddingRight: '15px',
+                          }}>
+                          +
+                        </div>
+                        <div
+                          onClick={() => handleOpenImage(projectDetail.antypical)}
+                          className="production__eye">
+                          {projectDetail.antypical.length > 0 ? (
+                            <img src="./eye.png" alt="eye" />
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <Button
+                        variant="dark"
+                        size="sm"
+                        onClick={
+                          user.isManagerProduction
+                            ? undefined
+                            : () => handleDeleteProjectDetails(projectDetail.projectId)
+                        }>
+                        Удалить
+                      </Button>
+                    </td>
                   </tr>
-                )}
-              </tbody>
-            );
-          })}
-        </Table>
+                  {correspondingShipment && (
+                    <tr>
+                      <td></td>
+                      <td
+                        style={{
+                          color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                        }}
+                        className="production__td production">
+                        Отгрузка
+                      </td>
+                      {nameDetails
+                        .sort((a, b) => a.id - b.id)
+                        .map((part) => {
+                          const detail = correspondingShipment.props.find(
+                            (el) => el.detailId === part.id,
+                          );
+                          const quantity = detail ? detail.shipment_quantity : '';
+                          return (
+                            <td
+                              style={{
+                                color:
+                                  projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                              }}
+                              key={part.id}>
+                              {quantity}
+                            </td>
+                          );
+                        })}
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  )}
+                </tbody>
+              );
+            })}
+          </Table>
+        </div>
       </div>
     </div>
   );

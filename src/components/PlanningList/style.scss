@@ -145,3 +145,86 @@
         margin-top: 15px;
     }
 }
+
+.planning-table-container {
+    position: relative;
+    margin-top: 20px; 
+}
+  
+.planning-table-wrapper {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    @media(max-width: 768px) {
+        -webkit-overflow-scrolling: touch; /* Для плавной прокрутки на iOS */
+        touch-action: pan-x pan-y; /* Разрешаем обе прокрутки */
+        overscroll-behavior: contain;
+       }
+   
+  
+}
+
+
+    
+.planning-th {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background-color: white !important; 
+    
+}
+
+.planning-th::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+    
+}
+
+.planning-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+}
+
+.planning-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+.planning-td.mobile {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    @media(max-width: 1024px) {
+        background-color: #ffffff !important;
+    }
+}
+
+.planning-td.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #dee2e6;
+}
