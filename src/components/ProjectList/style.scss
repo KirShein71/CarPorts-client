@@ -139,26 +139,24 @@
 
 .project-table-container {
     position: relative;
-    margin-top: 20px; /* Adjust based on your button row height */
+    margin-top: 20px; 
 }
   
 .project-table-wrapper {
-    max-height: 90vh; /* Adjust based on your needs */
+    max-height: 90vh;
     overflow-y: auto;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-   
-  
-}
-
-.project-table {
     @media(max-width: 768px) {
         -webkit-overflow-scrolling: touch; /* Для плавной прокрутки на iOS */
         touch-action: pan-x pan-y; /* Разрешаем обе прокрутки */
         overscroll-behavior: contain;
        }
-}
+   
   
+}
+
+
     
 .project-th {
     padding: 5px !important;
