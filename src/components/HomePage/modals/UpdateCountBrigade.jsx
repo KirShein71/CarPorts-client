@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { updateCount, getOneBrigadeWork } from '../../../http/brigadeWorkApi';
+import { updateCount, getOneBrigadeWorkRegionId } from '../../../http/brigadeWorkApi';
 
 const defaultValue = { count: '' };
 const defaultValid = {
@@ -22,7 +22,7 @@ const UpdateCount = (props) => {
 
   React.useEffect(() => {
     if (id) {
-      getOneBrigadeWork(id)
+      getOneBrigadeWorkRegionId(id)
         .then((data) => {
           const prod = {};
           setValue(prod);

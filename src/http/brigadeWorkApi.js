@@ -10,6 +10,11 @@ export const getOneBrigadeWork = async (id) => {
     return data
 }
 
+export const getOneBrigadeWorkRegionId = async (id) => {
+    const { data } = await guestInstance.get(`brigadework/getOneBrigadeWorkRegionId/${id}`)
+    return data
+}
+
 export const createBrigadeWork = async (brigadework) => {
     const { data } = await authInstance.post(`brigadework/create`, brigadework)
     return data

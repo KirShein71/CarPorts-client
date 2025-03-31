@@ -143,10 +143,9 @@ function HomePageList() {
               Выйти
             </div>{' '}
           </div>
-          <div className="homepage__bottom">
-            <TableBrigadeCalendar />
-            <InstallationBilling />
-          </div>
+
+          <TableBrigadeCalendar />
+          <InstallationBilling />
         </div>
       </div>
     </>
