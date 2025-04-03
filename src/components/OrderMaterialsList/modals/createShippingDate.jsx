@@ -20,7 +20,7 @@ const isValid = (value) => {
 };
 
 const CreateShippingDate = (props) => {
-  const { id, show, setShow, setChange, scrollPosition } = props;
+  const { id, show, setShow, setChange, scrollPosition, projectInfoPage } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -52,8 +52,12 @@ const CreateShippingDate = (props) => {
   };
 
   const handleCloseModal = () => {
-    setShow(false);
-    window.scrollTo(0, scrollPosition);
+    if (projectInfoPage) {
+      setShow(false);
+    } else {
+      setShow(false);
+      window.scrollTo(0, scrollPosition);
+    }
   };
 
   const handleSubmit = async (event) => {

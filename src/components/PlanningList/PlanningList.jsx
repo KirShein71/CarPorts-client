@@ -358,6 +358,7 @@ function PlanningList() {
         setShow={setUpdateShow}
         setChange={setChange}
         scrollPosition={scrollPosition}
+        planningPage={true}
       />
       <CreateDesignerStart
         id={project}
@@ -365,6 +366,7 @@ function PlanningList() {
         setShow={setCreateDesignerStart}
         setChange={setChange}
         scrollPosition={scrollPosition}
+        planningPage={true}
       />
       <CreateDateInspection
         id={project}
@@ -372,6 +374,7 @@ function PlanningList() {
         setShow={setCreateDateInspectionModal}
         setChange={setChange}
         scrollPosition={scrollPosition}
+        planningPage={true}
       />
       <CreateInspectionDesigner
         id={project}
@@ -379,13 +382,14 @@ function PlanningList() {
         setShow={setCreateInspectionDesignerModal}
         setChange={setChange}
         scrollPosition={scrollPosition}
+        planningPage={true}
       />
       <UpdateDesigner
         id={project}
         show={updateDisegnerModal}
         setShow={setUpdateDisegnerModal}
         setChange={setChange}
-        scrollPosition={scrollPosition}
+        planningPage={true}
       />
       <UpdateNote
         id={project}

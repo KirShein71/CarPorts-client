@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneProject, updateProject } from '../../../http/projectApi';
-import { useNavigate } from 'react-router-dom';
 
 const defaultValue = { designer: '' };
 const defaultValid = {
@@ -17,14 +16,14 @@ const isValid = (value) => {
 };
 
 const UpdateDesigner = (props) => {
-  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
+  const { id, show, setShow, setChange, planningPage, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
@@ -41,7 +40,7 @@ const UpdateDesigner = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -50,9 +49,12 @@ const UpdateDesigner = (props) => {
   };
 
   const handleCloseModal = () => {
-    setShow(false);
-    window.scrollTo(0, scrollPosition);
-    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+    if (planningPage) {
+      setShow(false);
+      window.scrollTo(0, scrollPosition);
+    } else {
+      setShow(false);
+    }
   };
 
   const handleSubmit = async (event) => {

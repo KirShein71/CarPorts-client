@@ -17,14 +17,13 @@ const isValid = (value) => {
 };
 
 const CreateInspectionDesigner = (props) => {
-  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
+  const { id, show, setShow, setChange, scrollPosition, planningPage } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
@@ -41,12 +40,15 @@ const CreateInspectionDesigner = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleCloseModal = () => {
-    setShow(false);
-    window.scrollTo(0, scrollPosition);
-    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+    if (planningPage) {
+      setShow(false);
+      window.scrollTo(0, scrollPosition);
+    } else {
+      setShow(false);
+    }
   };
 
   const handleInputChange = (event) => {

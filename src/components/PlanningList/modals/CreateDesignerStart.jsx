@@ -16,17 +16,17 @@ const isValid = (value) => {
 };
 
 const CreateDesingStart = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, setShow, setChange, planningPage, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
-            design_start: data.cadesign_start ? data.cadesign_start.toString() : '',
+            design_start: data.design_start.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -40,12 +40,21 @@ const CreateDesingStart = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
+  };
+
+  const handleCloseModal = () => {
+    if (planningPage) {
+      setShow(false);
+      window.scrollTo(0, scrollPosition);
+    } else {
+      setShow(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -59,11 +68,12 @@ const CreateDesingStart = (props) => {
       updateProject(id, data)
         .then((data) => {
           const prod = {
-            design_start: data.cadesign_start.toString(),
+            design_start: data.design_start.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -76,7 +86,6 @@ const CreateDesingStart = (props) => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (

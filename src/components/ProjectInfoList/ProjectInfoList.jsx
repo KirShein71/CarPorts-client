@@ -16,13 +16,25 @@ import moment from 'moment';
 import CalendarProject from '../Calendar/CalendarProject';
 import Estimate from '../Estimate/Estimate';
 import { AppContext } from '../../context/AppContext';
+import UpdateDesigner from '../PlanningList/modals/UpdateDisegner';
+import CreateDesingStart from '../PlanningList/modals/CreateDesignerStart';
+import CreateProjectDelivery from '../PlanningList/modals/CreateProjectDelivery';
+import CreateInspectionDesigner from '../PlanningList/modals/CreateInspectionDisegner';
+import CreateDateInspection from '../PlanningList/modals/CreateDateInspection';
+import CreatePaymentDate from '../OrderMaterialsList/modals/createPaymentDate';
+import CreateReadyDate from '../OrderMaterialsList/modals/createReadyDate';
+import CreateShippingDate from '../OrderMaterialsList/modals/createShippingDate';
+import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
+import UpdateProjectDetails from '../ProductionList/modal/UpdateProjectDetails';
 
 import './style.scss';
+import Complaint from './Complaint';
 
 function ProjectInfoList() {
   const { id } = useParams();
   const { user } = React.useContext(AppContext);
   const [project, setProject] = React.useState();
+  const [projectId, setProjectId] = React.useState(null);
   const [client, setClient] = React.useState(null);
   const [activeTab, setActiveTab] = React.useState('deadline');
   const [nameDetails, setNameDetails] = React.useState([]);
@@ -36,13 +48,26 @@ function ProjectInfoList() {
   const [createBrigadeModal, setCreateBrigadeModal] = React.useState(false);
   const [createStartDateModal, setCreateStartDateModal] = React.useState(false);
   const [createFinishDateModal, setCreateFinishDateModal] = React.useState(false);
-
+  const [modalCreateDesigner, setModalCreateDesigner] = React.useState(false);
+  const [modalCreateDesignStart, setModalCreateDesignStart] = React.useState(false);
+  const [modalCreateProjectDelivery, setModalCreateProjectDelivery] = React.useState(false);
+  const [modalCreateInspectionDesigner, setModalCreateInspectionDesigner] = React.useState(false);
+  const [modalCreateDateInspection, setModalCreateDateInspection] = React.useState(false);
+  const [projectMaterialId, setProjectMaterialId] = React.useState(null);
+  const [modalCreatePaymentDay, setModalCreatePaymentDay] = React.useState(false);
+  const [modalCreateReadyDate, setModalCreateReadyDate] = React.useState(false);
+  const [modalCreateShippingDate, setModalCreateShippingDate] = React.useState(false);
+  const [projectDetailId, setProjectDetailId] = React.useState(null);
+  const [detailId, setDetailId] = React.useState(null);
+  const [modalCreateOneProjectDetail, setModalCreateOneProjectDetail] = React.useState(false);
+  const [modalUpdateProjectDetail, setModalUpdateProjectDetail] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
     getProjectInfo(id).then((data) => setProject(data));
-    fetchAllDetails().then((data) => setNameDetails(data));
+
+    fetchAllDetails().then((dataDetails) => setNameDetails(dataDetails));
   }, [id, change]);
 
   const handleFinishProject = (id) => {
@@ -94,6 +119,57 @@ function ProjectInfoList() {
   const hadleCreateFinishDate = (id) => {
     setProjectBrigade(id);
     setCreateFinishDateModal(true);
+  };
+
+  const handleOpenModalCreateDesigner = (id) => {
+    setProjectId(id);
+    setModalCreateDesigner(true);
+  };
+
+  const handleOpenModalCreateDesignStart = (id) => {
+    setProjectId(id);
+    setModalCreateDesignStart(true);
+  };
+
+  const handleOpenModalCreateProjectDelivery = (id) => {
+    setProjectId(id);
+    setModalCreateProjectDelivery(true);
+  };
+
+  const handleOpenModalCreateInspectionDesigner = (id) => {
+    setProjectId(id);
+    setModalCreateInspectionDesigner(true);
+  };
+
+  const handleOpenModalCreateDateInspection = (id) => {
+    setProjectId(id);
+    setModalCreateDateInspection(true);
+  };
+
+  const handleOpenModalCreatePaymentDate = (id) => {
+    setProjectMaterialId(id);
+    setModalCreatePaymentDay(true);
+  };
+
+  const handleOpenModalCreateReadyDate = (id) => {
+    setProjectMaterialId(id);
+    setModalCreateReadyDate(true);
+  };
+
+  const handleOpenModalCreateShippingDate = (id) => {
+    setProjectMaterialId(id);
+    setModalCreateShippingDate(true);
+  };
+
+  const handleOpenModalCreateOneProjectDetail = (id, project) => {
+    setDetailId(id);
+    setProjectId(project);
+    setModalCreateOneProjectDetail(true);
+  };
+
+  const handleOpenModalUpdateProjectDetail = (id) => {
+    setProjectDetailId(id);
+    setModalUpdateProjectDetail(true);
   };
 
   const handleDeleteProjectBrigades = (id) => {
@@ -244,8 +320,82 @@ function ProjectInfoList() {
         setShow={setCreateFinishDateModal}
         setChange={setChange}
       />
+      <UpdateDesigner
+        id={projectId}
+        show={modalCreateDesigner}
+        setShow={setModalCreateDesigner}
+        setChange={setChange}
+        planningPage={false}
+      />
+      <CreateDesingStart
+        id={projectId}
+        show={modalCreateDesignStart}
+        setShow={setModalCreateDesignStart}
+        setChange={setChange}
+        planningPage={false}
+      />
+      <CreateProjectDelivery
+        id={projectId}
+        show={modalCreateProjectDelivery}
+        setShow={setModalCreateProjectDelivery}
+        setChange={setChange}
+        planningPage={false}
+      />
+      <CreateInspectionDesigner
+        id={projectId}
+        show={modalCreateInspectionDesigner}
+        setShow={setModalCreateInspectionDesigner}
+        setChange={setChange}
+        planningPage={false}
+      />
+      <CreateDateInspection
+        id={projectId}
+        show={modalCreateDateInspection}
+        setShow={setModalCreateDateInspection}
+        setChange={setChange}
+        planningPage={false}
+      />
+      <CreatePaymentDate
+        id={projectMaterialId}
+        show={modalCreatePaymentDay}
+        setShow={setModalCreatePaymentDay}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <CreateReadyDate
+        id={projectMaterialId}
+        show={modalCreateReadyDate}
+        setShow={setModalCreateReadyDate}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <CreateShippingDate
+        id={projectMaterialId}
+        show={modalCreateShippingDate}
+        setShow={setModalCreateShippingDate}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <UpdateProjectDetails
+        id={projectDetailId}
+        show={modalUpdateProjectDetail}
+        setShow={setModalUpdateProjectDetail}
+        setChange={setChange}
+      />
+      <CreateOneProjectDetail
+        detailId={detailId}
+        projectId={projectId}
+        show={modalCreateOneProjectDetail}
+        setShow={setModalCreateOneProjectDetail}
+        setChange={setChange}
+      />
       <div className="header">
-        <Link to={location.state.from}>
+        <Link
+          to={
+            location.state?.from?.includes('/complaint-info')
+              ? '/project'
+              : location.state?.from || '/project'
+          }>
           <img className="header__icon" src="../img/back.png" alt="back" />
         </Link>
         <h1 className="header__title">Подробная информация</h1>
@@ -327,6 +477,15 @@ function ProjectInfoList() {
                   Смета
                 </div>
               )}
+              {project.complaints.length > 0 ? (
+                <div
+                  className={`projectinfo__filter-card__item ${
+                    activeTab === 'complaint' ? 'active' : ''
+                  }`}
+                  onClick={() => handleTabClick('complaint')}>
+                  Рекламация
+                </div>
+              ) : null}
               <div
                 className={`projectinfo__filter-card__item ${
                   activeTab === 'cabinet' ? 'active' : ''
@@ -414,17 +573,23 @@ function ProjectInfoList() {
         )}
         {activeTab === 'designer' && (
           <div className="designer">
-            <Table bordered hover size="sm" className="mt-3 custom-table">
+            <Table bordered hover size="sm" className="mt-3 table-planning">
               <thead>
                 <tr>
                   <th>Конструктор</th>
-                  <td>{project.project && project.project.designer}</td>
+                  <td
+                    onClick={() => handleOpenModalCreateDesigner(project.project.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {project.project && project.project.designer}
+                  </td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th>Дата начала</th>
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreateDesignStart(project.project.id)}
+                    style={{ cursor: 'pointer' }}>
                     {project.project && project.project.design_start ? (
                       <Moment format="DD.MM.YYYY">
                         {project.project && project.project.design_start}
@@ -438,7 +603,9 @@ function ProjectInfoList() {
               <tbody>
                 <tr>
                   <th>Дата сдачи</th>
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreateProjectDelivery(project.project.id)}
+                    style={{ cursor: 'pointer' }}>
                     {project.project && project.project.project_delivery ? (
                       <Moment format="DD.MM.YYYY">
                         {project.project && project.project.project_delivery}
@@ -452,13 +619,19 @@ function ProjectInfoList() {
               <tbody>
                 <tr>
                   <th>Проверяет проект</th>
-                  <td>{project.project && project.project.inspection_designer}</td>
+                  <td
+                    onClick={() => handleOpenModalCreateInspectionDesigner(project.project.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {project.project && project.project.inspection_designer}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr>
                   <th>Дата проверки</th>
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreateDateInspection(project.project.id)}
+                    style={{ cursor: 'pointer' }}>
                     {project.project && project.project.date_inspection ? (
                       <Moment format="DD.MM.YYYY">
                         {project.project && project.project.date_inspection}
@@ -486,7 +659,9 @@ function ProjectInfoList() {
               {project.projectmaterials.map((property) => (
                 <tr key={property.id}>
                   <td>{property.materialName}</td>
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreatePaymentDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
                     {property.date_payment ? (
                       <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
                     ) : (
@@ -494,14 +669,18 @@ function ProjectInfoList() {
                     )}
                   </td>
 
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreateReadyDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
                     {property.ready_date ? (
                       <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
                     ) : (
                       ''
                     )}
                   </td>
-                  <td>
+                  <td
+                    onClick={() => handleOpenModalCreateShippingDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
                     {property.shipping_date ? (
                       <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
                     ) : (
@@ -514,49 +693,60 @@ function ProjectInfoList() {
           </Table>
         )}
         {activeTab === 'production' && (
-          <div className="production">
-            <div className="table-container">
-              <Table bordered size="md" className="mt-3">
-                <thead className="thead_column">
-                  <tr>
-                    <th className="production_column">Производство</th>
-                    {nameDetails
-                      .sort((a, b) => a.id - b.id)
-                      .map((part) => (
-                        <th key={part.id}>{part.name}</th>
-                      ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th className="production_column">Заказ</th>
-                    {nameDetails
-                      .sort((a, b) => a.id - b.id)
-                      .map((part) => {
-                        const detailProject = project.extractedDetails.find(
-                          (prop) => prop.detailId === part.id,
-                        );
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        return <td key={part.id}>{quantity}</td>;
-                      })}
-                  </tr>
-                </tbody>
-                <tbody>
-                  <tr>
-                    <th className="production_column">Отгрузка</th>
-                    {nameDetails
-                      .sort((a, b) => a.id - b.id)
-                      .map((part) => {
-                        const detailProject = project.shipmentDetails.find(
-                          (prop) => prop.detailId === part.id,
-                        );
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        return <td key={part.id}>{quantity}</td>;
-                      })}
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
+          <div className="table-production">
+            <Table bordered size="md" className="mt-3">
+              <thead>
+                <tr>
+                  <th className="table-production__th">Производство</th>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => (
+                      <th key={part.id}>{part.name}</th>
+                    ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th className="table-production__th">Заказ</th>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => {
+                      const detailProject = project.extractedDetails.find(
+                        (prop) => prop.detailId === part.id,
+                      );
+                      const quantity = detailProject ? detailProject.quantity : '';
+                      return (
+                        <td
+                          key={part.id}
+                          onClick={() => {
+                            quantity
+                              ? handleOpenModalUpdateProjectDetail(detailProject.id)
+                              : handleOpenModalCreateOneProjectDetail(part.id, project.project.id);
+                          }}
+                          style={{ cursor: 'pointer' }}>
+                          {quantity}
+                        </td>
+                      );
+                    })}
+                </tr>
+              </tbody>
+              <tbody>
+                <tr>
+                  <th className="table-production__th">
+                    <div>Отгрузка</div>
+                  </th>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => {
+                      const detailProject = project.shipmentDetails.find(
+                        (prop) => prop.detailId === part.id,
+                      );
+                      const quantity = detailProject ? detailProject.quantity : '';
+                      return <td key={part.id}>{quantity}</td>;
+                    })}
+                </tr>
+              </tbody>
+            </Table>
           </div>
         )}
         {activeTab === 'brigade' && (
@@ -718,6 +908,7 @@ function ProjectInfoList() {
             )}
           </div>
         )}
+        {activeTab === 'complaint' && <Complaint project={project} />}
       </div>
       <div className="note">
         <div className="note__title">Комментарии</div>

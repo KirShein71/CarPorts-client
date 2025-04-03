@@ -17,14 +17,13 @@ const isValid = (value) => {
 };
 
 const CreateProjectDelivery = (props) => {
-  const { id, show, setShow, setChange, scrollPosition, currentPageUrl } = props;
+  const { id, show, setShow, setChange, scrollPosition, planningPage } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProject(id)
         .then((data) => {
           const prod = {
@@ -41,7 +40,7 @@ const CreateProjectDelivery = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -50,9 +49,12 @@ const CreateProjectDelivery = (props) => {
   };
 
   const handleCloseModal = () => {
-    setShow(false);
-    window.scrollTo(0, scrollPosition);
-    navigate(currentPageUrl); // Восстанавливаем текущую страницу после закрытия модального окна
+    if (planningPage) {
+      setShow(false);
+      window.scrollTo(0, scrollPosition);
+    } else {
+      setShow(false);
+    }
   };
 
   const handleSubmit = async (event) => {

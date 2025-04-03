@@ -134,6 +134,55 @@
         }
     }
 
+    //table planning 
+    .table-planning {
+        width: 350px;
+    }
+    
+
+    //table-production 
+    .table-production {
+        overflow-x: auto;
+        width: 100%;
+
+        &__th {
+            padding: 5px !important;
+            position: sticky;
+            left: 0;
+            top: 0;
+            z-index: 3;
+            background-color: #ffffff;
+           
+        }
+
+        &__th::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            border-right: solid 1px #dee2e6;
+            border-bottom: solid 1px #dee2e6;
+          
+        }
+       
+    }
+
+    //table-complaint 
+    .table-complaint {
+        &__note {
+            width: 450px;
+            
+        }
+
+        &__date {
+            width: 50px;
+            text-align: center;
+        }
+    }
+
+    
     // Note 
 
     .note {
