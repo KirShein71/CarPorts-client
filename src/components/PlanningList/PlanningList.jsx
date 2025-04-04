@@ -13,7 +13,7 @@ import moment from 'moment-business-days';
 import { CSVLink } from 'react-csv';
 import { format } from 'date-fns';
 import { logout } from '../../http/userApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 
 import './style.scss';
@@ -41,6 +41,8 @@ function PlanningList() {
   const [buttonInProgressProject, setButtonInProgressProject] = React.useState(true);
   const [buttonCompletedProject, setButtonCompletedProject] = React.useState(true);
   const navigate = useNavigate();
+  const navigateToProjectInfo = useNavigate();
+  const location = useLocation();
   const { user } = React.useContext(AppContext);
 
   React.useEffect(() => {
@@ -299,6 +301,10 @@ function PlanningList() {
     navigate('/', { replace: true });
   };
 
+  const addToProjectInfo = (id) => {
+    navigateToProjectInfo(`/projectinfo/${id}`, { state: { from: location.pathname } });
+  };
+
   return (
     <div className="planninglist">
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -446,7 +452,21 @@ function PlanningList() {
                     style={{ color: item.date_finish !== null ? '#808080' : 'black' }}
                     key={item.id}>
                     <td>{item.number}</td>
-                    <td className="planning-td mobile">
+                    {user.isConstructor ? (
+                      <td className="planning-td mobile">
+                        {item.name}
+                        <div className="border_top"></div>
+                      </td>
+                    ) : (
+                      <td
+                        className="planning-td mobile"
+                        onClick={() => addToProjectInfo(item.id)}
+                        style={{ cursor: 'pointer' }}>
+                        {item.name}
+                        <div className="border_top"></div>
+                      </td>
+                    )}
+                    <td className="planning-td mobile" onClick={() => addToProjectInfo(item.id)}>
                       {item.name}
                       <div className="border_top"></div>
                     </td>
