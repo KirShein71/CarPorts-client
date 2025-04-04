@@ -81,7 +81,9 @@ function TableBrigadeCalendar() {
                           ? '#bbbbbb'
                           : 'transparent',
                     }}>
-                    {dateMoscow.project?.name} {dateMoscow.warranty} {dateMoscow.weekend}
+                    {dateMoscow.project?.name}{' '}
+                    {dateMoscow.complaint ? `*${dateMoscow.complaint.project.name}*` : ''}
+                    {dateMoscow.warranty} {dateMoscow.weekend}
                   </td>
                 </tr>
               ))}
@@ -129,7 +131,9 @@ function TableBrigadeCalendar() {
                           ? '#bbbbbb'
                           : 'transparent',
                     }}>
-                    {dateSpb.project?.name} {dateSpb.warranty} {dateSpb.weekend}
+                    {dateSpb.project?.name}{' '}
+                    {dateSpb.complaint ? `*${dateSpb.complaint.project.name}*` : ''}
+                    {dateSpb.warranty} {dateSpb.weekend}
                   </td>
                 </tr>
               ))}

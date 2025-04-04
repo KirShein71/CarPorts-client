@@ -35,9 +35,13 @@ export const updateBrigadesDate = async (id, brigadesdate) => {
     return data
 }
 
+export const refreshDataBrigadesDate = async (id, brigadesdate) => {
+    const { data } = await guestInstance.put(`brigadesdate/refreshDataBrigadesDate/${id}`, brigadesdate)
+    return data
+}
 
 export const deleteBrigadesDate = async(id) => {
-    const { data} = await guestInstance.delete(`brigadesdate /delete/${id}`)
+    const { data} = await guestInstance.delete(`brigadesdate/delete/${id}`)
     return data
 }
 

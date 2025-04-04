@@ -466,10 +466,7 @@ function PlanningList() {
                         <div className="border_top"></div>
                       </td>
                     )}
-                    <td className="planning-td mobile" onClick={() => addToProjectInfo(item.id)}>
-                      {item.name}
-                      <div className="border_top"></div>
-                    </td>
+
                     <td style={{ cursor: 'pointer' }}>
                       {item.note && (
                         <div onClick={() => handleUpdateNote(item.id)}>

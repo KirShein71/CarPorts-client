@@ -2,18 +2,21 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { createBrigadesDate } from '../../../http/brigadesDateApi';
 import { fetchAllProjects } from '../../../http/projectApi';
+import { getAllComplaint } from '../../../http/complaintApi';
 
 const defaultValue = {
   weekend: '',
   warranty: '',
   downtime: '',
   project: '',
+  complaint: '',
 };
 const defaultValid = {
   weekend: null,
   warranty: null,
   downtime: null,
   project: null,
+  complaint: null,
 };
 
 const isValid = (value) => {
@@ -23,6 +26,7 @@ const isValid = (value) => {
     if (key === 'warranty') result.warranty = value.warranty !== '';
     if (key === 'downtime') result.downtime = value.downtime !== '';
     if (key === 'project') result.project = value.project;
+    if (key === 'complaint') result.project = value.complaint;
   }
   return result;
 };
@@ -30,19 +34,24 @@ const isValid = (value) => {
 const CreateBrigadeDate = (props) => {
   const { show, setShow, setChange, brigadeId, dateId, regionId } = props;
   const [projects, setProjects] = React.useState([]);
+  const [complaints, setComplaints] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    fetchAllProjects().then((data) => setProjects(data));
-  }, []);
+    if (show) {
+      fetchAllProjects().then((data) => setProjects(data));
+      getAllComplaint().then((data) => setComplaints(data));
+    }
+  }, [show]);
 
   const handleInputChange = (event) => {
     const regex = /^[0-9]*$/;
     if (regex.test(event.target.value)) {
       setValue({
         project: event.target.value, // Устанавливаем только проект
+        complaint: 0,
         weekend: '', // Сбрасываем выходной
         warranty: '', // Сбрасываем гарантийный день
         downtime: '', // Сбрасываем день простоя
@@ -50,6 +59,29 @@ const CreateBrigadeDate = (props) => {
       setValid(
         isValid({
           project: event.target.value,
+          complaint: 0,
+          weekend: '',
+          warranty: '',
+          downtime: '',
+        }),
+      );
+    }
+  };
+
+  const handleInputChangeComplaint = (event) => {
+    const regex = /^[0-9]*$/;
+    if (regex.test(event.target.value)) {
+      setValue({
+        project: 0,
+        complaint: event.target.value, //Устанавливаем только рекламацию
+        weekend: '', // Сбрасываем выходной
+        warranty: '', // Сбрасываем гарантийный день
+        downtime: '', // Сбрасываем день простоя
+      });
+      setValid(
+        isValid({
+          project: 0,
+          complaint: event.target.value,
           weekend: '',
           warranty: '',
           downtime: '',
@@ -62,6 +94,7 @@ const CreateBrigadeDate = (props) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
       project: 0, // Сбрасываем проект
+      complaint: 0,
       weekend: isChecked ? 'Выходной' : null,
       warranty: '', // Сбрасываем гарантийный день
       downtime: '',
@@ -69,6 +102,7 @@ const CreateBrigadeDate = (props) => {
     setValid(
       isValid({
         project: 0,
+        complaint: 0,
         weekend: isChecked ? 'Выходной' : null,
         warranty: '',
         downtime: '',
@@ -80,6 +114,7 @@ const CreateBrigadeDate = (props) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
       project: 0, // Сбрасываем проект
+      complaint: 0,
       weekend: '', // Сбрасываем выходной
       warranty: isChecked ? 'Гарантийный день' : null,
       downtime: '',
@@ -87,6 +122,7 @@ const CreateBrigadeDate = (props) => {
     setValid(
       isValid({
         project: 0,
+        complaint: 0,
         weekend: '',
         warranty: isChecked ? 'Гарантийный день' : null,
         downtime: '',
@@ -98,6 +134,7 @@ const CreateBrigadeDate = (props) => {
     const isChecked = e.target.checked;
     setValue((prevValue) => ({
       project: 0, // Сбрасываем проект
+      complaint: 0,
       weekend: '', // Сбрасываем выходной
       warranty: '',
       downtime: isChecked ? 'Простой' : null,
@@ -105,6 +142,7 @@ const CreateBrigadeDate = (props) => {
     setValid(
       isValid({
         project: 0,
+        complaint: 0,
         weekend: '',
         warranty: '',
         downtime: isChecked ? 'Простой' : null,
@@ -120,6 +158,7 @@ const CreateBrigadeDate = (props) => {
     const data = new FormData();
     data.append('weekend', value.weekend);
     data.append('projectId', value.project === '' ? 0 : value.project);
+    data.append('complaintId', value.complaint === '' ? 0 : value.complaint);
     data.append('brigadeId', brigadeId);
     data.append('dateId', dateId);
     data.append('regionId', regionId);
@@ -169,6 +208,26 @@ const CreateBrigadeDate = (props) => {
                     .map((project) => (
                       <option key={project.id} value={project.id}>
                         {project.name}
+                      </option>
+                    ))}
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-3 mt-4">
+            <Col>
+              <Form.Select
+                name="complaint"
+                value={value.complaint}
+                onChange={(e) => handleInputChangeComplaint(e)}
+                isValid={valid.complaint === true}
+                isInvalid={valid.complaint === false}>
+                <option value="">Рекламация</option>
+                {complaints &&
+                  complaints
+                    .filter((complaint) => complaint.date_finish === null)
+                    .map((complaint) => (
+                      <option key={complaint.id} value={complaint.id}>
+                        {complaint.project.name}
                       </option>
                     ))}
               </Form.Select>
