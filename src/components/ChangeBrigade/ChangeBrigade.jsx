@@ -15,6 +15,7 @@ import UpdateBrigadeDate from './modals/UpdateBrigadeDate';
 import Header from '../Header/Header';
 import GantBrigade from './GantBrigade';
 import DeleteBrigadesData from './modals/DeleteBrigadesData';
+import EditDeleteModal from './modals/EditDeleteModal';
 
 import './style.scss';
 
@@ -43,6 +44,7 @@ function ChangeBrigade() {
   const [currentMonthGant, setCurrentMonthGant] = React.useState(new Date().getMonth());
   const [currentYearGant, setCurrentYearGant] = React.useState(new Date().getFullYear());
   const [modalDeleteBrigadesDateData, setModalmodalDeleteBrigadesDateData] = React.useState(false);
+  const [modalEditDelete, setModalEditDelete] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -201,6 +203,11 @@ function ChangeBrigade() {
     setBrigadeDateId(id);
   };
 
+  const handleOpenModalEditDelete = (id) => {
+    setModalEditDelete(true);
+    setBrigadeDateId(id);
+  };
+
   const handleRegionClick = (id) => {
     setSelectedRegion(id);
   };
@@ -234,6 +241,13 @@ function ChangeBrigade() {
         setShowDeleteModal={setModalmodalDeleteBrigadesDateData}
         setChange={setChange}
       />
+      <EditDeleteModal
+        show={modalEditDelete}
+        setShow={setModalEditDelete}
+        id={bridaDateId}
+        handleOpenModalUpdateBrigadeDate={handleOpenModalUpdateBrigadeDate}
+        handleOpenModalDeleteBrigadeDateData={handleOpenModalDeleteBrigadeDateData}
+      />
       <Header title={'Календарь монтажных работ'} />
       <div className="container">
         <div className="calendar-brigade__filter">
@@ -251,21 +265,6 @@ function ChangeBrigade() {
           ))}
         </div>
 
-        <GantBrigade
-          brigades={brigades}
-          selectedRegion={selectedRegion}
-          handleNextMonthGant={handleNextMonthGant}
-          handlePrevMonthGant={handlePrevMonthGant}
-          currentYearGant={currentYearGant}
-          currentMonthGant={currentMonthGant}
-          filteredDates={filteredDatesGant}
-          todayString={todayString}
-          getDayName={getDayName}
-          brigadesDates={brigadesDates}
-          handleOpenModalCreateBrigadeDate={handleOpenModalCreateBrigadeDate}
-          handleOpenModalUpdateBrigadeDate={handleOpenModalUpdateBrigadeDate}
-          handleOpenModalDeleteBrigadeDateData={handleOpenModalDeleteBrigadeDateData}
-        />
         <div className="dropdown" ref={modalRef}>
           <div className="dropdown__title" onClick={hadleOpenModalSelectedBrigade}>
             Бригада: <span>{selectedBrigadeName ? selectedBrigadeName : 'Выбрать'}</span>
@@ -274,13 +273,16 @@ function ChangeBrigade() {
             <div className="dropdown__modal">
               <div className="dropdown__modal-content">
                 <ul className="dropdown__modal-items">
+                  {/* Кнопка сброса выбора бригады */}
                   <div
-                    className="dropdown__modal-item"
+                    className="dropdown__modal-item dropdown__modal-item--reset"
                     onClick={() => {
                       setSelectedBrigadeName(null);
                       setSelectedBrigade(null);
                       setOpenModalSelectedBrigade(false);
-                    }}></div>
+                    }}>
+                    <li>Сбросить</li>
+                  </div>
                   {brigades
                     .filter((brigadesName) => brigadesName.regionId === selectedRegion)
                     .map((brigadesName) => (
@@ -356,8 +358,9 @@ function ChangeBrigade() {
                               <td
                                 style={{
                                   cursor: 'pointer',
-                                  fontSize: '17px',
+                                  textAlign: 'center',
                                   fontWeight: '500',
+                                  paddingTop: '7px',
                                   color: brigadeDate.warranty
                                     ? '#0000ff'
                                     : brigadeDate.weekend
@@ -370,29 +373,14 @@ function ChangeBrigade() {
                                       ? '#bbbbbb'
                                       : 'transparent',
                                 }}
-                                key={brigadeDate.id}>
-                                <div className="gant-brigade__td">
-                                  <div
-                                    className="gant-brigade__td-icon"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleOpenModalDeleteBrigadeDateData(brigadeDate.id);
-                                    }}>
-                                    <img src="./img/delete-small.png" alt="delete" />
-                                  </div>
-                                  <div
-                                    className="gant-brigade__td-text"
-                                    onClick={() =>
-                                      handleOpenModalUpdateBrigadeDate(brigadeDate.id)
-                                    }>
-                                    {brigadeDate.project?.name ||
-                                      brigadeDate.complaint?.project.name ||
-                                      brigadeDate.warranty ||
-                                      brigadeDate.weekend ||
-                                      brigadeDate.downtime ||
-                                      ''}
-                                  </div>
-                                </div>
+                                key={brigadeDate.id}
+                                onClick={() => handleOpenModalEditDelete(brigadeDate.id)}>
+                                {brigadeDate.project?.name ||
+                                  brigadeDate.complaint?.project.name ||
+                                  brigadeDate.warranty ||
+                                  brigadeDate.weekend ||
+                                  brigadeDate.downtime ||
+                                  ''}
                               </td>
                             );
                           })
@@ -601,7 +589,22 @@ function ChangeBrigade() {
             </div>
           </>
         ) : (
-          ''
+          <GantBrigade
+            brigades={brigades}
+            selectedRegion={selectedRegion}
+            handleNextMonthGant={handleNextMonthGant}
+            handlePrevMonthGant={handlePrevMonthGant}
+            currentYearGant={currentYearGant}
+            currentMonthGant={currentMonthGant}
+            filteredDates={filteredDatesGant}
+            todayString={todayString}
+            getDayName={getDayName}
+            brigadesDates={brigadesDates}
+            handleOpenModalCreateBrigadeDate={handleOpenModalCreateBrigadeDate}
+            handleOpenModalUpdateBrigadeDate={handleOpenModalUpdateBrigadeDate}
+            handleOpenModalDeleteBrigadeDateData={handleOpenModalDeleteBrigadeDateData}
+            handleOpenModalEditDelete={handleOpenModalEditDelete}
+          />
         )}
       </div>
     </div>

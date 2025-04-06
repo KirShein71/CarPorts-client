@@ -10,10 +10,9 @@ function DeleteBrigadesData(props) {
       .then((data) => {
         setChange((state) => !state);
         setShowDeleteModal(false);
-        setShowDeleteModal(false);
       })
       .catch((error) => {
-        setShowModal(false);
+        setShowDeleteModal(false);
         alert(error.response.data.message);
       });
   };

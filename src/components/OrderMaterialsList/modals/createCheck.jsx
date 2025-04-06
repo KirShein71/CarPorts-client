@@ -128,7 +128,7 @@ const CreateCheck = (props) => {
           </Row>
           <Row>
             <Col>
-              <Button variant="dark" type="submit" disabled={isLoading}>
+              <Button variant="dark" type="submit" className="me-3 mb-3" disabled={isLoading}>
                 {isLoading ? 'Сохранение...' : 'Сохранить'}
               </Button>
               <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
