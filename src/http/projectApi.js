@@ -47,6 +47,13 @@ export const getAllWithNoMaterials = async () => {
     return data
 }
 
+export const getAllProjectsWithNoInBrigadesDate = async () => {
+    const { data } = await guestInstance.get('project/getAllProjectsWithNoInBrigadesDate')
+    return data
+}
+
+
+
 export const getAllWithNoDesing = async () => {
     const {data} = await guestInstance.get('project/getAllWithNoDesing')
     return data

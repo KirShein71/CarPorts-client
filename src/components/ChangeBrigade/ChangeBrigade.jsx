@@ -16,6 +16,7 @@ import Header from '../Header/Header';
 import GantBrigade from './GantBrigade';
 import DeleteBrigadesData from './modals/DeleteBrigadesData';
 import EditDeleteModal from './modals/EditDeleteModal';
+import ModalNewProject from './modals/ModalNewProject';
 
 import './style.scss';
 
@@ -45,6 +46,7 @@ function ChangeBrigade() {
   const [currentYearGant, setCurrentYearGant] = React.useState(new Date().getFullYear());
   const [modalDeleteBrigadesDateData, setModalmodalDeleteBrigadesDateData] = React.useState(false);
   const [modalEditDelete, setModalEditDelete] = React.useState(false);
+  const [modalNewProject, setModalNewProject] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -216,6 +218,10 @@ function ChangeBrigade() {
     setOpenModalSelectedBrigade(!openModalSelectedBrigade);
   };
 
+  const handleOpenModalNewProject = () => {
+    setModalNewProject(true);
+  };
+
   const todayString = new Date().toISOString().split('T')[0]; // Получаем строку даты для сравнения
 
   return (
@@ -248,6 +254,7 @@ function ChangeBrigade() {
         handleOpenModalUpdateBrigadeDate={handleOpenModalUpdateBrigadeDate}
         handleOpenModalDeleteBrigadeDateData={handleOpenModalDeleteBrigadeDateData}
       />
+      <ModalNewProject show={modalNewProject} setShow={setModalNewProject} />
       <Header title={'Календарь монтажных работ'} />
       <div className="container">
         <div className="calendar-brigade__filter">
@@ -264,7 +271,11 @@ function ChangeBrigade() {
             </div>
           ))}
         </div>
-
+        <div
+          onClick={() => handleOpenModalNewProject()}
+          style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
+          &bull; Показать новые проекты
+        </div>
         <div className="dropdown" ref={modalRef}>
           <div className="dropdown__title" onClick={hadleOpenModalSelectedBrigade}>
             Бригада: <span>{selectedBrigadeName ? selectedBrigadeName : 'Выбрать'}</span>

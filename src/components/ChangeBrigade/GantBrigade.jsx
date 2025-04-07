@@ -14,7 +14,6 @@ function GantBrigade(props) {
     getDayName,
     brigadesDates,
     handleOpenModalCreateBrigadeDate,
-    handleOpenModalUpdateBrigadeDate,
     handleOpenModalEditDelete,
   } = props;
 
