@@ -57,9 +57,9 @@ function ProductionList() {
 
       // Проверяем активные проекты в зависимости от состояния кнопок
       const isActiveProject = filters.isActive
-        ? project.project.date_finish === null
+        ? project.project.finish === null
         : filters.isClosed
-        ? project.project.date_finish !== null
+        ? project.project.finish === 'true'
         : true; // Если ни одна кнопка не активна, показываем все проекты
 
       // Логика фильтрации
@@ -226,13 +226,13 @@ function ProductionList() {
                   <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
                     <td
                       style={{
-                        color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                        color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                       }}>
                       {projectDetail.project ? projectDetail.project.number : ''}
                     </td>
                     <td
                       style={{
-                        color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                        color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                       }}
                       className="production__td mobile">
                       {projectDetail.project ? projectDetail.project.name : ''}
@@ -250,8 +250,7 @@ function ProductionList() {
                             key={part.id}
                             style={{
                               cursor: 'pointer',
-                              color:
-                                projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                              color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                             }}
                             onClick={
                               user.isManagerProduction
@@ -310,7 +309,7 @@ function ProductionList() {
                       <td></td>
                       <td
                         style={{
-                          color: projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                          color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                         }}
                         className="production__td production">
                         Отгрузка
@@ -326,7 +325,7 @@ function ProductionList() {
                             <td
                               style={{
                                 color:
-                                  projectDetail.project.date_finish !== null ? '#808080' : 'black',
+                                  projectDetail.project.finish === 'true' ? '#808080' : 'black',
                               }}
                               key={part.id}>
                               {quantity}

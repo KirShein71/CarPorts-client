@@ -50,7 +50,7 @@ function ProcurementList() {
           </thead>
           <tbody>
             {projects
-              .filter((project) => project.date_finish === null)
+              .filter((project) => project.finish === null)
               .map((project) => (
                 <tr key={project.id}>
                   <td>{project.number}</td>

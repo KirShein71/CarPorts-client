@@ -44,7 +44,7 @@ function ShipmentChangeList() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th className="production_column">Номер проекта</th>
+              <th>Номер проекта</th>
               <th>Название</th>
               <th>Дата договора</th>
               <th></th>
@@ -52,10 +52,10 @@ function ShipmentChangeList() {
           </thead>
           <tbody>
             {projects
-              .filter((item) => item.date_finish === null)
+              .filter((item) => item.finish === null)
               .map((item) => (
                 <tr key={item.id}>
-                  <td className="production_column">{item.number}</td>
+                  <td>{item.number}</td>
                   <td>{item.name}</td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>

@@ -54,9 +54,9 @@ function ShipmentList() {
 
       // Проверяем активные проекты в зависимости от состояния кнопок
       const isActiveProject = filters.isActive
-        ? project.project.date_finish === null
+        ? project.project.finish === null
         : filters.isClosed
-        ? project.project.date_finish !== null
+        ? project.project.finish === 'true'
         : true; // Если ни одна кнопка не активна, показываем все проекты
 
       // Логика фильтрации
@@ -196,8 +196,8 @@ function ShipmentList() {
         <Table bordered size="sm" className="mt-3">
           <thead>
             <tr>
-              <th className="shipment_column">Сумма</th>
-              <th></th>
+              <th>Сумма</th>
+              <th className="shipment-th mobile"></th>
               <th></th>
               {detailSums.map((sum, index) => (
                 <th key={index}>{sum}</th>
@@ -208,7 +208,7 @@ function ShipmentList() {
           <thead>
             <tr>
               <th>Номер проекта</th>
-              <th className="shipment_column">Название проекта</th>
+              <th className="shipment-th mobile">Название проекта</th>
               <th
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
@@ -242,10 +242,10 @@ function ShipmentList() {
                 <tr
                   key={shipment.id}
                   style={{
-                    color: shipment.project.date_finish !== null ? '#808080' : 'black',
+                    color: shipment.project.finish === 'true' ? '#808080' : 'black',
                   }}>
                   <td>{shipment.project ? shipment.project.number : ''}</td>
-                  <td className="shipment_column">
+                  <td className="shipment-td mobile">
                     {shipment.project ? shipment.project.name : ''}
                   </td>
                   <td>

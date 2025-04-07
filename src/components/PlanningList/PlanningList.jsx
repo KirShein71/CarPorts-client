@@ -68,9 +68,9 @@ function PlanningList() {
 
       // Проверяем активные проекты в зависимости от состояния кнопок
       const isActiveProject = filters.isActive
-        ? project.date_finish === null
+        ? project.finish === null
         : filters.isClosed
-        ? project.date_finish !== null
+        ? project.finish === 'true'
         : true; // Если ни одна кнопка не активна, показываем все проекты
 
       // Проверяем, активны ли оба региона
@@ -448,9 +448,7 @@ function PlanningList() {
                   }
                 })
                 .map((item) => (
-                  <tr
-                    style={{ color: item.date_finish !== null ? '#808080' : 'black' }}
-                    key={item.id}>
+                  <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }} key={item.id}>
                     <td>{item.number}</td>
                     {user.isConstructor ? (
                       <td className="planning-td mobile">

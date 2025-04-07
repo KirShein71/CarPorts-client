@@ -1,5 +1,5 @@
 import React from 'react';
-import { getProjectInfo, createDateFinish, deleteDateFinish } from '../../http/projectApi';
+import { getProjectInfo } from '../../http/projectApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { deleteProjectBrigades } from '../../http/projectBrigadesApi';
 import CreateAccountModal from '../ClientAccountList/CreateAccountList/modal/CreateAccauntModal';
@@ -26,9 +26,11 @@ import CreateReadyDate from '../OrderMaterialsList/modals/createReadyDate';
 import CreateShippingDate from '../OrderMaterialsList/modals/createShippingDate';
 import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
 import UpdateProjectDetails from '../ProductionList/modal/UpdateProjectDetails';
+import ClosedProject from './modals/ClosedProject';
+import RestoreProject from './modals/RestoreProject';
+import Complaint from './Complaint';
 
 import './style.scss';
-import Complaint from './Complaint';
 
 function ProjectInfoList() {
   const { id } = useParams();
@@ -61,6 +63,9 @@ function ProjectInfoList() {
   const [detailId, setDetailId] = React.useState(null);
   const [modalCreateOneProjectDetail, setModalCreateOneProjectDetail] = React.useState(false);
   const [modalUpdateProjectDetail, setModalUpdateProjectDetail] = React.useState(false);
+  const [modalClosedProject, setModalClosedProject] = React.useState(false);
+  const [dateFinish, setDateFinish] = React.useState(null);
+  const [modalRestoreProject, setModalRestoreProject] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -69,18 +74,6 @@ function ProjectInfoList() {
 
     fetchAllDetails().then((dataDetails) => setNameDetails(dataDetails));
   }, [id, change]);
-
-  const handleFinishProject = (id) => {
-    if (project.project.date_finish !== null) {
-      return;
-    }
-    setProject(id);
-    createDateFinish(id, { date_finish: new Date().toISOString() })
-      .then(() => {
-        navigate('/project');
-      })
-      .catch((error) => alert(error.response.data.message));
-  };
 
   const HadleCreateAccountModal = (id) => {
     setProject(id);
@@ -172,6 +165,17 @@ function ProjectInfoList() {
     setModalUpdateProjectDetail(true);
   };
 
+  const handleOpenModalClosedProject = (id, dateFinish) => {
+    setModalClosedProject(true);
+    setProject(id);
+    setDateFinish(dateFinish);
+  };
+
+  const handleOpenModalRestoreProject = (id) => {
+    setModalRestoreProject(true);
+    setProject(id);
+  };
+
   const handleDeleteProjectBrigades = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить бригаду?');
     if (confirmed) {
@@ -180,18 +184,6 @@ function ProjectInfoList() {
           setChange(!change);
           alert(`Строка будет удалена`);
           console.log(id);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
-  };
-
-  const handleRestoreProject = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите восстановить проект?');
-    if (confirmed) {
-      deleteDateFinish(id)
-        .then(() => {
-          setChange(!change);
-          alert('Проект восстановлен');
         })
         .catch((error) => alert(error.response.data.message));
     }
@@ -389,6 +381,19 @@ function ProjectInfoList() {
         setShow={setModalCreateOneProjectDetail}
         setChange={setChange}
       />
+      <ClosedProject
+        show={modalClosedProject}
+        setShow={setModalClosedProject}
+        id={project}
+        setChange={setChange}
+        dateFinish={dateFinish}
+      />
+      <RestoreProject
+        show={modalRestoreProject}
+        setShow={setModalRestoreProject}
+        id={project}
+        setChange={setChange}
+      />
       <div className="header">
         <Link
           to={
@@ -477,7 +482,7 @@ function ProjectInfoList() {
                   Смета
                 </div>
               )}
-              {project.complaints.length > 0 ? (
+              {project.complaints?.length > 0 ? (
                 <div
                   className={`projectinfo__filter-card__item ${
                     activeTab === 'complaint' ? 'active' : ''
@@ -930,23 +935,36 @@ function ProjectInfoList() {
           </Button>
         </div>
       </div>
-      {project.project && project.project.date_finish !== null ? (
+      {project.project && project.project.finish === 'true' ? (
         <div style={{ marginBottom: '25px' }}>
           <Button
             variant="dark"
             style={{ display: 'block', margin: '0 auto' }}
-            onClick={() => handleRestoreProject(project.project.id)}>
+            onClick={() => handleOpenModalRestoreProject(project.project.id)}>
             Восстановить
           </Button>
         </div>
       ) : (
         <div style={{ marginBottom: '25px' }}>
-          <Button
-            variant="dark"
-            style={{ display: 'block', margin: '0 auto' }}
-            onClick={() => handleFinishProject(project.project.id)}>
-            Завершить проект
-          </Button>
+          {project.project && project.project.date_finish !== null ? (
+            <Button
+              variant="dark"
+              style={{ display: 'block', margin: '0 auto' }}
+              onClick={() =>
+                handleOpenModalClosedProject(project.project.id, project.project.date_finish)
+              }>
+              Завершить проект
+            </Button>
+          ) : (
+            <Button
+              variant="dark"
+              style={{ display: 'block', margin: '0 auto' }}
+              onClick={() =>
+                handleOpenModalClosedProject(project.project.id, project.project.date_finish)
+              }>
+              Завершить проект
+            </Button>
+          )}
         </div>
       )}
     </div>

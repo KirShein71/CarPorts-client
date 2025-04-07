@@ -202,9 +202,7 @@ const CreateBrigadeDate = (props) => {
                 <option value="">Проект</option>
                 {projects &&
                   projects
-                    .filter(
-                      (project) => project.date_finish === null && project.regionId === regionId,
-                    )
+                    .filter((project) => project.finish === null && project.regionId === regionId)
                     .map((project) => (
                       <option key={project.id} value={project.id}>
                         {project.name}

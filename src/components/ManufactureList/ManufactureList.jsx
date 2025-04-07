@@ -198,7 +198,7 @@ function ManufactureList() {
               </tr>
             ))}
             {waitShipmentDetail
-              .filter((waitShipment) => waitShipment.project.date_finish === null)
+              .filter((waitShipment) => waitShipment.project.finish === null)
               .map((waitShipment) => (
                 <tr key={waitShipment.id}>
                   <td>{waitShipment.project.number}</td>

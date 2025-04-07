@@ -22,7 +22,7 @@ function Complaint({ project }) {
         </thead>
         <tbody>
           {project &&
-            project.complaints.map((complaintProject) => (
+            project.complaints?.map((complaintProject) => (
               <tr key={complaintProject.id}>
                 <td
                   onClick={() => {
