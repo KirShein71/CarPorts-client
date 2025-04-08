@@ -146,7 +146,7 @@ function ViewingInstallationPage() {
               </button>
             </div>
             <div className="table-scrollable">
-              <Table bordered>
+              <Table bordered className="mt-3">
                 <thead>
                   <tr>
                     <th className="production_column" style={{ textAlign: 'center' }}>
