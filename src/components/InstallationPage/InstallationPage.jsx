@@ -31,7 +31,11 @@ function InstallationPage() {
   const [daysProject, setDaysProject] = React.useState([]);
   const [change, setChange] = React.useState(true);
   const [projectDays, setProjectDays] = React.useState([]);
+  const [filteredServiceEstimates, setFilteredServiceEstimates] = React.useState([]);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const location = useLocation();
+  const navigateToComplaint = useNavigate();
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
@@ -60,8 +64,47 @@ function InstallationPage() {
   }, [change]);
 
   React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+    };
+
+    const filteredServiceEstimates = serviceEstimate.filter((serEst) => {
+      const isActiveProject = filters.isActive && serEst.projectFinish === null;
+      const isClosedProject = filters.isClosed && serEst.projectFinish !== null;
+
+      // Если ни одна кнопка не активна, показываем все проекты
+      return isClosedProject || isActiveProject;
+    });
+
+    setFilteredServiceEstimates(filteredServiceEstimates);
+  }, [serviceEstimate, buttonActiveProject, buttonClosedProject]);
+
+  React.useEffect(() => {
     getDaysInstallerForProjects().then((data) => setProjectDays(data));
   }, []);
+
+  const handleButtonActiveProject = () => {
+    const newButtonActiveProject = !buttonActiveProject;
+    setButtonActiveProject(newButtonActiveProject);
+
+    if (!newButtonActiveProject) {
+      setButtonClosedProject(true);
+    } else {
+      setButtonClosedProject(false);
+    }
+  };
+
+  const handleButtonClosedProject = () => {
+    const newButtonClosedProject = !buttonClosedProject;
+    setButtonClosedProject(newButtonClosedProject);
+
+    if (!newButtonClosedProject) {
+      setButtonActiveProject(true);
+    } else {
+      setButtonActiveProject(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -73,6 +116,12 @@ function InstallationPage() {
     navigateInfoProject(`/projectinformation/${id}`, { state: { from: location.pathname } });
   };
 
+  const addToComplaint = () => {
+    navigateToComplaint(`/installation-complaint`, {
+      state: { from: location.pathname },
+    });
+  };
+
   return (
     <div className="installation-page">
       {[brigade].map((nameBrigade) => (
@@ -80,21 +129,27 @@ function InstallationPage() {
       ))}
       <div className="installation-page__content">
         <div className="installation-page__projects">
-          <div className="installation-page__title">Активные проекты</div>
           <div style={{ display: 'flex' }}>
-            <Link to="/project-finish">
-              <Button variant="dark" size="sm" className="mt-3 mb-3 me-3">
-                Завершенные проекты
-              </Button>
-            </Link>
-            <Link to="/installation-complaint">
-              <Button variant="dark" size="sm" className="mt-3 mb-3 ">
-                Рекламация
-              </Button>
-            </Link>
+            <button
+              className={`installation-page__button-active ${
+                buttonActiveProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonActiveProject}>
+              Активные
+            </button>
+            <button
+              className={`installation-page__button-noactive ${
+                buttonClosedProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonClosedProject}>
+              Закрытые
+            </button>
+            <button className="installation-page__button-complaint" onClick={addToComplaint}>
+              Рекламация
+            </button>
           </div>
           <div className="table-scrollable">
-            <Table bordered>
+            <Table bordered className="mt-3">
               <thead>
                 <tr>
                   <th className="production_column" style={{ textAlign: 'center' }}>
@@ -121,7 +176,7 @@ function InstallationPage() {
                 </tr>
               </thead>
               <tbody>
-                {serviceEstimate.map((estimateProject) => (
+                {filteredServiceEstimates.map((estimateProject) => (
                   <tr>
                     <td className="td_column" style={{ textAlign: 'center' }}>
                       {estimateProject.projectName}
