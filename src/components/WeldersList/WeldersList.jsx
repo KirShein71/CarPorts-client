@@ -172,7 +172,7 @@ function WeldersList() {
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
-              <th className="welders_thead">Нетипичные детали</th>
+              <th className="welders_thead">Нетиповые</th>
               <th className="welders_thead"></th>
             </tr>
           </thead>

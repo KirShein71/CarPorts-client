@@ -3,12 +3,14 @@ import { Table, Button } from 'react-bootstrap';
 import { getAllService, deleteService } from '../../http/serviceApi';
 import CreateService from './modals/CreateService';
 import UpdateService from './modals/UpdateService';
+import CreateNumberService from './modals/CreateNumberService';
 
 function Service() {
   const [services, setServices] = React.useState([]);
   const [service, setService] = React.useState(null);
   const [createServiceModal, setCreateServiceModal] = React.useState(false);
   const [updateServiceModal, setUpdateServiceModal] = React.useState(false);
+  const [createNumberServiceModal, setCreateNumberServiceModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
@@ -18,6 +20,11 @@ function Service() {
   const handleUpdateService = (id) => {
     setService(id);
     setUpdateServiceModal(true);
+  };
+
+  const handleOpenCreateServiceNumberModal = (id) => {
+    setService(id);
+    setCreateNumberServiceModal(true);
   };
 
   const handleDeleteClick = (id) => {
@@ -46,6 +53,12 @@ function Service() {
         setChange={setChange}
         id={service}
       />
+      <CreateNumberService
+        show={createNumberServiceModal}
+        setShow={setCreateNumberServiceModal}
+        setChange={setChange}
+        id={service}
+      />
       <Button variant="dark" onClick={() => setCreateServiceModal(true)} className="mt-3">
         Создать услугу монтажных работ
       </Button>
@@ -53,6 +66,7 @@ function Service() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
+              <th>Номер</th>
               <th>Название услуги</th>
               <th></th>
               <th></th>
@@ -61,6 +75,11 @@ function Service() {
           <tbody>
             {services.map((service) => (
               <tr key={service.id}>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenCreateServiceNumberModal(service.id)}>
+                  {service.number}
+                </td>
                 <td>{service.name}</td>
                 <td>
                   <Button variant="dark" onClick={() => handleUpdateService(service.id)}>

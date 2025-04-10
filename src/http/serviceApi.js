@@ -11,13 +11,18 @@ export const getOneService = async (id) => {
     return data
 }
 
-export const createService = async (material) => {
-    const { data } = await guestInstance.post('service/create', material)
+export const createService = async (service) => {
+    const { data } = await guestInstance.post('service/create', service)
     return data
 }
 
-export const updateService = async(id, materials) => {
-    const {data} = await guestInstance.put(`service/update/${id}`, materials)
+export const updateService = async(id, services) => {
+    const {data} = await guestInstance.put(`service/update/${id}`, services)
+    return data
+}
+
+export const updateServiceNumber = async(id, services) => {
+    const {data} = await guestInstance.put(`service/updateNumber/${id}`, services)
     return data
 }
 

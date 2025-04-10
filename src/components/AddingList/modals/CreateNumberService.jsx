@@ -1,23 +1,21 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { getOneService, updateService } from '../../../http/serviceApi';
+import { getOneService, updateServiceNumber } from '../../../http/serviceApi';
 
-const defaultValue = { name: '', number: '' };
+const defaultValue = { number: '' };
 const defaultValid = {
-  name: null,
   number: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'number') result.number = value.number.trim() !== '';
   }
   return result;
 };
 
-const UpdateService = (props) => {
+const CreateNumberService = (props) => {
   const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -28,7 +26,6 @@ const UpdateService = (props) => {
       getOneService(id)
         .then((data) => {
           const prod = {
-            name: data.name.toString(),
             number: data.number.toString(),
           };
           setValue(prod);
@@ -54,16 +51,15 @@ const UpdateService = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name) {
+    if (correct.number) {
       const data = new FormData();
-      data.append('name', value.name.trim());
+
       data.append('number', value.number.trim());
 
       setIsLoading(true);
-      updateService(id, data)
+      updateServiceNumber(id, data)
         .then((data) => {
           const prod = {
-            name: data.name.toString(),
             number: data.number.toString(),
           };
           setValue(prod);
@@ -101,18 +97,6 @@ const UpdateService = (props) => {
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="name"
-                value={value.name}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.name === true}
-                isInvalid={valid.name === false}
-                placeholder="Название услуги"
-              />
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
                 name="number"
                 value={value.number}
                 onChange={(e) => handleInputChange(e)}
@@ -135,4 +119,4 @@ const UpdateService = (props) => {
   );
 };
 
-export default UpdateService;
+export default CreateNumberService;

@@ -213,7 +213,7 @@ function ProductionList() {
                       {part.name}
                     </th>
                   ))}
-                <th className="production-th">Нетипичные детали</th>
+                <th className="production-th">Нетиповые</th>
                 <th className="production-th"></th>
               </tr>
             </thead>

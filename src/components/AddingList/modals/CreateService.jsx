@@ -2,15 +2,17 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createService } from '../../../http/serviceApi';
 
-const defaultValue = { name: '' };
+const defaultValue = { name: '', number: '' };
 const defaultValid = {
   name: null,
+  number: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
+    if (key === 'number') result.number = value.number.trim() !== '';
   }
   return result;
 };
@@ -34,6 +36,7 @@ const CreateService = (props) => {
     if (correct.name) {
       const data = new FormData();
       data.append('name', value.name.trim());
+      data.append('number', value.number.trim());
       setIsLoading(true);
       createService(data)
         .then((data) => {
@@ -72,6 +75,18 @@ const CreateService = (props) => {
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
                 placeholder="Введите название услуги"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="number"
+                value={value.number}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.number === true}
+                isInvalid={valid.number === false}
+                placeholder="Номер"
               />
             </Col>
           </Row>

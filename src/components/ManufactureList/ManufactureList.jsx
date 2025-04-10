@@ -87,7 +87,7 @@ function ManufactureList() {
                     {partAntypical.name}
                   </th>
                 ))}
-              <th className="manufacture_thead">Нетипичные детали</th>
+              <th className="manufacture_thead">Нетиповые</th>
             </tr>
           </thead>
           <tbody>

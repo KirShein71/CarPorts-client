@@ -39,6 +39,8 @@ function Estimate(props) {
   const [openModalUpdatePaymentDate, setOpenModalUpdatePaymentDate] = React.useState(false);
   const [openModalUpdatePaymentSum, setOpenModalUpdatePaymentSum] = React.useState(false);
   const [paymentColId, setPaymentColId] = React.useState(null);
+  const [sortOrder, setSortOrder] = React.useState('asc');
+  const [sortField, setSortField] = React.useState('service.number');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -218,6 +220,32 @@ function Estimate(props) {
     }
   };
 
+  const handleSortService = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const numericSort = (a, b) => {
+    const getValue = (obj) => {
+      const path = sortField.split('.');
+      let value = obj;
+      for (const key of path) {
+        value = value?.[key];
+        if (value === undefined) return null;
+      }
+      return value;
+    };
+
+    const numA = getValue(a) ?? 0; // Если null/undefined, считаем 0
+    const numB = getValue(b) ?? 0;
+
+    return sortOrder === 'asc' ? numA - numB : numB - numA;
+  };
+
   return (
     <div className="estimate">
       <UpdateEstimatePrice
@@ -311,16 +339,37 @@ function Estimate(props) {
                       <Table bordered>
                         <thead>
                           <tr>
-                            <th>Наименование</th>
+                            <th onClick={() => handleSortService('service.number')}>
+                              <div style={{ cursor: 'pointer', display: 'flex' }}>
+                                {' '}
+                                Наименование
+                                <img
+                                  style={{
+                                    marginLeft: '10px',
+                                    width: '24px',
+                                    height: '24px',
+                                    cursor: 'pointer',
+                                  }}
+                                  src="../img/sort.png"
+                                  alt="icon_sort"
+                                />
+                              </div>
+                            </th>
                             <th>Стоимость</th>
                             <th>Выполнено</th>
                             <th>Удалить строку</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {estimateBrigade.estimates.map((estimateCol) => (
+                          {estimateBrigade.estimates.sort(numericSort).map((estimateCol) => (
                             <tr key={estimateCol.id}>
-                              <td>{estimateCol.service?.name}</td>
+                              <td>
+                                {estimateCol.service?.number != null
+                                  ? `${estimateCol.service.number}. ${
+                                      estimateCol.service?.name ?? ''
+                                    }`
+                                  : estimateCol.service?.name ?? ''}
+                              </td>
                               <td
                                 onClick={() => handleOpenModalUpdatePrice(estimateCol.id)}
                                 style={{ cursor: 'pointer', textAlign: 'center' }}>
@@ -460,14 +509,34 @@ function Estimate(props) {
             <Table bordered className="mt-3">
               <thead>
                 <tr>
-                  <th>Наименование</th>
+                  <th onClick={() => handleSortService('number')}>
+                    {' '}
+                    <div style={{ cursor: 'pointer', display: 'flex' }}>
+                      {' '}
+                      Наименование
+                      <img
+                        style={{
+                          marginLeft: '10px',
+                          width: '24px',
+                          height: '24px',
+                          cursor: 'pointer',
+                        }}
+                        src="../img/sort.png"
+                        alt="icon_sort"
+                      />
+                    </div>
+                  </th>
                   <th>Стоимость</th>
                 </tr>
               </thead>
               <tbody>
-                {services.map((service) => (
+                {services.sort(numericSort).map((service) => (
                   <tr key={service.id}>
-                    <td>{service.name}</td>
+                    <td>
+                      {service?.number != null
+                        ? `${service.number}. ${service?.name ?? ''}`
+                        : service?.name ?? ''}
+                    </td>
                     <td>
                       <input
                         className="estimate__input"
