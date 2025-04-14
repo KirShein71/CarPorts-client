@@ -412,7 +412,7 @@ function ProjectInfoList() {
         setChange={setChange}
       />
       <CreateAntypical
-        projectId={project}
+        projectId={projectId}
         show={modalCreateAntypical}
         setShow={setModalCreateAntypical}
         setChange={setChange}

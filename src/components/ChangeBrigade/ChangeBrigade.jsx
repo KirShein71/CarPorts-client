@@ -365,6 +365,10 @@ function ChangeBrigade() {
                               brigadeDate.dateId === date.id,
                           )
                           .map((brigadeDate) => {
+                            const complaintProjectName = brigadeDate.complaint?.project.name;
+                            const displayedValue = complaintProjectName
+                              ? `*${complaintProjectName}*`
+                              : null;
                             return (
                               <td
                                 style={{
@@ -387,7 +391,7 @@ function ChangeBrigade() {
                                 key={brigadeDate.id}
                                 onClick={() => handleOpenModalEditDelete(brigadeDate.id)}>
                                 {brigadeDate.project?.name ||
-                                  brigadeDate.complaint?.project.name ||
+                                  displayedValue ||
                                   brigadeDate.warranty ||
                                   brigadeDate.weekend ||
                                   brigadeDate.downtime ||
