@@ -29,6 +29,8 @@ import UpdateProjectDetails from '../ProductionList/modal/UpdateProjectDetails';
 import ClosedProject from './modals/ClosedProject';
 import RestoreProject from './modals/RestoreProject';
 import Complaint from './Complaint';
+import CreateAntypical from '../ProductionList/modal/CreateAntypical';
+import ImageModal from '../ProductionList/modal/ImageModal';
 
 import './style.scss';
 
@@ -66,14 +68,19 @@ function ProjectInfoList() {
   const [modalClosedProject, setModalClosedProject] = React.useState(false);
   const [dateFinish, setDateFinish] = React.useState(null);
   const [modalRestoreProject, setModalRestoreProject] = React.useState(false);
+  const [modalCreateAntypical, setModalCreateAntypical] = React.useState(false);
+  const [antypicalImageModal, setAntypicalImageModal] = React.useState(false);
+  const [images, setImages] = React.useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
     getProjectInfo(id).then((data) => setProject(data));
-
-    fetchAllDetails().then((dataDetails) => setNameDetails(dataDetails));
   }, [id, change]);
+
+  React.useEffect(() => {
+    fetchAllDetails().then((data) => setNameDetails(data));
+  }, []);
 
   const HadleCreateAccountModal = (id) => {
     setProject(id);
@@ -191,6 +198,16 @@ function ProjectInfoList() {
 
   const handleToggleText = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleOpenModalCreateAntypical = (project) => {
+    setProjectId(project);
+    setModalCreateAntypical(true);
+  };
+
+  const handleOpenModalAntypicalImage = (images, id) => {
+    setImages(images, id);
+    setAntypicalImageModal(true);
   };
 
   const holidays = [
@@ -393,6 +410,20 @@ function ProjectInfoList() {
         setShow={setModalRestoreProject}
         id={project}
         setChange={setChange}
+      />
+      <CreateAntypical
+        projectId={project}
+        show={modalCreateAntypical}
+        setShow={setModalCreateAntypical}
+        setChange={setChange}
+      />
+      <ImageModal
+        show={antypicalImageModal}
+        images={images}
+        setImages={setImages}
+        setShow={setAntypicalImageModal}
+        setChange={setChange}
+        change={change}
       />
       <div className="header">
         <Link
@@ -708,6 +739,7 @@ function ProjectInfoList() {
                     .map((part) => (
                       <th key={part.id}>{part.name}</th>
                     ))}
+                  <th>Нетиповые</th>
                 </tr>
               </thead>
               <tbody>
@@ -716,7 +748,7 @@ function ProjectInfoList() {
                   {nameDetails
                     .sort((a, b) => a.id - b.id)
                     .map((part) => {
-                      const detailProject = project.extractedDetails.find(
+                      const detailProject = project.extractedDetails?.find(
                         (prop) => prop.detailId === part.id,
                       );
                       const quantity = detailProject ? detailProject.quantity : '';
@@ -733,6 +765,29 @@ function ProjectInfoList() {
                         </td>
                       );
                     })}
+                  <td>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        onClick={() => handleOpenModalCreateAntypical(project.project.id)}
+                        style={{
+                          cursor: 'pointer',
+                          color: 'red',
+                          fontWeight: 600,
+                          paddingRight: '15px',
+                        }}>
+                        +
+                      </div>
+                      <div
+                        onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
+                        className="production__eye">
+                        {project.antypicalDetails?.length > 0 ? (
+                          <img src="../img/eye.png" alt="eye" />
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
               <tbody>
@@ -743,12 +798,13 @@ function ProjectInfoList() {
                   {nameDetails
                     .sort((a, b) => a.id - b.id)
                     .map((part) => {
-                      const detailProject = project.shipmentDetails.find(
+                      const detailProject = project.shipmentDetails?.find(
                         (prop) => prop.detailId === part.id,
                       );
                       const quantity = detailProject ? detailProject.quantity : '';
                       return <td key={part.id}>{quantity}</td>;
                     })}
+                  <td></td>
                 </tr>
               </tbody>
             </Table>

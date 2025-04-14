@@ -40,7 +40,9 @@ function Estimate(props) {
   const [openModalUpdatePaymentSum, setOpenModalUpdatePaymentSum] = React.useState(false);
   const [paymentColId, setPaymentColId] = React.useState(null);
   const [sortOrder, setSortOrder] = React.useState('asc');
+  const [sortOrderServiceName, setSortOrderServiceName] = React.useState('asc');
   const [sortField, setSortField] = React.useState('service.number');
+  const [sortServiceName, setSortServiceName] = React.useState('number');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -240,10 +242,84 @@ function Estimate(props) {
       return value;
     };
 
-    const numA = getValue(a) ?? 0; // Если null/undefined, считаем 0
-    const numB = getValue(b) ?? 0;
+    const compareDecimalNumbers = (a, b) => {
+      // Разбиваем числа на целую и десятичную части
+      const partsA = String(a || 0).split('.');
+      const partsB = String(b || 0).split('.');
 
-    return sortOrder === 'asc' ? numA - numB : numB - numA;
+      // Сравниваем целые части
+      const intA = parseInt(partsA[0], 10);
+      const intB = parseInt(partsB[0], 10);
+      if (intA !== intB) return intA - intB;
+
+      // Если целые части равны, сравниваем десятичные
+      const decimalA = partsA[1] ? parseInt(partsA[1], 10) : 0;
+      const decimalB = partsB[1] ? parseInt(partsB[1], 10) : 0;
+
+      return decimalA - decimalB;
+    };
+
+    const valA = getValue(a);
+    const valB = getValue(b);
+
+    // Если одно из значений null/undefined, помещаем в конец
+    if (valA === null && valB === null) return 0;
+    if (valA === null) return 1;
+    if (valB === null) return -1;
+
+    return sortOrder === 'asc'
+      ? compareDecimalNumbers(valA, valB)
+      : compareDecimalNumbers(valB, valA);
+  };
+
+  const handleSortServiceName = (field) => {
+    if (field === sortServiceName) {
+      setSortOrderServiceName(sortOrderServiceName === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortServiceName(field);
+      setSortOrderServiceName('asc');
+    }
+  };
+
+  const numericSortServiceName = (a, b) => {
+    const getValue = (obj) => {
+      const path = sortServiceName.split('.');
+      let value = obj;
+      for (const key of path) {
+        value = value?.[key];
+        if (value === undefined) return null;
+      }
+      return value;
+    };
+
+    const compareDecimalNumbers = (a, b) => {
+      // Разбиваем числа на целую и десятичную части
+      const partsA = String(a || 0).split('.');
+      const partsB = String(b || 0).split('.');
+
+      // Сравниваем целые части
+      const intA = parseInt(partsA[0], 10);
+      const intB = parseInt(partsB[0], 10);
+      if (intA !== intB) return intA - intB;
+
+      // Если целые части равны, сравниваем десятичные
+      const decimalA = partsA[1] ? parseInt(partsA[1], 10) : 0;
+      const decimalB = partsB[1] ? parseInt(partsB[1], 10) : 0;
+
+      return decimalA - decimalB;
+    };
+
+    const valA = getValue(a);
+    const valB = getValue(b);
+
+    // Если одно из значений null/undefined, помещаем в конец
+    if (valA === null && valB === null) return 0;
+    if (valA === null) return 1;
+    if (valB === null) return -1;
+
+    return sortOrderServiceName === 'asc'
+      ? compareDecimalNumbers(valA, valB)
+      : compareDecimalNumbers(valB, valA);
   };
 
   return (
@@ -509,7 +585,7 @@ function Estimate(props) {
             <Table bordered className="mt-3">
               <thead>
                 <tr>
-                  <th onClick={() => handleSortService('number')}>
+                  <th onClick={() => handleSortServiceName('number')}>
                     {' '}
                     <div style={{ cursor: 'pointer', display: 'flex' }}>
                       {' '}
@@ -530,7 +606,7 @@ function Estimate(props) {
                 </tr>
               </thead>
               <tbody>
-                {services.sort(numericSort).map((service) => (
+                {services.sort(numericSortServiceName).map((service) => (
                   <tr key={service.id}>
                     <td>
                       {service?.number != null

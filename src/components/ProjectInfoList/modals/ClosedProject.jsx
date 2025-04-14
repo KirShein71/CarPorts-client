@@ -4,7 +4,6 @@ import { closedProject, createDateFinish } from '../../../http/projectApi';
 
 function ClosedProject(props) {
   const { show, setShow, id, setChange, dateFinish } = props;
-  console.log(dateFinish);
 
   const handleClosedProject = () => {
     closedProject(id, { finish: 'true' })

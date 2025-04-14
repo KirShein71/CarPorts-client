@@ -90,7 +90,7 @@ const CreateNumberService = (props) => {
       style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
       className="modal__name">
       <Modal.Header closeButton>
-        <Modal.Title>Введите название услуги</Modal.Title>
+        <Modal.Title>Введите номер услуги</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>

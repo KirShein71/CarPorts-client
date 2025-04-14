@@ -73,26 +73,44 @@ function Service() {
             </tr>
           </thead>
           <tbody>
-            {services.map((service) => (
-              <tr key={service.id}>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleOpenCreateServiceNumberModal(service.id)}>
-                  {service.number}
-                </td>
-                <td>{service.name}</td>
-                <td>
-                  <Button variant="dark" onClick={() => handleUpdateService(service.id)}>
-                    Редактировать
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="dark" onClick={() => handleDeleteClick(service.id)}>
-                    Удалить
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {services
+              .slice()
+              .sort((a, b) => {
+                // Разбиваем номера на части (например, "1.10" → ["1", "10"])
+                const partsA = String(a.number || '0').split('.');
+                const partsB = String(b.number || '0').split('.');
+
+                // Сравниваем целые части
+                const intA = parseInt(partsA[0], 10);
+                const intB = parseInt(partsB[0], 10);
+                if (intA !== intB) return intA - intB;
+
+                // Если целые части равны, сравниваем десятичные
+                const decimalA = partsA[1] ? parseInt(partsA[1], 10) : 0;
+                const decimalB = partsB[1] ? parseInt(partsB[1], 10) : 0;
+
+                return decimalA - decimalB;
+              })
+              .map((service) => (
+                <tr key={service.id}>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenCreateServiceNumberModal(service.id)}>
+                    {service.number}
+                  </td>
+                  <td>{service.name}</td>
+                  <td>
+                    <Button variant="dark" onClick={() => handleUpdateService(service.id)}>
+                      Редактировать
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="dark" onClick={() => handleDeleteClick(service.id)}>
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
