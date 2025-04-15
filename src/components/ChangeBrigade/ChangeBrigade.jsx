@@ -449,18 +449,62 @@ function ChangeBrigade() {
                                             dayProject.projectId === dayBrigadeSum.projectId,
                                         )
                                         .map((dayProject) => dayProject.days);
+
                                       return (
                                         <>
                                           <div style={{ whiteSpace: 'nowrap' }}>
                                             Общая:
                                             {new Intl.NumberFormat('ru-RU').format(
-                                              Math.ceil(projectTotal),
+                                              Math.ceil(projectTotal) || '',
                                             )}
                                           </div>
                                           <div style={{ whiteSpace: 'nowrap' }}>
                                             За день:
                                             {new Intl.NumberFormat('ru-RU').format(
-                                              Math.ceil(projectTotal / projectDays),
+                                              Math.ceil(projectTotal / projectDays) || '',
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : dayBrigadeSum.complaint?.complaint_estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const complaintTotal = serviceEstimate
+                                        .filter(
+                                          (estimateForComplaint) =>
+                                            estimateForComplaint.complaintId ===
+                                            dayBrigadeSum.complaintId,
+                                        )
+                                        .flatMap(
+                                          (estimateForComplaint) => estimateForComplaint.estimates,
+                                        )
+                                        .reduce(
+                                          (accumulator, current) =>
+                                            accumulator + Number(current.price), // Суммируем все цены
+                                          0,
+                                        );
+
+                                      const complaintDays = daysProject
+                                        .filter(
+                                          (dayComplaint) =>
+                                            dayComplaint.complaintId === dayBrigadeSum.complaintId,
+                                        )
+                                        .map((dayComplaint) => dayComplaint.days);
+
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(complaintTotal),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(complaintTotal / complaintDays),
                                             )}
                                           </div>
                                         </>
@@ -513,6 +557,7 @@ function ChangeBrigade() {
                                             dayProject.projectId === dayBrigadeSum.projectId,
                                         )
                                         .map((dayProject) => dayProject.days);
+
                                       return (
                                         <>
                                           <div style={{ whiteSpace: 'nowrap' }}>
@@ -525,6 +570,52 @@ function ChangeBrigade() {
                                             За день:
                                             {new Intl.NumberFormat('ru-RU').format(
                                               Math.ceil(projectTotal / projectDays),
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : dayBrigadeSum.complaint &&
+                                  dayBrigadeSum.complaint.complaint_estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const complaintTotal = serviceEstimate
+                                        .filter(
+                                          (estimateForComplaint) =>
+                                            estimateForComplaint.complaintId ===
+                                            dayBrigadeSum.complaintId,
+                                        )
+                                        .flatMap((estimateForComplaint) =>
+                                          estimateForComplaint.estimates.filter(
+                                            (est) => est.done === 'true',
+                                          ),
+                                        )
+                                        .reduce(
+                                          (accumulator, current) =>
+                                            accumulator + Number(current.price),
+                                          0,
+                                        );
+
+                                      const complaintDays = daysProject
+                                        .filter(
+                                          (dayComplaint) =>
+                                            dayComplaint.complaintId === dayBrigadeSum.complaintId,
+                                        )
+                                        .map((dayComplaint) => dayComplaint.days);
+
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(complaintTotal),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(complaintTotal / complaintDays),
                                             )}
                                           </div>
                                         </>
@@ -582,6 +673,45 @@ function ChangeBrigade() {
                                             За день:
                                             {new Intl.NumberFormat('ru-RU').format(
                                               Math.ceil(totalSum / projectDays),
+                                            )}
+                                          </div>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                ) : dayBrigadeSum.complaint &&
+                                  dayBrigadeSum.complaint.complaint_estimates ? (
+                                  <div>
+                                    {(() => {
+                                      const complaintPayments = paymentBrigade.filter(
+                                        (paymentForComplaint) =>
+                                          paymentForComplaint.complaintId ===
+                                          dayBrigadeSum.complaintId,
+                                      );
+
+                                      // Суммируем все значения sum
+                                      const totalSumComplaint = complaintPayments.reduce(
+                                        (acc, paymentForComplaint) => acc + paymentForComplaint.sum,
+                                        0,
+                                      );
+                                      const complaintDays = daysProject
+                                        .filter(
+                                          (dayComplaint) =>
+                                            dayComplaint.complaintId === dayBrigadeSum.complaintId,
+                                        )
+                                        .map((dayComplaint) => dayComplaint.days);
+                                      return (
+                                        <>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            Общая:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(totalSumComplaint),
+                                            )}
+                                          </div>
+                                          <div style={{ whiteSpace: 'nowrap' }}>
+                                            За день:
+                                            {new Intl.NumberFormat('ru-RU').format(
+                                              Math.ceil(totalSumComplaint / complaintDays),
                                             )}
                                           </div>
                                         </>

@@ -48,6 +48,10 @@ function ComplaintEstimate(props) {
   const [modalDeleteColEstimate, setModalDeleteColEstimate] = React.useState(false);
   const [paymentId, setPaymentId] = React.useState(null);
   const [modalDeletePayment, setModalDeletePayment] = React.useState(false);
+  const [sortOrder, setSortOrder] = React.useState('asc');
+  const [sortOrderServiceName, setSortOrderServiceName] = React.useState('asc');
+  const [sortField, setSortField] = React.useState('service.number');
+  const [sortServiceName, setSortServiceName] = React.useState('number');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -203,6 +207,106 @@ function ComplaintEstimate(props) {
     setModalUpdateComplaintPaymentSum(true);
   };
 
+  const handleSortService = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const numericSort = (a, b) => {
+    const getValue = (obj) => {
+      const path = sortField.split('.');
+      let value = obj;
+      for (const key of path) {
+        value = value?.[key];
+        if (value === undefined) return null;
+      }
+      return value;
+    };
+
+    const compareDecimalNumbers = (a, b) => {
+      // Разбиваем числа на целую и десятичную части
+      const partsA = String(a || 0).split('.');
+      const partsB = String(b || 0).split('.');
+
+      // Сравниваем целые части
+      const intA = parseInt(partsA[0], 10);
+      const intB = parseInt(partsB[0], 10);
+      if (intA !== intB) return intA - intB;
+
+      // Если целые части равны, сравниваем десятичные
+      const decimalA = partsA[1] ? parseInt(partsA[1], 10) : 0;
+      const decimalB = partsB[1] ? parseInt(partsB[1], 10) : 0;
+
+      return decimalA - decimalB;
+    };
+
+    const valA = getValue(a);
+    const valB = getValue(b);
+
+    // Если одно из значений null/undefined, помещаем в конец
+    if (valA === null && valB === null) return 0;
+    if (valA === null) return 1;
+    if (valB === null) return -1;
+
+    return sortOrder === 'asc'
+      ? compareDecimalNumbers(valA, valB)
+      : compareDecimalNumbers(valB, valA);
+  };
+
+  const handleSortServiceName = (field) => {
+    if (field === sortServiceName) {
+      setSortOrderServiceName(sortOrderServiceName === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortServiceName(field);
+      setSortOrderServiceName('asc');
+    }
+  };
+
+  const numericSortServiceName = (a, b) => {
+    const getValue = (obj) => {
+      const path = sortServiceName.split('.');
+      let value = obj;
+      for (const key of path) {
+        value = value?.[key];
+        if (value === undefined) return null;
+      }
+      return value;
+    };
+
+    const compareDecimalNumbers = (a, b) => {
+      // Разбиваем числа на целую и десятичную части
+      const partsA = String(a || 0).split('.');
+      const partsB = String(b || 0).split('.');
+
+      // Сравниваем целые части
+      const intA = parseInt(partsA[0], 10);
+      const intB = parseInt(partsB[0], 10);
+      if (intA !== intB) return intA - intB;
+
+      // Если целые части равны, сравниваем десятичные
+      const decimalA = partsA[1] ? parseInt(partsA[1], 10) : 0;
+      const decimalB = partsB[1] ? parseInt(partsB[1], 10) : 0;
+
+      return decimalA - decimalB;
+    };
+
+    const valA = getValue(a);
+    const valB = getValue(b);
+
+    // Если одно из значений null/undefined, помещаем в конец
+    if (valA === null && valB === null) return 0;
+    if (valA === null) return 1;
+    if (valB === null) return -1;
+
+    return sortOrderServiceName === 'asc'
+      ? compareDecimalNumbers(valA, valB)
+      : compareDecimalNumbers(valB, valA);
+  };
+
   return (
     <div className="complaint-estimate">
       <UpdateComplaintEstimatePrice
@@ -313,16 +417,37 @@ function ComplaintEstimate(props) {
                     <Table bordered>
                       <thead>
                         <tr>
-                          <th>Наименование</th>
+                          <th onClick={() => handleSortService('service.number')}>
+                            <div style={{ cursor: 'pointer', display: 'flex' }}>
+                              {' '}
+                              Наименование
+                              <img
+                                style={{
+                                  marginLeft: '10px',
+                                  width: '24px',
+                                  height: '24px',
+                                  cursor: 'pointer',
+                                }}
+                                src="../img/sort.png"
+                                alt="icon_sort"
+                              />
+                            </div>
+                          </th>
                           <th>Стоимость</th>
                           <th>Выполнено</th>
                           <th>Удалить строку</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {estimateBrigade.estimates.map((estimateCol) => (
+                        {estimateBrigade.estimates.sort(numericSort).map((estimateCol) => (
                           <tr key={estimateCol.id}>
-                            <td>{estimateCol.service?.name}</td>
+                            <td>
+                              {estimateCol.service?.number != null
+                                ? `${estimateCol.service.number}. ${
+                                    estimateCol.service?.name ?? ''
+                                  }`
+                                : estimateCol.service?.name ?? ''}
+                            </td>
                             <td
                               onClick={() =>
                                 handleOpenModalUpdateComplaintEstimatePrice(estimateCol.id)
@@ -469,14 +594,33 @@ function ComplaintEstimate(props) {
           <Table bordered className="mt-3">
             <thead>
               <tr>
-                <th>Наименование</th>
+                <th onClick={() => handleSortServiceName('number')}>
+                  <div style={{ cursor: 'pointer', display: 'flex' }}>
+                    {' '}
+                    Наименование
+                    <img
+                      style={{
+                        marginLeft: '10px',
+                        width: '24px',
+                        height: '24px',
+                        cursor: 'pointer',
+                      }}
+                      src="../img/sort.png"
+                      alt="icon_sort"
+                    />
+                  </div>
+                </th>
                 <th>Стоимость</th>
               </tr>
             </thead>
             <tbody>
-              {services.map((service) => (
+              {services.sort(numericSortServiceName).map((service) => (
                 <tr key={service.id}>
-                  <td>{service.name}</td>
+                  <td>
+                    {service?.number != null
+                      ? `${service.number}. ${service?.name ?? ''}`
+                      : service?.name ?? ''}
+                  </td>
                   <td>
                     <input
                       className="estimate__input"
