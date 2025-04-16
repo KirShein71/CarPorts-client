@@ -1,48 +1,103 @@
-
-
-.project-name, .project-sum {
-    height: 40px;
-}
-
-.brigade-name, .brigade-sum {
-   height: 40px;
-}
-
-.project-name {
-    cursor: pointer;
-}
-
-.brigade-name {
-    margin-top: 20px;
-  
-}
-
-.brigade-sum {
-    margin-top: 20px;
-}
-
-
-.distribution__thead {
-    font-size: 18px;
-    color: rgb(7,7,7);
-    font-weight: 700;
-    text-align: center;
-    width: 120px;
-    @media(max-width: 460px) {
-        font-size: 12px;
-        width: 50px;
+.distribution-list {
+    margin-bottom: 45px;
+    &__estimate {
+        margin-top: 80px;
+        border: 2px solid #000000;
+        padding: 20px;
+        @media(max-width: 490px) {
+            margin-top: 50px;
+            padding: 10px;
+        }
+       
+     
+        
     }
-}
 
-.distribution__thead-project {
-    font-size: 18px;
-    color: rgb(7,7,7);
-    font-weight: 700;
-    text-align: center;
-    width: 180px;
-    @media(max-width: 460px) {
-        font-size: 12px;
-        width: 100px;
+    &__projectName {
+        font-size: 25px;
+        font-weight: 500;
+        color: rgb(0,0,0);
+        cursor: pointer;
+        @media(max-width: 490px) {
+            font-size: 20px;
+        }
+    }
+
+    &__table {
+        min-width: 350px;
+    }
+
+    &__firstThead {
+        width: 180px;
+        @media(max-width: 490px) {
+            width: 100px;
+        }
+    }
+
+    &__thead {
+        font-size: 18px;
+        font-weight: 400;
+        font-style: italic;
+        color: #808080;
+        text-align: center;
+        width: 120px;
+        @media(max-width: 490px) {
+            width: 50px;
+            font-size: 16px;
+        }
+       
+    }
+
+    &__brigadeName {
+        font-size: 20px;
+        font-weight: 700;
+        color: rgb(0,0,0);
+        cursor: pointer;
+        @media(max-width: 490px) {
+            font-size: 18px;
+        }
+    }
+
+    &__total {
+        font-size: 17px;
+        font-weight: 700;
+        color: rgb(0,0,0);
+        text-align: center;
+        @media(max-width: 490px) {
+            font-size: 15px;
+        }
+    }
+
+    &__datePayment {
+        font-size: 17px;
+        font-weight: 400;
+        color: rgb(0,0,0);
+        font-style: italic;
+        margin-left: 30px;
+        @media(max-width: 490px) {
+            font-size: 15px;
+            margin-left: 15px;
+        }
+    }
+
+    &__totalPayment {
+        font-size: 16px;
+        font-weight: 400;
+        color: rgb(0,0,0);
+        text-align: center;
+        @media(max-width: 490px) {
+            font-size: 14px;
+        }
+    }
+
+    &__totalBottom {
+        font-size: 21px;
+        font-weight: 400;
+        color: rgb(0,0,0);
+        text-align: center;
+        @media(max-width: 490px) {
+            font-size: 19px;
+        }
     }
 }
 
