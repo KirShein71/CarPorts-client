@@ -31,6 +31,11 @@ import RestoreProject from './modals/RestoreProject';
 import Complaint from './Complaint';
 import CreateAntypical from '../ProductionList/modal/CreateAntypical';
 import ImageModal from '../ProductionList/modal/ImageModal';
+import Production from './Production';
+import UpdateShipmentDetails from '../ShipmentList/modals/updateShipmentDetails';
+import CreateOneShipmentDetail from '../ShipmentList/modals/createOneShipmentDetail';
+import CreateOneDeliveryDetail from '../DeliveryDetails/modals/createOneDeliveryDetail';
+import UpdateDeliveryDetails from '../DeliveryDetails/modals/updateDeliveryDetail';
 
 import './style.scss';
 
@@ -71,6 +76,13 @@ function ProjectInfoList() {
   const [modalCreateAntypical, setModalCreateAntypical] = React.useState(false);
   const [antypicalImageModal, setAntypicalImageModal] = React.useState(false);
   const [images, setImages] = React.useState([]);
+  const [shipmentDetailId, setShipmentDetailId] = React.useState(null);
+  const [shipmentDate, setShipmentDate] = React.useState(null);
+  const [modalCreateOneShipmentDetail, setModalCreateOneShipmentDetail] = React.useState(false);
+  const [modalUpdateShipmentDetail, setModalUpdateShipmentDetail] = React.useState(false);
+  const [deliveryDetailId, setDeliveryDetailId] = React.useState(null);
+  const [modalCreateOneDeliveryDetail, setModalCreateOneDeliveryDetail] = React.useState(false);
+  const [modalUpdateDeliveryDetail, setModalUpdateDeliveryDetail] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -170,6 +182,29 @@ function ProjectInfoList() {
   const handleOpenModalUpdateProjectDetail = (id) => {
     setProjectDetailId(id);
     setModalUpdateProjectDetail(true);
+  };
+
+  const handleOpenModalCreateOneShipmentDetail = (id, project, shipmentDate) => {
+    setDetailId(id);
+    setProjectId(project);
+    setShipmentDate(shipmentDate);
+    setModalCreateOneShipmentDetail(true);
+  };
+
+  const handleOpenModalUpdateShipmentDetail = (id) => {
+    setShipmentDetailId(id);
+    setModalUpdateShipmentDetail(true);
+  };
+
+  const handleOpenModalCreateOneDeliveryDetail = (id, project) => {
+    setDetailId(id);
+    setProjectId(project);
+    setModalCreateOneDeliveryDetail(true);
+  };
+
+  const handleOpenModalUpdateDeliveryDetail = (id) => {
+    setDeliveryDetailId(id);
+    setModalUpdateDeliveryDetail(true);
   };
 
   const handleOpenModalClosedProject = (id, dateFinish) => {
@@ -396,6 +431,33 @@ function ProjectInfoList() {
         projectId={projectId}
         show={modalCreateOneProjectDetail}
         setShow={setModalCreateOneProjectDetail}
+        setChange={setChange}
+      />
+      <UpdateShipmentDetails
+        id={shipmentDetailId}
+        show={modalUpdateShipmentDetail}
+        setShow={setModalUpdateShipmentDetail}
+        setChange={setChange}
+      />
+      <CreateOneShipmentDetail
+        detailId={detailId}
+        projectId={projectId}
+        shipmentDate={shipmentDate}
+        show={modalCreateOneShipmentDetail}
+        setShow={setModalCreateOneShipmentDetail}
+        setChange={setChange}
+      />
+      <UpdateDeliveryDetails
+        id={deliveryDetailId}
+        show={modalUpdateDeliveryDetail}
+        setShow={setModalUpdateDeliveryDetail}
+        setChange={setChange}
+      />
+      <CreateOneDeliveryDetail
+        detailId={detailId}
+        projectId={projectId}
+        show={modalCreateOneDeliveryDetail}
+        setShow={setModalCreateOneDeliveryDetail}
         setChange={setChange}
       />
       <ClosedProject
@@ -729,86 +791,98 @@ function ProjectInfoList() {
           </Table>
         )}
         {activeTab === 'production' && (
-          <div className="table-production">
-            <Table bordered size="md" className="mt-3">
-              <thead>
-                <tr>
-                  <th className="table-production__th">Производство</th>
-                  {nameDetails
-                    .sort((a, b) => a.id - b.id)
-                    .map((part) => (
-                      <th key={part.id}>{part.name}</th>
-                    ))}
-                  <th>Нетиповые</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th className="table-production__th">Заказ</th>
-                  {nameDetails
-                    .sort((a, b) => a.id - b.id)
-                    .map((part) => {
-                      const detailProject = project.extractedDetails?.find(
-                        (prop) => prop.detailId === part.id,
-                      );
-                      const quantity = detailProject ? detailProject.quantity : '';
-                      return (
-                        <td
-                          key={part.id}
-                          onClick={() => {
-                            quantity
-                              ? handleOpenModalUpdateProjectDetail(detailProject.id)
-                              : handleOpenModalCreateOneProjectDetail(part.id, project.project.id);
-                          }}
-                          style={{ cursor: 'pointer' }}>
-                          {quantity}
-                        </td>
-                      );
-                    })}
-                  <td>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <div
-                        onClick={() => handleOpenModalCreateAntypical(project.project.id)}
-                        style={{
-                          cursor: 'pointer',
-                          color: 'red',
-                          fontWeight: 600,
-                          paddingRight: '15px',
-                        }}>
-                        +
-                      </div>
-                      <div
-                        onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
-                        className="production__eye">
-                        {project.antypicalDetails?.length > 0 ? (
-                          <img src="../img/eye.png" alt="eye" />
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-              <tbody>
-                <tr>
-                  <th className="table-production__th">
-                    <div>Отгрузка</div>
-                  </th>
-                  {nameDetails
-                    .sort((a, b) => a.id - b.id)
-                    .map((part) => {
-                      const detailProject = project.shipmentDetails?.find(
-                        (prop) => prop.detailId === part.id,
-                      );
-                      const quantity = detailProject ? detailProject.quantity : '';
-                      return <td key={part.id}>{quantity}</td>;
-                    })}
-                  <td></td>
-                </tr>
-              </tbody>
-            </Table>
-          </div>
+          //   <div className="table-production">
+          //     <Table bordered size="md" className="mt-3">
+          //       <thead>
+          //         <tr>
+          //           <th className="table-production__th">Производство</th>
+          //           {nameDetails
+          //             .sort((a, b) => a.id - b.id)
+          //             .map((part) => (
+          //               <th key={part.id}>{part.name}</th>
+          //             ))}
+          //           <th>Нетиповые</th>
+          //         </tr>
+          //       </thead>
+          //       <tbody>
+          //         <tr>
+          //           <th className="table-production__th">Заказ</th>
+          //           {nameDetails
+          //             .sort((a, b) => a.id - b.id)
+          //             .map((part) => {
+          //               const detailProject = project.extractedDetails?.find(
+          //                 (prop) => prop.detailId === part.id,
+          //               );
+          //               const quantity = detailProject ? detailProject.quantity : '';
+          //               return (
+          //                 <td
+          //                   key={part.id}
+          //                   onClick={() => {
+          //                     quantity
+          //                       ? handleOpenModalUpdateProjectDetail(detailProject.id)
+          //                       : handleOpenModalCreateOneProjectDetail(part.id, project.project.id);
+          //                   }}
+          //                   style={{ cursor: 'pointer' }}>
+          //                   {quantity}
+          //                 </td>
+          //               );
+          //             })}
+          //           <td>
+          //             <div style={{ display: 'flex', justifyContent: 'center' }}>
+          //               <div
+          //                 onClick={() => handleOpenModalCreateAntypical(project.project.id)}
+          //                 style={{
+          //                   cursor: 'pointer',
+          //                   color: 'red',
+          //                   fontWeight: 600,
+          //                   paddingRight: '15px',
+          //                 }}>
+          //                 +
+          //               </div>
+          //               <div
+          //                 onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
+          //                 className="production__eye">
+          //                 {project.antypicalDetails?.length > 0 ? (
+          //                   <img src="../img/eye.png" alt="eye" />
+          //                 ) : (
+          //                   ''
+          //                 )}
+          //               </div>
+          //             </div>
+          //           </td>
+          //         </tr>
+          //       </tbody>
+          //       <tbody>
+          //         <tr>
+          //           <th className="table-production__th">
+          //             <div>Отгрузка</div>
+          //           </th>
+          //           {nameDetails
+          //             .sort((a, b) => a.id - b.id)
+          //             .map((part) => {
+          //               const detailProject = project.shipmentDetails?.find(
+          //                 (prop) => prop.detailId === part.id,
+          //               );
+          //               const quantity = detailProject ? detailProject.quantity : '';
+          //               return <td key={part.id}>{quantity}</td>;
+          //             })}
+          //           <td></td>
+          //         </tr>
+          //       </tbody>
+          //     </Table>
+          //   </div>
+          <Production
+            nameDetails={nameDetails}
+            project={project}
+            handleOpenModalUpdateProjectDetail={handleOpenModalUpdateProjectDetail}
+            handleOpenModalCreateOneProjectDetail={handleOpenModalCreateOneProjectDetail}
+            handleOpenModalCreateOneShipmentDetail={handleOpenModalCreateOneShipmentDetail}
+            handleOpenModalUpdateShipmentDetail={handleOpenModalUpdateShipmentDetail}
+            handleOpenModalCreateAntypical={handleOpenModalCreateAntypical}
+            handleOpenModalAntypicalImage={handleOpenModalAntypicalImage}
+            handleOpenModalCreateOneDeliveryDetail={handleOpenModalCreateOneDeliveryDetail}
+            handleOpenModalUpdateDeliveryDetail={handleOpenModalUpdateDeliveryDetail}
+          />
         )}
         {activeTab === 'brigade' && (
           <div className="brigade">
