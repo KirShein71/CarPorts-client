@@ -3,6 +3,8 @@ import CreateBrigade from './modals/CreateBrigade';
 import UpdateBridage from './modals/UpdateBrigade';
 import CreateRegionBrigade from './modals/CreateRegionBrigade';
 import CreatePasswordBrigade from './modals/CreatePasswordBrigade';
+import UpdateBrigadePhone from './modals/UpdateBrigadePhone';
+import UpdateBrigadeName from './modals/UpdateBrigadeName';
 import { Table, Button } from 'react-bootstrap';
 import { fetchBrigades, deleteBrigade } from '../../http/bragadeApi';
 
@@ -13,6 +15,8 @@ function Brigade() {
   const [brigadeUpdateModal, setBrigadeUpdateModal] = React.useState(false);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
   const [createPasswordModal, setCreatePasswordModal] = React.useState(false);
+  const [updateBrigadePhoneModal, setUpdateBrigadePhoneModal] = React.useState(false);
+  const [updateBrigadeNameModal, setUpdateBrigadeNameModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
@@ -36,6 +40,16 @@ function Brigade() {
     setBrigadeUpdateModal(true);
   };
 
+  const handleUpdateBrigadeName = (id) => {
+    setBrigade(id);
+    setUpdateBrigadeNameModal(true);
+  };
+
+  const handleUpdateBrigadePhone = (id) => {
+    setBrigade(id);
+    setUpdateBrigadePhoneModal(true);
+  };
+
   const hadleCreateRegionBrigade = (id) => {
     setBrigade(id);
     setCreateRegionModal(true);
@@ -53,6 +67,18 @@ function Brigade() {
       <UpdateBridage
         show={brigadeUpdateModal}
         setShow={setBrigadeUpdateModal}
+        id={brigade}
+        setChange={setChange}
+      />
+      <UpdateBrigadeName
+        show={updateBrigadeNameModal}
+        setShow={setUpdateBrigadeNameModal}
+        id={brigade}
+        setChange={setChange}
+      />
+      <UpdateBrigadePhone
+        show={updateBrigadePhoneModal}
+        setShow={setUpdateBrigadePhoneModal}
         id={brigade}
         setChange={setChange}
       />
@@ -87,8 +113,16 @@ function Brigade() {
               .sort((a, b) => a.id - b.id)
               .map((brigade) => (
                 <tr key={brigade.id}>
-                  <td>{brigade.name}</td>
-                  <td>{brigade?.phone}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleUpdateBrigadeName(brigade.id)}>
+                    {brigade.name}
+                  </td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleUpdateBrigadePhone(brigade.id)}>
+                    {brigade?.phone}
+                  </td>
                   <td
                     style={{ cursor: 'pointer' }}
                     onClick={() => hadleCreateRegionBrigade(brigade.id)}>
