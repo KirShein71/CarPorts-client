@@ -376,7 +376,7 @@ function Estimate(props) {
                           <tr>
                             <th></th>
                             <th style={{ textAlign: 'center' }}>Общая сумма</th>
-                            <th style={{ textAlign: 'center' }}>Сумма выполенных работ</th>
+                            <th style={{ textAlign: 'center' }}>Сумма выполненных работ</th>
                             <th style={{ textAlign: 'center' }}>Выплаты</th>
                           </tr>
                         </thead>
