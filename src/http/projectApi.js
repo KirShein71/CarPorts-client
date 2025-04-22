@@ -95,6 +95,21 @@ export const updateNote = async (id, project) => {
     return data
 }
 
+export const updateDesignPeriod = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateDesignPeriod/${id}`, project)
+    return data
+}
+
+export const updateExpirationDate = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateExpirationDate/${id}`, project)
+    return data
+}
+
+export const updateInstallationPeriod = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateInstallationPeriod/${id}`, project)
+    return data
+}
+
 export const fetchOneProject = async (id) => {
     const { data } = await guestInstance.get(`project/getone/${id}`)
     return data

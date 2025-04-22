@@ -36,6 +36,9 @@ import UpdateShipmentDetails from '../ShipmentList/modals/updateShipmentDetails'
 import CreateOneShipmentDetail from '../ShipmentList/modals/createOneShipmentDetail';
 import CreateOneDeliveryDetail from '../DeliveryDetails/modals/createOneDeliveryDetail';
 import UpdateDeliveryDetails from '../DeliveryDetails/modals/updateDeliveryDetail';
+import UpdateDesignPeriod from './modals/UpdateDesignPeriod';
+import UpdateExpirationDate from './modals/UpdateExpirationDate';
+import UpdateInstallationDate from './modals/UpdateInstallationDate';
 
 import './style.scss';
 
@@ -83,6 +86,9 @@ function ProjectInfoList() {
   const [deliveryDetailId, setDeliveryDetailId] = React.useState(null);
   const [modalCreateOneDeliveryDetail, setModalCreateOneDeliveryDetail] = React.useState(false);
   const [modalUpdateDeliveryDetail, setModalUpdateDeliveryDetail] = React.useState(false);
+  const [modalUpdateDesignPeriod, setModalUpdateDesignPeriod] = React.useState(false);
+  const [modalUpdateExpirationDate, setModalUpdateExpirationDate] = React.useState(false);
+  const [modalUpdateInstallationDate, setModalUpdateInstallationDate] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -109,7 +115,7 @@ function ProjectInfoList() {
   };
 
   const hadleUpdateNote = (id) => {
-    setProject(id);
+    setProjectId(id);
     setUpdateNoteModal(true);
   };
 
@@ -216,6 +222,21 @@ function ProjectInfoList() {
   const handleOpenModalRestoreProject = (id) => {
     setModalRestoreProject(true);
     setProject(id);
+  };
+
+  const handleOpenModalUpdateDesignPeriod = (id) => {
+    setProjectId(id);
+    setModalUpdateDesignPeriod(true);
+  };
+
+  const handleOpenModalUpdateExpirationDate = (id) => {
+    setProjectId(id);
+    setModalUpdateExpirationDate(true);
+  };
+
+  const handleOpenModalUpdateInstallationDate = (id) => {
+    setProjectId(id);
+    setModalUpdateInstallationDate(true);
   };
 
   const handleDeleteProjectBrigades = (id) => {
@@ -335,7 +356,7 @@ function ProjectInfoList() {
         setChange={setChange}
       />
       <UpdateNote
-        id={id}
+        id={projectId}
         show={updateNoteModal}
         setShow={setUpdateNoteModal}
         setChange={setChange}
@@ -487,6 +508,24 @@ function ProjectInfoList() {
         setChange={setChange}
         change={change}
       />
+      <UpdateDesignPeriod
+        id={projectId}
+        show={modalUpdateDesignPeriod}
+        setShow={setModalUpdateDesignPeriod}
+        setChange={setChange}
+      />
+      <UpdateExpirationDate
+        id={projectId}
+        show={modalUpdateExpirationDate}
+        setShow={setModalUpdateExpirationDate}
+        setChange={setChange}
+      />
+      <UpdateInstallationDate
+        id={projectId}
+        show={modalUpdateInstallationDate}
+        setShow={setModalUpdateInstallationDate}
+        setChange={setChange}
+      />
       <div className="header">
         <Link
           to={
@@ -607,7 +646,11 @@ function ProjectInfoList() {
               <tbody>
                 <tr>
                   <td>Проектирование</td>
-                  <td>{project.project && project.project.design_period}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenModalUpdateDesignPeriod(project.project.id)}>
+                    {project.project && project.project.design_period}
+                  </td>
                   <td>
                     {(() => {
                       const agreementDate = new Date(
@@ -625,7 +668,11 @@ function ProjectInfoList() {
               <tbody>
                 <tr>
                   <td>Производство</td>
-                  <td>{project.project && project.project.expiration_date}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenModalUpdateExpirationDate(project.project.id)}>
+                    {project.project && project.project.expiration_date}
+                  </td>
                   <td>
                     {(() => {
                       const agreementDate = new Date(
@@ -647,7 +694,11 @@ function ProjectInfoList() {
               <tbody>
                 <tr>
                   <td>Монтажные работы</td>
-                  <td>{project.project && project.project.installation_period}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenModalUpdateInstallationDate(project.project.id)}>
+                    {project.project && project.project.installation_period}
+                  </td>
                   <td>
                     {(() => {
                       const agreementDate = new Date(
@@ -791,86 +842,6 @@ function ProjectInfoList() {
           </Table>
         )}
         {activeTab === 'production' && (
-          //   <div className="table-production">
-          //     <Table bordered size="md" className="mt-3">
-          //       <thead>
-          //         <tr>
-          //           <th className="table-production__th">Производство</th>
-          //           {nameDetails
-          //             .sort((a, b) => a.id - b.id)
-          //             .map((part) => (
-          //               <th key={part.id}>{part.name}</th>
-          //             ))}
-          //           <th>Нетиповые</th>
-          //         </tr>
-          //       </thead>
-          //       <tbody>
-          //         <tr>
-          //           <th className="table-production__th">Заказ</th>
-          //           {nameDetails
-          //             .sort((a, b) => a.id - b.id)
-          //             .map((part) => {
-          //               const detailProject = project.extractedDetails?.find(
-          //                 (prop) => prop.detailId === part.id,
-          //               );
-          //               const quantity = detailProject ? detailProject.quantity : '';
-          //               return (
-          //                 <td
-          //                   key={part.id}
-          //                   onClick={() => {
-          //                     quantity
-          //                       ? handleOpenModalUpdateProjectDetail(detailProject.id)
-          //                       : handleOpenModalCreateOneProjectDetail(part.id, project.project.id);
-          //                   }}
-          //                   style={{ cursor: 'pointer' }}>
-          //                   {quantity}
-          //                 </td>
-          //               );
-          //             })}
-          //           <td>
-          //             <div style={{ display: 'flex', justifyContent: 'center' }}>
-          //               <div
-          //                 onClick={() => handleOpenModalCreateAntypical(project.project.id)}
-          //                 style={{
-          //                   cursor: 'pointer',
-          //                   color: 'red',
-          //                   fontWeight: 600,
-          //                   paddingRight: '15px',
-          //                 }}>
-          //                 +
-          //               </div>
-          //               <div
-          //                 onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
-          //                 className="production__eye">
-          //                 {project.antypicalDetails?.length > 0 ? (
-          //                   <img src="../img/eye.png" alt="eye" />
-          //                 ) : (
-          //                   ''
-          //                 )}
-          //               </div>
-          //             </div>
-          //           </td>
-          //         </tr>
-          //       </tbody>
-          //       <tbody>
-          //         <tr>
-          //           <th className="table-production__th">
-          //             <div>Отгрузка</div>
-          //           </th>
-          //           {nameDetails
-          //             .sort((a, b) => a.id - b.id)
-          //             .map((part) => {
-          //               const detailProject = project.shipmentDetails?.find(
-          //                 (prop) => prop.detailId === part.id,
-          //               );
-          //               const quantity = detailProject ? detailProject.quantity : '';
-          //               return <td key={part.id}>{quantity}</td>;
-          //             })}
-          //           <td></td>
-          //         </tr>
-          //       </tbody>
-          //     </Table>
-          //   </div>
           <Production
             nameDetails={nameDetails}
             project={project}
