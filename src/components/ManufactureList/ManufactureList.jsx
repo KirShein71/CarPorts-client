@@ -110,7 +110,7 @@ function ManufactureList() {
             {sumShipmentDetail.map((sumShipment) => (
               <tr key={sumShipment.id}>
                 <td></td>
-                <td className="manufacture_td">Отгружено (Иван)</td>
+                <td className="manufacture_td">В покраску (Иван)</td>
                 {nameDetails
                   .sort((a, b) => a.id - b.id)
                   .map((part) => (

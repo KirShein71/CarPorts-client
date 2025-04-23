@@ -5,12 +5,18 @@ import { Link } from 'react-router-dom';
 import { fetchAllProjectDetails, deleteProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
+import { fetchAllDeliveryDetails } from '../../http/deliveryDetailsApi';
 import UpdateProjectDetails from './modal/UpdateProjectDetails';
 import CreateOneProjectDetail from './modal/CreateOneProjectDetail';
-import './styles.scss';
 import CreateAntypical from './modal/CreateAntypical';
 import ImageModal from './modal/ImageModal';
 import { AppContext } from '../../context/AppContext';
+import UpdateShipmentDetails from '../ShipmentList/modals/updateShipmentDetails';
+import CreateOneShipmentDetail from '../ShipmentList/modals/createOneShipmentDetail';
+import UpdateDeliveryDetail from '../DeliveryDetails/modals/updateDeliveryDetail';
+import CreateOneDeliveryDetail from '../DeliveryDetails/modals/createOneDeliveryDetail';
+
+import './styles.scss';
 
 function ProductionList() {
   const { user } = React.useContext(AppContext);
@@ -28,9 +34,18 @@ function ProductionList() {
   const [change, setChange] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
+  const [deliveryDetails, setDeliveryDetails] = React.useState([]);
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [modalUpdateShimpentDetails, setModalUpdateShimpentDetails] = React.useState(false);
+  const [modalCreateOneShipmentDetails, setModalCreateOneShipmentDetails] = React.useState(false);
+  const [shipmentDetail, setShipmentDetail] = React.useState(null);
+  const [shipmentDate, setShipmentDate] = React.useState(null);
+  const [modalUpdateDeliveryDetails, setModalUpdateDeliveryDetails] = React.useState(false);
+  const [modalCreateOneDeliveryDetails, setModalCreateOneDeliveryDetails] = React.useState(false);
+  const [deliveryDetail, setDeliveryDetail] = React.useState(null);
+  const [hoveredColumn, setHoveredColumn] = React.useState(null);
 
   React.useEffect(() => {
     fetchAllProjectDetails().then((data) => {
@@ -38,6 +53,9 @@ function ProductionList() {
     });
     fetchAllShipmentDetails()
       .then((data) => setShipmentDetails(data))
+      .finally(() => setFetching(false));
+    fetchAllDeliveryDetails()
+      .then((data) => setDeliveryDetails(data))
       .finally(() => setFetching(false));
   }, [change]);
 
@@ -118,6 +136,30 @@ function ProductionList() {
     setSearchQuery(event.target.value);
   };
 
+  const handleOpenModalUpdateShipmentDetails = (id) => {
+    setShipmentDetail(id);
+    setModalUpdateShimpentDetails(true);
+  };
+
+  const handleOpenModalCreateOneShipmentDetail = (detailId, project, shipmentDate) => {
+    setDetailId(detailId);
+    setProject(project);
+    setShipmentDate(shipmentDate);
+    setModalCreateOneShipmentDetails(true);
+  };
+
+  const handleOpenModalUpdateDeliveryDetails = (id) => {
+    setDeliveryDetail(id);
+    setModalUpdateDeliveryDetails(true);
+  };
+
+  const handleOpenModalCreateOneDeliveryDetail = (detailId, project) => {
+    setDetailId(detailId);
+    setProject(project);
+
+    setModalCreateOneDeliveryDetails(true);
+  };
+
   const handleDeleteProjectDetails = (projectId) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить?');
     if (confirmed) {
@@ -185,6 +227,33 @@ function ProductionList() {
         setShow={setCreateOneDetailModal}
         setChange={setChange}
       />
+      <CreateOneShipmentDetail
+        detailId={detailId}
+        projectId={project}
+        shipmentDate={shipmentDate}
+        show={modalCreateOneShipmentDetails}
+        setShow={setModalCreateOneShipmentDetails}
+        setChange={setChange}
+      />
+      <UpdateShipmentDetails
+        id={shipmentDetail}
+        show={modalUpdateShimpentDetails}
+        setShow={setModalUpdateShimpentDetails}
+        setChange={setChange}
+      />
+      <CreateOneDeliveryDetail
+        detailId={detailId}
+        projectId={project}
+        show={modalCreateOneDeliveryDetails}
+        setShow={setModalCreateOneDeliveryDetails}
+        setChange={setChange}
+      />
+      <UpdateDeliveryDetail
+        id={deliveryDetail}
+        show={modalUpdateDeliveryDetails}
+        setShow={setModalUpdateDeliveryDetails}
+        setChange={setChange}
+      />
       <CreateAntypical
         projectId={project}
         show={createAntypical}
@@ -201,142 +270,269 @@ function ProductionList() {
       />
       <div className="production-table-container">
         <div className="production-table-wrapper">
-          <Table bordered size="md">
-            <thead>
+          <Table bordered size="md" className="production-table">
+            <thead className="production-table__thead">
               <tr>
-                <th className="production-th">Номер проекта</th>
+                <th className="production-th stat">Номер проекта</th>
                 <th className="production-th mobile">Проект</th>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
-                    <th className="production-th" key={part.id}>
+                    <th
+                      className="production-th"
+                      key={part.id}
+                      onMouseEnter={() => setHoveredColumn(part.id)}
+                      onMouseLeave={() => setHoveredColumn(null)}
+                      style={{
+                        backgroundColor: hoveredColumn === part.id ? '#d6d4d4' : '#ffffff',
+                      }}>
                       {part.name}
                     </th>
                   ))}
-                <th className="production-th">Нетиповые</th>
-                <th className="production-th"></th>
+                <th className="production-th stat">Нетиповые</th>
+                <th className="production-th stat"></th>
               </tr>
             </thead>
-            {filteredProjects.map((projectDetail) => {
+
+            {filteredProjects.map((projectDetail, index) => {
               const correspondingShipment = shipmentDetails.find(
                 (shipment) => shipment.projectId === projectDetail.projectId,
               );
-              return (
-                <tbody key={projectDetail.id}>
-                  <tr style={correspondingShipment ? { borderBottomColor: '#ffff' } : {}}>
-                    <td
-                      style={{
-                        color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                      }}>
-                      {projectDetail.project ? projectDetail.project.number : ''}
-                    </td>
-                    <td
-                      style={{
-                        color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                      }}
-                      className="production__td mobile">
-                      {projectDetail.project ? projectDetail.project.name : ''}
-                    </td>
-                    {nameDetails
-                      .sort((a, b) => a.id - b.id)
-                      .map((part) => {
-                        const detailProject = projectDetail.props.find(
-                          (prop) => prop.detailId === part.id,
-                        );
 
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        return (
-                          <td
-                            key={part.id}
-                            style={{
-                              cursor: 'pointer',
-                              color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                            }}
-                            onClick={
-                              user.isManagerProduction
-                                ? undefined
-                                : () =>
-                                    quantity
-                                      ? handleUpdateProjectDetailClick(detailProject.id)
-                                      : handleCreateOneDetail(part.id, projectDetail.projectId)
-                            }>
-                            {quantity}
-                          </td>
-                        );
-                      })}
-                    <td>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <div
-                          onClick={
-                            user.isManagerProduction
-                              ? undefined
-                              : () => handleCreateAntypical(projectDetail.projectId)
-                          }
-                          style={{
-                            cursor: 'pointer',
-                            color: 'red',
-                            fontWeight: 600,
-                            paddingRight: '15px',
-                          }}>
-                          +
-                        </div>
-                        <div
-                          onClick={() => handleOpenImage(projectDetail.antypical)}
-                          className="production__eye">
-                          {projectDetail.antypical.length > 0 ? (
-                            <img src="./img/eye.png" alt="eye" />
-                          ) : (
-                            ''
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <Button
-                        variant="dark"
-                        size="sm"
-                        onClick={
-                          user.isManagerProduction
-                            ? undefined
-                            : () => handleDeleteProjectDetails(projectDetail.projectId)
-                        }>
-                        Удалить
-                      </Button>
-                    </td>
-                  </tr>
-                  {correspondingShipment && (
-                    <tr>
-                      <td></td>
+              const correspondingDelivery = deliveryDetails.find(
+                (delivery) => delivery.projectId === projectDetail.projectId,
+              );
+
+              return (
+                <React.Fragment key={projectDetail.id}>
+                  <tbody className="production-table__tbody">
+                    <tr
+                      className="production-table__row"
+                      style={correspondingDelivery ? { borderBottomColor: '#ffff' } : {}}>
+                      <td
+                        style={{
+                          color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
+                        }}>
+                        {projectDetail.project ? projectDetail.project.number : ''}
+                      </td>
                       <td
                         style={{
                           color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                         }}
-                        className="production__td production">
-                        Отгрузка
+                        className="production__td mobile">
+                        {projectDetail.project ? projectDetail.project.name : ''}
                       </td>
+
                       {nameDetails
-                        .sort((a, b) => a.id - b.id)
+                        .sort((a, b) => a.number - b.number)
                         .map((part) => {
-                          const detail = correspondingShipment.props.find(
-                            (el) => el.detailId === part.id,
+                          const detailProject = projectDetail.props.find(
+                            (prop) => prop.detailId === part.id,
                           );
-                          const quantity = detail ? detail.shipment_quantity : '';
+                          const quantity = detailProject ? detailProject.quantity : '';
+
                           return (
                             <td
+                              key={part.id}
+                              className="production-detail"
+                              onMouseEnter={() => setHoveredColumn(part.id)}
+                              onMouseLeave={() => setHoveredColumn(null)}
                               style={{
+                                cursor: 'pointer',
                                 color:
                                   projectDetail.project.finish === 'true' ? '#808080' : 'black',
+                                backgroundColor:
+                                  hoveredColumn === part.id ? '#d6d4d4' : 'transparent',
                               }}
-                              key={part.id}>
+                              onClick={() =>
+                                quantity
+                                  ? handleUpdateProjectDetailClick(detailProject.id)
+                                  : handleCreateOneDetail(part.id, projectDetail.projectId)
+                              }>
                               {quantity}
                             </td>
                           );
                         })}
-                      <td></td>
+
+                      <td className="production-actions">
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <div
+                            onClick={() => handleCreateAntypical(projectDetail.projectId)}
+                            style={{
+                              cursor: 'pointer',
+                              color: 'red',
+                              fontWeight: 600,
+                              paddingRight: '15px',
+                            }}>
+                            +
+                          </div>
+                          <div
+                            onClick={() => handleOpenImage(projectDetail.antypical)}
+                            className="production__eye">
+                            {projectDetail.antypical.length > 0 ? (
+                              <img src="./img/eye.png" alt="eye" />
+                            ) : (
+                              ''
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="production-delete">
+                        <Button
+                          variant="dark"
+                          size="sm"
+                          onClick={
+                            user.isManagerProduction
+                              ? undefined
+                              : () => handleDeleteProjectDetails(projectDetail.projectId)
+                          }>
+                          Удалить
+                        </Button>
+                      </td>
+                    </tr>
+
+                    {correspondingShipment && (
+                      <tr className="production-table__row">
+                        <td></td>
+                        <td
+                          style={{
+                            color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
+                          }}
+                          className="production__td mobile"></td>
+
+                        {nameDetails
+                          .sort((a, b) => a.number - b.number)
+                          .map((part) => {
+                            const detail = correspondingShipment.props.find(
+                              (el) => el.detailId === part.id,
+                            );
+                            const quantity = detail ? detail.shipment_quantity : '';
+
+                            const detailProject = projectDetail.props.find(
+                              (prop) => prop.detailId === part.id,
+                            );
+                            const quantityDetail = detailProject ? detailProject.quantity : '';
+
+                            return (
+                              <td
+                                className="production-detailShipment"
+                                onMouseEnter={() => setHoveredColumn(part.id)}
+                                onMouseLeave={() => setHoveredColumn(null)}
+                                style={{
+                                  color:
+                                    projectDetail.project.finish === 'true'
+                                      ? '#808080'
+                                      : quantityDetail > quantity
+                                      ? '#f12c4d'
+                                      : '#808080',
+                                  backgroundColor:
+                                    hoveredColumn === part.id
+                                      ? '#d6d4d4'
+                                      : quantity
+                                      ? quantityDetail > quantity
+                                        ? '#ffc0cb'
+                                        : 'transparent'
+                                      : 'transparent',
+                                }}
+                                key={part.id}
+                                onClick={() =>
+                                  quantity
+                                    ? handleOpenModalUpdateShipmentDetails(detail.id)
+                                    : handleOpenModalCreateOneShipmentDetail(
+                                        part.id,
+                                        correspondingShipment.projectId,
+                                        correspondingShipment.shipment_date,
+                                      )
+                                }>
+                                {quantity}
+                              </td>
+                            );
+                          })}
+
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    )}
+
+                    {correspondingDelivery && (
+                      <tr className="production-table__row">
+                        <td></td>
+                        <td
+                          style={{
+                            color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
+                          }}
+                          className="production__td mobile"></td>
+
+                        {nameDetails
+                          .sort((a, b) => a.number - b.number)
+                          .map((part) => {
+                            const detail = correspondingDelivery.props.find(
+                              (el) => el.detailId === part.id,
+                            );
+                            const quantity = detail ? detail.delivery_quantity : '';
+
+                            const detailProject = projectDetail.props.find(
+                              (prop) => prop.detailId === part.id,
+                            );
+                            const quantityDetail = detailProject ? detailProject.quantity : '';
+
+                            return (
+                              <td
+                                className="production-detailDelivery"
+                                onMouseEnter={() => setHoveredColumn(part.id)}
+                                onMouseLeave={() => setHoveredColumn(null)}
+                                style={{
+                                  color:
+                                    projectDetail.project.finish === 'true'
+                                      ? '#808080'
+                                      : quantityDetail > quantity
+                                      ? '#f12c4d'
+                                      : '#000000',
+                                  backgroundColor:
+                                    hoveredColumn === part.id
+                                      ? '#d6d4d4'
+                                      : quantity
+                                      ? quantityDetail > quantity
+                                        ? '#ffc0cb'
+                                        : 'transparent'
+                                      : 'transparent',
+                                }}
+                                key={part.id}
+                                onClick={() =>
+                                  quantity
+                                    ? handleOpenModalUpdateDeliveryDetails(detail.id)
+                                    : handleOpenModalCreateOneDeliveryDetail(
+                                        part.id,
+                                        correspondingDelivery.projectId,
+                                      )
+                                }>
+                                {quantity}
+                              </td>
+                            );
+                          })}
+
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    )}
+                  </tbody>
+                  <tbody style={{ borderColor: 'transparent' }}>
+                    <tr>
                       <td></td>
                     </tr>
-                  )}
-                </tbody>
+                  </tbody>
+                  <tbody style={{ borderColor: 'transparent' }}>
+                    <tr>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                  <tbody style={{ borderColor: 'transparent' }}>
+                    <tr>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </React.Fragment>
               );
             })}
           </Table>

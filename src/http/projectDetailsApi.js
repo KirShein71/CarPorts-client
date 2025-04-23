@@ -15,6 +15,11 @@ export const createProjectDetails = async (projectdetails) => {
     return data
 }
 
+export const addToProduction = async (projectdetails) => {
+    const { data } = await authInstance.post(`projectdetails/addToProduction`, projectdetails)
+    return data
+}
+
 export const fetchOneProjectDetails = async (id) => {
     const { data } = await guestInstance.get(`projectdetails/getone/${id}`)
     return data

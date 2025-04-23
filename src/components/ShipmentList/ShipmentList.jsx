@@ -28,8 +28,6 @@ function ShipmentList() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
 
-  console.log(createOneShipmentDetailModal);
-
   React.useEffect(() => {
     fetchAllShipmentDetails()
       .then((data) => {
@@ -107,7 +105,7 @@ function ShipmentList() {
   };
 
   const detailSums = nameDetails
-    .sort((a, b) => a.id - b.id)
+    .sort((a, b) => a.number - b.number)
     .map((part) => {
       let sum = 0;
       shipmentDetails.forEach((shipment) => {
@@ -151,7 +149,7 @@ function ShipmentList() {
   }
   return (
     <div className="shipmentlist">
-      <Header title={'Отгрузка деталей'} />
+      <Header title={'Детали в покраску'} />
       <div style={{ display: 'flex' }}>
         <Link to="/shipmentchange">
           <button className="button__shipment">Внести данные</button>
@@ -198,7 +196,7 @@ function ShipmentList() {
             <tr>
               <th>Сумма</th>
               <th className="shipment-th mobile"></th>
-              <th></th>
+              {/* <th></th> */}
               {detailSums.map((sum, index) => (
                 <th key={index}>{sum}</th>
               ))}
@@ -209,16 +207,16 @@ function ShipmentList() {
             <tr>
               <th>Номер проекта</th>
               <th className="shipment-th mobile">Название проекта</th>
-              <th
+              {/* <th
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   handleSort('shipment_date');
                 }}>
                 Отметка времени{' '}
                 <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
-              </th>
+              </th> */}
               {nameDetails
-                .sort((a, b) => a.id - b.id)
+                .sort((a, b) => a.number - b.number)
                 .map((part) => (
                   <th key={part.id}>{part.name}</th>
                 ))}
@@ -248,11 +246,11 @@ function ShipmentList() {
                   <td className="shipment-td mobile">
                     {shipment.project ? shipment.project.name : ''}
                   </td>
-                  <td>
+                  {/* <td>
                     <Moment format="DD.MM.YYYY">{shipment.shipment_date}</Moment>
-                  </td>
+                  </td> */}
                   {nameDetails
-                    .sort((a, b) => a.id - b.id)
+                    .sort((a, b) => a.number - b.number)
                     .map((part) => {
                       const detail = shipment.props.find((el) => el.detailId === part.id);
                       const quantity = detail ? detail.shipment_quantity : '';

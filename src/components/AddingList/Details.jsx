@@ -2,6 +2,7 @@ import React from 'react';
 import CreateDetail from './modals/CreateDetail';
 import UpdateDetail from './modals/UpdateDetail';
 import CreatePriceDetail from './modals/CreatePriceDetail';
+import CreateNumberDetail from './modals/CreateNumberDetail';
 import { Table, Button, Spinner } from 'react-bootstrap';
 import { fetchAllDetails, deleteDetail } from '../../http/detailsApi';
 
@@ -11,6 +12,7 @@ function Details() {
   const [detailModal, setDetailModal] = React.useState(false);
   const [updateDeatialModal, setUpdateDetailModal] = React.useState(null);
   const [createPriceModal, setCreatePriceModal] = React.useState(false);
+  const [createNumberModal, setCreateNumberModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [fetching, setFetching] = React.useState(true);
 
@@ -42,6 +44,11 @@ function Details() {
     setUpdateDetailModal(true);
   };
 
+  const handleOpenCreateNumberModal = (id) => {
+    setDetail(id);
+    setCreateNumberModal(true);
+  };
+
   if (fetching) {
     return <Spinner />;
   }
@@ -62,6 +69,12 @@ function Details() {
         setChange={setChange}
         id={detail}
       />
+      <CreateNumberDetail
+        show={createNumberModal}
+        setShow={setCreateNumberModal}
+        setChange={setChange}
+        id={detail}
+      />
       <Button variant="dark" onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
@@ -69,6 +82,7 @@ function Details() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
+              <th>Номер</th>
               <th>Название детали</th>
               <th>Себестоимость</th>
               <th></th>
@@ -77,9 +91,14 @@ function Details() {
           </thead>
           <tbody>
             {details
-              .sort((a, b) => a.id - b.id)
+              .sort((a, b) => a.number - b.number)
               .map((detail) => (
                 <tr key={detail.id}>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenCreateNumberModal(detail.id)}>
+                    {detail.number}
+                  </td>
                   <td>{detail.name}</td>
                   <td onClick={() => handleCreatePrice(detail.id)}>
                     {detail.price ? (

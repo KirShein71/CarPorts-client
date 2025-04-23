@@ -37,7 +37,7 @@ function Production(props) {
         </thead>
         <tbody>
           {filteredDetails
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => a.number - b.number)
             .map((part) => {
               const detailProject = project.extractedDetails?.find(
                 (prop) => prop.detailId === part.id,
@@ -153,85 +153,3 @@ function Production(props) {
 }
 
 export default Production;
-
-{
-  /* <thead>
-<tr>
-  <th className="table-production__th">Производство</th>
-  {nameDetails
-    .sort((a, b) => a.id - b.id)
-    .map((part) => (
-      <th key={part.id}>{part.name}</th>
-    ))}
-  <th>Нетиповые</th>
-</tr>
-</thead> */
-}
-
-{
-  /* <tbody>
-          <tr>
-            <th className="table-production__th">Заказ</th>
-            {nameDetails
-              .sort((a, b) => a.id - b.id)
-              .map((part) => {
-                const detailProject = project.extractedDetails?.find(
-                  (prop) => prop.detailId === part.id,
-                );
-                const quantity = detailProject ? detailProject.quantity : '';
-                return (
-                  <td
-                    key={part.id}
-                    onClick={() => {
-                      quantity
-                        ? handleOpenModalUpdateProjectDetail(detailProject.id)
-                        : handleOpenModalCreateOneProjectDetail(part.id, project.project.id);
-                    }}
-                    style={{ cursor: 'pointer' }}>
-                    {quantity}
-                  </td>
-                );
-              })}
-            <td>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div
-                  onClick={() => handleOpenModalCreateAntypical(project.project.id)}
-                  style={{
-                    cursor: 'pointer',
-                    color: 'red',
-                    fontWeight: 600,
-                    paddingRight: '15px',
-                  }}>
-                  +
-                </div>
-                <div
-                  onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
-                  className="production__eye">
-                  {project.antypicalDetails?.length > 0 ? (
-                    <img src="../img/eye.png" alt="eye" />
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <th className="table-production__th">
-              <div>Отгрузка</div>
-            </th>
-            {nameDetails
-              .sort((a, b) => a.id - b.id)
-              .map((part) => {
-                const detailProject = project.shipmentDetails?.find(
-                  (prop) => prop.detailId === part.id,
-                );
-                const quantity = detailProject ? detailProject.quantity : '';
-                return <td key={part.id}>{quantity}</td>;
-              })}
-            <td></td>
-          </tr>
-        </tbody> */
-}

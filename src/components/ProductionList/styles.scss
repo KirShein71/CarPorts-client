@@ -23,7 +23,7 @@
     width: 1px;
     height: 100%;
     background-color: #dee2e6; 
-    border-bottom: 1px solid #dee2e6 !important; 
+    // border-bottom: 1px solid #dee2e6 !important; 
   }
 
 
@@ -53,7 +53,7 @@
     right: 0;
    
     height: 100%;
-    border-bottom: 2px solid #dee2e6; 
+    // border-bottom: 2px solid #dee2e6; 
     width: 100%;
     
   }
@@ -160,7 +160,7 @@
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid #dee2e6;
+    // border: 1px solid #dee2e6;
     overscroll-behavior: contain;
  
    
@@ -175,8 +175,13 @@
     left: 0;
     top: 0;
     z-index: 3;
-    background-color: white !important; 
+    text-align: center;
+    width: 25px;
    
+}
+
+.production-th.stat {
+    background-color: #ffffff !important;
 }
 
 .production-th::after {
@@ -185,10 +190,10 @@
     top: 0;
     right: 0;
     height: 100%;
-    border-bottom: 2px solid #dee2e6;
-    width: 100%;
-    
+    border-bottom: 2px solid #000000;
+    width: 100%;  
 }
+
 
 .production-th.mobile {
     padding: 5px !important;
@@ -198,6 +203,7 @@
     z-index: 4;
     background-color: white !important; 
     text-align: center;
+    width: 50px;
 }
 
 .production-th.mobile::after {
@@ -206,7 +212,7 @@
     top: 0;
     right: 0;
     height: 100%;
-    border-bottom: 2px solid #dee2e6;
+    // border-bottom: 2px solid #dee2e6;
     width: 100%;
 }
 
@@ -216,10 +222,7 @@
     top: 0;
     z-index: 3;
     background-color: white !important; 
-    border-top: 2px solid #dee2e6;
-    @media(max-width: 768px) {
-        border-top: 1px solid #dee2e6;
-    }
+    
 }
 
 .production__td.mobile::after {
@@ -229,7 +232,7 @@
     right: 0px;
     width: 1px;
     height: 100%;
-    background-color: #dee2e6; 
+    background-color: #000000; 
  
         
 }
@@ -251,10 +254,47 @@
     right: 0px;
     width: 1px;
     height: 100%;
-    background-color: #dee2e6; 
+    // background-color: #dee2e6; 
    
         
 }
+
+.production-table__thead {
+    border-color: transparent;
+}
+
+.production-table__tbody {
+    border: 2px solid #000000;
+}
+
+.production-table__row{
+ border-width: 0px !important;
+}
+
+.production-detail {
+    font-size: 17px;
+    color: #000000;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+.production-detailShipment {
+    font-size: 15px;
+    color: #dee2e6;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+}
+
+.production-detailDelivery {
+    font-size: 15px;
+    color: #dee2e6;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
 
 
 

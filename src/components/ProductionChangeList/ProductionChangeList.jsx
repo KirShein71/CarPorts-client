@@ -1,5 +1,6 @@
 import React from 'react';
 import { getAllWithNoDetails } from '../../http/projectApi';
+import { addToProduction } from '../../http/projectDetailsApi';
 import { Spinner, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CreateDetails from './modals/createDetails';
@@ -34,6 +35,22 @@ function ProductionChangeList() {
     }
   };
 
+  const AddToProduction = (project) => {
+    const data = new FormData();
+    data.append('projectId', project);
+
+    addToProduction(data)
+      .then((data) => {
+        // приводим форму в изначальное состояние
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
+
+  const handleClickAddToProduction = (project) => {
+    AddToProduction(project);
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -56,6 +73,7 @@ function ProductionChangeList() {
                 Дата договора{' '}
                 <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
               </th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -80,8 +98,21 @@ function ProductionChangeList() {
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>
                   <td>
-                    <Button variant="dark" size="sm" onClick={() => handleUpdateClick(item.id)}>
-                      Внести изменения
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      style={{ display: 'block', margin: '0 auto' }}
+                      onClick={() => handleClickAddToProduction(item.id)}>
+                      Добавить
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      style={{ display: 'block', margin: '0 auto' }}
+                      onClick={() => handleUpdateClick(item.id)}>
+                      Внести детали
                     </Button>
                   </td>
                 </tr>
