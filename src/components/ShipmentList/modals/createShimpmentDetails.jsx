@@ -46,12 +46,33 @@ const CreateShipmentDetails = (props) => {
 
   const handleAddDetail = () => {
     if (value.detail && value.shipment_quantity) {
-      const newDetail = {
-        detailId: value.detail,
-        detailName: value.detailName,
-        shipment_quantity: value.shipment_quantity,
-      };
-      setSelectedDetails((prev) => [...prev, newDetail]);
+      setSelectedDetails((prev) => {
+        // Проверяем, есть ли уже такая деталь в списке
+        const existingIndex = prev.findIndex((item) => item.detailId === value.detail);
+
+        if (existingIndex >= 0) {
+          // Если деталь уже есть - обновляем количество
+          return prev.map((item, index) =>
+            index === existingIndex
+              ? {
+                  ...item,
+                  shipment_quantity: String(
+                    Number(item.shipment_quantity) + Number(value.shipment_quantity),
+                  ),
+                }
+              : item,
+          );
+        } else {
+          // Если детали нет - добавляем новую
+          const newDetail = {
+            detailId: value.detail,
+            detailName: value.detailName,
+            shipment_quantity: value.shipment_quantity,
+          };
+          return [...prev, newDetail];
+        }
+      });
+
       setValue(defaultValue);
       setValid(defaultValid);
     }

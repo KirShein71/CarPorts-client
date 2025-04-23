@@ -128,7 +128,7 @@ function ManufactureList() {
                 {waitShipmentAllOneDetail.map((allWait) => (
                   <tr key={allWait.id}>
                     <td></td>
-                    <td className="manufacture_td">Ждут отгрузки</td>
+                    <td className="manufacture_td">Ждут в покраску</td>
                     {nameDetails
                       .sort((a, b) => a.number - b.number)
                       .map((part) => (

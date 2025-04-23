@@ -111,19 +111,17 @@ function WeldersList() {
   return (
     <div className="welderslist">
       <Header title={'Произведено'} />
-      <Button onClick={() => setCreateDetailsModal(true)}>Внести детали</Button>
-      <Col className="mt-3" sm={2}>
-        <Form className="d-flex">
-          <Form.Control
-            type="search"
-            placeholder="Поиск по дате"
-            value={searchQuery}
-            onChange={handleSearch}
-            className="me-2"
-            aria-label="Search"
-          />
-        </Form>
-      </Col>
+      <div style={{ display: 'flex' }}>
+        <button className="button__welders" onClick={() => setCreateDetailsModal(true)}>
+          Внести детали
+        </button>
+        <input
+          class="welders__search"
+          placeholder="Поиск по дате"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+      </div>
       <CreateStockDetails
         show={createDetailsModal}
         setShow={setCreateDetailsModal}
