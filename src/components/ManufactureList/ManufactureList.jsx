@@ -81,7 +81,7 @@ function ManufactureList() {
               <th className="manufacture_thead">Номер проекта</th>
               <th className="manufacture_column">Проекты</th>
               {nameDetails
-                .sort((a, b) => a.id - b.id)
+                .sort((a, b) => a.number - b.number)
                 .map((partAntypical) => (
                   <th className="manufacture_thead" key={partAntypical.id}>
                     {partAntypical.name}
@@ -96,7 +96,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td">Произведено (Иван)</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td key={part.id}>
                       {sum.props.concat().find((el) => el.detailId === part.id)
@@ -112,7 +112,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td">В покраску (Иван)</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td>
                       {sumShipment.props.find((el) => el.detailId === part.id)
@@ -128,7 +128,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td">Ждут отгрузки</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td key={part.id}>
                       {allWait.props.find((el) => el.detailId === part.id)
@@ -144,7 +144,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td">На остатке</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td key={part.id}>
                       {remainder.props.find((el) => el.detailId === part.id)
@@ -160,7 +160,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td highlighted-row">К производству</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td style={{ color: 'white' }} key={part.id}>
                       {produce.props.find((el) => el.detailId === part.id)
@@ -182,7 +182,7 @@ function ManufactureList() {
                 <td></td>
                 <td className="manufacture_td">Перепроизводство</td>
                 {nameDetails
-                  .sort((a, b) => a.id - b.id)
+                  .sort((a, b) => a.number - b.number)
                   .map((part) => (
                     <td key={part.id}>
                       {over.props.find((el) => el.detailId === part.id)
@@ -204,7 +204,7 @@ function ManufactureList() {
                   <td>{waitShipment.project.number}</td>
                   <td className="manufacture_td">{waitShipment.project.name}</td>
                   {nameDetails
-                    .sort((a, b) => a.id - b.id)
+                    .sort((a, b) => a.number - b.number)
                     .map((part) => (
                       <td key={part.id}>
                         {waitShipment.props.find((el) => el.detailId === part.id)
