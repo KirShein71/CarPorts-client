@@ -522,16 +522,6 @@ function ProductionList() {
                       <td></td>
                     </tr>
                   </tbody>
-                  <tbody style={{ borderColor: 'transparent' }}>
-                    <tr>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                  <tbody style={{ borderColor: 'transparent' }}>
-                    <tr>
-                      <td></td>
-                    </tr>
-                  </tbody>
                 </React.Fragment>
               );
             })}
