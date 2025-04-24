@@ -39,20 +39,28 @@ function ProjectMaterial({
                 onClick={user.isManagerProduction ? undefined : () => handleCreateMaterial(id)}>
                 Добавить материал
               </Button>
+              <div className="projectmaterial__deadline">
+                Сроки :
+                {moment(agreement_date, 'YYYY/MM/DD')
+                  .businessAdd(expiration_date, 'days')
+                  .businessAdd(design_period, 'days')
+                  .format('DD.MM.YYYY')}
+              </div>
             </div>
           </div>
           <div className="table-container">
-            <Table striped bordered size="sm" className="mt-3">
+            <Table striped bordered size="sm" className="projectmaterial-table mt-3">
               <thead>
                 <tr>
-                  <th className="production_column">Тип материала</th>
-                  <th>Дедлайн производства</th>
-                  <th>Счёт</th>
-                  <th>Дата оплаты</th>
-                  <th>Дата готовности</th>
-                  <th>Даты отгрузки</th>
-                  <th>Цвет</th>
-                  <th></th>
+                  <th style={{ width: '30%' }} className="production_column">
+                    Тип материала
+                  </th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Счёт</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Оплата</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Готовность</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Отгрузка</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Цвет</th>
+                  <th style={{ width: '25%' }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -64,49 +72,63 @@ function ProjectMaterial({
                     return (
                       <tr key={prop.id}>
                         <td className="production_column">{prop.materialName}</td>
-                        <td>
-                          {moment(agreement_date, 'YYYY/MM/DD')
-                            .businessAdd(expiration_date, 'days')
-                            .businessAdd(design_period, 'days')
-                            .format('DD.MM.YYYY')}
-                        </td>
                         <td
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
                           onClick={
                             user.isManagerProduction ? undefined : () => handleUpdateClick(prop.id)
                           }>
                           {prop.check ? (
                             <>{prop.check}</>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            <span
+                              style={{
+                                color: 'red',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}>
                               +
                             </span>
                           )}
                         </td>
                         <td
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
                           onClick={
                             user.isManagerProduction ? undefined : () => handlePaymentDate(prop.id)
                           }>
                           {prop.date_payment ? (
                             <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
-                              +
-                            </span>
-                          )}
-                        </td>
-                        <td style={{ cursor: 'pointer' }} onClick={() => hadleReadyDate(prop.id)}>
-                          {prop.ready_date ? (
-                            <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
-                          ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            <span
+                              style={{
+                                color: 'red',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}>
                               +
                             </span>
                           )}
                         </td>
                         <td
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
+                          onClick={() => hadleReadyDate(prop.id)}>
+                          {prop.ready_date ? (
+                            <Moment format="DD.MM.YYYY">{prop.ready_date}</Moment>
+                          ) : (
+                            <span
+                              style={{
+                                color: 'red',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}>
+                              +
+                            </span>
+                          )}
+                        </td>
+                        <td
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
                           onClick={
                             user.isManagerProduction ? undefined : () => hadleShippingDate(prop.id)
                           }>
@@ -116,7 +138,7 @@ function ProjectMaterial({
                             <span
                               style={{
                                 color: 'red',
-
+                                textAlign: 'center',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                               }}>
@@ -125,19 +147,25 @@ function ProjectMaterial({
                           )}
                         </td>
                         <td
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
                           onClick={
                             user.isManagerProduction ? undefined : () => handleCreateColor(prop.id)
                           }>
                           {prop.color ? (
                             <>{prop.color}</>
                           ) : (
-                            <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>
+                            <span
+                              style={{
+                                color: 'red',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}>
                               +
                             </span>
                           )}
                         </td>
-                        <td>
+                        <td style={{ textAlign: 'center' }}>
                           <Button
                             size="sm"
                             variant="dark"

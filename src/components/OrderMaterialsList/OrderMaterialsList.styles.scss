@@ -5,20 +5,28 @@
         display: flex;
 
         &-item {
-            font-size: 19px;
-            font-weight: 500;
-            color: rgb(7,7,7);
+            font-size: 21px;
+            font-weight: 400;
+            color: #808080;
             padding-right: 10px;
             cursor: pointer;
            
             &.active {
-                color: #ff0000;
+                font-weight: 700;
+                color: #212529;
             }
         }
     }
 }
 
 .projectmaterial {
+
+    &-table {
+        table-layout: fixed;
+        @media(max-width: 1024px) {
+            table-layout: auto;
+        }
+    }
     &__top {
         margin-top: 25px;
         display: flex;
@@ -34,6 +42,15 @@
         color: rgb(0, 75, 214);
         font-weight: 700;
         white-space: nowrap;
+        
+    }
+
+    &__deadline {
+        font-size: 20px;
+        color: #212529;
+        font-weight: 600;
+        white-space: nowrap;
+        margin-left: 15px;
         
     }
 }
