@@ -2,7 +2,7 @@
     position: relative;
     margin-top: 20px; 
     overflow: hidden;
-    height: calc(100vh - var(--header-height, 150px));
+    height: calc(100vh - var(--header-height, 100px));
     @media(max-width: 768px) {
         height: calc(100vh - var(--header-height, 250px));
     }
@@ -13,7 +13,6 @@
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid #dee2e6;
     overscroll-behavior: contain;
   
    
@@ -44,6 +43,7 @@
     top: 0;
     z-index: 3;
     background-color: white !important; 
+    border: 2px solid #ada5a5 !important;
       }
 
       .manufacture_thead {
@@ -68,3 +68,147 @@
     font-weight: bold !important;
     color: #ffff;
   }
+
+.manufacture-top {
+    &__thead, &__tbody {
+        border-color: transparent;
+    }
+
+    &__td {
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 3;
+        background-color: white !important; 
+        font-size: 18px;
+        color: #000000;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0px !important;
+        @media(max-width: 490px) {
+            font-size: 12px;
+        }
+    }
+
+    &__quantity {
+        font-size: 16px;
+        text-align: center;
+        padding: 0px !important;
+        color: #000000;
+        font-weight: 700;
+        @media(max-width: 490px) {
+            font-size: 13px;
+        }
+       
+    }
+}
+
+.manufacture-table {
+    &__thead {
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 5;
+        color: #000000;
+        background-color: #ada5a5 !important;
+        padding: 0px !important;
+        text-align: center;
+        @media(max-width: 490px) {
+            font-size: 12px;
+        }  
+    }
+
+    &__thead-detail {
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 3;
+        color: #000000;
+        background-color: #ada5a5 !important;
+      
+        @media(max-width: 490px) {
+            font-size: 12px;
+        }
+    }
+
+}
+
+.manufacture-fulltable {
+    &__thead {
+        text-align: center;
+        background-color: #ffffff !important;
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 3;
+    }
+
+    &__thead.detail {
+        width: 70px;
+        z-index: 5;
+    }
+
+    &__thead.detail::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    &__td {
+        text-align: center;
+    }
+
+    &__td.detail{
+        position: sticky;
+        left: 0;
+        top: 0;
+        z-index: 3;
+        background-color: white !important; 
+        
+    }
+    
+    &__td.detail::after {
+        content: '';
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 1px;
+        height: 100%;
+        
+     
+            
+    }
+}
+
+.button-manufacture {
+    &__fulltable {
+        width: 80px;
+        height: 30px;
+        border: 2px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 500;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+            width: 50px;
+            height: 20px;
+            font-size: 10px;
+            
+        }
+    }
+}
+
+.inactive {
+    background-color: #ffffff; /* Белый фон для неактивной кнопки */
+    color: #212529; /* Черный текст для неактивной кнопки */
+}
