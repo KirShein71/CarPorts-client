@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Spinner, Col, Form } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import {
   fetchAllProjectMaterials,
@@ -16,7 +16,6 @@ import CreateMaterial from './modals/createMaterial';
 import CreateColor from './modals/createColor';
 import MaterialProject from './MaterialProject';
 import ProjectMaterial from './ProjectMaterial';
-import Checkbox from '../Checkbox/Checkbox';
 import { AppContext } from '../../context/AppContext';
 
 function OrderMaterialsList() {
@@ -38,17 +37,64 @@ function OrderMaterialsList() {
   const [filteredMaterialProjects, setFilteredMaterialProjects] = React.useState([]);
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [activeTab, setActiveTab] = React.useState('project');
-  const [projectNoDatePaymentCheckbox, setProjectNoDatePaymentCheckbox] = React.useState(false);
-  const [projectNoColorCheckbox, setProjectNoColorCheckbox] = React.useState(false);
+  const [buttonNoDatePaymentProject, setButtonNoDatePaymentProject] = React.useState(false);
+  const [buttonNoColorProject, setButtonNoColorProject] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])
       .then(([projectMaterialsData, materialProjectsData]) => {
         setProjectsMaterials(projectMaterialsData);
+
         setMaterialProjects(materialProjectsData);
       })
       .finally(() => setFetching(false));
   }, [change]);
+
+  React.useEffect(() => {
+    const filters = {
+      isNoPayment: buttonNoDatePaymentProject,
+      isNoColor: buttonNoColorProject,
+    };
+
+    const filteredProjects = projectsMaterials.filter((projectMaterials) => {
+      // Условие для поиска по имени
+      const matchesSearchProject = projectMaterials.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      // Проверяем, есть ли хотя бы одно свойство, соответствующее фильтрам
+      const hasMatchingProps = projectMaterials.props.some((prop) => {
+        const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
+        const matchesNoColor = filters.isNoColor ? prop.color === null : true;
+        return matchesNoPayment && matchesNoColor;
+      });
+
+      return (
+        matchesSearchProject && (filters.isNoPayment || filters.isNoColor ? hasMatchingProps : true)
+      );
+    });
+
+    const filteredMaterialProjects = materialProjects.filter((materialProject) => {
+      // Условие для поиска по имени
+      const matchesSearchProject = materialProject.materialName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      // Проверяем, есть ли хотя бы одно свойство, соответствующее фильтрам
+      const hasMatchingProps = materialProject.props.some((prop) => {
+        const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
+        const matchesNoColor = filters.isNoColor ? prop.color === null : true;
+        return matchesNoPayment && matchesNoColor;
+      });
+
+      return (
+        matchesSearchProject && (filters.isNoPayment || filters.isNoColor ? hasMatchingProps : true)
+      );
+    });
+
+    setFilteredProjectMaterials(filteredProjects);
+    setFilteredMaterialProjects(filteredMaterialProjects);
+  }, [projectsMaterials, buttonNoColorProject, buttonNoDatePaymentProject, searchQuery]);
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
@@ -108,55 +154,14 @@ function OrderMaterialsList() {
     setSearchQuery(event.target.value);
   };
 
-  React.useEffect(() => {
-    const filtered = projectsMaterials.filter((projectMaterials) =>
-      projectMaterials.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    const filteredMaterial = materialProjects.filter((projectMaterials) =>
-      projectMaterials.materialName.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setFilteredProjectMaterials(filtered);
-    setFilteredMaterialProjects(filteredMaterial);
-  }, [projectsMaterials, searchQuery]);
-
-  const handleNoDatePaymentCheckboxChange = () => {
-    const updatedValue = !projectNoDatePaymentCheckbox;
-    setProjectNoDatePaymentCheckbox(updatedValue);
-
-    const filtered = updatedValue
-      ? projectsMaterials.filter((projectMaterial) =>
-          projectMaterial.props.some((prop) => prop.date_payment === null),
-        )
-      : projectsMaterials;
-
-    const filteredMaterial = updatedValue
-      ? materialProjects.filter((materialProject) =>
-          materialProject.props.some((prop) => prop.date_payment === null),
-        )
-      : materialProjects;
-
-    setFilteredProjectMaterials(filtered);
-    setFilteredMaterialProjects(filteredMaterial);
+  const handleButtonNoPaymentProject = () => {
+    const newButtonNoPaymentProject = !buttonNoDatePaymentProject;
+    setButtonNoDatePaymentProject(newButtonNoPaymentProject);
   };
 
-  const handleNoColorCheckboxChange = () => {
-    const updatedValue = !projectNoColorCheckbox;
-    setProjectNoColorCheckbox(updatedValue);
-
-    const filtered = updatedValue
-      ? projectsMaterials.filter((projectMaterial) =>
-          projectMaterial.props.some((prop) => prop.color === null),
-        )
-      : projectsMaterials;
-
-    const filteredMaterial = updatedValue
-      ? materialProjects.filter((materialProject) =>
-          materialProject.props.some((prop) => prop.color === null),
-        )
-      : materialProjects;
-
-    setFilteredProjectMaterials(filtered);
-    setFilteredMaterialProjects(filteredMaterial);
+  const handleButtonNoColorProject = () => {
+    const newButtonNoColorProject = !buttonNoColorProject;
+    setButtonNoColorProject(newButtonNoColorProject);
   };
 
   const handleTabClick = (tab) => {
@@ -228,40 +233,37 @@ function OrderMaterialsList() {
             Материалы
           </div>
         </div>
+
         {user.isManagerProduction ? (
           ''
         ) : (
-          <Link to="/procurement">
-            <div
-              style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
-              &bull; Показать новые проекты
-            </div>
-          </Link>
-        )}
-        <Col className="mt-3 mb-3" sm={2}>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
+          <div style={{ display: 'flex' }}>
+            <Link to="/procurement">
+              <button className="button__projectmaterial">Новые</button>
+            </Link>
+
+            <button
+              className={`button__projectmaterial-nopayment ${
+                buttonNoDatePaymentProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonNoPaymentProject}>
+              Неоплаченные
+            </button>
+            <button
+              className={`button__projectmaterial-nocolor ${
+                buttonNoColorProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonNoColorProject}>
+              Без цвета
+            </button>
+            <input
+              class="projectmaterial__search"
               placeholder="Поиск"
               value={searchQuery}
               onChange={handleSearch}
-              className="me-2"
-              aria-label="Search"
             />
-          </Form>
-        </Col>
-        <Checkbox
-          change={projectNoDatePaymentCheckbox}
-          handle={handleNoDatePaymentCheckboxChange}
-          name={'Неоплаченные'}
-          label={'chbxNoDatePayment'}
-        />
-        <Checkbox
-          change={projectNoColorCheckbox}
-          handle={handleNoColorCheckboxChange}
-          name={'Без цвета'}
-          label={'chbxNoColor'}
-        />
+          </div>
+        )}
         {activeTab === 'project' && (
           <>
             {filteredProjectMaterials.map((material) => (
@@ -275,9 +277,9 @@ function OrderMaterialsList() {
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateMaterial={handleCreateMaterial}
                 handleCreateColor={handleCreateColor}
-                projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
-                projectNoColorCheckbox={projectNoColorCheckbox}
                 user={user}
+                buttonNoColorProject={buttonNoColorProject}
+                buttonNoDatePaymentProject={buttonNoDatePaymentProject}
               />
             ))}
           </>
@@ -294,8 +296,8 @@ function OrderMaterialsList() {
                 hadleShippingDate={hadleShippingDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateColor={handleCreateColor}
-                projectNoDatePaymentCheckbox={projectNoDatePaymentCheckbox}
-                projectNoColorCheckbox={projectNoColorCheckbox}
+                buttonNoColorProject={buttonNoColorProject}
+                buttonNoDatePaymentProject={buttonNoDatePaymentProject}
                 user={user}
               />
             ))}

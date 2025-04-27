@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Moment from 'react-moment';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import './OrderMaterialsList.styles.scss';
 
 function ProjectMaterial({
@@ -19,9 +19,9 @@ function ProjectMaterial({
   handleDeleteProjectMaterials,
   handleCreateMaterial,
   handleCreateColor,
-  projectNoDatePaymentCheckbox,
-  projectNoColorCheckbox,
   user,
+  buttonNoColorProject,
+  buttonNoDatePaymentProject,
 }) {
   return (
     <div className="projectmaterial">
@@ -31,14 +31,11 @@ function ProjectMaterial({
             <div className="projectmaterial__top">
               <div className="projectmaterial__number">{number}</div>
               <div className="projectmaterial__project">{name}</div>
-              <Button
-                size="sm"
-                className="ms-3"
-                variant="dark"
-                style={{ whiteSpace: 'nowrap' }}
+              <button
+                className="button__projectmaterial-add"
                 onClick={user.isManagerProduction ? undefined : () => handleCreateMaterial(id)}>
-                Добавить материал
-              </Button>
+                Добавить
+              </button>
               <div className="projectmaterial__deadline">
                 Сроки :
                 {moment(agreement_date, 'YYYY/MM/DD')
@@ -65,8 +62,13 @@ function ProjectMaterial({
               </thead>
               <tbody>
                 {props
-                  .filter((prop) => !projectNoColorCheckbox || prop.color === null)
-                  .filter((prop) => !projectNoDatePaymentCheckbox || prop.date_payment === null)
+                  .filter((prop) => {
+                    const matchesNoPayment = buttonNoDatePaymentProject
+                      ? prop.date_payment === null
+                      : true;
+                    const matchesNoColor = buttonNoColorProject ? prop.color === null : true;
+                    return matchesNoPayment && matchesNoColor;
+                  })
                   .sort((a, b) => a.id - b.id)
                   .map((prop) => {
                     return (
@@ -166,16 +168,15 @@ function ProjectMaterial({
                           )}
                         </td>
                         <td style={{ textAlign: 'center' }}>
-                          <Button
-                            size="sm"
-                            variant="dark"
+                          <button
+                            className="button__projectmaterial-delete"
                             onClick={
                               user.isManagerProduction
                                 ? undefined
                                 : () => handleDeleteProjectMaterials(prop.id)
                             }>
                             Удалить
-                          </Button>
+                          </button>
                         </td>
                       </tr>
                     );

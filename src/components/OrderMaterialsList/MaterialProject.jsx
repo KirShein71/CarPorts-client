@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Moment from 'react-moment';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import './OrderMaterialsList.styles.scss';
 
 function MaterialProject({
@@ -13,9 +13,9 @@ function MaterialProject({
   hadleShippingDate,
   handleDeleteProjectMaterials,
   handleCreateColor,
-  projectNoDatePaymentCheckbox,
-  projectNoColorCheckbox,
   user,
+  buttonNoColorProject,
+  buttonNoDatePaymentProject,
 }) {
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [sortField, setSortField] = React.useState('prop.number');
@@ -101,8 +101,13 @@ function MaterialProject({
               </thead>
               <tbody>
                 {sortedProps
-                  .filter((prop) => !projectNoDatePaymentCheckbox || prop.date_payment === null)
-                  .filter((prop) => !projectNoColorCheckbox || prop.color === null)
+                  .filter((prop) => {
+                    const matchesNoPayment = buttonNoDatePaymentProject
+                      ? prop.date_payment === null
+                      : true;
+                    const matchesNoColor = buttonNoColorProject ? prop.color === null : true;
+                    return matchesNoPayment && matchesNoColor;
+                  })
 
                   .map((prop) => (
                     <tr>
@@ -208,16 +213,15 @@ function MaterialProject({
                         )}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        <Button
-                          size="sm"
-                          variant="dark"
+                        <button
+                          className="button__projectmaterial-delete"
                           onClick={
                             user.isManagerProduction
                               ? undefined
                               : () => handleDeleteProjectMaterials(prop.id)
                           }>
                           Удалить
-                        </Button>
+                        </button>
                       </td>
                     </tr>
                   ))}

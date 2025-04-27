@@ -82,11 +82,9 @@ function ProductionList() {
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {
-        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
         return matchesSearch;
       }
 
-      // Если одна из кнопок активна (либо только активные, либо только закрытые)
       return matchesSearch && isActiveProject;
     });
 
