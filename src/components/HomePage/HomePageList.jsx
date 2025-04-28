@@ -74,6 +74,7 @@ function HomePageList() {
     { label: 'Итоговая производство', link: '/manufacture' },
     { title: 'Снабжение' },
     { label: 'Заказ материалов', link: '/ordermaterials' },
+    { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { label: 'Рекламация', link: '/complaint' },

@@ -1,7 +1,8 @@
 import React from 'react';
+import Logistic from '../components/Logistics/Logistic';
 
 function Logistics() {
-  return <div>kjdghkjdfhg</div>;
+  return <Logistic />;
 }
 
 export default Logistics;

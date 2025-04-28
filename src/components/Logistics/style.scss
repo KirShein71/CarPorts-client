@@ -1,0 +1,46 @@
+.logistic-project {
+    margin-top: 30px;
+
+    &__date {
+        &-number {
+            font-size: 22px;
+            color: #000000;
+            font-weight: 700;
+
+            .dayWeek {
+                font-size: 20px;
+                color:  #808080;
+                font-weight: 400;
+            }
+        }
+    }
+
+
+    &__top {
+        display: flex;
+    }
+    &__project {
+        font-size: 20px;
+        color: #000000;
+        font-weight: 700;
+        margin-right: 15px;
+    }
+
+    &__region {
+        font-size: 20px;
+        color: #000000;
+        font-weight: 500;
+    }
+
+    &__table {
+        width: 350px;
+        table-layout: fixed;
+        margin-top: 10px;
+
+        &__td {
+            width: 175px;
+        }
+    }
+
+
+}

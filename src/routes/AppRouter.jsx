@@ -34,6 +34,7 @@ import Complaint from '../pages/Complaint';
 import ComplaintProject from '../pages/ComplaintProject';
 import InstallationComplaint from '../pages/InstallationComplaint';
 import ViewingInstallationComplaintPage from '../pages/ViewingInstallationComplaintPage';
+import Logistics from '../pages/Logistics';
 
 import { observer } from 'mobx-react';
 
@@ -100,6 +101,7 @@ const adminRoutes = [
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
+  { path: '/logistics', Component: Logistics },
 ];
 
 const managerSaleRoutes = [
@@ -112,6 +114,7 @@ const managerSaleRoutes = [
   { path: '/clientaccount', Component: ClientAccount },
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
+  { path: '/logistics', Component: Logistics },
 ];
 
 const managerProjectRoutes = [
@@ -135,6 +138,7 @@ const managerProjectRoutes = [
   { path: '/distribution', Component: Distrbution },
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
+  { path: '/logistics', Component: Logistics },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -149,6 +153,7 @@ const managerProductionRoutes = [
   { path: '/ordermaterials', Component: OrderMaterials },
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
+  { path: '/logistics', Component: Logistics },
 ];
 
 const brigadesRoutes = [
