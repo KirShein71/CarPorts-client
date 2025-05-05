@@ -2,7 +2,12 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import './style.scss';
 
-function LogisticMaterial({ materials }) {
+function LogisticMaterial({
+  materials,
+  handleOpenModalCreateDimensionsMaterial,
+  handleOpenModalCreateWeightMaterial,
+  handlePickapMaterialForLogistic,
+}) {
   // Получаем текущую дату
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -59,8 +64,19 @@ function LogisticMaterial({ materials }) {
 
         return (
           <div key={dateStr} className="logistic-project__date">
-            <div className="logistic-project__date-number">
-              {group.formattedDate} - <span className="dayWeek">{group.dayOfWeek}</span>
+            <div style={{ display: 'flex' }}>
+              <div className="logistic-project__date-number">
+                {group.formattedDate} - <span className="dayWeek">{group.dayOfWeek}</span>{' '}
+              </div>
+              <button
+                className="logistic-project__button"
+                onClick={() => {
+                  const [day, month, year] = group.formattedDate.split('.');
+                  const isoDate = `${year}-${month}-${day}`;
+                  handlePickapMaterialForLogistic(isoDate);
+                }}>
+                Сформировать
+              </button>
             </div>
 
             {dateData.materials.map((material) => (
@@ -69,6 +85,14 @@ function LogisticMaterial({ materials }) {
                   <div className="logistic-project__project">{material.materialName}</div>
                 </div>
                 <Table borderless size="sm" className="logistic-project__table">
+                  <thead>
+                    <tr>
+                      <th>Проект</th>
+                      <th>Счёт</th>
+                      <th>Вес</th>
+                      <th>Габариты</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {material.props
                       .sort((a, b) => a.id - b.id)
@@ -78,6 +102,18 @@ function LogisticMaterial({ materials }) {
                             {prop.name} - {prop.regionId === 2 ? 'МО' : 'Спб'}
                           </td>
                           <td className="logistic-project__table-td">{prop.check}</td>
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleOpenModalCreateWeightMaterial(prop.id)}
+                            className="logistic-project__table-td">
+                            {prop.weight ? `${prop.weight} кг` : 'Вес'}
+                          </td>
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleOpenModalCreateDimensionsMaterial(prop.id)}
+                            className="logistic-project__table-td">
+                            {prop.dimensions ? `${prop.dimensions} м` : 'Габариты'}
+                          </td>
                         </tr>
                       ))}
                   </tbody>

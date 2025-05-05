@@ -27,7 +27,7 @@ const UpdateBrigade = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneBrigade(id)
         .then((data) => {
           const prod = {
@@ -45,7 +45,7 @@ const UpdateBrigade = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };

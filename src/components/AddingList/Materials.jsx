@@ -1,6 +1,7 @@
 import React from 'react';
 import CreateMaterial from './modals/CreateMaterial';
 import UpdateMaterial from './modals/UpdateMaterial';
+import CreateSupplierMaterial from './modals/CreateSupplierMaterial';
 import { Table, Button } from 'react-bootstrap';
 import { fetchMaterials, deleteMaterial } from '../../http/materialsApi';
 
@@ -9,6 +10,7 @@ function Materials() {
   const [material, setMaterial] = React.useState(null);
   const [materialModal, setMaterialModal] = React.useState(false);
   const [materialUpdateModal, setMaterialUpdateModal] = React.useState(false);
+  const [supplierMaterialCreateModal, setSupplierMaterialCreateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
 
   React.useEffect(() => {
@@ -18,6 +20,11 @@ function Materials() {
   const handleUpdateMaterial = (id) => {
     setMaterial(id);
     setMaterialUpdateModal(true);
+  };
+
+  const handleOpenSupplierMaterialCreateModal = (id) => {
+    setMaterial(id);
+    setSupplierMaterialCreateModal(true);
   };
 
   const handleDeleteClick = (id) => {
@@ -42,6 +49,12 @@ function Materials() {
         setChange={setChange}
         id={material}
       />
+      <CreateSupplierMaterial
+        show={supplierMaterialCreateModal}
+        setShow={setSupplierMaterialCreateModal}
+        setChange={setChange}
+        id={material}
+      />
       <Button variant="dark" onClick={() => setMaterialModal(true)} className="mt-3">
         Создать материал
       </Button>
@@ -49,7 +62,8 @@ function Materials() {
         <Table bordered hover size="sm" className="mt-3">
           <thead>
             <tr>
-              <th>Название материала</th>
+              <th>Материала</th>
+              <th>Поставщик</th>
               <th></th>
               <th></th>
             </tr>
@@ -58,6 +72,11 @@ function Materials() {
             {materials.map((material) => (
               <tr key={material.id}>
                 <td>{material.name}</td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenSupplierMaterialCreateModal(material.id)}>
+                  {material.supplier?.name}
+                </td>
                 <td>
                   <Button variant="dark" onClick={() => handleUpdateMaterial(material.id)}>
                     Редактировать

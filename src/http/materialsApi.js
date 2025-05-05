@@ -16,6 +16,11 @@ export const createMaterial = async (material) => {
     return data
 }
 
+export const createSupplier = async (id, material) => {
+    const { data } = await guestInstance.put(`materials/createSupplier/${id}`, material)
+    return data
+}
+
 export const updateMaterial = async(id, materials) => {
     const {data} = await guestInstance.put(`materials/update/${id}`, materials)
     return data

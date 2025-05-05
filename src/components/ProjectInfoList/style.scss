@@ -238,3 +238,34 @@
         }
     }
 }
+//user-file
+.user-file {
+    margin-top: 25px;
+
+    &__item {
+        display: flex;
+    }
+
+    &__name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #000000;
+        margin-right: 15px;
+        cursor: pointer;
+        @media(max-width: 490px) {
+            font-size: 16px;
+            margin-right: 6px;
+        }
+    }
+
+    &__delete {
+        font-size: 18px;
+        font-weight: 600;
+        color: #FF0000;
+        cursor: pointer;
+        @media(max-width: 490px) {
+            font-size: 16px;
+            margin-right: 6px;
+        }
+    }
+}

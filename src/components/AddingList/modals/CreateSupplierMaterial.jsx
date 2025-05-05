@@ -1,61 +1,47 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createMaterial } from '../../../http/materialsApi';
+import { fetchMaterial, createSupplier } from '../../../http/materialsApi';
 import { fetchSuppliers } from '../../../http/supplierApi';
 
-const defaultValue = { name: '', supplier: '' };
+const defaultValue = { supplier: '' };
 const defaultValid = {
-  name: null,
   supplier: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'supplier') result.supplier = value.supplier;
   }
   return result;
 };
 
-const CreateMaterial = (props) => {
-  const { show, setShow, setChange } = props;
+const CreateSupplierMaterial = (props) => {
+  const { id, show, setShow, setChange } = props;
+  const [suppliers, setSuppliers] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [suppliers, setSuppliers] = React.useState([]);
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      if (!show) return;
-
-      try {
-        const data = await fetchSuppliers();
-
-        if (!data) {
-          throw new Error('Не получены данные от сервера');
-        }
-
-        if (!Array.isArray(data)) {
-          throw new Error('Ожидался массив поставщиков');
-        }
-
-        const isValidData = data.every(
-          (item) =>
-            item.id && item.name && typeof item.id === 'number' && typeof item.name === 'string',
-        );
-
-        if (!isValidData) {
-          throw new Error('Некорректная структура данных поставщиков');
-        }
-
-        setSuppliers(data);
-      } catch (err) {
-        console.error('Ошибка при загрузке поставщиков:', err);
-      }
-    };
-
-    fetchData();
+    if (show) {
+      Promise.all([fetchMaterial(id), fetchSuppliers()])
+        .then(([materialData, suppliersData]) => {
+          const prod = {
+            supplierId: materialData.supplierId,
+          };
+          setValue(prod);
+          setValid(isValid(prod));
+          setSuppliers(suppliersData);
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
+    }
   }, [show]);
 
   const handleInputChange = (event) => {
@@ -68,51 +54,46 @@ const CreateMaterial = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name) {
+    if (correct.supplier) {
       const data = new FormData();
-      data.append('name', value.name.trim());
       data.append('supplierId', value.supplier);
       setIsLoading(true);
-      createMaterial(data)
+      createSupplier(id, data)
         .then((data) => {
-          setValue(defaultValue);
-          setValid(defaultValid);
-          setShow(false);
+          const prod = {
+            supplier: data.supplier,
+          };
+          setValue(prod);
+          setValid(isValid(prod));
           setChange((state) => !state);
+          setShow(false);
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        })
         .finally(() => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="lg"
-      style={{ maxWidth: '100%', maxHeight: '100%', width: '100vw', height: '100vh' }}
+      size="md"
+      className="modal__planning"
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Введите название материала</Modal.Title>
+        <Modal.Title>Добавить поставщика</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="name"
-                value={value.name}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.name === true}
-                isInvalid={valid.name === false}
-                placeholder="Введите название материала"
-              />
-            </Col>
-          </Row>
           <Row className="mb-3 mt-4">
             <Col>
               <Form.Select
@@ -144,4 +125,4 @@ const CreateMaterial = (props) => {
   );
 };
 
-export default CreateMaterial;
+export default CreateSupplierMaterial;

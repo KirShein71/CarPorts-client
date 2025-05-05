@@ -4,6 +4,7 @@ import Details from './Details';
 import Materials from './Materials';
 import Brigade from './Brigade';
 import Service from './Service';
+import Supplier from './Supplier';
 
 function AddingList() {
   return (
@@ -11,6 +12,7 @@ function AddingList() {
       <Header title={'Справочники'} />
       <Details />
       <Materials />
+      <Supplier />
       <Brigade />
       <Service />
     </>

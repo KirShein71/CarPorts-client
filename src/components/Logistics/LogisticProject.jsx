@@ -2,7 +2,12 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 import './style.scss';
 
-function LogisticProject({ projects }) {
+function LogisticProject({
+  projects,
+  handleOpenModalCreateDimensionsMaterial,
+  handleOpenModalCreateWeightMaterial,
+  handlePickapMaterialForLogistic,
+}) {
   // Получаем текущую дату
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -59,8 +64,19 @@ function LogisticProject({ projects }) {
 
         return (
           <div key={dateStr} className="logistic-project__date">
-            <div className="logistic-project__date-number">
-              {group.formattedDate} - <span className="dayWeek">{group.dayOfWeek}</span>
+            <div style={{ display: 'flex' }}>
+              <div className="logistic-project__date-number">
+                {group.formattedDate} - <span className="dayWeek">{group.dayOfWeek}</span>{' '}
+              </div>
+              <button
+                className="logistic-project__button"
+                onClick={() => {
+                  const [day, month, year] = group.formattedDate.split('.');
+                  const isoDate = `${year}-${month}-${day}`;
+                  handlePickapMaterialForLogistic(isoDate);
+                }}>
+                Сформировать
+              </button>
             </div>
 
             {dateData.projects.map((project) => (
@@ -72,6 +88,14 @@ function LogisticProject({ projects }) {
                   </div>
                 </div>
                 <Table borderless size="sm" className="logistic-project__table">
+                  <thead>
+                    <tr>
+                      <th>Материал</th>
+                      <th>Счёт</th>
+                      <th>Вес</th>
+                      <th>Габариты</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {project.props
                       .sort((a, b) => a.id - b.id)
@@ -79,6 +103,18 @@ function LogisticProject({ projects }) {
                         <tr key={prop.id}>
                           <td className="logistic-project__table-td">{prop.materialName}</td>
                           <td className="logistic-project__table-td">{prop.check}</td>
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleOpenModalCreateWeightMaterial(prop.id)}
+                            className="logistic-project__table-td">
+                            {prop.weight ? `${prop.weight} кг` : 'Вес'}
+                          </td>
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleOpenModalCreateDimensionsMaterial(prop.id)}
+                            className="logistic-project__table-td">
+                            {prop.dimensions ? `${prop.dimensions} м` : 'Габариты'}
+                          </td>
                         </tr>
                       ))}
                   </tbody>

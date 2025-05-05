@@ -9,3 +9,9 @@ export const getAllMaterialProjectForLogistic = async () => {
     const { data } = await guestInstance.get('projectmaterials/getAllMaterialProjectForLogistic')
     return data
 }
+
+export const getPickupMaterialsForLogistic = async (date) => {
+    const { data } = await guestInstance.get(`projectmaterials/getPickupMaterialsForLogistic/${date}`);
+    return data;
+    
+};

@@ -2,10 +2,12 @@
     margin-top: 30px;
 
     &__date {
+        margin-bottom: 80px;
         &-number {
             font-size: 22px;
             color: #000000;
             font-weight: 700;
+            margin-right: 15px;
 
             .dayWeek {
                 font-size: 20px;
@@ -33,14 +35,51 @@
     }
 
     &__table {
-        width: 350px;
+        width: 750px;
         table-layout: fixed;
         margin-top: 10px;
 
         &__td {
             width: 175px;
+            
+        }
+    }
+
+    &__button {
+        width: 120px;
+        height: 30px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        
+        @media(max-width: 460px) {
+            width: 60px;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
         }
     }
 
 
+}
+
+//pickap logistic 
+.pickap-logistic {
+    &__item {
+        margin-bottom: 25px;
+        text-align: left;
+        color: #000000;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: normal;
+
+        &-supplier {
+            font-size: 21px;
+            font-weight: 700;
+        }
+    }
 }

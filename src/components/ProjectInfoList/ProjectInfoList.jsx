@@ -39,6 +39,7 @@ import UpdateDeliveryDetails from '../DeliveryDetails/modals/updateDeliveryDetai
 import UpdateDesignPeriod from './modals/UpdateDesignPeriod';
 import UpdateExpirationDate from './modals/UpdateExpirationDate';
 import UpdateInstallationDate from './modals/UpdateInstallationDate';
+import UserFile from './UserFile';
 
 import './style.scss';
 
@@ -89,11 +90,22 @@ function ProjectInfoList() {
   const [modalUpdateDesignPeriod, setModalUpdateDesignPeriod] = React.useState(false);
   const [modalUpdateExpirationDate, setModalUpdateExpirationDate] = React.useState(false);
   const [modalUpdateInstallationDate, setModalUpdateInstallationDate] = React.useState(false);
+  const [userId, setUserId] = React.useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
-    getProjectInfo(id).then((data) => setProject(data));
+    const fetchData = async () => {
+      try {
+        const data = await getProjectInfo(id); // Получаем данные
+        setProject(data);
+        setUserId(data.userFile[0].userId);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      }
+    };
+
+    fetchData();
   }, [id, change]);
 
   React.useEffect(() => {
@@ -630,6 +642,13 @@ function ProjectInfoList() {
                 onClick={() => handleTabClick('cabinet')}>
                 Личный кабинет
               </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'userFile' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('userFile')}>
+                Файлы
+              </div>
             </div>
           </div>
         </div>
@@ -1013,6 +1032,9 @@ function ProjectInfoList() {
               </div>
             )}
           </div>
+        )}
+        {activeTab === 'userFile' && (
+          <UserFile project={project} change={change} setChange={setChange} userId={userId} />
         )}
         {activeTab === 'complaint' && <Complaint project={project} />}
       </div>
