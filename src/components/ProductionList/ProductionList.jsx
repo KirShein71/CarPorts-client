@@ -46,6 +46,9 @@ function ProductionList() {
   const [modalCreateOneDeliveryDetails, setModalCreateOneDeliveryDetails] = React.useState(false);
   const [deliveryDetail, setDeliveryDetail] = React.useState(null);
   const [hoveredColumn, setHoveredColumn] = React.useState(null);
+  const [hoveredRowShipment, setHoveredRowShipment] = React.useState(null);
+  const [hoveredRowDelivery, setHoveredRowDelivery] = React.useState(null);
+  const [hoveredRowDetails, setHoveredRowDetails] = React.useState(null);
 
   React.useEffect(() => {
     fetchAllProjectDetails().then((data) => {
@@ -306,7 +309,11 @@ function ProductionList() {
                   <tbody className="production-table__tbody">
                     <tr
                       className="production-table__row"
-                      style={correspondingDelivery ? { borderBottomColor: '#ffff' } : {}}>
+                      style={{
+                        ...(correspondingDelivery ? { borderBottomColor: '#ffff' } : {}),
+                        backgroundColor:
+                          hoveredRowDetails === projectDetail.projectId ? '#d6d4d4' : 'transparent',
+                      }}>
                       <td
                         style={{
                           color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
@@ -314,6 +321,7 @@ function ProductionList() {
                         {projectDetail.project ? projectDetail.project.number : ''}
                       </td>
                       <td
+                        rowSpan={3}
                         style={{
                           color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                         }}
@@ -333,8 +341,14 @@ function ProductionList() {
                             <td
                               key={part.id}
                               className="production-detail"
-                              onMouseEnter={() => setHoveredColumn(part.id)}
-                              onMouseLeave={() => setHoveredColumn(null)}
+                              onMouseEnter={() => {
+                                setHoveredColumn(part.id);
+                                setHoveredRowDetails(projectDetail.projectId);
+                              }}
+                              onMouseLeave={() => {
+                                setHoveredColumn(null);
+                                setHoveredRowDetails(null);
+                              }}
                               style={{
                                 cursor: 'pointer',
                                 color:
@@ -391,14 +405,20 @@ function ProductionList() {
                     </tr>
 
                     {correspondingShipment && (
-                      <tr className="production-table__row">
+                      <tr
+                        className="production-table__row"
+                        style={{
+                          backgroundColor:
+                            hoveredRowShipment === correspondingShipment.projectId
+                              ? '#d6d4d4'
+                              : 'transparent',
+                        }}>
                         <td></td>
-                        <td
+                        {/* <td
                           style={{
                             color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                           }}
-                          className="production__td mobile"></td>
-
+                          className="production__td mobile"></td> */}
                         {nameDetails
                           .sort((a, b) => a.number - b.number)
                           .map((part) => {
@@ -415,8 +435,14 @@ function ProductionList() {
                             return (
                               <td
                                 className="production-detailShipment"
-                                onMouseEnter={() => setHoveredColumn(part.id)}
-                                onMouseLeave={() => setHoveredColumn(null)}
+                                onMouseEnter={() => {
+                                  setHoveredColumn(part.id);
+                                  setHoveredRowShipment(correspondingShipment.projectId);
+                                }}
+                                onMouseLeave={() => {
+                                  setHoveredColumn(null);
+                                  setHoveredRowShipment(null);
+                                }}
                                 style={{
                                   color:
                                     projectDetail.project.finish === 'true'
@@ -447,20 +473,26 @@ function ProductionList() {
                               </td>
                             );
                           })}
-
                         <td></td>
                         <td></td>
                       </tr>
                     )}
 
                     {correspondingDelivery && (
-                      <tr className="production-table__row">
+                      <tr
+                        className="production-table__row"
+                        style={{
+                          backgroundColor:
+                            hoveredRowDelivery === correspondingDelivery.projectId
+                              ? '#d6d4d4'
+                              : 'transparent',
+                        }}>
                         <td></td>
-                        <td
+                        {/* <td
                           style={{
                             color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                           }}
-                          className="production__td mobile"></td>
+                          className="production__td mobile"></td> */}
 
                         {nameDetails
                           .sort((a, b) => a.number - b.number)
@@ -478,8 +510,14 @@ function ProductionList() {
                             return (
                               <td
                                 className="production-detailDelivery"
-                                onMouseEnter={() => setHoveredColumn(part.id)}
-                                onMouseLeave={() => setHoveredColumn(null)}
+                                onMouseEnter={() => {
+                                  setHoveredColumn(part.id);
+                                  setHoveredRowDelivery(correspondingShipment.projectId);
+                                }}
+                                onMouseLeave={() => {
+                                  setHoveredColumn(null);
+                                  setHoveredRowDelivery(null);
+                                }}
                                 style={{
                                   color:
                                     projectDetail.project.finish === 'true'
