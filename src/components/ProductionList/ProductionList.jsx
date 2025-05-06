@@ -321,7 +321,6 @@ function ProductionList() {
                         {projectDetail.project ? projectDetail.project.number : ''}
                       </td>
                       <td
-                        rowSpan={3}
                         style={{
                           color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                         }}
@@ -414,11 +413,11 @@ function ProductionList() {
                               : 'transparent',
                         }}>
                         <td></td>
-                        {/* <td
+                        <td
                           style={{
                             color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                           }}
-                          className="production__td mobile"></td> */}
+                          className="production__td mobile"></td>
                         {nameDetails
                           .sort((a, b) => a.number - b.number)
                           .map((part) => {
@@ -488,11 +487,11 @@ function ProductionList() {
                               : 'transparent',
                         }}>
                         <td></td>
-                        {/* <td
+                        <td
                           style={{
                             color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                           }}
-                          className="production__td mobile"></td> */}
+                          className="production__td mobile"></td>
 
                         {nameDetails
                           .sort((a, b) => a.number - b.number)
