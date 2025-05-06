@@ -321,6 +321,7 @@ function ProductionList() {
                         {projectDetail.project ? projectDetail.project.number : ''}
                       </td>
                       <td
+                        rowSpan={2}
                         style={{
                           color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
                         }}
@@ -413,11 +414,7 @@ function ProductionList() {
                               : 'transparent',
                         }}>
                         <td></td>
-                        <td
-                          style={{
-                            color: projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                          }}
-                          className="production__td mobile"></td>
+
                         {nameDetails
                           .sort((a, b) => a.number - b.number)
                           .map((part) => {
