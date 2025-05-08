@@ -71,7 +71,7 @@ const CreateMaterial = (props) => {
       formData.append('materialName', material.materialName);
       formData.append('materialId', material.materialId);
       formData.append('projectId', projectId);
-      formData.append('supplierId', material.supplierId);
+      formData.append('supplierId', material.supplierId ? material.supplierId : 0);
 
       if (material.expirationMaterial_date) {
         // Проверка на пустое значение

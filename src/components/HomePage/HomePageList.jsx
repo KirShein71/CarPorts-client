@@ -44,6 +44,8 @@ function HomePageList() {
   const managerSaleItems = [
     { label: 'Все проекты', link: '/project' },
     { label: 'Рекламация', link: '/complaint' },
+    { title: 'Снабжение' },
+    { label: 'Логистика', link: '/logistics' },
   ];
 
   const managerProjectItems = [
@@ -56,6 +58,7 @@ function HomePageList() {
     { label: 'Итоговая производство', link: '/manufacture' },
     { title: 'Снабжение' },
     { label: 'Заказ материалов', link: '/ordermaterials' },
+    { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { label: 'Рекламация', link: '/complaint' },
@@ -88,6 +91,7 @@ function HomePageList() {
   const managerProductionItems = [
     { title: 'Снабжение' },
     { label: 'Заказ материалов', link: '/ordermaterials' },
+    { label: 'Логистика', link: '/logistics' },
     { title: 'Производство' },
     { label: 'Заказы на производство', link: '/production' },
     { label: 'Произведено', link: '/welders' },
