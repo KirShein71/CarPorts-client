@@ -4,6 +4,7 @@ import {
   getAllProjectMaterialForLogistic,
   getAllMaterialProjectForLogistic,
   getPickupMaterialsForLogistic,
+  getUnloadingForProject,
 } from '../../http/logisticApi';
 import { Spinner } from 'react-bootstrap';
 import LogisticProject from './LogisticProject';
@@ -11,6 +12,7 @@ import LogisticMaterial from './LogisticMaterial';
 import CreateDimensionsMaterial from './modals/CreateDimensionsMaterial';
 import CreateWeightMaterial from './modals/CreateWeightMaterial';
 import PickapLogistic from './modals/PickapLogistic';
+import CreateLogisticProject from '../ProjectInfoList/modals/CreateLogisticProject';
 
 function Logistic() {
   const [logisticProjects, setLogisticPorjects] = React.useState([]);
@@ -25,6 +27,11 @@ function Logistic() {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [pickapData, setPickapData] = React.useState([]);
   const [modalPickapLogistic, setModalPickapLogistic] = React.useState(false);
+  const [selectedItems, setSelectedItems] = React.useState([]);
+  const [selectedProjectsId, setSelectedProjectsId] = React.useState([]);
+  const [unloadingProjects, setUnloadingProjects] = React.useState([]);
+  const [createLogisticProjectModal, setCreateLogisticProjectModal] = React.useState(false);
+  const [projectId, setProjectId] = React.useState(null);
 
   React.useEffect(() => {
     setFetching(true);
@@ -43,18 +50,36 @@ function Logistic() {
   }, [change]);
 
   React.useEffect(() => {
-    if (selectedDate) {
-      getPickupMaterialsForLogistic(selectedDate)
-        .then((data) => setPickapData(data))
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            alert(error.response.data.message);
+    const fetchData = async () => {
+      try {
+        if (selectedDate && modalPickapLogistic) {
+          if (selectedDate && selectedItems.length > 0) {
+            const materialsData = await getPickupMaterialsForLogistic(selectedDate, selectedItems);
+            setPickapData(materialsData);
           } else {
-            console.log('An error occurred');
+            setPickapData([]);
           }
-        });
-    }
-  }, [selectedDate]);
+        } else {
+          setPickapData([]);
+        }
+
+        if (modalPickapLogistic && selectedProjectsId.length > 0) {
+          const unloadingData = await getUnloadingForProject(selectedProjectsId);
+          setUnloadingProjects(unloadingData);
+        } else {
+          setUnloadingProjects([]);
+        }
+      } catch (error) {
+        if (error.response?.data) {
+          alert(error.response.data.message);
+        } else {
+          console.error('An error occurred:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [selectedDate, selectedItems, selectedProjectsId, modalPickapLogistic, change]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -77,6 +102,17 @@ function Logistic() {
   const handlePickapMaterialForLogistic = (date) => {
     setSelectedDate(date);
     setModalPickapLogistic(true);
+  };
+
+  const handleOpenCreateLogisticProjectModal = (id) => {
+    setProjectId(id);
+    setCreateLogisticProjectModal(true);
+  };
+
+  const handleCheckboxChange = (id, isChecked) => {
+    setSelectedItems((prev) =>
+      isChecked ? [...prev, id] : prev.filter((itemId) => itemId !== id),
+    );
   };
 
   React.useEffect(() => {
@@ -111,7 +147,16 @@ function Logistic() {
         show={modalPickapLogistic}
         setShow={setModalPickapLogistic}
         pickapData={pickapData}
+        unloadingProjects={unloadingProjects}
+        handleOpenCreateLogisticProjectModal={handleOpenCreateLogisticProjectModal}
       />
+      <CreateLogisticProject
+        id={projectId}
+        show={createLogisticProjectModal}
+        setShow={setCreateLogisticProjectModal}
+        setChange={setChange}
+      />
+
       <div className="ordermaterialslist__filter">
         <div
           className={`ordermaterialslist__filter-item ${activeTab === 'project' ? 'active' : ''}`}
@@ -130,6 +175,9 @@ function Logistic() {
           handleOpenModalCreateDimensionsMaterial={handleOpenModalCreateDimensionsMaterial}
           handleOpenModalCreateWeightMaterial={handleOpenModalCreateWeightMaterial}
           handlePickapMaterialForLogistic={handlePickapMaterialForLogistic}
+          selectedItems={selectedItems}
+          selectedProjectsId={selectedProjectsId}
+          handleCheckboxChange={handleCheckboxChange}
         />
       )}
       {activeTab === 'material' && (
@@ -138,6 +186,8 @@ function Logistic() {
           handleOpenModalCreateDimensionsMaterial={handleOpenModalCreateDimensionsMaterial}
           handleOpenModalCreateWeightMaterial={handleOpenModalCreateWeightMaterial}
           handlePickapMaterialForLogistic={handlePickapMaterialForLogistic}
+          selectedItems={selectedItems}
+          handleCheckboxChange={handleCheckboxChange}
         />
       )}
     </div>

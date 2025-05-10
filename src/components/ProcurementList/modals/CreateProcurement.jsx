@@ -9,10 +9,12 @@ const defaultValue = {
   materialName: '',
   expirationMaterial_date: '',
   date_payment: '',
+  supplier: '',
 };
 const defaultValid = {
   material: null,
   materialName: null,
+  supplier: null,
 };
 
 const isValid = (value) => {
@@ -21,6 +23,7 @@ const isValid = (value) => {
   for (let key in value) {
     if (key === 'material') result.material = pattern.test(value.material);
     if (key === 'materialName') result.materialName = pattern.test(value.materialName);
+    if (key === 'supplier') result.supplier = pattern.test(value.supplier);
   }
   return result;
 };
@@ -55,6 +58,7 @@ const CreateProcurement = (props) => {
       const newDetail = {
         materialId: value.material,
         materialName: value.materialName,
+        supplierId: value.supplier,
         date_payment: value.date_payment,
         expirationMaterial_date: value.expirationMaterial_date,
       };
@@ -71,6 +75,7 @@ const CreateProcurement = (props) => {
       formData.append('materialName', material.materialName);
       formData.append('materialId', material.materialId);
       formData.append('projectId', projectId);
+      formData.append('supplierId', material.supplierId ? material.supplierId : 0);
 
       if (material.expirationMaterial_date) {
         // Проверка на пустое значение
@@ -93,13 +98,18 @@ const CreateProcurement = (props) => {
       })
       .catch((error) => alert(error.response.data.message));
   };
+
   const handleMaterialChange = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
     const materialId = e.target.value;
-    const materialName = e.target.options[e.target.selectedIndex].text;
+    const materialName = selectedOption.text;
+    const supplierId = selectedOption.getAttribute('data-supplier-id');
+
     setValue((prevValue) => ({
       ...prevValue,
       material: materialId,
       materialName: materialName,
+      supplier: supplierId,
     }));
   };
 
@@ -135,7 +145,7 @@ const CreateProcurement = (props) => {
               <option value="">Материалы</option>
               {materials &&
                 materials.map((item) => (
-                  <option key={item.id} value={item.id}>
+                  <option key={item.id} value={item.id} data-supplier-id={item.supplierId}>
                     {item.name}
                   </option>
                 ))}

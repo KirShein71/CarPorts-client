@@ -61,7 +61,11 @@ function Supplier() {
               <tr key={supplier.id}>
                 <td>{supplier.name}</td>
                 <td>{supplier.regionId === 2 ? 'МО' : 'Спб'}</td>
-                <td onClick={() => handleOpenSupplierCardModal(supplier.id)}>Карточка</td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenSupplierCardModal(supplier.id)}>
+                  Карточка
+                </td>
                 <td>
                   <Button variant="dark" onClick={() => handleDeleteClick(supplier.id)}>
                     Удалить

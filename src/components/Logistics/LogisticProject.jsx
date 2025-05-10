@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import Checkbox from '../Checkbox/Checkbox';
 import './style.scss';
 
 function LogisticProject({
@@ -7,6 +8,9 @@ function LogisticProject({
   handleOpenModalCreateDimensionsMaterial,
   handleOpenModalCreateWeightMaterial,
   handlePickapMaterialForLogistic,
+  selectedItems,
+  selectedProjectsId,
+  handleCheckboxChange,
 }) {
   // Получаем текущую дату
   const today = new Date();
@@ -64,16 +68,21 @@ function LogisticProject({
 
         return (
           <div key={dateStr} className="logistic-project__date">
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <div className="logistic-project__date-number">
                 {group.formattedDate} - <span className="dayWeek">{group.dayOfWeek}</span>{' '}
               </div>
               <button
                 className="logistic-project__button"
-                onClick={() => {
+                onClick={async () => {
+                  if (selectedItems.length === 0) {
+                    alert('Выберите хотя бы один материал');
+                    return;
+                  }
+
                   const [day, month, year] = group.formattedDate.split('.');
                   const isoDate = `${year}-${month}-${day}`;
-                  handlePickapMaterialForLogistic(isoDate);
+                  await handlePickapMaterialForLogistic(isoDate, selectedItems);
                 }}>
                 Сформировать
               </button>
@@ -94,6 +103,7 @@ function LogisticProject({
                       <th>Счёт</th>
                       <th>Вес</th>
                       <th>Габариты</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -114,6 +124,13 @@ function LogisticProject({
                             onClick={() => handleOpenModalCreateDimensionsMaterial(prop.id)}
                             className="logistic-project__table-td">
                             {prop.dimensions ? `${prop.dimensions} м` : 'Габариты'}
+                          </td>
+                          <td>
+                            <Checkbox
+                              onChange={(e) => handleCheckboxChange(prop.id, e.target.checked)}
+                              checked={selectedItems.includes(prop.id)}
+                              label={`checkbox-${prop.id}`}
+                            />
                           </td>
                         </tr>
                       ))}

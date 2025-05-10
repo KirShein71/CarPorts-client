@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import Checkbox from '../Checkbox/Checkbox';
 import './style.scss';
 
 function LogisticMaterial({
@@ -7,6 +8,8 @@ function LogisticMaterial({
   handleOpenModalCreateDimensionsMaterial,
   handleOpenModalCreateWeightMaterial,
   handlePickapMaterialForLogistic,
+  selectedItems,
+  handleCheckboxChange,
 }) {
   // Получаем текущую дату
   const today = new Date();
@@ -70,10 +73,15 @@ function LogisticMaterial({
               </div>
               <button
                 className="logistic-project__button"
-                onClick={() => {
+                onClick={async () => {
+                  if (selectedItems.length === 0) {
+                    alert('Выберите хотя бы один материал');
+                    return;
+                  }
+
                   const [day, month, year] = group.formattedDate.split('.');
                   const isoDate = `${year}-${month}-${day}`;
-                  handlePickapMaterialForLogistic(isoDate);
+                  await handlePickapMaterialForLogistic(isoDate, selectedItems);
                 }}>
                 Сформировать
               </button>
@@ -91,6 +99,7 @@ function LogisticMaterial({
                       <th>Счёт</th>
                       <th>Вес</th>
                       <th>Габариты</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -113,6 +122,13 @@ function LogisticMaterial({
                             onClick={() => handleOpenModalCreateDimensionsMaterial(prop.id)}
                             className="logistic-project__table-td">
                             {prop.dimensions ? `${prop.dimensions} м` : 'Габариты'}
+                          </td>
+                          <td>
+                            <Checkbox
+                              onChange={(e) => handleCheckboxChange(prop.id, e.target.checked)}
+                              checked={selectedItems.includes(prop.id)}
+                              label={`checkbox-${prop.id}`}
+                            />
                           </td>
                         </tr>
                       ))}

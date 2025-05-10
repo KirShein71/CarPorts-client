@@ -132,4 +132,9 @@ export const deleteProject = async (id) => {
     return data
 }
 
+export const createLogisticProject = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createLogisticProject/${id}`, project)
+    return data
+}
+
 

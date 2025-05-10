@@ -40,6 +40,7 @@ import UpdateDesignPeriod from './modals/UpdateDesignPeriod';
 import UpdateExpirationDate from './modals/UpdateExpirationDate';
 import UpdateInstallationDate from './modals/UpdateInstallationDate';
 import UserFile from './UserFile';
+import ProjectLogistic from './ProjectLogistic';
 
 import './style.scss';
 
@@ -649,6 +650,13 @@ function ProjectInfoList() {
                 onClick={() => handleTabClick('userFile')}>
                 Файлы
               </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'logistic' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('logistic')}>
+                Логистика
+              </div>
             </div>
           </div>
         </div>
@@ -1037,6 +1045,9 @@ function ProjectInfoList() {
           <UserFile project={project} change={change} setChange={setChange} userId={userId} />
         )}
         {activeTab === 'complaint' && <Complaint project={project} />}
+        {activeTab === 'logistic' && (
+          <ProjectLogistic project={project} projectId={id} setChange={setChange} />
+        )}
       </div>
       <div className="note">
         <div className="note__title">Комментарии</div>
