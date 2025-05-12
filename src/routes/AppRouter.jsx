@@ -139,6 +139,8 @@ const managerProjectRoutes = [
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/logistics', Component: Logistics },
+  { path: '/viewinginstallationpage/:id', Component: ViewingInstallationPage },
+  { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];

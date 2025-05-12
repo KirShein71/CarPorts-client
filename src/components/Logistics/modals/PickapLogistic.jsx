@@ -47,9 +47,12 @@ function PickapLogistic(props) {
                   <div className="pickap-logistic__unloading-msk">
                     {(() => {
                       // Собираем все проекты из всех элементов pickapData
-                      const mskProjects = pickapData.flatMap((picD) =>
-                        picD.projects.filter((unloadProject) => unloadProject.region === 2),
-                      );
+                      const mskProjects = pickapData
+                        .flatMap((picD) => picD.projects.filter((p) => p.region === 2))
+                        .filter(
+                          (project, index, self) =>
+                            index === self.findIndex((p) => p.id === project.id),
+                        );
 
                       // Если есть хотя бы один проект - отображаем заголовок и все проекты
                       return (
@@ -99,9 +102,12 @@ function PickapLogistic(props) {
                   <div className="pickap-logistic__unloading-spb">
                     {(() => {
                       // Собираем все проекты из всех элементов pickapData
-                      const spbProjects = pickapData.flatMap((picD) =>
-                        picD.projects.filter((unloadProject) => unloadProject.region === 1),
-                      );
+                      const spbProjects = pickapData
+                        .flatMap((picD) => picD.projects.filter((p) => p.region === 1))
+                        .filter(
+                          (project, index, self) =>
+                            index === self.findIndex((p) => p.id === project.id),
+                        );
 
                       // Если есть хотя бы один проект - отображаем заголовок и все проекты
                       return (
