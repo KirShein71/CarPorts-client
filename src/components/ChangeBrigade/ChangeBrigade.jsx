@@ -47,6 +47,7 @@ function ChangeBrigade() {
   const [modalDeleteBrigadesDateData, setModalmodalDeleteBrigadesDateData] = React.useState(false);
   const [modalEditDelete, setModalEditDelete] = React.useState(false);
   const [modalNewProject, setModalNewProject] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 460);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -114,6 +115,18 @@ function ChangeBrigade() {
       }
     }
   }, [selectedBrigade]);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 800);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -275,6 +288,51 @@ function ChangeBrigade() {
             onClick={() => handleOpenModalNewProject()}>
             Новые проекты
           </button>
+          {isMobile ? (
+            ''
+          ) : (
+            <div className="calendar-bigade__dropdown" ref={modalRef}>
+              <button
+                className="calendar-brigade__dropdown-brigade"
+                onClick={hadleOpenModalSelectedBrigade}>
+                {selectedBrigadeName ? selectedBrigadeName : 'Бригада '}
+              </button>
+              {openModalSelectedBrigade && (
+                <div className="calendar-brigade__dropdown-modal">
+                  <div className="calendar-brigade__dropdown-content">
+                    <div className="calendar-brigade__dropdown-items">
+                      <div
+                        className="calendar-brigade__dropdown-item calendar-brigade__dropdown-item--reset"
+                        onClick={() => {
+                          setSelectedBrigadeName(null);
+                          setSelectedBrigade(null);
+                          setOpenModalSelectedBrigade(false);
+                        }}>
+                        <div>Сбросить</div>
+                      </div>
+                      {brigades
+                        .filter((brigadesName) => brigadesName.regionId === selectedRegion)
+                        .map((brigadesName) => (
+                          <div key={brigadesName.id}>
+                            <div
+                              className="calendar-brigade__dropdown-item"
+                              onClick={() => {
+                                setSelectedBrigadeName(brigadesName.name);
+                                setSelectedBrigade(brigadesName.id);
+                                setOpenModalSelectedBrigade(false);
+                              }}>
+                              {brigadesName.name}
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        {isMobile ? (
           <div className="calendar-bigade__dropdown" ref={modalRef}>
             <button
               className="calendar-brigade__dropdown-brigade"
@@ -314,7 +372,9 @@ function ChangeBrigade() {
               </div>
             )}
           </div>
-        </div>
+        ) : (
+          ''
+        )}
         {selectedBrigade !== null ? (
           <>
             <div className="calendar-brigade__month">

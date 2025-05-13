@@ -54,6 +54,9 @@
 
     &__dropdown {
         position: relative;
+        @media(max-width: 460px) {
+            margin-top: 10px;
+        }
         &-brigade {
             height: 30px;
             border: 1px solid #212529;
@@ -71,23 +74,22 @@
 
         &-modal {
             position: absolute;
-            width: 150px;
+            width: 240px;
             height: auto;
             border: 2px solid #212529;
             background-color: #ffffff;
             padding: 7px;
             z-index: 5;
             @media(max-width: 460px) {
-                
                 width: 120px;
-                right: 15px;
+                left: 24px;
                 
                 
             }
         }
 
         &-item {
-            font-size: 14px;
+            font-size: 16px;
             color: #212529;
             font-weight: 500;
             cursor: pointer;
