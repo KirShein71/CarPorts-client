@@ -259,7 +259,7 @@ function ChangeBrigade() {
       <div className="container">
         <div className="calendar-brigade__filter">
           {regions.map((region) => (
-            <div
+            <button
               key={region.id}
               className={`calendar-brigade__filter-item ${
                 selectedRegion === region.id ? 'active' : ''
@@ -268,51 +268,52 @@ function ChangeBrigade() {
                 handleRegionClick(region.id, setSelectedBrigade(null), setSelectedBrigadeName(null))
               }>
               {region.id === 1 ? 'Санкт-Петербург' : 'Москва'}
-            </div>
+            </button>
           ))}
-        </div>
-        <div
-          onClick={() => handleOpenModalNewProject()}
-          style={{ fontSize: '18px', paddingTop: '10px', cursor: 'pointer', color: 'black' }}>
-          &bull; Показать новые проекты
-        </div>
-        <div className="dropdown" ref={modalRef}>
-          <div className="dropdown__title" onClick={hadleOpenModalSelectedBrigade}>
-            Бригада: <span>{selectedBrigadeName ? selectedBrigadeName : 'Выбрать'}</span>
-          </div>
-          {openModalSelectedBrigade && (
-            <div className="dropdown__modal">
-              <div className="dropdown__modal-content">
-                <ul className="dropdown__modal-items">
-                  {/* Кнопка сброса выбора бригады */}
-                  <div
-                    className="dropdown__modal-item dropdown__modal-item--reset"
-                    onClick={() => {
-                      setSelectedBrigadeName(null);
-                      setSelectedBrigade(null);
-                      setOpenModalSelectedBrigade(false);
-                    }}>
-                    <li>Сбросить</li>
+          <button
+            className="calendar-brigade__filter-newProject"
+            onClick={() => handleOpenModalNewProject()}>
+            Новые проекты
+          </button>
+          <div className="calendar-bigade__dropdown" ref={modalRef}>
+            <button
+              className="calendar-brigade__dropdown-brigade"
+              onClick={hadleOpenModalSelectedBrigade}>
+              {selectedBrigadeName ? selectedBrigadeName : 'Бригада '}
+            </button>
+            {openModalSelectedBrigade && (
+              <div className="calendar-brigade__dropdown-modal">
+                <div className="calendar-brigade__dropdown-content">
+                  <div className="calendar-brigade__dropdown-items">
+                    <div
+                      className="calendar-brigade__dropdown-item calendar-brigade__dropdown-item--reset"
+                      onClick={() => {
+                        setSelectedBrigadeName(null);
+                        setSelectedBrigade(null);
+                        setOpenModalSelectedBrigade(false);
+                      }}>
+                      <div>Сбросить</div>
+                    </div>
+                    {brigades
+                      .filter((brigadesName) => brigadesName.regionId === selectedRegion)
+                      .map((brigadesName) => (
+                        <div key={brigadesName.id}>
+                          <div
+                            className="calendar-brigade__dropdown-item"
+                            onClick={() => {
+                              setSelectedBrigadeName(brigadesName.name);
+                              setSelectedBrigade(brigadesName.id);
+                              setOpenModalSelectedBrigade(false);
+                            }}>
+                            {brigadesName.name}
+                          </div>
+                        </div>
+                      ))}
                   </div>
-                  {brigades
-                    .filter((brigadesName) => brigadesName.regionId === selectedRegion)
-                    .map((brigadesName) => (
-                      <div key={brigadesName.id}>
-                        <li
-                          className="dropdown__modal-item"
-                          onClick={() => {
-                            setSelectedBrigadeName(brigadesName.name);
-                            setSelectedBrigade(brigadesName.id);
-                            setOpenModalSelectedBrigade(false);
-                          }}>
-                          {brigadesName.name}
-                        </li>
-                      </div>
-                    ))}
-                </ul>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         {selectedBrigade !== null ? (
           <>
