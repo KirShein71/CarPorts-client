@@ -3,7 +3,7 @@ import TableBrigadeCalendar from '../TableBrigadeCalendar/TableBrigadeCalendar';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { logout } from '../../http/userApi';
-import CreateProject from './modals/CreateProject';
+import CreateProject from '../ProjectList/modals/CreateProject';
 import Counter from './Counter';
 
 import './style.scss';

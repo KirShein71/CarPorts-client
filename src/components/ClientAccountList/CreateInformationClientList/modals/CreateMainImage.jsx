@@ -20,7 +20,7 @@ const CreateMainImage = (props) => {
     event.preventDefault();
     const data = new FormData();
     data.append('image', image, image.name);
-    console.log(image);
+
     data.append('otherDataKey', 'otherDataValue');
 
     createMainImage(id, data)

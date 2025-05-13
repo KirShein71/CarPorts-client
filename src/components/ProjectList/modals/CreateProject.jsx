@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createProject } from '../../../http/projectApi';
-import { createAccount } from '../../../http/userApi';
 import { getAllRegion } from '../../../http/regionApi';
 import './styles.scss';
+
 const defaultValue = {
   name: '',
   number: '',
@@ -16,6 +16,10 @@ const defaultValue = {
   region: '',
   phone: '',
   password: '',
+  contact: '',
+  address: '',
+  navigator: '',
+  coordinates: '',
 };
 const defaultValid = {
   name: null,
@@ -29,6 +33,10 @@ const defaultValid = {
   region: null,
   phone: null,
   password: null,
+  contact: null,
+  address: null,
+  navigator: null,
+  coordinates: null,
 };
 
 const isValid = (value) => {
@@ -54,14 +62,27 @@ const CreateProject = (props) => {
   const [regions, setRegions] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const form = React.useRef();
   const [clicked, setClicked] = React.useState(false);
-  const [projectId, setProjectId] = React.useState(null);
+  const [image, setImage] = React.useState(null);
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
 
   React.useEffect(() => {
     getAllRegion()
       .then((data) => setRegions(data))
       .catch((error) => console.error(error));
+  }, []);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 800);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const handleInputChange = (event) => {
@@ -78,7 +99,11 @@ const CreateProject = (props) => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const correct = isValid(value);
@@ -90,53 +115,45 @@ const CreateProject = (props) => {
       correct.agreement_date &&
       correct.design_period &&
       correct.expiration_date &&
-      correct.installation_period
+      correct.installation_period &&
+      correct.phone &&
+      correct.password
     ) {
-      const data = new FormData();
-      data.append('name', value.name.trim());
-      data.append('number', value.number.trim());
-      data.append('agreement_date', value.agreement_date.trim());
-      data.append('design_period', value.design_period.trim());
-      data.append('expiration_date', value.expiration_date.trim());
-      data.append('installation_period', value.installation_period.trim());
-      data.append('installation_billing', value.installation_billing.trim());
-      data.append('note', value.note.trim());
-      data.append('regionId', value.region);
+      try {
+        const data = new FormData();
+        // Данные проекта
+        data.append('name', value.name.trim());
+        data.append('number', value.number.trim());
+        data.append('agreement_date', value.agreement_date.trim());
+        data.append('design_period', value.design_period.trim());
+        data.append('expiration_date', value.expiration_date.trim());
+        data.append('installation_period', value.installation_period.trim());
+        data.append('installation_billing', value.installation_billing.trim());
+        data.append('note', value.note.trim());
+        data.append('regionId', value.region);
+        data.append('contact', value.contact.trim());
+        data.append('address', value.address.trim());
+        data.append('navigator', value.navigator.trim());
+        data.append('coordinates', value.coordinates.trim());
+        // Данные аккаунта
+        data.append('phone', value.phone.trim());
+        data.append('password', value.password.trim());
+        data.append('image', image, image.name);
 
-      createProject(data)
-        .then((data) => {
-          // приводим форму в изначальное состояние
-          setValue(defaultValue);
-          setValid(defaultValid);
-          setProjectId(data.id);
-        })
-        .catch((error) => alert(error.response.data.message));
+        const response = await createProject(data);
+
+        setValue(defaultValue);
+        setValid(defaultValid);
+        setShow(false);
+        setChange((state) => !state);
+      } catch (error) {
+        console.log(error.response?.data?.message);
+      }
     }
   };
 
   const handleInputClick = () => {
     setClicked(true);
-  };
-
-  const handleCreateAccount = async (event) => {
-    event.preventDefault();
-    const correct = isValid(value);
-    setValid(correct);
-    if (correct.phone && correct.password) {
-      const data = new FormData();
-      data.append('phone', value.phone.trim());
-      data.append('password', value.password.trim());
-      data.append('projectId', projectId);
-
-      createAccount(data)
-        .then((data) => {
-          setValue(defaultValue);
-          setValid(defaultValid);
-          setShow(false);
-          setChange((state) => !state);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
   };
 
   return (
@@ -156,161 +173,407 @@ const CreateProject = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Col>
-            <Form.Control
-              name="number"
-              value={value.number}
-              onChange={(e) => handleInputChange(e)}
-              isValid={valid.number === true}
-              isInvalid={valid.number === false}
-              placeholder="Номер проекта"
-              className="mb-3"
-            />
-          </Col>
-          <Form.Control
-            name="name"
-            value={value.name}
-            onChange={(e) => handleInputChange(e)}
-            isValid={valid.name === true}
-            isInvalid={valid.name === false}
-            placeholder="Название проекта"
-          />
-          <Row className="mb-3 mt-4">
-            <Col>
-              <Form.Select
-                name="region"
-                value={value.region}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.region === true}
-                isInvalid={valid.region === false}>
-                <option value="">Регион</option>
-                {regions &&
-                  regions.map((region) => (
-                    <option key={region.id} value={region.id}>
-                      {region.region}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Col>
-          </Row>
-          <Row className="mb-3 flex-column flex-md-row">
-            <Col md={3} className="my-3">
-              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
-                <>
-                  <label for="agreement_date">Дата договора</label>
+          {isMobile ? (
+            <>
+              <Col md={3}>
+                <Form.Control
+                  name="number"
+                  value={value.number}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.number === true}
+                  isInvalid={valid.number === false}
+                  placeholder="Номер проекта"
+                  className="mb-3"
+                />
+              </Col>
+              <Col>
+                <Form.Control
+                  name="name"
+                  value={value.name}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.name === true}
+                  isInvalid={valid.name === false}
+                  placeholder="Название проекта"
+                />
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Select
+                  name="region"
+                  value={value.region}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.region === true}
+                  isInvalid={valid.region === false}>
+                  <option value="">Регион</option>
+                  {regions &&
+                    regions.map((region) => (
+                      <option key={region.id} value={region.id}>
+                        {region.region}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Col>
+              <Col md={3} className="mt-3">
+                {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                  <>
+                    <label for="agreement_date">Дата договора</label>
+                    <Form.Control
+                      id="agreement_date"
+                      name="agreement_date"
+                      value={value.agreement_date}
+                      onChange={(e) => handleInputChange(e)}
+                      isValid={valid.agreement_date === true}
+                      isInvalid={valid.agreement_date === false}
+                      type="date"
+                    />
+                  </>
+                ) : (
                   <Form.Control
-                    id="agreement_date"
                     name="agreement_date"
                     value={value.agreement_date}
                     onChange={(e) => handleInputChange(e)}
                     isValid={valid.agreement_date === true}
                     isInvalid={valid.agreement_date === false}
-                    type="date"
+                    placeholder="Дата договора"
+                    type="text"
+                    onFocus={(e) => (e.target.type = 'date')}
+                    onBlur={(e) => (e.target.type = 'text')}
                   />
-                </>
-              ) : (
+                )}
+              </Col>
+              <Col md={3} className="mt-3">
                 <Form.Control
-                  name="agreement_date"
-                  value={value.agreement_date}
-                  onChange={(e) => handleInputChange(e)}
-                  isValid={valid.agreement_date === true}
-                  isInvalid={valid.agreement_date === false}
-                  placeholder="Дата договора"
-                  type="text"
-                  onFocus={(e) => (e.target.type = 'date')}
-                  onBlur={(e) => (e.target.type = 'text')}
+                  name="design_period"
+                  value={value.design_period}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.design_period === true}
+                  isInvalid={valid.design_period === false}
+                  placeholder="Срок проектирования"
                 />
-              )}
-            </Col>
-            <Col md={3} className="my-3">
-              <Form.Control
-                name="design_period"
-                value={value.design_period}
-                onChange={(e) => handleInputNumberChange(e)}
-                isValid={valid.design_period === true}
-                isInvalid={valid.design_period === false}
-                placeholder="Срок проектирования"
-              />
-            </Col>
-            <Col md={3} className="my-3">
-              <Form.Control
-                name="expiration_date"
-                value={value.expiration_date}
-                onChange={(e) => handleInputNumberChange(e)}
-                isValid={valid.expiration_date === true}
-                isInvalid={valid.expiration_date === false}
-                placeholder="Срок производства"
-              />
-            </Col>
-            <Col md={3} className="my-3">
-              <Form.Control
-                name="installation_period"
-                value={value.installation_period}
-                onChange={(e) => handleInputNumberChange(e)}
-                isValid={valid.installation_period === true}
-                isInvalid={valid.installation_period === false}
-                placeholder="Срок монтажа"
-              />
-            </Col>
-            <Col md={3} className="my-3">
-              <Form.Control
-                name="installation_billing"
-                value={value.installation_billing}
-                onChange={(e) => handleInputNumberChange(e)}
-                isValid={valid.installation_billing === true}
-                isInvalid={valid.installation_billing === false}
-                placeholder="Расчетный срок монтажа"
-              />
-            </Col>
-            <Col md={12} className="my-3">
-              <textarea
-                name="note"
-                value={value.note}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.note === true}
-                isInvalid={valid.note === false}
-                placeholder="Примечание"
-                style={{ height: '200px', width: '100%' }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button variant="dark" type="submit">
-                Сохранить
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-        <Modal.Title className="mt-3">Создать личный кабинет</Modal.Title>
-        <Form ref={form} noValidate onSubmit={handleCreateAccount}>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="phone"
-                value={clicked ? value.phone || '8' : ''}
-                onChange={(e) => handleInputChange(e)}
-                onClick={handleInputClick}
-                isValid={valid.phone === true}
-                isInvalid={valid.phone === false}
-                minLength="10"
-                maxLength="11"
-              />
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="password"
-                value={value.password}
-                onChange={(e) => handleInputChange(e)}
-                onClick={handleInputClick}
-                isValid={valid.password === true}
-                isInvalid={valid.password === false}
-                placeholder="Введите пароль"
-              />
-            </Col>
-          </Row>
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Control
+                  name="expiration_date"
+                  value={value.expiration_date}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.expiration_date === true}
+                  isInvalid={valid.expiration_date === false}
+                  placeholder="Срок производства"
+                />
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Control
+                  name="installation_period"
+                  value={value.installation_period}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.installation_period === true}
+                  isInvalid={valid.installation_period === false}
+                  placeholder="Срок монтажа"
+                />
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Control
+                  name="installation_billing"
+                  value={value.installation_billing}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.installation_billing === true}
+                  isInvalid={valid.installation_billing === false}
+                  placeholder="Расчетный срок монтажа"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="contact"
+                  value={value.contact}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.contact === true}
+                  isInvalid={valid.contact === false}
+                  placeholder="Контакты"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="address"
+                  value={value.address}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.address === true}
+                  isInvalid={valid.address === false}
+                  placeholder="Адрес"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="navigator"
+                  value={value.navigator}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.navigator === true}
+                  isInvalid={valid.navigator === false}
+                  placeholder="Навигатор"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="coordinates"
+                  value={value.coordinates}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.coordinates === true}
+                  isInvalid={valid.coordinates === false}
+                  placeholder="Кооридинаты"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="phone"
+                  value={clicked ? value.phone || '8' : ''}
+                  onChange={(e) => handleInputChange(e)}
+                  onClick={handleInputClick}
+                  isValid={valid.phone === true}
+                  isInvalid={valid.phone === false}
+                  minLength="10"
+                  maxLength="11"
+                  placeholder="Логин личн.кабинета"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="password"
+                  value={value.password}
+                  onChange={(e) => handleInputChange(e)}
+                  onClick={handleInputClick}
+                  isValid={valid.password === true}
+                  isInvalid={valid.password === false}
+                  placeholder="Пароль личн.кабинета"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="image"
+                  type="file"
+                  onChange={(e) => handleImageChange(e)}
+                  placeholder="Изображение..."
+                />
+              </Col>
+              <Col md={12} className="mt-3 mb-3">
+                <textarea
+                  name="note"
+                  value={value.note}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.note === true}
+                  isInvalid={valid.note === false}
+                  placeholder="Примечание"
+                  style={{ height: '200px', width: '100%' }}
+                />
+              </Col>
+            </>
+          ) : (
+            <>
+              <Row>
+                <Col md={3}>
+                  <Form.Control
+                    name="number"
+                    value={value.number}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.number === true}
+                    isInvalid={valid.number === false}
+                    placeholder="Номер проекта"
+                    className="mb-3"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="name"
+                    value={value.name}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.name === true}
+                    isInvalid={valid.name === false}
+                    placeholder="Название проекта"
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <Form.Select
+                    name="region"
+                    value={value.region}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.region === true}
+                    isInvalid={valid.region === false}>
+                    <option value="">Регион</option>
+                    {regions &&
+                      regions.map((region) => (
+                        <option key={region.id} value={region.id}>
+                          {region.region}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="contact"
+                    value={value.contact}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.contact === true}
+                    isInvalid={valid.contact === false}
+                    placeholder="Контакты"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                    <>
+                      <label for="agreement_date">Дата договора</label>
+                      <Form.Control
+                        id="agreement_date"
+                        name="agreement_date"
+                        value={value.agreement_date}
+                        onChange={(e) => handleInputChange(e)}
+                        isValid={valid.agreement_date === true}
+                        isInvalid={valid.agreement_date === false}
+                        type="date"
+                      />
+                    </>
+                  ) : (
+                    <Form.Control
+                      name="agreement_date"
+                      value={value.agreement_date}
+                      onChange={(e) => handleInputChange(e)}
+                      isValid={valid.agreement_date === true}
+                      isInvalid={valid.agreement_date === false}
+                      placeholder="Дата договора"
+                      type="text"
+                      onFocus={(e) => (e.target.type = 'date')}
+                      onBlur={(e) => (e.target.type = 'text')}
+                    />
+                  )}
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="address"
+                    value={value.address}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.address === true}
+                    isInvalid={valid.address === false}
+                    placeholder="Адрес"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <Form.Control
+                    name="design_period"
+                    value={value.design_period}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.design_period === true}
+                    isInvalid={valid.design_period === false}
+                    placeholder="Срок проектирования"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="navigator"
+                    value={value.navigator}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.navigator === true}
+                    isInvalid={valid.navigator === false}
+                    placeholder="Навигатор"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <Form.Control
+                    name="expiration_date"
+                    value={value.expiration_date}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.expiration_date === true}
+                    isInvalid={valid.expiration_date === false}
+                    placeholder="Срок производства"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="coordinates"
+                    value={value.coordinates}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.coordinates === true}
+                    isInvalid={valid.coordinates === false}
+                    placeholder="Кооридинаты"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <Form.Control
+                    name="installation_period"
+                    value={value.installation_period}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.installation_period === true}
+                    isInvalid={valid.installation_period === false}
+                    placeholder="Срок монтажа"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="phone"
+                    value={clicked ? value.phone || '8' : ''}
+                    onChange={(e) => handleInputChange(e)}
+                    onClick={handleInputClick}
+                    isValid={valid.phone === true}
+                    isInvalid={valid.phone === false}
+                    minLength="10"
+                    maxLength="11"
+                    placeholder="Логин личн.кабинета"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <Form.Control
+                    name="installation_billing"
+                    value={value.installation_billing}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.installation_billing === true}
+                    isInvalid={valid.installation_billing === false}
+                    placeholder="Расчетный срок монтажа"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="password"
+                    value={value.password}
+                    onChange={(e) => handleInputChange(e)}
+                    onClick={handleInputClick}
+                    isValid={valid.password === true}
+                    isInvalid={valid.password === false}
+                    placeholder="Пароль личн.кабинета"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col>
+                  <Form.Control
+                    name="image"
+                    type="file"
+                    onChange={(e) => handleImageChange(e)}
+                    placeholder="Изображение..."
+                  />
+                </Col>
+              </Row>
+              <Row className="mb-3 mt-3">
+                <Col md={12}>
+                  <textarea
+                    name="note"
+                    value={value.note}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.note === true}
+                    isInvalid={valid.note === false}
+                    placeholder="Примечание"
+                    style={{ height: '200px', width: '100%' }}
+                  />
+                </Col>
+              </Row>
+            </>
+          )}
           <Row>
             <Col>
               <Button variant="dark" type="submit">
