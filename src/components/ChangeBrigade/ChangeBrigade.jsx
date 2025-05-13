@@ -333,7 +333,7 @@ function ChangeBrigade() {
           )}
         </div>
         {isMobile ? (
-          <div className="calendar-bigade__dropdown" ref={modalRef}>
+          <div className="calendar-brigade__dropdown" ref={modalRef}>
             <button
               className="calendar-brigade__dropdown-brigade"
               onClick={hadleOpenModalSelectedBrigade}>
