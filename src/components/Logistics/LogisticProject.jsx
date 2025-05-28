@@ -114,13 +114,13 @@ function LogisticProject({
                           <td className="logistic-project__table-td">{prop.materialName}</td>
                           <td className="logistic-project__table-td">{prop.check}</td>
                           <td
-                            style={{ cursor: 'pointer', textAlign: 'center' }}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => handleOpenModalCreateWeightMaterial(prop.id)}
                             className="logistic-project__table-td">
                             {prop.weight ? `${prop.weight} кг` : 'Вес'}
                           </td>
                           <td
-                            style={{ cursor: 'pointer', textAlign: 'center' }}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => handleOpenModalCreateDimensionsMaterial(prop.id)}
                             className="logistic-project__table-td">
                             {prop.dimensions ? `${prop.dimensions} м` : 'Габариты'}
