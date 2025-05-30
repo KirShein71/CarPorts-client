@@ -22,6 +22,7 @@ function ProjectMaterial({
   user,
   buttonNoColorProject,
   buttonNoDatePaymentProject,
+  handleOpenModalUpdateMaterialId,
 }) {
   return (
     <div className="projectmaterial">
@@ -73,7 +74,12 @@ function ProjectMaterial({
                   .map((prop) => {
                     return (
                       <tr key={prop.id}>
-                        <td className="production_column">{prop.materialName}</td>
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleOpenModalUpdateMaterialId(prop.id)}
+                          className="production_column">
+                          {prop.materialName}
+                        </td>
                         <td
                           style={{ cursor: 'pointer', textAlign: 'center' }}
                           onClick={

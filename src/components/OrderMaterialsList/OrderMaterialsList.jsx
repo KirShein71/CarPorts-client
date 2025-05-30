@@ -14,6 +14,7 @@ import CreateShippingDate from './modals/createShippingDate';
 import CreatePaymentDate from './modals/createPaymentDate';
 import CreateMaterial from './modals/createMaterial';
 import CreateColor from './modals/createColor';
+import UpdateMaterialId from './modals/updateMaterialId';
 import MaterialProject from './MaterialProject';
 import ProjectMaterial from './ProjectMaterial';
 import { AppContext } from '../../context/AppContext';
@@ -39,6 +40,7 @@ function OrderMaterialsList() {
   const [activeTab, setActiveTab] = React.useState('project');
   const [buttonNoDatePaymentProject, setButtonNoDatePaymentProject] = React.useState(false);
   const [buttonNoColorProject, setButtonNoColorProject] = React.useState(false);
+  const [modalUpdateMaterialId, setModalUpdateMaterialId] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])
@@ -124,6 +126,11 @@ function OrderMaterialsList() {
   const handleCreateColor = (id) => {
     setProjectMaterials(id);
     setCreateColor(true);
+  };
+
+  const handleOpenModalUpdateMaterialId = (id) => {
+    setProjectMaterials(id);
+    setModalUpdateMaterialId(true);
   };
 
   const handleScroll = () => {
@@ -216,6 +223,13 @@ function OrderMaterialsList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
+      <UpdateMaterialId
+        id={projectMaterials}
+        show={modalUpdateMaterialId}
+        setShow={setModalUpdateMaterialId}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+      />
       <div className="ordermaterialslist">
         <Header title={'Заказы материалов'} />
 
@@ -277,6 +291,7 @@ function OrderMaterialsList() {
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateMaterial={handleCreateMaterial}
                 handleCreateColor={handleCreateColor}
+                handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}
                 user={user}
                 buttonNoColorProject={buttonNoColorProject}
                 buttonNoDatePaymentProject={buttonNoDatePaymentProject}
@@ -296,6 +311,7 @@ function OrderMaterialsList() {
                 hadleShippingDate={hadleShippingDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateColor={handleCreateColor}
+                handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}
                 buttonNoColorProject={buttonNoColorProject}
                 buttonNoDatePaymentProject={buttonNoDatePaymentProject}
                 user={user}

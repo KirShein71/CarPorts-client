@@ -25,6 +25,11 @@ export const fetchOneProjectMaterials = async (id) => {
     return data
 }
 
+export const updateMaterialIdInOrderMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/updateMaterialIdInOrderMaterials/${id}`, projectmaterials)
+    return data
+}
+
 export const createCheckProjectMaterials = async(id, projectmaterials) => {
     const {data} = await guestInstance.put(`projectmaterials/createCheckProjectMaterials/${id}`, projectmaterials)
     return data

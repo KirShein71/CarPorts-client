@@ -16,6 +16,7 @@ function MaterialProject({
   user,
   buttonNoColorProject,
   buttonNoDatePaymentProject,
+  handleOpenModalUpdateMaterialId,
 }) {
   const [sortOrder, setSortOrder] = React.useState('asc');
   const [sortField, setSortField] = React.useState('prop.number');
