@@ -103,6 +103,17 @@ const CreateProject = (props) => {
     setImage(event.target.files[0]);
   };
 
+  const fetchDefaultImage = async () => {
+    try {
+      const response = await fetch('/img/fon.jpg');
+      const blob = await response.blob();
+      return new File([blob], 'default.jpg', { type: 'image/jpeg' });
+    } catch (error) {
+      console.error('Ошибка загрузки изображения по умолчанию:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -138,14 +149,22 @@ const CreateProject = (props) => {
         // Данные аккаунта
         data.append('phone', value.phone.trim());
         data.append('password', value.password.trim());
-        data.append('image', image, image.name);
+        if (image) {
+          data.append('image', image, image.name);
+        } else {
+          // Если изображение не загружено, используем изображение по умолчанию
+          const defaultImage = await fetchDefaultImage();
+          data.append('image', defaultImage, 'default.jpg');
+        }
 
         const response = await createProject(data);
 
-        setValue(defaultValue);
-        setValid(defaultValid);
-        setShow(false);
-        setChange((state) => !state);
+        if (response.success) {
+          setValue(defaultValue);
+          setValid(defaultValid);
+          setShow(false);
+          setChange((state) => !state);
+        }
       } catch (error) {
         console.log(error.response?.data?.message);
       }

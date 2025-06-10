@@ -152,7 +152,7 @@ function CreateInformatoinClientList() {
           Изображение на главную
         </div>
         <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateMainImage(id)}>
-          Добавить изображение
+          Изменить изображение
         </Button>
         <div className="information__main-image-image">
           <img

@@ -557,7 +557,12 @@ function ProjectInfoList() {
             project.userProject &&
             (project.userProject.length === 0 ||
               project.userProject.every((user) => !user.image)) ? (
-              <img src="../img/fon.jpg" alt="image__company" />
+              <img
+                src="../img/fon.jpg"
+                alt="image__company"
+                onClick={() => handleCreateMainImage(user.userId)}
+                style={{ cursor: 'pointer' }}
+              />
             ) : (
               project.userProject &&
               project.userProject.map(
@@ -567,6 +572,8 @@ function ProjectInfoList() {
                       key={user.id}
                       src={process.env.REACT_APP_IMG_URL + user.image}
                       alt="main"
+                      onClick={() => handleCreateMainImage(user.userId)}
+                      style={{ cursor: 'pointer' }}
                     />
                   ),
               )
