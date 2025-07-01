@@ -367,6 +367,8 @@ function ProjectList() {
                 <th className="project-th">Факт</th>
                 <th className="project-th">План</th>
                 <th className="project-th">Остаток</th>
+                <th className="project-th">Дата закрытия</th>
+                <th className="project-th">Ср. реал.</th>
                 <th className="project-th"></th>
               </tr>
             </thead>
@@ -452,6 +454,29 @@ function ProjectList() {
                         <td></td>
                       </>
                     )}
+                    <td style={{ textAlign: 'center' }}>
+                      {item.date_finish !== null ? (
+                        <Moment format="DD.MM.YYYY">{item.date_finish}</Moment>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {item && item.date_finish !== null
+                        ? (() => {
+                            const finishDate = new Date(item.date_finish);
+                            const agreementDate = new Date(item.agreement_date);
+
+                            // Разница в миллисекундах
+                            const diffTime = finishDate - agreementDate;
+
+                            // Конвертируем в дни
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                            return diffDays;
+                          })()
+                        : ''}
+                    </td>
                     <td>
                       {item.installation_billing === null || item.regionId === null ? (
                         <img
