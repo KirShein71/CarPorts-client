@@ -67,6 +67,7 @@ function ClosedProject(props) {
         setValue(prod);
         setValid(isValid(prod));
         setChange((state) => !state);
+        setShow(false);
       } catch (error) {
         if (error.response?.data) {
           alert(error.response.data.message);
