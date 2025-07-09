@@ -41,6 +41,11 @@ function ClosedProject(props) {
       });
   };
 
+  const handleClosedModal = () => {
+    setShow(false);
+    setChange((state) => !state);
+  };
+
   const handleFinishProject = async (event) => {
     event.preventDefault(); // Добавьте, если ещё нет
 
@@ -66,8 +71,8 @@ function ClosedProject(props) {
         };
         setValue(prod);
         setValid(isValid(prod));
-        setChange((state) => !state);
-        setShow(false);
+
+        handleClosedModal();
       } catch (error) {
         if (error.response?.data) {
           alert(error.response.data.message);
@@ -78,11 +83,6 @@ function ClosedProject(props) {
         setIsLoading(false);
       }
     }
-  };
-
-  const handleClosedModal = () => {
-    setShow(false);
-    setChange((state) => !state);
   };
 
   return (
