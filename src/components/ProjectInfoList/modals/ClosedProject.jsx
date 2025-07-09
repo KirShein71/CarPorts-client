@@ -22,7 +22,6 @@ function ClosedProject(props) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  console.log(dateFinish);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -43,33 +42,40 @@ function ClosedProject(props) {
   };
 
   const handleFinishProject = async (event) => {
+    event.preventDefault(); // Добавьте, если ещё нет
+
     const correct = isValid(value);
     setValid(correct);
+
     if (correct.date_finish) {
+      // Исправленный формат даты для Safari
+      const dateValue = new Date(value.date_finish);
+      const formattedDate = dateValue.toISOString().split('T')[0]; // "YYYY-MM-DD"
+
       const data = new FormData();
-      data.append('date_finish', value.date_finish.trim());
-      data.append('finish', (value.finish = true));
+      data.append('date_finish', formattedDate); // Убрали trim()
+      data.append('finish', 'true'); // Явное строковое значение
+
       setIsLoading(true);
-      createDateFinish(id, data)
-        .then((data) => {
-          const prod = {
-            date_finish: data.date_finish.toString(),
-            finish: data.finish.toString(),
-          };
-          setValue(prod);
-          setValid(isValid(prod));
-          setChange((state) => !state);
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            alert(error.response.data.message);
-          } else {
-            console.log('An error occurred');
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+
+      try {
+        const response = await createDateFinish(id, data);
+        const prod = {
+          date_finish: response.date_finish,
+          finish: response.finish.toString(),
+        };
+        setValue(prod);
+        setValid(isValid(prod));
+        setChange((state) => !state);
+      } catch (error) {
+        if (error.response?.data) {
+          alert(error.response.data.message);
+        } else {
+          console.error('Error:', error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
