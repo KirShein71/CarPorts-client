@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 
 import './style.scss';
+import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
@@ -37,6 +38,8 @@ function ProjectList() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [openGearModal, setOpenGearModal] = React.useState(false);
+  const [openModalUpdateDateFinishProject, setOpenModalUpdateDateFinishProject] =
+    React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -174,6 +177,11 @@ function ProjectList() {
     setOpenGearModal(true);
   };
 
+  const hadleOpenModalUpdateDateFinishProject = (id) => {
+    setProject(id);
+    setOpenModalUpdateDateFinishProject(true);
+  };
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -304,6 +312,13 @@ function ProjectList() {
         setChange={setChange}
         id={project}
         scrollPosition={scrollPosition}
+      />
+      <UpdateDateFinishProject
+        show={openModalUpdateDateFinishProject}
+        setShow={setOpenModalUpdateDateFinishProject}
+        change={change}
+        setChange={setChange}
+        id={project}
       />
 
       <div style={{ display: 'flex' }}>
@@ -456,7 +471,12 @@ function ProjectList() {
                     )}
                     <td style={{ textAlign: 'center' }}>
                       {item.date_finish !== null ? (
-                        <Moment format="DD.MM.YYYY">{item.date_finish}</Moment>
+                        <Moment
+                          format="DD.MM.YYYY"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => hadleOpenModalUpdateDateFinishProject(item.id)}>
+                          {item.date_finish}
+                        </Moment>
                       ) : (
                         ''
                       )}
