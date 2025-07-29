@@ -66,7 +66,10 @@ function GantBrigade(props) {
                     {getDayName(gantBrigDate.date)}
                   </td>
                   {brigades
-                    .filter((gantBrigName) => gantBrigName.regionId === selectedRegion)
+                    .filter(
+                      (gantBrigName) =>
+                        gantBrigName.regionId === selectedRegion && gantBrigName.active === 'true',
+                    )
                     .map((gantBrigName) => {
                       const dateBrig = brigadesDates.find(
                         (el) => el.brigadeId === gantBrigName.id && el.dateId === gantBrigDate.id,
