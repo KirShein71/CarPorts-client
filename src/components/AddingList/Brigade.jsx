@@ -6,7 +6,20 @@ import CreatePasswordBrigade from './modals/CreatePasswordBrigade';
 import UpdateBrigadePhone from './modals/UpdateBrigadePhone';
 import UpdateBrigadeName from './modals/UpdateBrigadeName';
 import { Table, Button } from 'react-bootstrap';
-import { fetchBrigades, deleteBrigade } from '../../http/bragadeApi';
+import { fetchBrigades, deleteBrigade, updateActiveBrigade } from '../../http/bragadeApi';
+
+const defaultValue = { active: '' };
+const defaultValid = {
+  active: null,
+};
+
+const isValid = (value) => {
+  const result = {};
+  for (let key in value) {
+    if (key === 'active') result.active = value.active.trim() !== '';
+  }
+  return result;
+};
 
 function Brigade() {
   const [brigades, setBrigades] = React.useState([]);
@@ -18,6 +31,9 @@ function Brigade() {
   const [updateBrigadePhoneModal, setUpdateBrigadePhoneModal] = React.useState(false);
   const [updateBrigadeNameModal, setUpdateBrigadeNameModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [value, setValue] = React.useState(defaultValue);
+  const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     fetchBrigades().then((data) => setBrigades(data));
@@ -58,6 +74,42 @@ function Brigade() {
   const handleCreatePasswordBrigade = (id) => {
     setBrigade(id);
     setCreatePasswordModal(true);
+  };
+
+  const handleInactiveBrigade = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'true');
+
+    setIsLoading(true);
+    updateActiveBrigade(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message))
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleActiveBrigade = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'false');
+
+    setIsLoading(true);
+    updateActiveBrigade(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message))
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -106,6 +158,8 @@ function Brigade() {
               <th>Регион</th>
               <th>Пароль</th>
               <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -137,6 +191,23 @@ function Brigade() {
                     <Button variant="dark" onClick={() => handleUpdateBrigade(brigade.id)}>
                       Редактирование
                     </Button>
+                  </td>
+                  <td>
+                    {brigade.active === 'true' ? (
+                      <img
+                        style={{ display: 'block', margin: '0 auto' }}
+                        src="./img/active.png"
+                        alt="active"
+                        onClick={() => handleActiveBrigade(brigade.id)}
+                      />
+                    ) : (
+                      <img
+                        style={{ display: 'block', margin: '0 auto' }}
+                        src="./img/inactive.png"
+                        alt="inactive"
+                        onClick={() => handleInactiveBrigade(brigade.id)}
+                      />
+                    )}
                   </td>
                   <td>
                     <Button variant="dark" onClick={() => handleDeleteClick(brigade.id)}>

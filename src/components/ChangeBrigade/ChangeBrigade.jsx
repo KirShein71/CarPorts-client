@@ -311,7 +311,11 @@ function ChangeBrigade() {
                         <div>Сбросить</div>
                       </div>
                       {brigades
-                        .filter((brigadesName) => brigadesName.regionId === selectedRegion)
+                        .filter(
+                          (brigadesName) =>
+                            brigadesName.regionId === selectedRegion &&
+                            brigadesName.active === 'true',
+                        )
                         .map((brigadesName) => (
                           <div key={brigadesName.id}>
                             <div
@@ -353,7 +357,11 @@ function ChangeBrigade() {
                       <div>Сбросить</div>
                     </div>
                     {brigades
-                      .filter((brigadesName) => brigadesName.regionId === selectedRegion)
+                      .filter(
+                        (brigadesName) =>
+                          brigadesName.regionId === selectedRegion &&
+                          brigadesName.active === 'true',
+                      )
                       .map((brigadesName) => (
                         <div key={brigadesName.id}>
                           <div
@@ -417,12 +425,14 @@ function ChangeBrigade() {
                       {brigadesDates.filter(
                         (brigadeDate) =>
                           brigadeDate.brigadeId === selectedBrigade &&
+                          brigadeDate.brigade.active === 'true' &&
                           brigadeDate.dateId === date.id,
                       ).length > 0 ? (
                         brigadesDates
                           .filter(
                             (brigadeDate) =>
                               brigadeDate.brigadeId === selectedBrigade &&
+                              brigadeDate.brigade.active === 'true' &&
                               brigadeDate.dateId === date.id,
                           )
                           .map((brigadeDate) => {

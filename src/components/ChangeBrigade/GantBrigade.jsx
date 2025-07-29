@@ -40,7 +40,10 @@ function GantBrigade(props) {
               <tr>
                 <th className="project-th mobile">Дата</th>
                 {brigades
-                  .filter((gantBrigName) => gantBrigName.regionId === selectedRegion)
+                  .filter(
+                    (gantBrigName) =>
+                      gantBrigName.regionId === selectedRegion && gantBrigName.active === 'true',
+                  )
                   .map((gantBrigName) => (
                     <th key={gantBrigName.id} className="project-th">
                       {gantBrigName.name}
