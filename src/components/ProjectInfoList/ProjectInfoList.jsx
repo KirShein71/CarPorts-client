@@ -1049,7 +1049,12 @@ function ProjectInfoList() {
           </div>
         )}
         {activeTab === 'userFile' && (
-          <UserFile project={project} change={change} setChange={setChange} userId={userId} />
+          <UserFile
+            project={project}
+            change={change}
+            setChange={setChange}
+            userId={project.userProject[0].userId}
+          />
         )}
         {activeTab === 'complaint' && <Complaint project={project} />}
         {activeTab === 'logistic' && (

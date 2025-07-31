@@ -6,6 +6,8 @@ import { Button } from 'react-bootstrap';
 function UserFile({ project, change, setChange, userId }) {
   const [fileCreateModal, setFileCreateModal] = React.useState(false);
 
+  console.log(userId);
+
   const handleDownloadFile = (fileUrl) => {
     fetch(fileUrl)
       .then((response) => response.blob())
