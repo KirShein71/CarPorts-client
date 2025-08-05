@@ -3,12 +3,13 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createBrigade } from '../../../http/bragadeApi';
 import { getAllRegion } from '../../../http/regionApi';
 
-const defaultValue = { name: '', phone: '', region: '', password: '' };
+const defaultValue = { name: '', phone: '', region: '', password: '', active: '' };
 const defaultValid = {
   name: null,
   phone: null,
   region: null,
   password: null,
+  active: null,
 };
 
 const isValid = (value) => {
@@ -16,6 +17,7 @@ const isValid = (value) => {
   for (let key in value) {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'password') result.password = value.password.trim() !== '';
     if (key === 'password') result.password = value.password.trim() !== '';
     if (key === 'region') result.region = value.region;
   }
@@ -63,7 +65,7 @@ const CreateBrigade = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('password', value.password.trim());
-      data.append('image', image);
+      data.append('active', (value.active = 'true'));
       data.append('regionId', value.region);
 
       setIsLoading(true); // Устанавливаем состояние загрузки
