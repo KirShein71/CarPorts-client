@@ -174,7 +174,8 @@ function ViewingPersonalAccountList() {
                           <a
                             className="manager__phone"
                             href={`tel:${
-                              userData.employeeId === 4 && userData.managerProjectId === null
+                              userData.employeeId === 4 ||
+                              (userData.employeeId === null && userData.managerProjectId === null)
                                 ? '89164874942'
                                 : userData.manager_project.phone
                             }`}>
