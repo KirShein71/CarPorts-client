@@ -7,11 +7,9 @@ import CreateDesignerStart from './modals/CreateDesignerStart';
 import UpdateDesigner from './modals/UpdateDisegner';
 import UpdateNote from './modals/UpdateNote';
 import { fetchAllProjects } from '../../http/projectApi';
-import { Spinner, Table, Form, Col } from 'react-bootstrap';
+import { Spinner, Table } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
-import { CSVLink } from 'react-csv';
-import { format } from 'date-fns';
 import { logout } from '../../http/userApi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
@@ -207,22 +205,6 @@ function PlanningList() {
     }
   };
 
-  const headers = [
-    { label: 'Номер проекта', key: 'number' },
-    { label: 'Название', key: 'name' },
-    { label: 'Примечание', key: 'note' },
-    { label: 'Дата договора', key: 'agreement_date' },
-    { label: 'Конструктор', key: 'designer' },
-  ];
-
-  const flattenedProjects = projects.map((project) => ({
-    number: project.number,
-    name: project.name,
-    note: project.note,
-    agreement_date: format(new Date(project.agreement_date), 'dd.MM.yyyy'),
-    designer: project.designer,
-  }));
-
   const holidays = [
     '2024-01-01',
     '2024-01-02',
@@ -409,7 +391,6 @@ function PlanningList() {
           <Table Table bordered hover size="sm">
             <thead>
               <tr>
-                <th className="planning-th">Номер проекта </th>
                 <th className="planning-th mobile">
                   Название<div className="border_bottom"></div>
                 </th>
@@ -424,7 +405,7 @@ function PlanningList() {
                     />
                   </div>
                 </th>
-                <th className="planning-th">Срок проектирования</th>
+                <th className="planning-th">Срок</th>
                 <th className="planning-th">Дедлайн</th>
                 <th className="planning-th">Дата начала</th>
                 <th className="planning-th">Дата сдачи</th>
@@ -449,10 +430,12 @@ function PlanningList() {
                 })
                 .map((item) => (
                   <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }} key={item.id}>
-                    <td>{item.number}</td>
                     {user.isConstructor ? (
-                      <td className="planning-td mobile">
-                        {item.name}
+                      <td className="planning-td mobile" style={{ cursor: 'pointer' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <div>{item.name}</div>
+                          <div>{item.number}</div>
+                        </div>
                         <div className="border_top"></div>
                       </td>
                     ) : (
@@ -460,7 +443,10 @@ function PlanningList() {
                         className="planning-td mobile"
                         onClick={() => addToProjectInfo(item.id)}
                         style={{ cursor: 'pointer' }}>
-                        {item.name}
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <div>{item.name}</div>
+                          <div>{item.number}</div>
+                        </div>
                         <div className="border_top"></div>
                       </td>
                     )}
@@ -468,7 +454,9 @@ function PlanningList() {
                     <td style={{ cursor: 'pointer' }}>
                       {item.note && (
                         <div onClick={() => handleUpdateNote(item.id)}>
-                          {selectedNote === item.id ? item.note : item.note.slice(0, 180)}
+                          {selectedNote === item.id
+                            ? item.note
+                            : item.note.slice(0, window.innerWidth < 460 ? 20 : 180)}
                         </div>
                       )}
                       {item.note.length > 180 && (
@@ -480,7 +468,7 @@ function PlanningList() {
                     <td>
                       <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                     </td>
-                    <td>{item.design_period}</td>
+                    <td style={{ textAlign: 'center' }}>{item.design_period}</td>
                     <td>
                       {(() => {
                         const agreementDate = new Date(item.agreement_date);
