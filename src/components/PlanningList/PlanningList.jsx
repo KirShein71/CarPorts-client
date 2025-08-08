@@ -432,10 +432,9 @@ function PlanningList() {
                   <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }} key={item.id}>
                     {user.isConstructor ? (
                       <td className="planning-td mobile" style={{ cursor: 'pointer' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                          <div>{item.name}</div>
-                          <div>{item.number}</div>
-                        </div>
+                        <div>{item.name}</div>
+                        <div>{item.number}</div>
+
                         <div className="border_top"></div>
                       </td>
                     ) : (
@@ -443,10 +442,9 @@ function PlanningList() {
                         className="planning-td mobile"
                         onClick={() => addToProjectInfo(item.id)}
                         style={{ cursor: 'pointer' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                          <div>{item.name}</div>
-                          <div>{item.number}</div>
-                        </div>
+                        <div>{item.name}</div>
+                        <div>{item.number}</div>
+
                         <div className="border_top"></div>
                       </td>
                     )}
