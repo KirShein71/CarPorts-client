@@ -459,11 +459,12 @@ function PlanningList() {
                             : item.note.slice(0, window.innerWidth < 460 ? 20 : 180)}
                         </div>
                       )}
-                      {item.note.length > 180 && (
-                        <div className="show" onClick={() => handleToggleText(item.id)}>
-                          {selectedNote === item.id ? 'Скрыть' : '...'}
-                        </div>
-                      )}
+                      {item.note.length > 180 ||
+                        (item.note.length > 20 && (
+                          <div className="show" onClick={() => handleToggleText(item.id)}>
+                            {selectedNote === item.id ? 'Скрыть' : '...'}
+                          </div>
+                        ))}
                     </td>
                     <td>
                       <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
