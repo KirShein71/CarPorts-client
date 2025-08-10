@@ -181,7 +181,8 @@ function PersonalAccountList() {
                                 : userData.manager_project.phone
                             }`}>
                             {formatPhoneNumber(
-                              userData.employeeId === 4 && userData.managerProjectId === null
+                              (userData.employeeId === 4 || userData.employeeId === null) &&
+                                userData.managerProjectId === null
                                 ? '89164874942'
                                 : userData.manager_project.phone,
                             )}
