@@ -9,7 +9,6 @@ import Images from './Images';
 import UpdateNote from './modals/UpdateNote';
 import CreateImages from './modals/CreateImages';
 import ComplaintEstimate from './ComplaintEstimate';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import DeleteComplaintImage from './modals/DeleteComplaintImage';
 
 function ComplaintInfo() {
@@ -80,11 +79,7 @@ function ComplaintInfo() {
         </Link>
         <h1 className="header__title">Подробная информация</h1>
       </div>
-      <Breadcrumb>
-        <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-        <Breadcrumb.Item href="/complaint">Рекламация</Breadcrumb.Item>
-        <Breadcrumb.Item active>Подробная информация</Breadcrumb.Item>
-      </Breadcrumb>
+
       <div className="complaint-info__content">
         <div className="complaint-info__image">
           {complaintProject &&
@@ -108,7 +103,7 @@ function ComplaintInfo() {
               <div className="complaint-info__number">{project.number}</div>
               <div className="complaint-info__name">{project.name}</div>
               <div className="complaint-info__date">
-                <Moment format="DD.MM.YYYY">{complaintProject && complaintProject.date}</Moment>
+                <Moment format="DD.MM.YYYY">{complaintProject.complaint.date}</Moment>
               </div>
             </div>
           ))}

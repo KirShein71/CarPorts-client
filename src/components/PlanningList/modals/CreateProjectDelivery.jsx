@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, updateProject } from '../../../http/projectApi';
-import { useNavigate } from 'react-router-dom';
+import { fetchOneProject, update } from '../../../http/projectApi';
 
 const defaultValue = { project_delivery: '' };
 const defaultValid = {
@@ -65,7 +64,7 @@ const CreateProjectDelivery = (props) => {
       const data = new FormData();
       data.append('project_delivery', value.project_delivery.trim());
       setIsLoading(true);
-      updateProject(id, data)
+      update(id, data)
         .then((data) => {
           const prod = {
             project_delivery: data.project_delivery.toString(),

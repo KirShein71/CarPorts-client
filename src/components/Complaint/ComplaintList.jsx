@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DeleteComplaint from './modals/DeleteComplaint';
 import ClosedComplaint from './modals/ClosedComplaint';
 import RestoreComplaint from './modals/RestoreComplaint';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import './style.scss';
 
@@ -131,10 +130,7 @@ function ComplaintList() {
   return (
     <div className="complaintlist">
       <Header title={'Рекламация'} />
-      <Breadcrumb>
-        <Breadcrumb.Item href="/">Главная</Breadcrumb.Item>
-        <Breadcrumb.Item active>Рекламация</Breadcrumb.Item>
-      </Breadcrumb>
+
       <CreateComplaint
         show={openModalCreateComplaint}
         setShow={setOpenModalCreateComplaint}

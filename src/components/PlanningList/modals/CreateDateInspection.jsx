@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, updateProject } from '../../../http/projectApi';
+import { fetchOneProject, update } from '../../../http/projectApi';
 
 const defaultValue = { date_inspection: '' };
 const defaultValid = {
@@ -54,6 +54,7 @@ const CreateDateInspection = (props) => {
     } else {
       setShow(false);
     }
+    console.log(setShow);
   };
 
   const handleSubmit = async (event) => {
@@ -64,7 +65,7 @@ const CreateDateInspection = (props) => {
       const data = new FormData();
       data.append('date_inspection', value.date_inspection.trim());
       setIsLoading(true);
-      updateProject(id, data)
+      update(id, data)
         .then((data) => {
           const prod = {
             date_inspection: data.date_inspection.toString(),

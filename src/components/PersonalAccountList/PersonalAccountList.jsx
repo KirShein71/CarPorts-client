@@ -1,7 +1,7 @@
 import React from 'react';
 import { getOneAccount, logout } from '../../http/userApi';
 import { Spinner, Table } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { useRef } from 'react';
 import Moment from 'react-moment';
@@ -14,7 +14,8 @@ function PersonalAccountList() {
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const isMobileScreen = window.innerWidth < 991;
 
   const { user } = React.useContext(AppContext);
@@ -23,7 +24,7 @@ function PersonalAccountList() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const userId = localStorage.getItem('id');
+    const userId = queryParams.get('user_id') || localStorage.getItem('id');
     getOneAccount(userId)
       .then((data) => setAccount(data))
       .finally(() => setFetching(false));

@@ -165,7 +165,10 @@ const brigadesRoutes = [
   { path: '/installation-complaint', Component: InstallationComplaint },
 ];
 
-const routes = [{ path: '/', Component: Home }];
+const routes = [
+  { path: '/', Component: Home },
+  { path: '/personalaccount', Component: PersonalAccount },
+];
 
 const AppRouter = observer(() => {
   const { user } = React.useContext(AppContext);

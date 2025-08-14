@@ -105,6 +105,21 @@ export const updateDesignPeriod = async (id, project) => {
     return data
 }
 
+export const updateDesignStart = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateDesignStart/${id}`, project)
+    return data
+}
+
+export const updateProjectDelivery = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateProjectDelivery/${id}`, project)
+    return data
+}
+
+export const updateDateInspection = async (id, project) => {
+    const { data } = await authInstance.put(`project/updateDateInspection/${id}`, project)
+    return data
+}
+
 export const updateExpirationDate = async (id, project) => {
     const { data } = await authInstance.put(`project/updateExpirationDate/${id}`, project)
     return data
