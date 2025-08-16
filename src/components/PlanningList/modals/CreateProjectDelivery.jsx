@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, update } from '../../../http/projectApi';
+import { fetchOneProject, updateProjectDelivery } from '../../../http/projectApi';
 
 const defaultValue = { project_delivery: '' };
 const defaultValid = {
@@ -64,7 +64,7 @@ const CreateProjectDelivery = (props) => {
       const data = new FormData();
       data.append('project_delivery', value.project_delivery.trim());
       setIsLoading(true);
-      update(id, data)
+      updateProjectDelivery(id, data)
         .then((data) => {
           const prod = {
             project_delivery: data.project_delivery.toString(),

@@ -4,6 +4,7 @@ import { Spinner, Table } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { useRef } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
@@ -24,11 +25,58 @@ function PersonalAccountList() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const userId = queryParams.get('user_id') || localStorage.getItem('id');
-    getOneAccount(userId)
-      .then((data) => setAccount(data))
-      .finally(() => setFetching(false));
-  }, []);
+    const verifyToken = async (token) => {
+      try {
+        const response = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        return response.ok ? await response.json() : null;
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const loadData = async () => {
+      const query = new URLSearchParams(location.search);
+      const token = query.get('token');
+
+      if (token) {
+        try {
+          // Быстрая проверка на фронтенде
+          const { userId } = jwtDecode(token);
+
+          // Глубокая проверка на бэкенде
+          const verification = await verifyToken(token);
+          if (!verification?.valid) throw new Error('Invalid token');
+
+          localStorage.setItem('auth_token', token);
+          const data = await getOneAccount(userId);
+          setAccount(data);
+        } catch (error) {
+          navigate('/login');
+        }
+      } else {
+        // Проверка существующей сессии
+        const storedToken = localStorage.getItem('auth_token');
+        if (storedToken) {
+          try {
+            const { userId } = jwtDecode(storedToken);
+            const data = await getOneAccount(userId);
+            setAccount(data);
+          } catch {
+            navigate('/login');
+          }
+        } else {
+          navigate('/login');
+        }
+      }
+      setFetching(false);
+    };
+
+    loadData();
+  }, [location.search]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);

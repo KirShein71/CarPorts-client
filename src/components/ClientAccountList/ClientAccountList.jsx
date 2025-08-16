@@ -51,6 +51,7 @@ function ClientAccountList() {
               <th>Номер</th>
               <th>Название</th>
               <th>Номер клиента</th>
+              <th>Телеграм</th>
               <th></th>
               <th></th>
             </tr>
@@ -61,6 +62,7 @@ function ClientAccountList() {
                 <td>{user.project.number}</td>
                 <td>{user.project.name}</td>
                 <td>{user.phone}</td>
+                <td>{user.telegram_chat_id ? 'Да' : 'Нет'}</td>
                 <td>
                   <Button variant="dark" size="sm" onClick={() => addToInfo(user.id)}>
                     Добавить информацию

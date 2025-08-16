@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, update } from '../../../http/projectApi';
+import { fetchOneProject, updateDesignStart } from '../../../http/projectApi';
 
 const defaultValue = { design_start: '' };
 const defaultValid = {
@@ -65,7 +65,7 @@ const CreateDesingStart = (props) => {
       const data = new FormData();
       data.append('design_start', value.design_start.trim());
       setIsLoading(true);
-      update(id, data)
+      updateDesignStart(id, data)
         .then((data) => {
           const prod = {
             design_start: data.design_start.toString(),
