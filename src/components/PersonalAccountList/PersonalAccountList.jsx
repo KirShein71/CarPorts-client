@@ -25,58 +25,42 @@ function PersonalAccountList() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const verifyToken = async (token) => {
+    const verifyAndLoad = async () => {
       try {
+        const query = new URLSearchParams(location.search);
+        const token = query.get('token') || localStorage.getItem('auth_token');
+
+        if (!token) {
+          throw new Error('No token found');
+        }
+
+        // Проверка токена
+        const { userId } = jwtDecode(token);
         const response = await fetch('/api/auth/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
         });
-        return response.ok ? await response.json() : null;
+
+        if (!response.ok) {
+          throw new Error('Invalid token');
+        }
+
+        // Загрузка данных
+        const data = await getOneAccount(userId);
+        setAccount(data);
+        localStorage.setItem('auth_token', token);
       } catch (error) {
-        return null;
+        console.error('Authentication error:', error);
+        localStorage.removeItem('auth_token');
+        navigate('/login', { state: { from: location.pathname } });
+      } finally {
+        setLoading(false);
       }
     };
 
-    const loadData = async () => {
-      const query = new URLSearchParams(location.search);
-      const token = query.get('token');
-
-      if (token) {
-        try {
-          // Быстрая проверка на фронтенде
-          const { userId } = jwtDecode(token);
-
-          // Глубокая проверка на бэкенде
-          const verification = await verifyToken(token);
-          if (!verification?.valid) throw new Error('Invalid token');
-
-          localStorage.setItem('auth_token', token);
-          const data = await getOneAccount(userId);
-          setAccount(data);
-        } catch (error) {
-          navigate('/login');
-        }
-      } else {
-        // Проверка существующей сессии
-        const storedToken = localStorage.getItem('auth_token');
-        if (storedToken) {
-          try {
-            const { userId } = jwtDecode(storedToken);
-            const data = await getOneAccount(userId);
-            setAccount(data);
-          } catch {
-            navigate('/login');
-          }
-        } else {
-          navigate('/login');
-        }
-      }
-      setFetching(false);
-    };
-
-    loadData();
-  }, [location.search]);
+    verifyAndLoad();
+  }, [location.search, navigate]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
