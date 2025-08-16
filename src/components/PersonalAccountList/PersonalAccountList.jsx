@@ -53,7 +53,7 @@ function PersonalAccountList() {
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
-        navigate('/login', { state: { from: location.pathname } });
+        navigate('/', { state: { from: location.pathname } });
       } finally {
         setLoading(false);
       }
