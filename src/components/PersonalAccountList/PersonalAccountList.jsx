@@ -4,24 +4,33 @@ import { Spinner, Table } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { useRef } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
 
 import './styles.scss';
 
 function PersonalAccountList() {
-  const [account, setAccount] = React.useState([]);
+  const [account, setAccount] = React.useState(null);
   const [fetching, setFetching] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const location = useLocation();
   const isMobileScreen = window.innerWidth < 991;
 
-  const { user } = React.useContext(AppContext);
+  const { user, setUser } = React.useContext(AppContext); // Добавлен setUser из контекста
   const imageRef = useRef(null);
-
   const navigate = useNavigate();
+
+  const fetchUserData = async (userId) => {
+    try {
+      const response = await fetch(`/user/getOneAccount/${userId}`);
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      throw error;
+    }
+  };
 
   React.useEffect(() => {
     const verifyAndLoad = async () => {
@@ -29,35 +38,51 @@ function PersonalAccountList() {
         const query = new URLSearchParams(location.search);
         const token = query.get('token');
 
-        if (!token) {
-          const storedToken = localStorage.getItem('auth_token');
-          if (!storedToken) {
-            navigate('/');
-            return;
-          }
-          // Пропускаем загрузку данных, если нет нового токена
+        // Если есть токен в URL, проверяем его
+        if (token) {
+          const response = await fetch('/user/verifyToken', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+          });
+
+          if (!response.ok) throw new Error('Invalid token');
+
+          const { userId } = await response.json();
+          const userData = await fetchUserData(userId);
+
+          setUser(userData); // Обновляем пользователя в контексте
+          setAccount(userData); // Устанавливаем данные аккаунта
+
+          // Очищаем токен из URL
+          navigate('/personalaccount', { replace: true });
           return;
         }
 
-        // Проверка токена
-        const response = await fetch('/user/verifyToken', {
+        // Если нет токена в URL, проверяем существующую сессию
+        const storedToken = localStorage.getItem('auth_token');
+        if (!storedToken) {
+          navigate('/');
+          return;
+        }
+
+        // Проверяем сохраненный токен
+        const verifyResponse = await fetch('/user/verifyToken', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // Убедитесь, что бэкенд принимает токен таким образом
-          },
-          body: JSON.stringify({ token }), // Дублируем токен в теле запроса
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: storedToken }),
         });
 
-        if (!response.ok) throw new Error('Invalid token');
+        if (!verifyResponse.ok) {
+          localStorage.removeItem('auth_token');
+          navigate('/');
+          return;
+        }
 
-        const { userId } = jwtDecode(token);
-        const data = await getOneAccount(userId);
-        setAccount(data);
-        localStorage.setItem('auth_token', token);
-
-        // Очищаем token из URL после успешной проверки
-        navigate('/personalaccount', { replace: true });
+        const { userId } = await verifyResponse.json();
+        const userData = await fetchUserData(userId);
+        setUser(userData);
+        setAccount(userData);
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
@@ -68,7 +93,7 @@ function PersonalAccountList() {
     };
 
     verifyAndLoad();
-  }, [location.search, navigate]);
+  }, [location.search, navigate, setUser]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
