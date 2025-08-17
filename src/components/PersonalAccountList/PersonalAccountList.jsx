@@ -24,51 +24,34 @@ function PersonalAccountList() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const verifyAndLoad = async () => {
-      try {
-        const query = new URLSearchParams(location.search);
-        const token = query.get('token');
+    const verifyToken = async () => {
+      const query = new URLSearchParams(location.search);
+      const token = query.get('token');
 
-        if (!token) {
-          const storedToken = localStorage.getItem('auth_token');
-          if (!storedToken) {
-            navigate('/');
-            return;
-          }
-          // Пропускаем загрузку данных, если нет нового токена
-          return;
+      if (token) {
+        try {
+          const response = await fetch('/auth/verify-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+          });
+
+          if (!response.ok) throw new Error('Invalid token');
+
+          const { token: sessionToken } = await response.json();
+          localStorage.setItem('auth_token', sessionToken);
+
+          // Убираем token из URL
+          navigate('/personalaccount', { replace: true });
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          navigate('/login');
         }
-
-        // Проверка токена
-        const response = await fetch('/user/verifyToken', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // Убедитесь, что бэкенд принимает токен таким образом
-          },
-          body: JSON.stringify({ token }), // Дублируем токен в теле запроса
-        });
-
-        if (!response.ok) throw new Error('Invalid token');
-
-        const { userId } = jwtDecode(token);
-        const data = await getOneAccount(userId);
-        setAccount(data);
-        localStorage.setItem('auth_token', token);
-
-        // Очищаем token из URL после успешной проверки
-        navigate('/personalaccount', { replace: true });
-      } catch (error) {
-        console.error('Authentication error:', error);
-        localStorage.removeItem('auth_token');
-        navigate('/');
-      } finally {
-        setFetching(false);
       }
     };
 
-    verifyAndLoad();
-  }, [location.search, navigate]);
+    verifyToken();
+  }, [location, navigate]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
