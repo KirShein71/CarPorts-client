@@ -33,6 +33,7 @@ function PersonalAccountList() {
           // Если токена нет, проверяем localStorage
           const storedToken = localStorage.getItem('auth_token');
           if (!storedToken) {
+            navigate('/');
             return;
           }
           // Если есть токен в localStorage, остаемся в ЛК
@@ -40,7 +41,7 @@ function PersonalAccountList() {
         }
 
         // Проверка токена
-        const response = await fetch('/api/auth/verify', {
+        const response = await fetch('/user/verifyToken', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -57,6 +58,7 @@ function PersonalAccountList() {
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
+        navigate('/');
       } finally {
         setFetching(false);
       }
