@@ -16,7 +16,6 @@ function PersonalAccountList() {
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
   const isMobileScreen = window.innerWidth < 991;
 
   const { user } = React.useContext(AppContext);
@@ -28,34 +27,40 @@ function PersonalAccountList() {
     const verifyAndLoad = async () => {
       try {
         const query = new URLSearchParams(location.search);
-        const token = query.get('token') || localStorage.getItem('auth_token');
+        const token = query.get('token');
 
         if (!token) {
-          throw new Error('No token found');
+          // Если токена нет, проверяем localStorage
+          const storedToken = localStorage.getItem('auth_token');
+          if (!storedToken) {
+            navigate('/');
+            return;
+          }
+          // Если есть токен в localStorage, остаемся в ЛК
+          return;
         }
 
         // Проверка токена
-        const { userId } = jwtDecode(token);
         const response = await fetch('/api/auth/verify', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (!response.ok) {
-          throw new Error('Invalid token');
-        }
+        if (!response.ok) throw new Error('Invalid token');
 
-        // Загрузка данных
+        const { userId } = jwtDecode(token);
         const data = await getOneAccount(userId);
         setAccount(data);
         localStorage.setItem('auth_token', token);
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
-        navigate('/', { state: { from: location.pathname } });
+        navigate('/');
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     };
 

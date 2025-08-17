@@ -168,6 +168,7 @@ const brigadesRoutes = [
 const routes = [
   { path: '/', Component: Home },
   { path: '/personalaccount', Component: PersonalAccount },
+  { path: '/personalaccount/:token', Component: PersonalAccount },
 ];
 
 const AppRouter = observer(() => {
