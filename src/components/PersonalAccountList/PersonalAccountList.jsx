@@ -33,7 +33,6 @@ function PersonalAccountList() {
           // Если токена нет, проверяем localStorage
           const storedToken = localStorage.getItem('auth_token');
           if (!storedToken) {
-            navigate('/');
             return;
           }
           // Если есть токен в localStorage, остаемся в ЛК
