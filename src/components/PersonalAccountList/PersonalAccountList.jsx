@@ -60,14 +60,6 @@ function PersonalAccountList() {
     fetchAccountData();
   }, [token, navigate]);
 
-  // Очистка токена из URL после успешной авторизации
-  React.useEffect(() => {
-    if (token && account) {
-      // Удаляем token из URL без перезагрузки страницы
-      navigate('/personalaccount', { replace: true });
-    }
-  }, [token, account, navigate]);
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
