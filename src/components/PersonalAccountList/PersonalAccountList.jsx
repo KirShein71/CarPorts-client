@@ -58,7 +58,6 @@ function PersonalAccountList() {
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
-        navigate('/');
       } finally {
         setFetching(false);
       }
