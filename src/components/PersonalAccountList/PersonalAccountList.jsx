@@ -30,13 +30,12 @@ function PersonalAccountList() {
         const token = query.get('token');
 
         if (!token) {
-          // Если токена нет, проверяем localStorage
           const storedToken = localStorage.getItem('auth_token');
           if (!storedToken) {
             navigate('/');
             return;
           }
-          // Если есть токен в localStorage, остаемся в ЛК
+          // Пропускаем загрузку данных, если нет нового токена
           return;
         }
 
@@ -45,8 +44,9 @@ function PersonalAccountList() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Убедитесь, что бэкенд принимает токен таким образом
           },
+          body: JSON.stringify({ token }), // Дублируем токен в теле запроса
         });
 
         if (!response.ok) throw new Error('Invalid token');
@@ -55,6 +55,9 @@ function PersonalAccountList() {
         const data = await getOneAccount(userId);
         setAccount(data);
         localStorage.setItem('auth_token', token);
+
+        // Очищаем token из URL после успешной проверки
+        navigate('/personalaccount', { replace: true });
       } catch (error) {
         console.error('Authentication error:', error);
         localStorage.removeItem('auth_token');
