@@ -1,5 +1,5 @@
 import React from 'react';
-import { getOneAccount, logout } from '../../http/userApi';
+import { getOneAccount, getOneAccountByToken, logout } from '../../http/userApi';
 import { Spinner, Table } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
@@ -15,85 +15,58 @@ function PersonalAccountList() {
   const [activeTab, setActiveTab] = React.useState('information');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get('token');
   const isMobileScreen = window.innerWidth < 991;
 
-  const { user, setUser } = React.useContext(AppContext); // Добавлен setUser из контекста
+  const { user } = React.useContext(AppContext);
   const imageRef = useRef(null);
   const navigate = useNavigate();
 
-  const fetchUserData = async (userId) => {
-    try {
-      const response = await fetch(`/user/getOneAccount/${userId}`);
-      if (!response.ok) throw new Error('Failed to fetch user data');
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      throw error;
-    }
-  };
-
   React.useEffect(() => {
-    const verifyAndLoad = async () => {
+    const fetchAccountData = async () => {
       try {
-        const query = new URLSearchParams(location.search);
-        const token = query.get('token');
+        let accountData;
 
-        // Если есть токен в URL, проверяем его
         if (token) {
-          const response = await fetch('/user/verifyToken', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
-          });
+          // Если есть токен в URL - используем его для получения данных
+          accountData = await getOneAccountByToken(token);
 
-          if (!response.ok) throw new Error('Invalid token');
-
-          const { userId } = await response.json();
-          const userData = await fetchUserData(userId);
-
-          setUser(userData); // Обновляем пользователя в контексте
-          setAccount(userData); // Устанавливаем данные аккаунта
-
-          // Очищаем токен из URL
-          navigate('/personalaccount', { replace: true });
-          return;
+          // Сохраняем ID пользователя в localStorage после успешной авторизации по токену
+          if (accountData?.id) {
+            localStorage.setItem('id', accountData.id);
+          }
+        } else {
+          // Если нет токена - пытаемся получить данные по ID из localStorage
+          const userId = localStorage.getItem('id');
+          if (!userId) {
+            throw new Error('Необходима авторизация');
+          }
+          accountData = await getOneAccount(userId);
         }
 
-        // Если нет токена в URL, проверяем существующую сессию
-        const storedToken = localStorage.getItem('auth_token');
-        if (!storedToken) {
-          navigate('/');
-          return;
-        }
-
-        // Проверяем сохраненный токен
-        const verifyResponse = await fetch('/user/verifyToken', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: storedToken }),
-        });
-
-        if (!verifyResponse.ok) {
-          localStorage.removeItem('auth_token');
-          navigate('/');
-          return;
-        }
-
-        const { userId } = await verifyResponse.json();
-        const userData = await fetchUserData(userId);
-        setUser(userData);
-        setAccount(userData);
+        setAccount(accountData);
       } catch (error) {
-        console.error('Authentication error:', error);
-        localStorage.removeItem('auth_token');
-        navigate('/');
+        console.error('Ошибка при загрузке данных:', error);
+        // Если ошибка авторизации - перенаправляем на страницу входа
+        if (error.message === 'Необходима авторизация' || error.response?.status === 401) {
+          navigate('/');
+        }
       } finally {
         setFetching(false);
       }
     };
 
-    verifyAndLoad();
-  }, [location.search, navigate, setUser]);
+    fetchAccountData();
+  }, [token, navigate]);
+
+  // Очистка токена из URL после успешной авторизации
+  React.useEffect(() => {
+    if (token && account) {
+      // Удаляем token из URL без перезагрузки страницы
+      navigate('/personalaccount', { replace: true });
+    }
+  }, [token, account, navigate]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);

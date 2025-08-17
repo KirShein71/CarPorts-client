@@ -49,12 +49,17 @@ export const createAccount = async (user) => {
     export const getOneAccount = async(id) => {
         const {data} = await guestInstance.get(`user/getOneAccount/${id}`);
         return data;
-      }
+    }
 
-      export const getOne = async(id) => {
+    export const getOneAccountByToken = async(token) => {
+        const {data} = await guestInstance.get(`user/getOneAccountByToken/${token}`);
+        return data;
+    }
+
+    export const getOne = async(id) => {
         const {data} = await guestInstance.get(`user/getOne/${id}`);
         return data;
-      }
+    }
 
     export const getAllUser = async() => {
         const { data } = await guestInstance.get('user/getall');
