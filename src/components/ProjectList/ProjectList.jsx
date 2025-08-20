@@ -265,6 +265,7 @@ function ProjectList() {
   if (fetching) {
     return <Spinner animation="border" />;
   }
+
   return (
     <div className="projectlist">
       <Header title={'Проекты '} />

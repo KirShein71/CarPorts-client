@@ -35,6 +35,7 @@ import ComplaintProject from '../pages/ComplaintProject';
 import InstallationComplaint from '../pages/InstallationComplaint';
 import ViewingInstallationComplaintPage from '../pages/ViewingInstallationComplaintPage';
 import Logistics from '../pages/Logistics';
+import GantContract from '../pages/GantContact';
 
 import { observer } from 'mobx-react';
 
@@ -102,6 +103,7 @@ const adminRoutes = [
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
   { path: '/logistics', Component: Logistics },
+  { path: '/gant-contracts', Component: GantContract },
 ];
 
 const managerSaleRoutes = [

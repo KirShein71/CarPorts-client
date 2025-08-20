@@ -58,7 +58,11 @@ function GantBrigade(props) {
                     className="project-td mobile"
                     style={{
                       backgroundColor:
+                        // Если сегодняшняя дата
                         gantBrigDate.date.toLocaleString().split('T')[0] === todayString
+                          ? '#bbbbbb'
+                          : // Или если суббота (6) или воскресенье (0)
+                          [0, 6].includes(new Date(gantBrigDate.date).getDay())
                           ? '#bbbbbb'
                           : '#ffffff',
                     }}>
@@ -106,10 +110,13 @@ function GantBrigade(props) {
                                 ? '#ff0000'
                                 : '#000000',
                             backgroundColor:
-                              new Date(gantBrigDate.date).toISOString().split('T')[0] ===
-                              todayString
+                              // Если сегодняшняя дата
+                              gantBrigDate.date.toLocaleString().split('T')[0] === todayString
                                 ? '#bbbbbb'
-                                : 'transparent',
+                                : // Или если суббота (6) или воскресенье (0)
+                                [0, 6].includes(new Date(gantBrigDate.date).getDay())
+                                ? '#bbbbbb'
+                                : '#ffffff',
                           }}
                           onClick={() => handleOpenModalEditDelete(dateBrig?.id)}>
                           {bisness}
@@ -123,10 +130,13 @@ function GantBrigade(props) {
                           style={{
                             cursor: 'pointer',
                             backgroundColor:
-                              new Date(gantBrigDate.date).toISOString().split('T')[0] ===
-                              todayString
+                              // Если сегодняшняя дата
+                              gantBrigDate.date.toLocaleString().split('T')[0] === todayString
                                 ? '#bbbbbb'
-                                : 'transparent',
+                                : // Или если суббота (6) или воскресенье (0)
+                                [0, 6].includes(new Date(gantBrigDate.date).getDay())
+                                ? '#bbbbbb'
+                                : '#ffffff',
                           }}>
                           {' '}
                         </td>

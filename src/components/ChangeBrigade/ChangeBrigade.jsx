@@ -202,6 +202,7 @@ function ChangeBrigade() {
     const fullDayName = new Date(date).toLocaleDateString('ru-RU', { weekday: 'long' });
     return dayNames[fullDayName] || fullDayName;
   };
+
   const handleOpenModalCreateBrigadeDate = (selectedBrigade, date) => {
     setBrigadeId(selectedBrigade);
     setDateBrigade(date);

@@ -31,27 +31,51 @@ function TableBrigadeCalendar() {
 
   const todayString = new Date().toISOString().split('T')[0]; // Получаем строку даты для сравнения
 
+  const getDayName = (date) => {
+    const dayNames = {
+      воскресенье: 'вск',
+      понедельник: 'пн',
+      вторник: 'вт',
+      среда: 'ср',
+      четверг: 'чт',
+      пятница: 'пт',
+      суббота: 'сб',
+    };
+
+    const fullDayName = new Date(date).toLocaleDateString('ru-RU', { weekday: 'long' });
+    return dayNames[fullDayName] || fullDayName;
+  };
+
   return (
     <div className="table-brigade" style={{ marginTop: '25px', width: '360px' }}>
       {dates.map((date) => (
-        <Table borderless size="sm" key={date.toISOString()}>
+        <Table bordered hover size="sm" key={date.toISOString()}>
           <thead>
             <tr>
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor:
-                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                  backgroundColor: '#bbbbbb',
                 }}>
-                {date.toLocaleDateString()}
+                {date.toLocaleDateString()} - {getDayName(date)}
               </th>
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor:
-                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                  backgroundColor: '#bbbbbb',
                 }}>
-                МО
+                МО{' '}
+                {
+                  dateBrigades.filter((dateMoscow) => {
+                    const dateString = date.toISOString().split('T')[0];
+                    return (
+                      dateMoscow.date.date.startsWith(dateString) &&
+                      dateMoscow.weekend === '' &&
+                      dateMoscow.warranty === '' &&
+                      dateMoscow.regionId === 2
+                    );
+                  }).length
+                }
               </th>
             </tr>
           </thead>
@@ -91,16 +115,29 @@ function TableBrigadeCalendar() {
           <thead>
             <tr>
               <th
+                className="table-brigade__header"
                 style={{
-                  backgroundColor:
-                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
-                }}></th>
-              <th
-                style={{
-                  backgroundColor:
-                    date.toISOString().split('T')[0] === todayString ? '#bbbbbb' : 'transparent',
+                  backgroundColor: '#bbbbbb',
                 }}>
-                ЛО
+                {date.toLocaleDateString()} - {getDayName(date)}
+              </th>
+              <th
+                className="table-brigade__header"
+                style={{
+                  backgroundColor: '#bbbbbb',
+                }}>
+                ЛО{' '}
+                {
+                  dateBrigades.filter((dateSankt) => {
+                    const dateString = date.toISOString().split('T')[0];
+                    return (
+                      dateSankt.date.date.startsWith(dateString) &&
+                      dateSankt.weekend === '' &&
+                      dateSankt.warranty === '' &&
+                      dateSankt.regionId === 1
+                    );
+                  }).length
+                }
               </th>
             </tr>
           </thead>

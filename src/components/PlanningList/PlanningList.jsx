@@ -37,7 +37,7 @@ function PlanningList() {
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [buttonNoDesignerProject, setButtonNoDesignerProject] = React.useState(true);
   const [buttonInProgressProject, setButtonInProgressProject] = React.useState(true);
-  const [buttonCompletedProject, setButtonCompletedProject] = React.useState(true);
+  const [buttonCompletedProject, setButtonCompletedProject] = React.useState(false);
   const navigate = useNavigate();
   const navigateToProjectInfo = useNavigate();
   const location = useLocation();
@@ -332,6 +332,7 @@ function PlanningList() {
           placeholder="Поиск"
           value={searchQuery}
           onChange={handleSearch}
+          style={{ color: 'black' }}
         />
       </div>
       <input

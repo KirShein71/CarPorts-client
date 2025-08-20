@@ -127,7 +127,8 @@
     height: 30px;
     width: 100px;
     font-size: 14px;
-     outline: none; 
+    outline: none; 
+    border: solid 1px #000000;
      @media(max-width: 460px) {
         
         display: none;
@@ -143,6 +144,7 @@
         height: 20px;
         font-size: 10px;
         margin-top: 15px;
+        border: solid 1px #000000;
     }
 }
 

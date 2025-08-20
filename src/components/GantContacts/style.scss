@@ -1,0 +1,53 @@
+.button__msk {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-right: 10px;
+    &.active {
+        background-color: #212529; /* Черный фон для активной кнопки */
+        color: #ffffff; /* Белый текст для активной кнопки */
+    }
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+      
+    }
+}
+
+.button__spb {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    font-size: 14px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.active {
+        background-color: #212529; /* Черный фон для активной кнопки */
+        color: #ffffff; /* Белый текст для активной кнопки */
+    }
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+   
+    }
+}
+
+
+.inactive {
+    background-color: #ffffff; /* Белый фон для неактивной кнопки */
+    color: #212529; /* Черный текст для неактивной кнопки */
+}

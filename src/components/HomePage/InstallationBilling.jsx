@@ -47,6 +47,16 @@ function InstallationBilling() {
     return `${day}.${month}.${year}`;
   };
 
+  const formatNumber = (number) => {
+    if (number === null || number === undefined) return '';
+    const num = typeof number === 'string' ? parseFloat(number) : number;
+
+    return new Intl.NumberFormat('ru-RU', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(num);
+  };
+
   return (
     <div className="installation-billing">
       <CreateCountBrigade
@@ -101,7 +111,7 @@ function InstallationBilling() {
                     <td
                       style={{ textAlign: 'center', cursor: 'pointer' }}
                       onClick={() => handleUpdateCountBrigade(billing.regionMsk)}>
-                      {billing.countWorkMsk}
+                      {formatNumber(billing.countWorkMsk)}
                     </td>
                   ) : (
                     <td onClick={() => handleCreateCountBrigade(billing.regionMsk)}></td>
@@ -110,7 +120,7 @@ function InstallationBilling() {
                     <td
                       style={{ textAlign: 'center', cursor: 'pointer' }}
                       onClick={() => handleUpdateCountBrigade(billing.regionSpb)}>
-                      {billing.countWorkSpb}
+                      {formatNumber(billing.countWorkSpb)}
                     </td>
                   ) : (
                     <td onClick={() => handleCreateCountBrigade(billing.regionSpb)}></td>
