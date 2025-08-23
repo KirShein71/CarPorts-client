@@ -58,6 +58,17 @@
     
   }
 
+.production_filter {
+    display: flex;
+    @media(max-width: 460px) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 10px;
+    }
+}
+
 .button__production {
     width: 190px;
     height: 30px;
@@ -74,7 +85,7 @@
         color: #ffffff; /* Белый текст для активной кнопки */
     }
     @media(max-width: 460px) {
-        width: 120px;
+        width: 90px;
         height: 20px;
         font-size: 10px;
         margin-right: 5px;
@@ -96,7 +107,7 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 60px;
+            width: 70px;
             height: 20px;
             font-size: 10px;
             margin-right: 5px;
@@ -119,7 +130,7 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 60px;
+            width: 80px;
             height: 20px;
             font-size: 10px;
             margin-right: 5px;

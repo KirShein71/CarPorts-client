@@ -221,7 +221,7 @@ function ProductionList() {
       {user.isManagerProduction ? (
         ''
       ) : (
-        <div style={{ display: 'flex' }}>
+        <div className="production_filter">
           <Link to="/productionchange">
             <button className="button__production">Внести данные</button>
           </Link>
