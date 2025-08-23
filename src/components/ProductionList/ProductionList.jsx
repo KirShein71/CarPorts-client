@@ -38,6 +38,8 @@ function ProductionList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [buttonShippedProject, setButtonShippedProject] = React.useState(true);
+  const [buttonOrderedProject, setButtonOrderedProject] = React.useState(true);
   const [modalUpdateShimpentDetails, setModalUpdateShimpentDetails] = React.useState(false);
   const [modalCreateOneShipmentDetails, setModalCreateOneShipmentDetails] = React.useState(false);
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
@@ -70,6 +72,8 @@ function ProductionList() {
     const filters = {
       isActive: buttonActiveProject,
       isClosed: buttonClosedProject,
+      isShipped: buttonShippedProject,
+      isOrdered: buttonOrderedProject, // добавляем новую фильтрацию
     };
 
     const filteredProjects = projectDetails.filter((project) => {
@@ -81,18 +85,38 @@ function ProductionList() {
         ? project.project.finish === null
         : filters.isClosed
         ? project.project.finish === 'true'
-        : true; // Если ни одна кнопка не активна, показываем все проекты
+        : true;
+
+      // Проверяем отгруженные проекты
+      const isShipped = shipmentDetails.some(
+        (shipment) => shipment.projectId === project.projectId,
+      );
+
+      const matchesShippingFilter = filters.isShipped ? isShipped : !isShipped;
+
+      // Новая фильтрация: если кнопка заказанных активна - показываем все, иначе только с detail_id = null
+      const matchesOrderFilter = filters.isOrdered
+        ? true // показываем все проекты
+        : project.props && project.props.length === 1 && project.props[0].detailId === null; // показываем только проекты без деталей
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {
-        return matchesSearch;
+        return matchesSearch && matchesShippingFilter && matchesOrderFilter;
       }
 
-      return matchesSearch && isActiveProject;
+      return matchesSearch && isActiveProject && matchesShippingFilter && matchesOrderFilter;
     });
 
     setFilteredProjects(filteredProjects);
-  }, [projectDetails, buttonActiveProject, buttonClosedProject, searchQuery]);
+  }, [
+    projectDetails,
+    buttonActiveProject,
+    buttonClosedProject,
+    buttonShippedProject,
+    buttonOrderedProject, // добавляем в зависимости
+    searchQuery,
+    shipmentDetails,
+  ]);
 
   const handleUpdateProjectDetailClick = (id) => {
     setProjectDetail(id);
@@ -131,6 +155,15 @@ function ProductionList() {
     if (!newButtonClosedProject) {
       setButtonActiveProject(true);
     }
+  };
+
+  const handleButtonShippedProject = () => {
+    setButtonShippedProject((prev) => !prev);
+  };
+
+  const handleButtonOrderedProject = () => {
+    setButtonOrderedProject((prev) => !prev);
+    setButtonShippedProject(false);
   };
 
   const handleSearch = (event) => {
@@ -192,7 +225,20 @@ function ProductionList() {
           <Link to="/productionchange">
             <button className="button__production">Внести данные</button>
           </Link>
-
+          <button
+            className={`button__production-ordered ${
+              buttonOrderedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonOrderedProject}>
+            Заказанные
+          </button>
+          <button
+            className={`button__production-shipped ${
+              buttonShippedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonShippedProject}>
+            Отгруженные
+          </button>
           <button
             className={`button__production-active ${
               buttonActiveProject === true ? 'active' : 'inactive'
@@ -337,6 +383,21 @@ function ProductionList() {
                           );
                           const quantity = detailProject ? detailProject.quantity : '';
 
+                          // Находим соответствующую отгрузку для сравнения количеств
+                          const correspondingShipmentDetail = correspondingShipment?.props?.find(
+                            (shipment) => shipment.detailId === part.id,
+                          );
+                          const shipmentQuantity = correspondingShipmentDetail
+                            ? correspondingShipmentDetail.shipment_quantity
+                            : 0;
+
+                          // Проверяем условие для окрашивания: есть отгрузка и количества не совпадают
+                          const shouldHighlight =
+                            correspondingShipment &&
+                            quantity &&
+                            shipmentQuantity &&
+                            (shipmentQuantity > quantity || shipmentQuantity < quantity);
+
                           return (
                             <td
                               key={part.id}
@@ -353,8 +414,11 @@ function ProductionList() {
                                 cursor: 'pointer',
                                 color:
                                   projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                                backgroundColor:
-                                  hoveredColumn === part.id ? '#d6d4d4' : 'transparent',
+                                backgroundColor: shouldHighlight
+                                  ? '#ffe6e6' // бледно-розовый если количества не совпадают
+                                  : hoveredColumn === part.id
+                                  ? '#d6d4d4'
+                                  : 'transparent',
                               }}
                               onClick={() =>
                                 quantity
@@ -427,6 +491,12 @@ function ProductionList() {
                             );
                             const quantityDetail = detailProject ? detailProject.quantity : '';
 
+                            // Проверяем условие для окрашивания
+                            const shouldHighlight =
+                              quantity &&
+                              quantityDetail &&
+                              (quantity > quantityDetail || quantity < quantityDetail);
+
                             return (
                               <td
                                 className="production-detailShipment"
@@ -439,20 +509,13 @@ function ProductionList() {
                                   setHoveredRowShipment(null);
                                 }}
                                 style={{
-                                  color:
-                                    projectDetail.project.finish === 'true'
-                                      ? '#808080'
-                                      : quantityDetail > quantity
-                                      ? '#f12c4d'
-                                      : '#808080',
-                                  backgroundColor:
-                                    hoveredColumn === part.id
-                                      ? '#d6d4d4'
-                                      : quantity
-                                      ? quantityDetail > quantity
-                                        ? '#ffc0cb'
-                                        : 'transparent'
-                                      : 'transparent',
+                                  cursor: 'pointer',
+                                  color: '#808080',
+                                  backgroundColor: shouldHighlight
+                                    ? '#ffe6e6' // бледно-розовый если количества не совпадают
+                                    : hoveredColumn === part.id
+                                    ? '#d6d4d4'
+                                    : 'transparent',
                                 }}
                                 key={part.id}
                                 onClick={() =>
