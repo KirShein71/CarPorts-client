@@ -60,14 +60,17 @@
 
 .production_filter {
     display: flex;
-    @media(max-width: 460px) {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 10px;
+
+    &-mobile {
+        display: none;
+        @media(max-width: 460px) {
+            display: flex;
+            margin-top: 15px;
+        }
     }
 }
+
+
 
 .button__production {
     width: 190px;
@@ -153,12 +156,21 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 60px;
-            height: 20px;
-            font-size: 10px;
-            margin-right: 5px;
+            display: none;
         }
     }
+
+    &-activem {
+        width: 60px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+    }
+    
 
     &-noactive {
         width: 150px;
@@ -176,10 +188,18 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 80px;
+            display: none;
+        }
+
+        &-noactivem {
+            width: 60px;
             height: 20px;
             font-size: 10px;
             margin-right: 5px;
+            &.active {
+                background-color: #212529; /* Черный фон для активной кнопки */
+                color: #ffffff; /* Белый текст для активной кнопки */
+            }
         }
     }
 }
@@ -197,6 +217,15 @@
     border: solid 1px #000000;
     @media(max-width: 460px) {
         width: 60px;
+        height: 20px;
+        font-size: 10px;
+    }
+}
+
+.production__searchm {
+    display: none;
+    @media(max-width: 460px) {
+        width: 90px;
         height: 20px;
         font-size: 10px;
     }
