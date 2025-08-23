@@ -397,8 +397,7 @@ function PlanningList() {
                 </th>
                 <th className="planning-th">Примечание</th>
                 <th className="planning-th" onClick={() => handleSort('agreement_date')}>
-                  <div style={{ display: 'flex', cursor: 'pointer' }}>
-                    Дата договора{' '}
+                  <div style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
                     <img
                       style={{ marginLeft: '5px', height: '100%' }}
                       src="./img/sort.png"
@@ -433,7 +432,7 @@ function PlanningList() {
                   <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }} key={item.id}>
                     {user.isConstructor ? (
                       <td className="planning-td mobile" style={{ cursor: 'pointer' }}>
-                        <div>{item.name}</div>
+                        <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
                         <div>{item.number}</div>
 
                         <div className="border_top"></div>
@@ -443,7 +442,7 @@ function PlanningList() {
                         className="planning-td mobile"
                         onClick={() => addToProjectInfo(item.id)}
                         style={{ cursor: 'pointer' }}>
-                        <div>{item.name}</div>
+                        <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
                         <div>{item.number}</div>
 
                         <div className="border_top"></div>
@@ -480,7 +479,7 @@ function PlanningList() {
                       })()}
                     </td>
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => handleCreateDesignerStart(item.id)}>
                       {item.design_start ? (
                         <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
@@ -496,7 +495,7 @@ function PlanningList() {
                       )}
                     </td>
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => handleUpdateProjectDelivery(item.id)}>
                       {item.project_delivery ? (
                         <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
@@ -506,13 +505,14 @@ function PlanningList() {
                             color: 'red',
                             fontWeight: 600,
                             cursor: 'pointer',
+                            textAlign: 'center',
                           }}>
                           +
                         </span>
                       )}
                     </td>
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => handleCreateDateInspection(item.id)}>
                       {item.date_inspection ? (
                         <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
@@ -524,35 +524,49 @@ function PlanningList() {
                             color: 'red',
                             fontWeight: 600,
                             cursor: 'pointer',
+                            textAlign: 'center',
                           }}>
                           +
                         </span>
                       )}
                     </td>
-                    <td>
+                    <td
+                      style={{
+                        textAlign: 'center',
+                        backgroundColor: (() => {
+                          const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                            item.design_period,
+                            'days',
+                          );
+
+                          function getDaysLeft(targetDate) {
+                            const today = moment();
+                            return targetDate.diff(today, 'days');
+                          }
+
+                          const daysLeft = getDaysLeft(targetDate);
+
+                          if (daysLeft < 0) {
+                            return '#ff0000'; // красный для минусовых значений
+                          } else if (daysLeft < 7) {
+                            return '#ffe6e6'; // бледно-розовый для менее 7 дней
+                          } else {
+                            return 'transparent'; // прозрачный для остальных
+                          }
+                        })(),
+                      }}>
                       {(() => {
                         const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
                           item.design_period,
                           'days',
                         );
 
-                        function subtractDaysUntilZero(targetDate) {
-                          const today = moment();
-                          let daysLeft = 0;
-
-                          while (targetDate.diff(today, 'days') > 0) {
-                            daysLeft++;
-                            targetDate.subtract(1, 'day');
-                          }
-
-                          return daysLeft;
-                        }
-
-                        return subtractDaysUntilZero(targetDate);
+                        const today = moment();
+                        return targetDate.diff(today, 'days'); // Просто возвращаем разницу в днях
                       })()}
                     </td>
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => handleUpdateDisegnerModal(item.id)}>
                       {item.designer ? (
                         <div>{item.designer}</div>
@@ -568,7 +582,7 @@ function PlanningList() {
                       )}
                     </td>
                     <td
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => handleCreateInspectionDesigner(item.id)}>
                       {item.inspection_designer ? (
                         <div>{item.inspection_designer}</div>
@@ -578,6 +592,7 @@ function PlanningList() {
                             color: 'red',
                             fontWeight: 600,
                             cursor: 'pointer',
+                            textAlign: 'center',
                           }}>
                           +
                         </span>
