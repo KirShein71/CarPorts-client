@@ -63,7 +63,7 @@ function GantBrigade(props) {
                           ? '#bbbbbb'
                           : // Или если суббота (6) или воскресенье (0)
                           [0, 6].includes(new Date(gantBrigDate.date).getDay())
-                          ? '#bbbbbb'
+                          ? '#e1dede'
                           : '#ffffff',
                     }}>
                     {new Date(gantBrigDate.date).toLocaleDateString('ru-RU')} -
@@ -115,7 +115,7 @@ function GantBrigade(props) {
                                 ? '#bbbbbb'
                                 : // Или если суббота (6) или воскресенье (0)
                                 [0, 6].includes(new Date(gantBrigDate.date).getDay())
-                                ? '#bbbbbb'
+                                ? '#e1dede'
                                 : '#ffffff',
                           }}
                           onClick={() => handleOpenModalEditDelete(dateBrig?.id)}>
@@ -135,7 +135,7 @@ function GantBrigade(props) {
                                 ? '#bbbbbb'
                                 : // Или если суббота (6) или воскресенье (0)
                                 [0, 6].includes(new Date(gantBrigDate.date).getDay())
-                                ? '#bbbbbb'
+                                ? '#e1dede'
                                 : '#ffffff',
                           }}>
                           {' '}

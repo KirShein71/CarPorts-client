@@ -55,14 +55,14 @@ function TableBrigadeCalendar() {
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor: '#bbbbbb',
+                  backgroundColor: '#e1dede',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor: '#bbbbbb',
+                  backgroundColor: '#e1dede',
                 }}>
                 МО{' '}
                 {
@@ -117,14 +117,14 @@ function TableBrigadeCalendar() {
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor: '#bbbbbb',
+                  backgroundColor: '#e1dede',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
               <th
                 className="table-brigade__header"
                 style={{
-                  backgroundColor: '#bbbbbb',
+                  backgroundColor: '#e1dede',
                 }}>
                 ЛО{' '}
                 {
