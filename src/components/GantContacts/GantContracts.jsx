@@ -274,7 +274,55 @@ function GantContracts() {
                   <tr key={gantProject.id}>
                     <td
                       className="gant-contracts-table__td mobile"
-                      style={{ cursor: 'pointer', textAlign: 'left', whiteSpace: 'nowrap' }}
+                      style={{
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        whiteSpace: 'nowrap',
+                        backgroundColor: (() => {
+                          const currentDate = new Date();
+                          currentDate.setHours(0, 0, 0, 0);
+
+                          const agreementDate = new Date(gantProject?.agreement_date);
+                          if (!agreementDate || isNaN(agreementDate)) return 'transparent';
+
+                          agreementDate.setHours(0, 0, 0, 0);
+
+                          const designPeriod = gantProject?.design_period || 0;
+                          const designEndDate = addWorkingDays(agreementDate, designPeriod);
+                          designEndDate.setHours(0, 0, 0, 0);
+
+                          const expirationDate = gantProject?.expiration_date || 0;
+                          const productionEndDate = addWorkingDays(
+                            agreementDate,
+                            designPeriod + expirationDate,
+                          );
+                          productionEndDate.setHours(0, 0, 0, 0);
+
+                          const installationPeriod = gantProject?.installation_period || 0;
+                          const installationEndDate = addWorkingDays(
+                            agreementDate,
+                            designPeriod + expirationDate + installationPeriod,
+                          );
+                          installationEndDate.setHours(0, 0, 0, 0);
+
+                          // Проверяем периоды в правильном порядке
+                          if (
+                            currentDate > productionEndDate &&
+                            currentDate <= installationEndDate
+                          ) {
+                            return '#ffc0cb';
+                          } else if (
+                            currentDate > designEndDate &&
+                            currentDate <= productionEndDate
+                          ) {
+                            return '#008000';
+                          } else if (currentDate >= agreementDate && currentDate <= designEndDate) {
+                            return '#0000ff';
+                          } else {
+                            return '#0000ff';
+                          }
+                        })(),
+                      }}
                       onClick={() => {
                         addToInfo(gantProject.id);
                       }}>
