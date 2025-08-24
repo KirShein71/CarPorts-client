@@ -81,7 +81,7 @@ function HomePageList() {
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { label: 'Рекламация', link: '/complaint' },
-    // { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Гант договоров', link: '/gant-contracts' },
     { title: 'Администирование' },
     { label: 'Сметы', link: '/distribution' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },

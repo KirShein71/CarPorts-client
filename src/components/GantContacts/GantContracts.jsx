@@ -1,27 +1,68 @@
 import React from 'react';
 import Header from '../Header/Header';
 import { Spinner, Table } from 'react-bootstrap';
-import { fetchAllProjects } from '../../http/projectApi';
+import { getAllActiveProject } from '../../http/projectApi';
+import { getAllDate } from '../../http/brigadesDateApi';
 import Moment from 'react-moment';
 import './style.scss';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function GantContracts() {
   const [projects, setProjects] = React.useState([]);
+  const [dates, setDates] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonMskProject, setButtonMskProject] = React.useState(true);
   const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('agreement_date');
+  const [currentMonthGant, setCurrentMonthGant] = React.useState(new Date().getMonth());
+  const [currentYearGant, setCurrentYearGant] = React.useState(new Date().getFullYear());
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
-    setFetching(true);
-    fetchAllProjects()
-      .then((data) => {
-        setProjects(data);
-      })
-      .finally(() => setFetching(false));
+    const fetchData = async () => {
+      setFetching(true);
+      try {
+        // Параллельное выполнение запросов для оптимизации
+        const [projectsData, datesData] = await Promise.all([getAllActiveProject(), getAllDate()]);
+
+        setProjects(projectsData);
+        setDates(datesData);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+        // Можно добавить обработку ошибок (например, setErrorState)
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  const handlePrevMonthGant = () => {
+    if (currentMonthGant === 0) {
+      setCurrentMonthGant(11);
+      setCurrentYearGant(currentYearGant - 1);
+    } else {
+      setCurrentMonthGant(currentMonthGant - 1);
+    }
+  };
+
+  const handleNextMonthGant = () => {
+    if (currentMonthGant === 11) {
+      setCurrentMonthGant(0);
+      setCurrentYearGant(currentYearGant + 1);
+    } else {
+      setCurrentMonthGant(currentMonthGant + 1);
+    }
+  };
+
+  const filteredDatesGant = dates.filter((date) => {
+    const dateObj = new Date(date.date);
+    return dateObj.getMonth() === currentMonthGant && dateObj.getFullYear() === currentYearGant;
+  });
 
   React.useEffect(() => {
     const filters = {
@@ -166,15 +207,31 @@ function GantContracts() {
           ЛО
         </button>
       </div>
+      <div className="gant-contracts__month">
+        <div className="gant-contracts__month-arrow" onClick={handlePrevMonthGant}>
+          <img src="./img/left.png" alt="left arrow" />
+        </div>
+        <p className="gant-contracts__month-name">
+          {new Date(currentYearGant, currentMonthGant).toLocaleString('default', {
+            month: 'long',
+            year: 'numeric',
+          })}
+        </p>
+        <div className="gant-contracts__month-arrow" onClick={handleNextMonthGant}>
+          <img src="./img/right.png" alt="right arrow" />
+        </div>
+      </div>
       <div className="gant-contracts-table-container">
         <div className="gant-contracts-table-wrapper">
           <Table bordered hover size="sm">
             <thead>
               <tr>
-                <th>Название</th>
-                <th>Номер</th>
-                <th onClick={() => handleSort('agreement_date')}>
-                  <div style={{ cursor: 'pointer', display: 'flex' }}>
+                <th className="gant-contracts-table-th mobile">Название</th>
+                <th className="gant-contracts-table-th">Номер</th>
+                <th
+                  className="gant-contracts-table-th"
+                  onClick={() => handleSort('agreement_date')}>
+                  <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'center' }}>
                     <img
                       style={{
                         marginLeft: '10px',
@@ -187,8 +244,16 @@ function GantContracts() {
                     />
                   </div>
                 </th>
-                <th>Дедлайн</th>
-                <th>Регион</th>
+                <th className="gant-contracts-table-th">Дедлайн</th>
+                <th className="gant-contracts-table-th">Регион</th>
+                {filteredDatesGant.map((gantDate) => (
+                  <th key={gantDate.id} className="gant-contracts-table-th">
+                    {new Date(gantDate.date).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'numeric',
+                    })}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -204,13 +269,12 @@ function GantContracts() {
                     return dateA - dateB;
                   }
                 })
-                .filter(
-                  (gantProject) => gantProject.date_finish === null && gantProject.finish === null,
-                )
+
                 .map((gantProject) => (
                   <tr key={gantProject.id}>
                     <td
-                      style={{ cursor: 'pointer', textAlign: 'left' }}
+                      className="gant-contracts-table__td mobile"
+                      style={{ cursor: 'pointer', textAlign: 'left', whiteSpace: 'nowrap' }}
                       onClick={() => {
                         addToInfo(gantProject.id);
                       }}>
@@ -242,6 +306,74 @@ function GantContracts() {
                     <td style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {gantProject.region?.region}
                     </td>
+                    {filteredDatesGant.map((gantDate) => {
+                      const currentDate = new Date(gantDate.date);
+
+                      // Вычисляем даты начала и конца design периода
+                      const agreementDate = new Date(gantProject?.agreement_date);
+                      const designPeriod = gantProject?.design_period || 0;
+                      const designEndDate = addWorkingDays(agreementDate, designPeriod);
+
+                      // Вычисляем даты начала и конца production периода
+                      const expirationDate = gantProject?.expiration_date || 0;
+                      const productionEndDate = addWorkingDays(
+                        agreementDate,
+                        designPeriod + expirationDate,
+                      );
+
+                      // Вычисляем даты начала и конца installation периода
+                      const installationPeriod = gantProject?.installation_period || 0;
+                      const installationEndDate = addWorkingDays(
+                        agreementDate,
+                        designPeriod + expirationDate + installationPeriod,
+                      );
+
+                      // Проверяем, попадает ли текущая дата в design диапазон
+                      const isInDesignRange =
+                        agreementDate &&
+                        designEndDate &&
+                        currentDate >= agreementDate &&
+                        currentDate <= designEndDate;
+
+                      // Проверяем, попадает ли текущая дата в production диапазон
+                      const isInProductionRange =
+                        agreementDate &&
+                        productionEndDate &&
+                        currentDate > designEndDate &&
+                        currentDate <= productionEndDate;
+
+                      // Проверяем, попадает ли текущая дата в installation диапазон
+                      const isInInstallationRange =
+                        agreementDate &&
+                        installationEndDate &&
+                        currentDate > productionEndDate &&
+                        currentDate <= installationEndDate;
+
+                      return (
+                        <td
+                          key={gantDate.id}
+                          style={{
+                            color: isInInstallationRange
+                              ? '#ffc0cb' // Розовый для installation
+                              : isInProductionRange
+                              ? '#008000' // Зеленый для production
+                              : isInDesignRange
+                              ? '#0000ff' // Синий для design
+                              : 'inherit',
+                            backgroundColor: isInInstallationRange
+                              ? '#ffc0cb' // Светло-розовый фон для installation
+                              : isInProductionRange
+                              ? '#008000' // Светло-зеленый фон для production
+                              : isInDesignRange
+                              ? '#0000ff' // Светло-синий фон для design
+                              : 'transparent',
+                            fontWeight:
+                              isInInstallationRange || isInProductionRange || isInDesignRange
+                                ? 'bold'
+                                : 'normal',
+                          }}></td>
+                      );
+                    })}
                   </tr>
                 ))}
             </tbody>

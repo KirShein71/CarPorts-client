@@ -51,3 +51,110 @@
     background-color: #ffffff; /* Белый фон для неактивной кнопки */
     color: #212529; /* Черный текст для неактивной кнопки */
 }
+
+.gant-contracts {
+    &__month {
+        margin-top: 15px;
+        display: flex;
+
+        &-arrow {
+            img {
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+            }
+        }
+
+        &-name {
+            font-size: 18px;
+            font-weight: 400;
+            padding: 0px 7px 0px 7px;
+        }
+    }
+}
+
+
+.gant-contracts-table-container {
+    position: relative;
+    overflow: hidden;
+    height: calc(100vh - var(--header-height, 150px));
+    @media(max-width: 768px) {
+        height: calc(100vh - var(--header-height, 250px));
+    }
+}
+  
+.gant-contracts-table-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    // border: 1px solid #dee2e6;
+    overscroll-behavior: contain;
+}
+
+.gant-contracts-table-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+    width: 50px;
+    text-align: left;
+}
+
+.gant-contracts-table-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    // border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+
+.gant-contracts-table-th {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    text-align: center;
+    background-color: white !important;
+   
+}
+
+
+.gant-contracts-table-th::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #000000;
+    width: 100%;  
+}
+
+.gant-contracts-table__td.mobile {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background-color: white !important; 
+    
+}
+
+.gant-contracts-table__td.mobile::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #000000; 
+ 
+        
+}
+
