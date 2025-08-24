@@ -25,6 +25,7 @@ function GantContracts() {
   React.useEffect(() => {
     const fetchData = async () => {
       setFetching(true);
+      setIsLoadingGant(true);
       try {
         // Параллельное выполнение запросов для оптимизации
         const [projectsData, datesData] = await Promise.all([getAllActiveProject(), getAllDate()]);
@@ -36,6 +37,7 @@ function GantContracts() {
         // Можно добавить обработку ошибок (например, setErrorState)
       } finally {
         setFetching(false);
+        setIsLoadingGant(false);
       }
     };
 
@@ -100,21 +102,29 @@ function GantContracts() {
   }, [projects, buttonMskProject, buttonSpbProject]);
 
   const handleButtonMskProject = () => {
-    const newButtonMskProject = !buttonMskProject;
-    setButtonMskProject(newButtonMskProject);
+    setIsLoadingGant(true);
+    setTimeout(() => {
+      const newButtonMskProject = !buttonMskProject;
+      setButtonMskProject(newButtonMskProject);
 
-    if (!newButtonMskProject) {
-      setButtonSpbProject(true);
-    }
+      if (!newButtonMskProject) {
+        setButtonSpbProject(true);
+      }
+      setIsLoadingGant(false);
+    }, 300);
   };
 
   const handleButtonSpbProject = () => {
-    const newButtonSpbProject = !buttonSpbProject;
-    setButtonSpbProject(newButtonSpbProject);
+    setIsLoadingGant(true);
+    setTimeout(() => {
+      const newButtonSpbProject = !buttonSpbProject;
+      setButtonSpbProject(newButtonSpbProject);
 
-    if (!newButtonSpbProject) {
-      setButtonMskProject(true);
-    }
+      if (!newButtonSpbProject) {
+        setButtonMskProject(true);
+      }
+      setIsLoadingGant(false);
+    }, 300);
   };
 
   const handleSort = (field) => {
