@@ -218,73 +218,70 @@ function ProductionList() {
   return (
     <div className="productionlist">
       <Header title={'Производство'} />
-      {user.isManagerProduction ? (
-        ''
-      ) : (
-        <>
-          <div className="production_filter">
-            <Link to="/productionchange">
-              <button className="button__production">Внести данные</button>
-            </Link>
-            <button
-              className={`button__production-ordered ${
-                buttonOrderedProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonOrderedProject}>
-              Заказанные
-            </button>
-            <button
-              className={`button__production-shipped ${
-                buttonShippedProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonShippedProject}>
-              Отгруженные
-            </button>
-            <button
-              className={`button__production-active ${
-                buttonActiveProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonActiveProject}>
-              Активные
-            </button>
-            <button
-              className={`button__production-noactive ${
-                buttonClosedProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonClosedProject}>
-              Завершенные
-            </button>
-            <input
-              class="production__search"
-              placeholder="Поиск"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </div>
-          <div className="production_filter-mobile">
-            <button
-              className={`button__production-activem ${
-                buttonActiveProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonActiveProject}>
-              Активные
-            </button>
-            <button
-              className={`button__production-noactivem ${
-                buttonClosedProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonClosedProject}>
-              Завершенные
-            </button>
-            <input
-              class="production__searchm"
-              placeholder="Поиск"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </div>
-        </>
-      )}
+
+      <>
+        <div className="production_filter">
+          <Link to="/productionchange">
+            <button className="button__production">Внести данные</button>
+          </Link>
+          <button
+            className={`button__production-ordered ${
+              buttonOrderedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonOrderedProject}>
+            Заказанные
+          </button>
+          <button
+            className={`button__production-shipped ${
+              buttonShippedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonShippedProject}>
+            Отгруженные
+          </button>
+          <button
+            className={`button__production-active ${
+              buttonActiveProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonActiveProject}>
+            Активные
+          </button>
+          <button
+            className={`button__production-noactive ${
+              buttonClosedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonClosedProject}>
+            Завершенные
+          </button>
+          <input
+            class="production__search"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
+        <div className="production_filter-mobile">
+          <button
+            className={`button__production-activem ${
+              buttonActiveProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonActiveProject}>
+            Активные
+          </button>
+          <button
+            className={`button__production-noactivem ${
+              buttonClosedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonClosedProject}>
+            Завершенные
+          </button>
+          <input
+            class="production__searchm"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
+      </>
       <UpdateProjectDetails
         id={projectDetail}
         show={updateProjectDetailsModal}
@@ -482,11 +479,7 @@ function ProductionList() {
                         <Button
                           variant="dark"
                           size="sm"
-                          onClick={
-                            user.isManagerProduction
-                              ? undefined
-                              : () => handleDeleteProjectDetails(projectDetail.projectId)
-                          }>
+                          onClick={() => handleDeleteProjectDetails(projectDetail.projectId)}>
                           Удалить
                         </Button>
                       </td>
