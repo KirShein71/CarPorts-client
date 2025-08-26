@@ -349,17 +349,17 @@ function GantContracts() {
                               currentDate > productionEndDate &&
                               currentDate <= installationEndDate
                             ) {
-                              return '#ffc0cb';
+                              return '#C49D9D';
                             } else if (
                               currentDate > designEndDate &&
                               currentDate <= productionEndDate
                             ) {
-                              return '#008000';
+                              return '#83C78A';
                             } else if (
                               currentDate >= agreementDate &&
                               currentDate <= designEndDate
                             ) {
-                              return '#0000ff';
+                              return '#B4AFE0';
                             } else {
                               return '#ffffff';
                             }
@@ -444,18 +444,18 @@ function GantContracts() {
                             key={gantDate.id}
                             style={{
                               color: isInInstallationRange
-                                ? '#ffc0cb' // Розовый для installation
+                                ? '#C49D9D' // Розовый для installation
                                 : isInProductionRange
-                                ? '#008000' // Зеленый для production
+                                ? '#83C78A' // Зеленый для production
                                 : isInDesignRange
-                                ? '#0000ff' // Синий для design
+                                ? '#B4AFE0' // Синий для design
                                 : 'inherit',
                               backgroundColor: isInInstallationRange
-                                ? '#ffc0cb' // Светло-розовый фон для installation
+                                ? '#C49D9D' // Светло-розовый фон для installation
                                 : isInProductionRange
-                                ? '#008000' // Светло-зеленый фон для production
+                                ? '#83C78A' // Светло-зеленый фон для production
                                 : isInDesignRange
-                                ? '#0000ff' // Светло-синий фон для design
+                                ? '#B4AFE0' // Светло-синий фон для design
                                 : 'transparent',
                               fontWeight:
                                 isInInstallationRange || isInProductionRange || isInDesignRange

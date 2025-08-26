@@ -163,7 +163,9 @@ function ProductionChangeList() {
               .map((item) => (
                 <tr key={item.id}>
                   <td>{item.number}</td>
-                  <td>{item.name}</td>
+                  <td style={{ fontWeight: item.project_delivery ? 'bold' : 'normal' }}>
+                    {item.name}
+                  </td>
                   <td>
                     <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
                   </td>

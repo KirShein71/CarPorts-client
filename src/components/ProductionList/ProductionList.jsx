@@ -73,7 +73,7 @@ function ProductionList() {
       isActive: buttonActiveProject,
       isClosed: buttonClosedProject,
       isShipped: buttonShippedProject,
-      isOrdered: buttonOrderedProject, // добавляем новую фильтрацию
+      isOrdered: buttonOrderedProject,
     };
 
     const filteredProjects = projectDetails.filter((project) => {
@@ -87,17 +87,46 @@ function ProductionList() {
         ? project.project.finish === 'true'
         : true;
 
-      // Проверяем отгруженные проекты
-      const isShipped = shipmentDetails.some(
-        (shipment) => shipment.projectId === project.projectId,
-      );
+      // Новая логика проверки отгрузки: ищем полное совпадение projectId и props (игнорируя null значения)
+      const isShipped = shipmentDetails.some((shipment) => {
+        // Проверяем совпадение projectId
+        if (shipment.projectId !== project.projectId) return false;
+
+        // Фильтруем props, удаляя элементы с detailId = null или quantity = null
+        const shipmentProps = (shipment.props || []).filter(
+          (prop) => prop.detailId !== null && prop.shipment_quantity !== null,
+        );
+
+        const projectProps = (project.props || []).filter(
+          (prop) => prop.detailId !== null && prop.quantity !== null,
+        );
+
+        // Если количество не-null props разное - не совпадает
+        if (shipmentProps.length !== projectProps.length) return false;
+
+        // Если оба массива пустые после фильтрации - считаем совпадением
+        if (shipmentProps.length === 0 && projectProps.length === 0) return true;
+
+        // Проверяем, что все не-null детали и их количества совпадают
+        return shipmentProps.every((shipmentProp) => {
+          const matchingProjectProp = projectProps.find(
+            (projectProp) => projectProp.detailId === shipmentProp.detailId,
+          );
+
+          return (
+            matchingProjectProp && matchingProjectProp.quantity === shipmentProp.shipment_quantity
+          );
+        });
+      });
 
       const matchesShippingFilter = filters.isShipped ? isShipped : !isShipped;
 
-      // Новая фильтрация: если кнопка заказанных активна - показываем все, иначе только с detail_id = null
+      // Фильтрация для заказанных: игнорируем элементы с detailId = null
+      const hasRealDetails = project.props && project.props.some((prop) => prop.detailId !== null);
+
       const matchesOrderFilter = filters.isOrdered
         ? true // показываем все проекты
-        : project.props && project.props.length === 1 && project.props[0].detailId === null; // показываем только проекты без деталей
+        : !hasRealDetails; // показываем только проекты без реальных деталей
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {
@@ -113,7 +142,7 @@ function ProductionList() {
     buttonActiveProject,
     buttonClosedProject,
     buttonShippedProject,
-    buttonOrderedProject, // добавляем в зависимости
+    buttonOrderedProject,
     searchQuery,
     shipmentDetails,
   ]);
@@ -338,7 +367,11 @@ function ProductionList() {
       />
       <div className="production-table-container">
         <div className="production-table-wrapper">
-          <Table bordered size="md" className="production-table">
+          <Table
+            bordered
+            size="md"
+            className="production-table"
+            style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse' }}>
             <thead className="production-table__thead">
               <tr>
                 <th className="production-th stat">Номер проекта</th>
@@ -404,21 +437,6 @@ function ProductionList() {
                           );
                           const quantity = detailProject ? detailProject.quantity : '';
 
-                          // Находим соответствующую отгрузку для сравнения количеств
-                          const correspondingShipmentDetail = correspondingShipment?.props?.find(
-                            (shipment) => shipment.detailId === part.id,
-                          );
-                          const shipmentQuantity = correspondingShipmentDetail
-                            ? correspondingShipmentDetail.shipment_quantity
-                            : 0;
-
-                          // Проверяем условие для окрашивания: есть отгрузка и количества не совпадают
-                          const shouldHighlight =
-                            correspondingShipment &&
-                            quantity &&
-                            shipmentQuantity &&
-                            (shipmentQuantity > quantity || shipmentQuantity < quantity);
-
                           return (
                             <td
                               key={part.id}
@@ -435,11 +453,8 @@ function ProductionList() {
                                 cursor: 'pointer',
                                 color:
                                   projectDetail.project.finish === 'true' ? '#808080' : 'black',
-                                backgroundColor: shouldHighlight
-                                  ? '#ffe6e6' // бледно-розовый если количества не совпадают
-                                  : hoveredColumn === part.id
-                                  ? '#d6d4d4'
-                                  : 'transparent',
+                                backgroundColor:
+                                  hoveredColumn === part.id ? '#d6d4d4' : 'transparent',
                               }}
                               onClick={() =>
                                 quantity
@@ -502,17 +517,14 @@ function ProductionList() {
                               (el) => el.detailId === part.id,
                             );
                             const quantity = detail ? detail.shipment_quantity : '';
-
                             const detailProject = projectDetail.props.find(
                               (prop) => prop.detailId === part.id,
                             );
                             const quantityDetail = detailProject ? detailProject.quantity : '';
 
-                            // Проверяем условие для окрашивания
+                            // Исправленное условие для окрашивания
                             const shouldHighlight =
-                              quantity &&
-                              quantityDetail &&
-                              (quantity > quantityDetail || quantity < quantityDetail);
+                              quantityDetail > 0 && (quantity === 0 || quantity !== quantityDetail);
 
                             return (
                               <td
