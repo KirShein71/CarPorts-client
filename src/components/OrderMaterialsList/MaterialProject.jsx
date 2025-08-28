@@ -16,6 +16,9 @@ function MaterialProject({
   user,
   buttonNoColorProject,
   buttonNoDatePaymentProject,
+  buttonNoReadyDateProject,
+  buttonNoShippingDateProject,
+
   handleOpenModalUpdateMaterialId,
 }) {
   const [sortOrder, setSortOrder] = React.useState('asc');
@@ -107,7 +110,15 @@ function MaterialProject({
                       ? prop.date_payment === null
                       : true;
                     const matchesNoColor = buttonNoColorProject ? prop.color === null : true;
-                    return matchesNoPayment && matchesNoColor;
+                    const matchesNoReady = buttonNoReadyDateProject
+                      ? prop.ready_date === null
+                      : true;
+                    const matchesNoShipping = buttonNoShippingDateProject.isNoShipping
+                      ? prop.shipping_date === null
+                      : true;
+                    return (
+                      matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping
+                    );
                   })
 
                   .map((prop) => (

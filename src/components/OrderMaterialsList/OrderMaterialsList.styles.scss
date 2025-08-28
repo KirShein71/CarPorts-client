@@ -24,6 +24,14 @@
 
 .projectmaterial {
 
+    &__filter-mobile {
+        display: none;
+        @media(max-width: 460px) {
+            display: flex;
+            margin-top: 12px;
+        }
+    }
+
     &-table {
         table-layout: fixed;
         @media(max-width: 1024px) {
@@ -58,6 +66,20 @@
     }
 
     &__deadline {
+        font-size: 20px;
+        color: #212529;
+        font-weight: 600;
+        white-space: nowrap;
+        margin-left: 15px;
+        @media(max-width: 490px) {
+            font-size: 15px;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+        
+    }
+
+    &__remainder {
         font-size: 20px;
         color: #212529;
         font-weight: 600;
@@ -128,10 +150,28 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 70px;
-            height: 20px;
-            font-size: 10px;
-            margin-right: 5px;
+           display: none;
+        }
+    }
+
+    &-nocolorm {
+        width: 70px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+           
         }
     }
 
@@ -155,6 +195,66 @@
             height: 20px;
             font-size: 10px;
             margin-right: 5px;
+        }
+    }
+
+    &-noready {
+        width: 130px;
+        height: 30px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        margin-right: 10px;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+            width: 80px;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
+        }
+    }
+
+    &-noshipping {
+        width: 130px;
+        height: 30px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        margin-right: 10px;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+           display: none;
+        }
+    }
+
+    &-noshippingm {
+        width: 80px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
         }
     }
 
@@ -210,8 +310,13 @@
     font-size: 14px;
     outline: none; 
     @media(max-width: 460px) {
-        width: 80px;
-        height: 20px;
-        font-size: 10px;
+        display: none;
     }
+}
+
+.projectmaterial__searchm {
+    width: 80px;
+    height: 20px;
+    font-size: 10px;
+    outline: none; 
 }

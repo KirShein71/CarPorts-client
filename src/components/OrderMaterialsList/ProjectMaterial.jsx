@@ -22,7 +22,10 @@ function ProjectMaterial({
   user,
   buttonNoColorProject,
   buttonNoDatePaymentProject,
+  buttonNoReadyDateProject,
+  buttonNoShippingDateProject,
   handleOpenModalUpdateMaterialId,
+  addWorkingDays,
 }) {
   return (
     <div className="projectmaterial">
@@ -38,11 +41,41 @@ function ProjectMaterial({
                 Добавить
               </button>
               <div className="projectmaterial__deadline">
-                Сроки :
+                Сроки:{' '}
                 {moment(agreement_date, 'YYYY/MM/DD')
                   .businessAdd(expiration_date, 'days')
                   .businessAdd(design_period, 'days')
                   .format('DD.MM.YYYY')}
+              </div>
+              <div className="projectmaterial__remainder">
+                {(() => {
+                  // Вычисляем дедлайн
+                  const agreementDate = new Date(agreement_date);
+                  const designPeriod = design_period;
+                  const expirationDate = expiration_date;
+                  const sumDays = designPeriod + expirationDate;
+                  const endDate = addWorkingDays(agreementDate, sumDays);
+
+                  // Вычисляем разницу с сегодняшним днем
+                  const today = new Date();
+                  const timeDiff = endDate.getTime() - today.getTime();
+                  const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                  // Определяем цвет для цифры
+                  let numberColor = 'inherit';
+                  if (daysLeft < 0) {
+                    numberColor = '#ff0000'; // красный для минусовых значений
+                  } else if (daysLeft < 7) {
+                    numberColor = '#ff6b6b'; // красный/розовый для менее 7 дней
+                  }
+
+                  return (
+                    <>
+                      Осталось дней:{' '}
+                      <span style={{ color: numberColor, fontWeight: 'bold' }}>{daysLeft}</span>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -68,7 +101,15 @@ function ProjectMaterial({
                       ? prop.date_payment === null
                       : true;
                     const matchesNoColor = buttonNoColorProject ? prop.color === null : true;
-                    return matchesNoPayment && matchesNoColor;
+                    const matchesNoReady = buttonNoReadyDateProject
+                      ? prop.ready_date === null
+                      : true;
+                    const matchesNoShipping = buttonNoShippingDateProject.isNoShipping
+                      ? prop.shipping_date === null
+                      : true;
+                    return (
+                      matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping
+                    );
                   })
                   .sort((a, b) => a.id - b.id)
                   .map((prop) => {

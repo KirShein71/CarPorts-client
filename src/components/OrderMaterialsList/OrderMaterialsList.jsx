@@ -40,6 +40,8 @@ function OrderMaterialsList() {
   const [activeTab, setActiveTab] = React.useState('project');
   const [buttonNoDatePaymentProject, setButtonNoDatePaymentProject] = React.useState(false);
   const [buttonNoColorProject, setButtonNoColorProject] = React.useState(false);
+  const [buttonNoReadyDateProject, setButtonNoReadyDateProject] = React.useState(false);
+  const [buttonNoShippingDateProject, setButtonNoShippingDateProject] = React.useState(false);
   const [modalUpdateMaterialId, setModalUpdateMaterialId] = React.useState(false);
 
   React.useEffect(() => {
@@ -56,6 +58,8 @@ function OrderMaterialsList() {
     const filters = {
       isNoPayment: buttonNoDatePaymentProject,
       isNoColor: buttonNoColorProject,
+      isNoReady: buttonNoReadyDateProject,
+      isNoShipping: buttonNoShippingDateProject,
     };
 
     const filteredProjects = projectsMaterials.filter((projectMaterials) => {
@@ -68,11 +72,16 @@ function OrderMaterialsList() {
       const hasMatchingProps = projectMaterials.props.some((prop) => {
         const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
         const matchesNoColor = filters.isNoColor ? prop.color === null : true;
-        return matchesNoPayment && matchesNoColor;
+        const matchesNoReady = filters.isNoReady ? prop.ready_date === null : true;
+        const matchesNoShipping = filters.isNoShipping ? prop.shipping_date === null : true;
+        return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
       });
 
       return (
-        matchesSearchProject && (filters.isNoPayment || filters.isNoColor ? hasMatchingProps : true)
+        matchesSearchProject &&
+        (filters.isNoPayment || filters.isNoColor || filters.isNoReady || filters.isNoShipping
+          ? hasMatchingProps
+          : true)
       );
     });
 
@@ -86,17 +95,29 @@ function OrderMaterialsList() {
       const hasMatchingProps = materialProject.props.some((prop) => {
         const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
         const matchesNoColor = filters.isNoColor ? prop.color === null : true;
-        return matchesNoPayment && matchesNoColor;
+        const matchesNoReady = filters.isNoReady ? prop.ready_date === null : true;
+        const matchesNoShipping = filters.isNoShipping ? prop.shipping_date === null : true;
+        return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
       });
 
       return (
-        matchesSearchProject && (filters.isNoPayment || filters.isNoColor ? hasMatchingProps : true)
+        matchesSearchProject &&
+        (filters.isNoPayment || filters.isNoColor || filters.isNoReady || filters.isNoShipping
+          ? hasMatchingProps
+          : true)
       );
     });
 
     setFilteredProjectMaterials(filteredProjects);
     setFilteredMaterialProjects(filteredMaterialProjects);
-  }, [projectsMaterials, buttonNoColorProject, buttonNoDatePaymentProject, searchQuery]);
+  }, [
+    projectsMaterials,
+    buttonNoColorProject,
+    buttonNoDatePaymentProject,
+    buttonNoReadyDateProject,
+    buttonNoShippingDateProject,
+    searchQuery,
+  ]);
 
   const handleUpdateClick = (id) => {
     setProjectMaterials(id);
@@ -171,9 +192,86 @@ function OrderMaterialsList() {
     setButtonNoColorProject(newButtonNoColorProject);
   };
 
+  const handleButtonNoReadyDateProject = () => {
+    const newButtonNoReadyDateProject = !buttonNoReadyDateProject;
+    setButtonNoReadyDateProject(newButtonNoReadyDateProject);
+  };
+
+  const handleButtonNoShippingDateProject = () => {
+    const newButtonNoShippingDateProject = !buttonNoShippingDateProject;
+    setButtonNoShippingDateProject(newButtonNoShippingDateProject);
+  };
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const holidays = [
+    '2024-01-01',
+    '2024-01-02',
+    '2024-01-03',
+    '2024-01-04',
+    '2024-01-05',
+    '2024-01-08',
+    '2024-02-23',
+    '2024-03-08',
+    '2024-04-29',
+    '2024-04-30',
+    '2024-05-01',
+    '2024-05-09',
+    '2024-05-10',
+    '2024-06-12',
+    '2024-11-04',
+    '2025-01-01',
+    '2025-01-02',
+    '2025-01-03',
+    '2025-01-06',
+    '2025-01-07',
+    '2025-01-08',
+    '2025-05-01',
+    '2025-05-02',
+    '2025-05-08',
+    '2025-05-09',
+    '2025-06-12',
+    '2025-06-13',
+    '2025-11-03',
+    '2025-11-04',
+  ].map((date) => new Date(date));
+
+  // Функция для проверки, является ли дата выходным или праздничным днем
+  function isWorkingDay(date) {
+    const dayOfWeek = date.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
+    const isHoliday = holidays.some((holiday) => {
+      const holidayString = holiday.toDateString();
+      const dateString = date.toDateString();
+      return holidayString === dateString;
+    });
+
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday; // Не выходной и не праздник
+  }
+  // Функция для добавления рабочих дней к дате
+  function addWorkingDays(startDate, daysToAdd) {
+    let currentDate = new Date(startDate);
+    let addedDays = 0;
+
+    while (addedDays < daysToAdd) {
+      currentDate.setDate(currentDate.getDate() + 1); // Переходим на следующий день
+      if (isWorkingDay(currentDate)) {
+        addedDays++;
+      }
+    }
+
+    return currentDate;
+  }
+
+  // Функция для форматирования даты в формате ДД.ММ.ГГГГ
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
+  }
 
   if (fetching) {
     return <Spinner animation="border" />;
@@ -251,32 +349,70 @@ function OrderMaterialsList() {
         {user.isManagerProduction ? (
           ''
         ) : (
-          <div style={{ display: 'flex' }}>
-            <Link to="/procurement">
-              <button className="button__projectmaterial">Новые</button>
-            </Link>
+          <>
+            <div style={{ display: 'flex' }}>
+              <Link to="/procurement">
+                <button className="button__projectmaterial">Новые</button>
+              </Link>
 
-            <button
-              className={`button__projectmaterial-nopayment ${
-                buttonNoDatePaymentProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonNoPaymentProject}>
-              Неоплаченные
-            </button>
-            <button
-              className={`button__projectmaterial-nocolor ${
-                buttonNoColorProject === true ? 'active' : 'inactive'
-              }`}
-              onClick={handleButtonNoColorProject}>
-              Без цвета
-            </button>
-            <input
-              class="projectmaterial__search"
-              placeholder="Поиск"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </div>
+              <button
+                className={`button__projectmaterial-nopayment ${
+                  buttonNoDatePaymentProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoPaymentProject}>
+                Неоплаченные
+              </button>
+              <button
+                className={`button__projectmaterial-noready ${
+                  buttonNoReadyDateProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoReadyDateProject}>
+                Неготовые
+              </button>
+              <button
+                className={`button__projectmaterial-noshipping ${
+                  buttonNoShippingDateProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoShippingDateProject}>
+                Неотгруженные
+              </button>
+              <button
+                className={`button__projectmaterial-nocolor ${
+                  buttonNoColorProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoColorProject}>
+                Без цвета
+              </button>
+              <input
+                class="projectmaterial__search"
+                placeholder="Поиск"
+                value={searchQuery}
+                onChange={handleSearch}
+              />
+            </div>
+            <div className="projectmaterial__filter-mobile">
+              <button
+                className={`button__projectmaterial-noshippingm ${
+                  buttonNoShippingDateProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoShippingDateProject}>
+                Неотгруженные
+              </button>
+              <button
+                className={`button__projectmaterial-nocolorm ${
+                  buttonNoColorProject === true ? 'active' : 'inactive'
+                }`}
+                onClick={handleButtonNoColorProject}>
+                Без цвета
+              </button>
+              <input
+                class="projectmaterial__searchm"
+                placeholder="Поиск"
+                value={searchQuery}
+                onChange={handleSearch}
+              />
+            </div>
+          </>
         )}
         {activeTab === 'project' && (
           <>
@@ -295,6 +431,9 @@ function OrderMaterialsList() {
                 user={user}
                 buttonNoColorProject={buttonNoColorProject}
                 buttonNoDatePaymentProject={buttonNoDatePaymentProject}
+                buttonNoReadyDateProject={buttonNoReadyDateProject}
+                buttonNoShippingDateProject={buttonNoShippingDateProject}
+                addWorkingDays={addWorkingDays}
               />
             ))}
           </>
@@ -314,6 +453,8 @@ function OrderMaterialsList() {
                 handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}
                 buttonNoColorProject={buttonNoColorProject}
                 buttonNoDatePaymentProject={buttonNoDatePaymentProject}
+                buttonNoReadyDateProject={buttonNoReadyDateProject}
+                buttonNoShippingDateProject={buttonNoShippingDateProject}
                 user={user}
               />
             ))}
