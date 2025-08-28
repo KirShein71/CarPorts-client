@@ -16,7 +16,11 @@ const MenuItems = ({ items }) => {
       <Link to={item.link}>
         <div
           className={`homepage__item ${
-            item.label === 'Все проекты' || item.label === 'Рекламация' ? 'bold' : ''
+            item.label === 'Все проекты' ||
+            item.label === 'Рекламация' ||
+            item.label === 'Гант договоров'
+              ? 'bold'
+              : ''
           }`}>
           {item.label}
         </div>

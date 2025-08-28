@@ -39,7 +39,9 @@ function ProductionList() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [buttonShippedProject, setButtonShippedProject] = React.useState(true);
+  const [buttonNoShippedProject, setButtonNoShippedProject] = React.useState(true);
   const [buttonOrderedProject, setButtonOrderedProject] = React.useState(true);
+  const [buttonNoOrderedProject, setButtonNoOrderedProject] = React.useState(true);
   const [modalUpdateShimpentDetails, setModalUpdateShimpentDetails] = React.useState(false);
   const [modalCreateOneShipmentDetails, setModalCreateOneShipmentDetails] = React.useState(false);
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
@@ -74,6 +76,8 @@ function ProductionList() {
       isClosed: buttonClosedProject,
       isShipped: buttonShippedProject,
       isOrdered: buttonOrderedProject,
+      isNoShipped: buttonNoShippedProject,
+      isNoOrdered: buttonNoOrderedProject,
     };
 
     const filteredProjects = projectDetails.filter((project) => {
@@ -119,21 +123,31 @@ function ProductionList() {
         });
       });
 
-      const matchesShippingFilter = filters.isShipped ? isShipped : !isShipped;
+      // Фильтрация для отгрузки
+      const matchesShippingFilter = () => {
+        if (filters.isShipped && filters.isNoShipped) return true; // обе кнопки активны - показываем все
+        if (filters.isShipped) return isShipped; // только отгруженные
+        if (filters.isNoShipped) return !isShipped; // только не отгруженные
+        return true; // ни одна кнопка не активна - показываем все
+      };
 
       // Фильтрация для заказанных: игнорируем элементы с detailId = null
       const hasRealDetails = project.props && project.props.some((prop) => prop.detailId !== null);
 
-      const matchesOrderFilter = filters.isOrdered
-        ? true // показываем все проекты
-        : !hasRealDetails; // показываем только проекты без реальных деталей
+      // Фильтрация для заказов
+      const matchesOrderFilter = () => {
+        if (filters.isOrdered && filters.isNoOrdered) return true; // обе кнопки активны - показываем все
+        if (filters.isOrdered) return true; // показываем все проекты (заказанные)
+        if (filters.isNoOrdered) return !hasRealDetails; // только не заказанные (без реальных деталей)
+        return true; // ни одна кнопка не активна - показываем все
+      };
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {
-        return matchesSearch && matchesShippingFilter && matchesOrderFilter;
+        return matchesSearch && matchesShippingFilter() && matchesOrderFilter();
       }
 
-      return matchesSearch && isActiveProject && matchesShippingFilter && matchesOrderFilter;
+      return matchesSearch && isActiveProject && matchesShippingFilter() && matchesOrderFilter();
     });
 
     setFilteredProjects(filteredProjects);
@@ -143,6 +157,8 @@ function ProductionList() {
     buttonClosedProject,
     buttonShippedProject,
     buttonOrderedProject,
+    buttonNoShippedProject, // добавляем новые зависимости
+    buttonNoOrderedProject,
     searchQuery,
     shipmentDetails,
   ]);
@@ -192,7 +208,14 @@ function ProductionList() {
 
   const handleButtonOrderedProject = () => {
     setButtonOrderedProject((prev) => !prev);
-    setButtonShippedProject(false);
+  };
+
+  const handleButtonNoShippedProject = () => {
+    setButtonNoShippedProject((prev) => !prev);
+  };
+
+  const handleButtonNoOrderedProject = () => {
+    setButtonNoOrderedProject((prev) => !prev);
   };
 
   const handleSearch = (event) => {
@@ -261,11 +284,25 @@ function ProductionList() {
             Заказанные
           </button>
           <button
+            className={`button__production-ordered ${
+              buttonNoOrderedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonNoOrderedProject}>
+            Незаказанные
+          </button>
+          <button
             className={`button__production-shipped ${
               buttonShippedProject === true ? 'active' : 'inactive'
             }`}
             onClick={handleButtonShippedProject}>
             Отгруженные
+          </button>
+          <button
+            className={`button__production-shipped ${
+              buttonNoShippedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonNoShippedProject}>
+            Неотгруженные
           </button>
           <button
             className={`button__production-active ${
@@ -290,25 +327,33 @@ function ProductionList() {
         </div>
         <div className="production_filter-mobile">
           <button
-            className={`button__production-activem ${
-              buttonActiveProject === true ? 'active' : 'inactive'
+            className={`button__production-orderedm ${
+              buttonOrderedProject === true ? 'active' : 'inactive'
             }`}
-            onClick={handleButtonActiveProject}>
-            Активные
+            onClick={handleButtonOrderedProject}>
+            Заказанные
           </button>
           <button
-            className={`button__production-noactivem ${
-              buttonClosedProject === true ? 'active' : 'inactive'
+            className={`button__production-orderedm ${
+              buttonNoOrderedProject === true ? 'active' : 'inactive'
             }`}
-            onClick={handleButtonClosedProject}>
-            Завершенные
+            onClick={handleButtonNoOrderedProject}>
+            Незаказанные
           </button>
-          <input
-            class="production__searchm"
-            placeholder="Поиск"
-            value={searchQuery}
-            onChange={handleSearch}
-          />
+          <button
+            className={`button__production-shippedm ${
+              buttonShippedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonShippedProject}>
+            Отгруженные
+          </button>
+          <button
+            className={`button__production-shippedm ${
+              buttonNoShippedProject === true ? 'active' : 'inactive'
+            }`}
+            onClick={handleButtonNoShippedProject}>
+            Неотгруженные
+          </button>
         </div>
       </>
       <UpdateProjectDetails

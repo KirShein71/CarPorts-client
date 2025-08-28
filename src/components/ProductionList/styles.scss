@@ -110,10 +110,24 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 70px;
-            height: 20px;
-            font-size: 10px;
-            margin-right: 5px;
+            display: none;
+        }
+    }
+
+    &-orderedm {
+        width: 85px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
         }
     }
 
@@ -133,10 +147,24 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            width: 80px;
-            height: 20px;
-            font-size: 10px;
-            margin-right: 5px;
+            display: none;
+        }
+    }
+
+    &-shippedm {
+        width: 85px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
         }
     }
 
@@ -156,26 +184,14 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            display: none;
+            width: 60px;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
         }
     }
 
-    &-activem {
-        width: 60px;
-        height: 20px;
-        font-size: 10px;
-        margin-right: 5px;
-        border: 1px solid #212529;
-        background-color: #212529;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &.active {
-            background-color: #212529; /* Черный фон для активной кнопки */
-            color: #ffffff; /* Белый текст для активной кнопки */
-        }
-    }
+    
     
 
     &-noactive {
@@ -194,26 +210,14 @@
             color: #ffffff; /* Белый текст для активной кнопки */
         }
         @media(max-width: 460px) {
-            display: none;
+            width: 83px;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
         }
     }
 
-     &-noactivem {
-        width: 83px;
-        height: 20px;
-        font-size: 10px;
-        margin-right: 5px;
-        border: 1px solid #212529;
-        background-color: #212529;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &.active {
-            background-color: #212529; /* Черный фон для активной кнопки */
-            color: #ffffff; /* Белый текст для активной кнопки */
-        }
-    }
+     
 }
 
 .inactive {
@@ -228,21 +232,13 @@
     outline: none; 
     border: solid 1px #000000;
     @media(max-width: 460px) {
-        display: none;
-    }
-}
-
-.production__searchm {
-    display: none;
-    @media(max-width: 460px) {
         width: 90px;
         height: 20px;
         font-size: 10px;
-        outline: none; 
-        border: solid 1px #000000;
-        display: block;
     }
 }
+
+
 
 
 .production-table-container {
