@@ -139,11 +139,13 @@ const CreateMaterial = (props) => {
               isInvalid={valid.material === false}>
               <option value="">Материалы</option>
               {materials &&
-                materials.map((item) => (
-                  <option key={item.id} value={item.id} data-supplier-id={item.supplierId}>
-                    {item.name}
-                  </option>
-                ))}
+                materials
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => (
+                    <option key={item.id} value={item.id} data-supplier-id={item.supplierId}>
+                      {item.name}
+                    </option>
+                  ))}
             </Form.Select>
           </Col>
           <Row className="mb-3">

@@ -203,6 +203,7 @@ const CreateBrigadeDate = (props) => {
                 {projects &&
                   projects
                     .filter((project) => project.finish === null && project.regionId === regionId)
+                    .sort((a, b) => new Date(b.agreement_date) - new Date(a.agreement_date))
                     .map((project) => (
                       <option key={project.id} value={project.id}>
                         {project.name}

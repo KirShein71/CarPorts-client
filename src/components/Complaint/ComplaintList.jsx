@@ -20,6 +20,8 @@ function ComplaintList() {
   const [buttonNewComplaint, setButtonNewComplaint] = React.useState(true);
   const [buttonClosedComplaint, setButtonClosedComplaint] = React.useState(false);
   const [buttonWorkComplaint, setButtonWorkComplaint] = React.useState(false);
+  const [buttonMskProject, setButtonMskProject] = React.useState(true);
+  const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
   const [modalDeleteComplaint, setModalDeleteComplaint] = React.useState(false);
   const [complaintId, setComplaintId] = React.useState(null);
   const [modalClosedComplaint, setModalClosedComplaint] = React.useState(false);
@@ -41,25 +43,52 @@ function ComplaintList() {
       isNew: buttonNewComplaint,
       isClosed: buttonClosedComplaint,
       isWork: buttonWorkComplaint,
+      isMsk: buttonMskProject,
+      isSpb: buttonSpbProject,
     };
 
     const filteredComplaints = complaints.filter((complaint) => {
-      const isNewComplaint =
-        filters.isNew &&
-        complaint.date_finish === null &&
-        complaint.complaint_estimates.length === 0;
-      const isClosedComplaint = filters.isClosed && complaint.date_finish !== null;
-      const isWorkComplaint =
-        filters.isWork &&
-        complaint.date_finish === null &&
-        complaint.complaint_estimates.length > 0;
+      // Фильтрация по статусу рекламации
+      const statusFilter = () => {
+        if (filters.isNew) {
+          return complaint.date_finish === null && complaint.complaint_estimates.length === 0;
+        }
+        if (filters.isClosed) {
+          return complaint.date_finish !== null;
+        }
+        if (filters.isWork) {
+          return complaint.date_finish === null && complaint.complaint_estimates.length > 0;
+        }
+        return true; // если ни один статус не выбран - показываем все
+      };
 
-      // Если ни одна кнопка не активна, показываем все проекты
-      return isNewComplaint || isClosedComplaint || isWorkComplaint;
+      // Фильтрация по региону
+      const regionFilter = () => {
+        if (filters.isMsk && filters.isSpb) {
+          return true; // показываем оба региона
+        }
+        if (filters.isMsk) {
+          return complaint.project.regionId === 2; // Москва
+        }
+        if (filters.isSpb) {
+          return complaint.project.regionId === 1; // СПб
+        }
+        return true; // если ни один регион не выбран - показываем все
+      };
+
+      // Должны совпадать ОБА фильтра: и статус и регион
+      return statusFilter() && regionFilter();
     });
 
     setFilteredComplaints(filteredComplaints);
-  }, [complaints, buttonNewComplaint, buttonClosedComplaint, buttonWorkComplaint]);
+  }, [
+    complaints,
+    buttonNewComplaint,
+    buttonClosedComplaint,
+    buttonWorkComplaint,
+    buttonSpbProject,
+    buttonMskProject,
+  ]);
 
   const handleModalCreateComplaint = () => {
     setOpenModalCreateComplaint(true);
@@ -119,6 +148,24 @@ function ComplaintList() {
     }
   };
 
+  const handleButtonMskProject = () => {
+    const newButtonMskProject = !buttonMskProject;
+    setButtonMskProject(newButtonMskProject);
+
+    if (!newButtonMskProject) {
+      setButtonSpbProject(true);
+    }
+  };
+
+  const handleButtonSpbProject = () => {
+    const newButtonSpbProject = !buttonSpbProject;
+    setButtonSpbProject(newButtonSpbProject);
+
+    if (!newButtonSpbProject) {
+      setButtonMskProject(true);
+    }
+  };
+
   const addToInfo = (id) => {
     navigate(`/complaint-project/${id}`, { state: { from: location.pathname } });
   };
@@ -159,6 +206,16 @@ function ComplaintList() {
           Создать
         </button>
         <button
+          className={`button__msk-complaint ${buttonMskProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonMskProject}>
+          МО
+        </button>
+        <button
+          className={`button__spb-complaint ${buttonSpbProject === true ? 'active' : 'inactive'}`}
+          onClick={handleButtonSpbProject}>
+          ЛО
+        </button>
+        <button
           className={`button__new-complaint ${buttonNewComplaint === true ? 'active' : 'inactive'}`}
           onClick={handleButtonNewComplaint}>
           Новые
@@ -185,6 +242,7 @@ function ComplaintList() {
               <th className="complaint-thead__number">Номер</th>
               <th className="complaint-thead__name">Проект</th>
               <th className="complaint-thead__date">Дата</th>
+              <th className="complaint-thead__region">Регион</th>
               <th className="complaint-thead__closed"></th>
               <th className="complaint-thead__delete"></th>
             </tr>
@@ -193,7 +251,7 @@ function ComplaintList() {
             {filteredComplaints.map((complaint) => (
               <tr key={complaint.id}>
                 <td
-                  style={{ cursor: 'pointer', textAlign: 'left' }}
+                  style={{ cursor: 'pointer', textAlign: 'center' }}
                   onClick={() => {
                     addToInfo(complaint.id);
                   }}>
@@ -206,8 +264,11 @@ function ComplaintList() {
                   }}>
                   {complaint.project.name}
                 </td>
-                <td>
+                <td style={{ textAlign: 'center' }}>
                   <Moment format="DD.MM.YYYY">{complaint.date}</Moment>
+                </td>
+                <td style={{ textAlign: 'center' }}>
+                  {complaint.project.regionId === 2 ? 'МО' : 'ЛО'}
                 </td>
                 <td>
                   {complaint.date_finish !== null ? (
