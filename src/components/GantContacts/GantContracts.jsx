@@ -439,6 +439,29 @@ function GantContracts() {
                           currentDate > productionEndDate &&
                           currentDate <= installationEndDate;
 
+                        // Функция для преобразования имени в инициал, а фамилии полностью
+                        const formatBrigadeName = (brigadeName) => {
+                          if (!brigadeName) return '';
+
+                          // Разделяем название на слова (предполагаем, что это ФИО)
+                          const words = brigadeName.split(' ').filter((word) => word.length > 0);
+
+                          if (words.length === 0) return '';
+                          if (words.length === 1) return words[0]; // если только одно слово - возвращаем как есть
+
+                          // Первое слово - имя (делаем инициал), остальные - фамилия (оставляем полностью)
+                          const firstName = words[0];
+                          const lastName = words.slice(1).join(' ');
+
+                          return `${firstName.charAt(0).toUpperCase()}. ${lastName}`;
+                        };
+
+                        // Находим все бригады, работающие в эту дату
+                        const brigadesForThisDate =
+                          gantProject?.brigades_dates?.filter(
+                            (brigadeDate) => brigadeDate.date?.date === gantDate.date,
+                          ) || [];
+
                         return (
                           <td
                             key={gantDate.id}
@@ -461,7 +484,70 @@ function GantContracts() {
                                 isInInstallationRange || isInProductionRange || isInDesignRange
                                   ? 'bold'
                                   : 'normal',
-                            }}></td>
+                              position: 'relative',
+                              minWidth: '40px',
+                              height: '40px',
+                            }}
+                            title={
+                              isInDesignRange
+                                ? `Дизайнер: ${gantProject?.designer || 'Не указан'}`
+                                : isInInstallationRange && brigadesForThisDate.length > 0
+                                ? `Бригады: ${brigadesForThisDate
+                                    .map((b) => b.brigade?.name)
+                                    .join(', ')}`
+                                : ''
+                            }>
+                            {/* Отображаем designer только в design периоде */}
+                            {isInDesignRange && gantProject?.designer && (
+                              <div
+                                style={{
+                                  fontSize: '10px',
+                                  fontWeight: 'normal',
+                                  color: '#000',
+                                  textAlign: 'center',
+                                  whiteSpace: 'nowrap',
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                  padding: '2px',
+                                }}>
+                                {gantProject.designer}
+                              </div>
+                            )}
+
+                            {/* Отображаем бригады в installation периоде */}
+                            {isInInstallationRange && brigadesForThisDate.length > 0 && (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  gap: '2px',
+                                  height: '100%',
+                                  padding: '2px',
+                                }}>
+                                {brigadesForThisDate.map((brigadeDate, index) => (
+                                  <div
+                                    key={index}
+                                    style={{
+                                      fontSize: '7px',
+                                      fontWeight: 'bold',
+                                      color: '#000',
+                                      background: 'rgba(255, 255, 255, 0.8)',
+                                      padding: '1px 3px',
+                                      borderRadius: '3px',
+                                      textAlign: 'center',
+                                      lineHeight: '1.1',
+                                      maxWidth: '100%',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}>
+                                    {formatBrigadeName(brigadeDate.brigade?.name)}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </td>
                         );
                       })}
                     </tr>
