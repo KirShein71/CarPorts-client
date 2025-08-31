@@ -38,6 +38,8 @@ import Logistics from '../pages/Logistics';
 import GantContract from '../pages/GantContact';
 
 import { observer } from 'mobx-react';
+import { Component } from 'react';
+import ReportProject from '../pages/ReportProject';
 
 const userRoutes = [
   { path: '/personalaccount', Component: PersonalAccount },
@@ -67,6 +69,7 @@ const employeeRoutes = [
   { path: '/finishproject', Component: FinishProject },
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
+  { path: './report-project', Component: ReportProject },
 ];
 
 const adminRoutes = [
@@ -104,6 +107,7 @@ const adminRoutes = [
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
   { path: '/logistics', Component: Logistics },
   { path: '/gant-contracts', Component: GantContract },
+  { path: '/report-project', Component: ReportProject },
 ];
 
 const managerSaleRoutes = [
@@ -117,6 +121,7 @@ const managerSaleRoutes = [
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/logistics', Component: Logistics },
+  { path: '/report-project', Component: ReportProject },
 ];
 
 const managerProjectRoutes = [
@@ -143,6 +148,7 @@ const managerProjectRoutes = [
   { path: '/logistics', Component: Logistics },
   { path: '/viewinginstallationpage/:id', Component: ViewingInstallationPage },
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
+  { path: '/report-project', Component: ReportProject },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];

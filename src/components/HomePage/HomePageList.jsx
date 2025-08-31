@@ -19,7 +19,8 @@ const MenuItems = ({ items }) => {
           className={`homepage__item ${
             item.label === 'Все проекты' ||
             item.label === 'Рекламация' ||
-            item.label === 'Гант договоров'
+            item.label === 'Гант договоров' ||
+            item.label === 'Подписано/Сдано'
               ? 'bold'
               : ''
           }`}>
@@ -87,6 +88,7 @@ function HomePageList() {
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { label: 'Рекламация', link: '/complaint' },
     { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Администирование' },
     { label: 'Сметы', link: '/distribution' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
