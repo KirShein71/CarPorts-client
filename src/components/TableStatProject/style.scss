@@ -1,0 +1,24 @@
+.stat-project {
+    margin-top: 20px;
+
+    &__th {
+        font-size: 15px;
+        color: #000000;
+        font-weight: 700;
+    }
+
+    &__month {
+        font-size: 22px;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 10px;
+    }
+
+    &__project {
+        font-size: 15px;
+        font-weight: 500;
+        color: #000000;
+        
+        padding-left: 10px;
+    }
+}
