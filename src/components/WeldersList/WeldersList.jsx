@@ -146,80 +146,89 @@ function WeldersList() {
         setShow={setCreateOneStockDetailModal}
         setChange={setChange}
       />
-      <div className="table-container">
-        <Table bordered size="sm" className="mt-3">
-          <thead>
-            <tr>
-              <th className="welders_column">Сумма</th>
-              {detailSums.map((sum, index) => (
-                <th className="welders_thead" key={index}>
-                  {sum}
-                </th>
-              ))}
-              <th></th>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <th className="welders_column" onClick={() => handleSort('stock_date')}>
-                Отметка времени{' '}
-                <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
-              </th>
-              {nameDetails
-                .sort((a, b) => a.id - b.id)
-                .map((part) => (
-                  <th key={part.id}>{part.name}</th>
+      <div className="welders-table-container">
+        <div className="welders-table-wrapper">
+          <Table
+            bordered
+            size="sm"
+            className="mt-3"
+            style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th className="welders_column">Сумма</th>
+                {detailSums.map((sum, index) => (
+                  <th className="welders_thead" key={index}>
+                    {sum}
+                  </th>
                 ))}
-              <th className="welders_thead">Нетиповые</th>
-              <th className="welders_thead"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedStockDetails
-              .filter((stock) => {
-                const searchValue = searchQuery.toLowerCase();
-                const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
-                const formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // Преобразуем дату в формат "dd.mm.yyyy"
-                return formattedDate.includes(searchValue); // Проверяем, содержит ли преобразованная дата искомое значение
-              })
-              .map((stock) => (
-                <tr>
-                  <td className="welders_column">
-                    <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
-                  </td>
-                  {nameDetails
-                    .sort((a, b) => a.id - b.id)
-                    .map((part) => {
-                      const detail = stock.props.find((el) => el.detailId === part.id);
-                      const quantity = detail ? detail.stock_quantity : '';
-                      return (
-                        <td
-                          style={{ cursor: 'pointer' }}
-                          onClick={
-                            user.isManagerProduction
-                              ? undefined
-                              : () =>
-                                  quantity
-                                    ? handleUpdateDetailClick(detail.id)
-                                    : handleCreateOneStockDetail(part.id, stock.stock_date)
-                          }>
-                          {quantity}
-                        </td>
-                      );
-                    })}
-                  <td onClick={() => handleCreateStockAntypical(stock.stock_date)}></td>
-                  <td>
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      onClick={() => handleDeleteStockDetails(stock.stock_date)}>
-                      Удалить
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <thead>
+              <tr>
+                <th className="welders-th mobile" onClick={() => handleSort('stock_date')}>
+                  Отметка времени{' '}
+                  <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
+                </th>
+                {nameDetails
+                  .sort((a, b) => a.id - b.id)
+                  .map((part) => (
+                    <th className="welders-th" key={part.id}>
+                      {part.name}
+                    </th>
+                  ))}
+                <th className="welders-th">Нетиповые</th>
+                <th className="welders-th"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedStockDetails
+                .filter((stock) => {
+                  const searchValue = searchQuery.toLowerCase();
+                  const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
+                  const formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // Преобразуем дату в формат "dd.mm.yyyy"
+                  return formattedDate.includes(searchValue); // Проверяем, содержит ли преобразованная дата искомое значение
+                })
+                .map((stock) => (
+                  <tr>
+                    <td className="welders-td mobile">
+                      <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
+                    </td>
+                    {nameDetails
+                      .sort((a, b) => a.id - b.id)
+                      .map((part) => {
+                        const detail = stock.props.find((el) => el.detailId === part.id);
+                        const quantity = detail ? detail.stock_quantity : '';
+                        return (
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={
+                              user.isManagerProduction
+                                ? undefined
+                                : () =>
+                                    quantity
+                                      ? handleUpdateDetailClick(detail.id)
+                                      : handleCreateOneStockDetail(part.id, stock.stock_date)
+                            }>
+                            {quantity}
+                          </td>
+                        );
+                      })}
+                    <td onClick={() => handleCreateStockAntypical(stock.stock_date)}></td>
+                    <td>
+                      <Button
+                        variant="dark"
+                        size="sm"
+                        onClick={() => handleDeleteStockDetails(stock.stock_date)}>
+                        Удалить
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );

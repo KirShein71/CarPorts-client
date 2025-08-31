@@ -190,24 +190,25 @@ function ShipmentList() {
         setShow={setCreateOneShipmentDetailModal}
         setChange={setChange}
       />
-      <div className="table-container">
-        <Table bordered size="sm" className="mt-3">
-          <thead>
-            <tr>
-              <th>Сумма</th>
-              <th className="shipment-th mobile"></th>
-              {/* <th></th> */}
-              {detailSums.map((sum, index) => (
-                <th key={index}>{sum}</th>
-              ))}
-              <th></th>
-            </tr>
-          </thead>
-          <thead>
-            <tr>
-              <th>Номер проекта</th>
-              <th className="shipment-th mobile">Название проекта</th>
-              {/* <th
+      <div className="shipment-table-container">
+        <div className="shipment-table-wrapper">
+          <Table bordered size="sm" className="mt-3">
+            <thead>
+              <tr>
+                <th>Сумма</th>
+                <th className="shipment-th mobile"></th>
+                {/* <th></th> */}
+                {detailSums.map((sum, index) => (
+                  <th key={index}>{sum}</th>
+                ))}
+                <th></th>
+              </tr>
+            </thead>
+            <thead>
+              <tr>
+                <th className="shipment-th">Номер проекта</th>
+                <th className="shipment-th mobile">Название проекта</th>
+                {/* <th
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   handleSort('shipment_date');
@@ -215,73 +216,76 @@ function ShipmentList() {
                 Отметка времени{' '}
                 <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
               </th> */}
-              {nameDetails
-                .sort((a, b) => a.number - b.number)
-                .map((part) => (
-                  <th key={part.id}>{part.name}</th>
-                ))}
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProjects
-              .slice()
-              .sort((a, b) => {
-                const dateA = new Date(a[sortField]);
-                const dateB = new Date(b[sortField]);
+                {nameDetails
+                  .sort((a, b) => a.number - b.number)
+                  .map((part) => (
+                    <th className="shipment-th" key={part.id}>
+                      {part.name}
+                    </th>
+                  ))}
+                <th className="shipment-th"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProjects
+                .slice()
+                .sort((a, b) => {
+                  const dateA = new Date(a[sortField]);
+                  const dateB = new Date(b[sortField]);
 
-                if (sortOrder === 'desc') {
-                  return dateB - dateA;
-                } else {
-                  return dateA - dateB;
-                }
-              })
-              .map((shipment) => (
-                <tr
-                  key={shipment.id}
-                  style={{
-                    color: shipment.project.finish === 'true' ? '#808080' : 'black',
-                  }}>
-                  <td>{shipment.project ? shipment.project.number : ''}</td>
-                  <td className="shipment-td mobile">
-                    {shipment.project ? shipment.project.name : ''}
-                  </td>
-                  {/* <td>
+                  if (sortOrder === 'desc') {
+                    return dateB - dateA;
+                  } else {
+                    return dateA - dateB;
+                  }
+                })
+                .map((shipment) => (
+                  <tr
+                    key={shipment.id}
+                    style={{
+                      color: shipment.project.finish === 'true' ? '#808080' : 'black',
+                    }}>
+                    <td>{shipment.project ? shipment.project.number : ''}</td>
+                    <td className="shipment-td mobile">
+                      {shipment.project ? shipment.project.name : ''}
+                    </td>
+                    {/* <td>
                     <Moment format="DD.MM.YYYY">{shipment.shipment_date}</Moment>
                   </td> */}
-                  {nameDetails
-                    .sort((a, b) => a.number - b.number)
-                    .map((part) => {
-                      const detail = shipment.props.find((el) => el.detailId === part.id);
-                      const quantity = detail ? detail.shipment_quantity : '';
-                      return (
-                        <td
-                          style={{ cursor: 'pointer' }}
-                          onClick={() =>
-                            quantity
-                              ? handleUpdateShipmentDetailClick(detail.id)
-                              : handleCreateOneShipmentDetail(
-                                  part.id,
-                                  shipment.projectId,
-                                  shipment.shipment_date,
-                                )
-                          }>
-                          {quantity}
-                        </td>
-                      );
-                    })}
-                  <td>
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
-                      Удалить
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+                    {nameDetails
+                      .sort((a, b) => a.number - b.number)
+                      .map((part) => {
+                        const detail = shipment.props.find((el) => el.detailId === part.id);
+                        const quantity = detail ? detail.shipment_quantity : '';
+                        return (
+                          <td
+                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                              quantity
+                                ? handleUpdateShipmentDetailClick(detail.id)
+                                : handleCreateOneShipmentDetail(
+                                    part.id,
+                                    shipment.projectId,
+                                    shipment.shipment_date,
+                                  )
+                            }>
+                            {quantity}
+                          </td>
+                        );
+                      })}
+                    <td>
+                      <Button
+                        variant="dark"
+                        size="sm"
+                        onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
+                        Удалить
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );

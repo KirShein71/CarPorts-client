@@ -91,27 +91,60 @@ function ProductionList() {
         ? project.project.finish === 'true'
         : true;
 
-      // Новая логика проверки отгрузки: ищем полное совпадение projectId и props (игнорируя null значения)
+      // Функция для проверки реальных деталей (не null и не пустые значения)
+      const hasRealDetails = () => {
+        if (!project.props || !Array.isArray(project.props)) return false;
+
+        return project.props.some(
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity !== 0, // возможно также стоит исключить нулевые quantity
+        );
+      };
+
+      // Функция для удаления дубликатов props по detailId с проверкой на null
+      const removeDuplicateProps = (propsArray) => {
+        if (!propsArray || !Array.isArray(propsArray)) return [];
+
+        const uniqueProps = [];
+        const seenDetailIds = new Set();
+
+        for (const prop of propsArray) {
+          // Игнорируем записи с null значениями
+          if (
+            prop.detailId !== null &&
+            prop.quantity !== null &&
+            !seenDetailIds.has(prop.detailId)
+          ) {
+            seenDetailIds.add(prop.detailId);
+            uniqueProps.push(prop);
+          }
+        }
+
+        return uniqueProps;
+      };
+
+      // Новая логика проверки отгрузки: ищем полное совпадение projectId и props (игнорируя null значения и дубликаты)
       const isShipped = shipmentDetails.some((shipment) => {
         // Проверяем совпадение projectId
         if (shipment.projectId !== project.projectId) return false;
 
-        // Фильтруем props, удаляя элементы с detailId = null или quantity = null
-        const shipmentProps = (shipment.props || []).filter(
-          (prop) => prop.detailId !== null && prop.shipment_quantity !== null,
+        // Фильтруем props, удаляя элементы с detailId = null или quantity = null и дубликаты
+        const shipmentProps = removeDuplicateProps(
+          (shipment.props || []).filter(
+            (prop) => prop.detailId !== null && prop.shipment_quantity !== null,
+          ),
         );
 
-        const projectProps = (project.props || []).filter(
-          (prop) => prop.detailId !== null && prop.quantity !== null,
+        const projectProps = removeDuplicateProps(
+          (project.props || []).filter((prop) => prop.detailId !== null && prop.quantity !== null),
         );
 
-        // Если количество не-null props разное - не совпадает
+        // Если количество уникальных props разное - не совпадает
         if (shipmentProps.length !== projectProps.length) return false;
 
         // Если оба массива пустые после фильтрации - считаем совпадением
         if (shipmentProps.length === 0 && projectProps.length === 0) return true;
 
-        // Проверяем, что все не-null детали и их количества совпадают
+        // Проверяем, что все уникальные детали и их количества совпадают
         return shipmentProps.every((shipmentProp) => {
           const matchingProjectProp = projectProps.find(
             (projectProp) => projectProp.detailId === shipmentProp.detailId,
@@ -131,14 +164,11 @@ function ProductionList() {
         return true; // ни одна кнопка не активна - показываем все
       };
 
-      // Фильтрация для заказанных: игнорируем элементы с detailId = null
-      const hasRealDetails = project.props && project.props.some((prop) => prop.detailId !== null);
-
       // Фильтрация для заказов
       const matchesOrderFilter = () => {
         if (filters.isOrdered && filters.isNoOrdered) return true; // обе кнопки активны - показываем все
-        if (filters.isOrdered) return true; // показываем все проекты (заказанные)
-        if (filters.isNoOrdered) return !hasRealDetails; // только не заказанные (без реальных деталей)
+        if (filters.isOrdered) return hasRealDetails(); // показываем только проекты с реальными деталями
+        if (filters.isNoOrdered) return !hasRealDetails(); // только не заказанные (без реальных деталей)
         return true; // ни одна кнопка не активна - показываем все
       };
 
@@ -150,14 +180,50 @@ function ProductionList() {
       return matchesSearch && isActiveProject && matchesShippingFilter() && matchesOrderFilter();
     });
 
-    setFilteredProjects(filteredProjects);
+    // Сортируем проекты по приоритету отгрузки
+    const sortedProjects = filteredProjects.sort((a, b) => {
+      // Функция для определения статуса отгрузки проекта
+      const getShippingStatus = (project) => {
+        const projectDetails = (project.props || []).filter(
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0,
+        );
+
+        if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
+
+        const shippedDetails = shipmentDetails
+          .filter((shipment) => shipment.projectId === project.projectId)
+          .flatMap((shipment) => shipment.props || [])
+          .filter(
+            (prop) =>
+              prop.detailId !== null &&
+              prop.shipment_quantity !== null &&
+              prop.shipment_quantity > 0,
+          );
+
+        if (shippedDetails.length === 0) {
+          return 0; // не отгружено ни одной детали (высший приоритет)
+        } else if (shippedDetails.length < projectDetails.length) {
+          return 1; // отгружены не все детали (средний приоритет)
+        } else {
+          return 2; // все детали отгружены (низший приоритет)
+        }
+      };
+
+      const aStatus = getShippingStatus(a);
+      const bStatus = getShippingStatus(b);
+
+      // Сортировка по приоритету: 0 > 1 > 2
+      return aStatus - bStatus;
+    });
+
+    setFilteredProjects(sortedProjects);
   }, [
     projectDetails,
     buttonActiveProject,
     buttonClosedProject,
     buttonShippedProject,
     buttonOrderedProject,
-    buttonNoShippedProject, // добавляем новые зависимости
+    buttonNoShippedProject,
     buttonNoOrderedProject,
     searchQuery,
     shipmentDetails,

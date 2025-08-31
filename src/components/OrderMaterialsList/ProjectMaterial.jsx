@@ -26,6 +26,7 @@ function ProjectMaterial({
   buttonNoShippingDateProject,
   handleOpenModalUpdateMaterialId,
   addWorkingDays,
+  formatDate,
 }) {
   return (
     <div className="projectmaterial">
@@ -42,10 +43,16 @@ function ProjectMaterial({
               </button>
               <div className="projectmaterial__deadline">
                 Сроки:{' '}
-                {moment(agreement_date, 'YYYY/MM/DD')
-                  .businessAdd(expiration_date, 'days')
-                  .businessAdd(design_period, 'days')
-                  .format('DD.MM.YYYY')}
+                {(() => {
+                  // Вычисляем дедлайн
+                  const agreementDate = new Date(agreement_date);
+                  const designPeriod = design_period;
+                  const expirationDate = expiration_date;
+                  const sumDays = designPeriod + expirationDate;
+                  const endDate = addWorkingDays(agreementDate, sumDays);
+                  const formattedEndDate = formatDate(endDate);
+                  return formattedEndDate;
+                })()}
               </div>
               <div className="projectmaterial__remainder">
                 {(() => {

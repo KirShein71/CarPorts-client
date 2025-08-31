@@ -434,6 +434,7 @@ function OrderMaterialsList() {
                 buttonNoReadyDateProject={buttonNoReadyDateProject}
                 buttonNoShippingDateProject={buttonNoShippingDateProject}
                 addWorkingDays={addWorkingDays}
+                formatDate={formatDate}
               />
             ))}
           </>
