@@ -38,7 +38,7 @@ function ChangeBrigade() {
   const [brigadeId, setBrigadeId] = React.useState(null);
   const [dateBrigade, setDateBrigade] = React.useState(null);
   const [regions, setRegions] = React.useState([]);
-  const [selectedRegion, setSelectedRegion] = React.useState(1);
+  const [selectedRegion, setSelectedRegion] = React.useState(2);
   const modalRef = React.useRef();
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
@@ -296,7 +296,13 @@ function ChangeBrigade() {
               <button
                 className="calendar-brigade__dropdown-brigade"
                 onClick={hadleOpenModalSelectedBrigade}>
-                {selectedBrigadeName ? selectedBrigadeName : 'Бригада '}
+                {selectedBrigadeName ? (
+                  selectedBrigadeName
+                ) : (
+                  <div>
+                    Бригада <img src="./img/arrow-down.png" alt="arrow down" />
+                  </div>
+                )}
               </button>
               {openModalSelectedBrigade && (
                 <div className="calendar-brigade__dropdown-modal">

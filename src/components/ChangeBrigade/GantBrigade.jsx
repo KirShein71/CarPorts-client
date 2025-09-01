@@ -39,6 +39,7 @@ function GantBrigade(props) {
             <thead>
               <tr>
                 <th className="project-th mobile">Дата</th>
+                <th></th>
                 {brigades
                   .filter(
                     (gantBrigName) =>
@@ -52,98 +53,117 @@ function GantBrigade(props) {
               </tr>
             </thead>
             <tbody>
-              {filteredDates.map((gantBrigDate) => (
-                <tr key={gantBrigDate.id}>
-                  <td
-                    className="project-td mobile"
-                    style={{
-                      backgroundColor:
-                        // Если сегодняшняя дата
-                        gantBrigDate.date.toLocaleString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : // Или если суббота (6) или воскресенье (0)
-                          [0, 6].includes(new Date(gantBrigDate.date).getDay())
-                          ? '#e1dede'
-                          : '#ffffff',
-                    }}>
-                    {new Date(gantBrigDate.date).toLocaleDateString('ru-RU')} -
-                    {getDayName(gantBrigDate.date)}
-                  </td>
-                  {brigades
-                    .filter(
-                      (gantBrigName) =>
-                        gantBrigName.regionId === selectedRegion && gantBrigName.active === 'true',
-                    )
-                    .map((gantBrigName) => {
-                      const dateBrig = brigadesDates.find(
-                        (el) => el.brigadeId === gantBrigName.id && el.dateId === gantBrigDate.id,
-                      );
+              {filteredDates.map((gantBrigDate) => {
+                const currentDate = new Date(gantBrigDate.date);
+                const dateString = currentDate.toISOString().split('T')[0];
+                const dayOfWeek = currentDate.getDay();
+                const isToday = dateString === todayString;
+                const isWeekend = [0, 6].includes(dayOfWeek);
 
-                      let bisness = '';
-                      if (dateBrig) {
-                        if (dateBrig.complaint?.project.name) {
-                          bisness = `*${dateBrig.complaint.project.name}*`;
-                        } else {
-                          bisness =
-                            dateBrig.project?.name ||
-                            dateBrig.warranty ||
-                            dateBrig.weekend ||
-                            dateBrig.downtime;
-                        }
+                return (
+                  <tr key={gantBrigDate.id}>
+                    <td
+                      className="project-td mobile"
+                      style={{
+                        backgroundColor: isToday ? '#bbbbbb' : isWeekend ? '#e1dede' : '#ffffff',
+                      }}>
+                      {currentDate.toLocaleDateString('ru-RU')} -
+                      {getDayName(gantBrigDate.date).replace('вск', 'вс')}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {
+                        brigadesDates.filter((brigadesDateLength) => {
+                          const brigadesDateString = new Date(brigadesDateLength.date.date)
+                            .toISOString()
+                            .split('T')[0];
+                          return (
+                            brigadesDateString === dateString &&
+                            brigadesDateLength.weekend === '' &&
+                            brigadesDateLength.warranty === '' &&
+                            brigadesDateLength.regionId === selectedRegion
+                          );
+                        }).length
                       }
+                    </td>
+                    {brigades
+                      .filter(
+                        (gantBrigName) =>
+                          gantBrigName.regionId === selectedRegion &&
+                          gantBrigName.active === 'true',
+                      )
+                      .map((gantBrigName) => {
+                        const dateBrig = brigadesDates.find(
+                          (el) => el.brigadeId === gantBrigName.id && el.dateId === gantBrigDate.id,
+                        );
 
-                      return bisness ? (
-                        <td
-                          key={gantBrigName.id}
-                          style={{
-                            cursor: 'pointer',
-
-                            fontWeight: '500',
-                            textAlign: 'center',
-                            paddingTop: '7px',
-                            color:
-                              bisness === 'Гарантийный день'
-                                ? '#0000ff'
-                                : bisness === 'Выходной'
-                                ? '#9b2d30'
-                                : bisness === 'Простой'
-                                ? '#ff0000'
-                                : '#000000',
-                            backgroundColor:
-                              // Если сегодняшняя дата
-                              gantBrigDate.date.toLocaleString().split('T')[0] === todayString
-                                ? '#bbbbbb'
-                                : // Или если суббота (6) или воскресенье (0)
-                                [0, 6].includes(new Date(gantBrigDate.date).getDay())
-                                ? '#e1dede'
-                                : '#ffffff',
-                          }}
-                          onClick={() => handleOpenModalEditDelete(dateBrig?.id)}>
-                          {bisness}
-                        </td>
-                      ) : (
-                        <td
-                          key={gantBrigName.id}
-                          onClick={() =>
-                            handleOpenModalCreateBrigadeDate(gantBrigName.id, gantBrigDate.id)
+                        let bisness = '';
+                        if (dateBrig) {
+                          if (dateBrig.complaint?.project?.name) {
+                            bisness = `*${dateBrig.complaint.project.name}*`;
+                          } else {
+                            bisness =
+                              dateBrig.project?.name ||
+                              dateBrig.warranty ||
+                              dateBrig.weekend ||
+                              dateBrig.downtime ||
+                              '';
                           }
-                          style={{
-                            cursor: 'pointer',
-                            backgroundColor:
-                              // Если сегодняшняя дата
-                              gantBrigDate.date.toLocaleString().split('T')[0] === todayString
+                        }
+
+                        const cellStyle = {
+                          cursor: 'pointer',
+                          fontWeight: '500',
+                          textAlign: 'left',
+                          padding: '7px 4px 4px 4px', // уменьшил отступы для экономии места
+                          color: '#000000',
+                          backgroundColor: isToday ? '#bbbbbb' : isWeekend ? '#e1dede' : '#ffffff',
+                          whiteSpace: 'nowrap', // запрет переноса текста
+                          overflow: 'hidden', // скрытие выходящего за границы содержимого
+                          textOverflow: 'ellipsis', // добавление многоточия в конце
+                          maxWidth: '120px', // ограничение максимальной ширины
+                          minWidth: '50px', // минимальная ширина для кликабельности
+                        };
+
+                        // Устанавливаем цвет текста в зависимости от типа занятия
+                        if (bisness === 'Гарантийный день') {
+                          cellStyle.color = '#0000ff';
+                        } else if (bisness === 'Выходной') {
+                          cellStyle.color = '#9b2d30';
+                        } else if (bisness === 'Простой') {
+                          cellStyle.color = '#ff0000';
+                        }
+
+                        return bisness ? (
+                          <td
+                            key={gantBrigName.id}
+                            style={cellStyle}
+                            onClick={() => dateBrig?.id && handleOpenModalEditDelete(dateBrig.id)}
+                            title={bisness} // добавлен title для показа полного текста при наведении
+                          >
+                            {bisness}
+                          </td>
+                        ) : (
+                          <td
+                            key={gantBrigName.id}
+                            onClick={() =>
+                              handleOpenModalCreateBrigadeDate(gantBrigName.id, gantBrigDate.id)
+                            }
+                            style={{
+                              cursor: 'pointer',
+                              backgroundColor: isToday
                                 ? '#bbbbbb'
-                                : // Или если суббота (6) или воскресенье (0)
-                                [0, 6].includes(new Date(gantBrigDate.date).getDay())
+                                : isWeekend
                                 ? '#e1dede'
                                 : '#ffffff',
-                          }}>
-                          {' '}
-                        </td>
-                      );
-                    })}
-                </tr>
-              ))}
+                              minWidth: '50px', // одинаковая минимальная ширина для пустых ячеек
+                            }}>
+                            {' '}
+                          </td>
+                        );
+                      })}
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </div>
