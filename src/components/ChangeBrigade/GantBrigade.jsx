@@ -39,7 +39,7 @@ function GantBrigade(props) {
             <thead>
               <tr>
                 <th className="project-th mobile">Дата</th>
-                <th></th>
+                <th className="project-th"></th>
                 {brigades
                   .filter(
                     (gantBrigName) =>

@@ -348,7 +348,13 @@ function ChangeBrigade() {
             <button
               className="calendar-brigade__dropdown-brigade"
               onClick={hadleOpenModalSelectedBrigade}>
-              {selectedBrigadeName ? selectedBrigadeName : 'Бригада '}
+              {selectedBrigadeName ? (
+                selectedBrigadeName
+              ) : (
+                <div>
+                  Бригада <img src="./img/arrow-down.png" alt="arrow down" />
+                </div>
+              )}
             </button>
             {openModalSelectedBrigade && (
               <div className="calendar-brigade__dropdown-modal">
