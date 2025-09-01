@@ -50,6 +50,8 @@ function HomePageList() {
   const managerSaleItems = [
     { label: 'Все проекты', link: '/project' },
     { label: 'Рекламация', link: '/complaint' },
+    { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Снабжение' },
     { label: 'Логистика', link: '/logistics' },
   ];
@@ -68,6 +70,8 @@ function HomePageList() {
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
     { label: 'Рекламация', link: '/complaint' },
+    { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Администирование' },
     { label: 'Справочники', link: '/adding' },
     { label: 'Сметы', link: '/distribution' },
@@ -106,6 +110,8 @@ function HomePageList() {
     { label: 'В покраску', link: '/shipment' },
     { label: 'Итоговая производство', link: '/manufacture' },
     { label: 'Рекламация', link: '/complaint' },
+    { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Подписано/Сдано', link: '/report-project' },
   ];
 
   const employeeItems = [
@@ -120,6 +126,8 @@ function HomePageList() {
     { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Администирование' },
     { label: 'Личные кабинеты заказчиков', link: '/clientaccount' },
     { label: 'Справочники', link: '/adding' },

@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../Header/Header';
 import { Spinner, Table } from 'react-bootstrap';
 import { getAllActiveProject } from '../../http/projectApi';
-import { getAllDate } from '../../http/brigadesDateApi';
+import { getAllDate, getAllBrigadesDate } from '../../http/brigadesDateApi';
 import Moment from 'react-moment';
 import './style.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 function GantContracts() {
   const [projects, setProjects] = React.useState([]);
   const [dates, setDates] = React.useState([]);
+  const [brigadeDates, setBrigadeDates] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonMskProject, setButtonMskProject] = React.useState(true);
@@ -28,10 +29,15 @@ function GantContracts() {
       setIsLoadingGant(true);
       try {
         // Параллельное выполнение запросов для оптимизации
-        const [projectsData, datesData] = await Promise.all([getAllActiveProject(), getAllDate()]);
+        const [projectsData, datesData, brigadeDatesData] = await Promise.all([
+          getAllActiveProject(),
+          getAllDate(),
+          getAllBrigadesDate(),
+        ]);
 
         setProjects(projectsData);
         setDates(datesData);
+        setBrigadeDates(brigadeDatesData);
       } catch (error) {
         console.error('Ошибка при загрузке данных:', error);
         // Можно добавить обработку ошибок (например, setErrorState)
@@ -418,6 +424,14 @@ function GantContracts() {
                           designPeriod + expirationDate + installationPeriod,
                         );
 
+                        // Определяем период работы дизайнера
+                        const designerStartDate = gantProject?.designer_start
+                          ? new Date(gantProject.designer_start)
+                          : agreementDate;
+                        const designerEndDate = gantProject?.project_delivery
+                          ? new Date(gantProject.project_delivery)
+                          : new Date(); // текущая дата если project_delivery = null
+
                         // Проверяем, попадает ли текущая дата в design диапазон
                         const isInDesignRange =
                           agreementDate &&
@@ -438,6 +452,13 @@ function GantContracts() {
                           installationEndDate &&
                           currentDate > productionEndDate &&
                           currentDate <= installationEndDate;
+
+                        // Проверяем, попадает ли текущая дата в период работы дизайнера
+                        const isDesignerWorking =
+                          designerStartDate &&
+                          designerEndDate &&
+                          currentDate >= designerStartDate &&
+                          currentDate <= designerEndDate;
 
                         // Функция для преобразования имени в инициал, а фамилии полностью
                         const formatBrigadeName = (brigadeName) => {
@@ -489,33 +510,43 @@ function GantContracts() {
                               height: '40px',
                             }}
                             title={
-                              isInDesignRange
-                                ? `Дизайнер: ${gantProject?.designer || 'Не указан'}`
-                                : isInInstallationRange && brigadesForThisDate.length > 0
+                              isDesignerWorking
+                                ? `Дизайнер: ${
+                                    gantProject?.designer || 'Не указан'
+                                  }\nПериод: ${designerStartDate.toLocaleDateString()} - ${
+                                    gantProject?.project_delivery
+                                      ? new Date(gantProject.project_delivery).toLocaleDateString()
+                                      : 'по настоящее время'
+                                  }`
+                                : brigadesForThisDate.length > 0
                                 ? `Бригады: ${brigadesForThisDate
                                     .map((b) => b.brigade?.name)
                                     .join(', ')}`
                                 : ''
                             }>
-                            {/* Отображаем designer только в design периоде */}
-                            {isInDesignRange && gantProject?.designer && (
+                            {/* Отображаем designer только в период его работы */}
+                            {isDesignerWorking && gantProject?.designer && (
                               <div
                                 style={{
-                                  fontSize: '10px',
+                                  fontSize: '8px',
                                   fontWeight: 'normal',
                                   color: '#000',
                                   textAlign: 'center',
                                   whiteSpace: 'nowrap',
                                   textOverflow: 'ellipsis',
                                   overflow: 'hidden',
-                                  padding: '2px',
+                                  padding: '1px',
+                                  background: isInDesignRange
+                                    ? 'rgba(180, 175, 224, 0.3)'
+                                    : 'rgba(255, 255, 255, 0.7)',
+                                  borderRadius: '2px',
                                 }}>
                                 {gantProject.designer}
                               </div>
                             )}
 
-                            {/* Отображаем бригады в installation периоде */}
-                            {isInInstallationRange && brigadesForThisDate.length > 0 && (
+                            {/* Отображаем бригады во всех периодах, если они есть */}
+                            {brigadesForThisDate.length > 0 && (
                               <div
                                 style={{
                                   display: 'flex',

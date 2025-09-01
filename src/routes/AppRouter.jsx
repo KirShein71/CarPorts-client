@@ -70,6 +70,7 @@ const employeeRoutes = [
   { path: '/viewingpersonalaccount/:id', Component: ViewingPersonalAccount },
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: './report-project', Component: ReportProject },
+  { path: '/gant-contracts', Component: GantContract },
 ];
 
 const adminRoutes = [
@@ -122,6 +123,7 @@ const managerSaleRoutes = [
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/logistics', Component: Logistics },
   { path: '/report-project', Component: ReportProject },
+  { path: '/gant-contracts', Component: GantContract },
 ];
 
 const managerProjectRoutes = [
@@ -149,6 +151,7 @@ const managerProjectRoutes = [
   { path: '/viewinginstallationpage/:id', Component: ViewingInstallationPage },
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
   { path: '/report-project', Component: ReportProject },
+  { path: '/gant-contracts', Component: GantContract },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -164,6 +167,7 @@ const managerProductionRoutes = [
   { path: '/complaint', Component: Complaint },
   { path: '/complaint-project/:id', Component: ComplaintProject },
   { path: '/logistics', Component: Logistics },
+  { path: '/gant-contracts', Component: GantContract },
 ];
 
 const brigadesRoutes = [
