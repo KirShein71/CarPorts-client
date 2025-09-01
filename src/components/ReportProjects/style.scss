@@ -1,0 +1,55 @@
+.report-projects-table-container {
+    position: relative;
+    margin-top: 20px; 
+    overflow: hidden;
+    
+}
+  
+.report-projects-table-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    overscroll-behavior: contain;
+}
+
+.report-projects-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+}
+
+.report-projects-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+.report-projects-td.mobile {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    @media(max-width: 1024px) {
+        background-color: #ffffff !important;
+    }
+}
+
+.report-projects-td.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #dee2e6;
+}

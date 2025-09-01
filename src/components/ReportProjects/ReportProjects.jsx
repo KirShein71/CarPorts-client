@@ -3,6 +3,8 @@ import { Table } from 'react-bootstrap';
 import Header from '../Header/Header';
 import { getAllStatSignedProject } from '../../http/projectApi';
 
+import './style.scss';
+
 function ReportProjects() {
   const [reportProjects, setReportProjects] = React.useState([]);
 
@@ -56,46 +58,57 @@ function ReportProjects() {
       {years.map((year) => (
         <div key={year} style={{ marginTop: '30px' }}>
           <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>{year}</h3>
-
-          <Table bordered size="sm">
-            <thead>
-              <tr>
-                <th style={{ width: '120px' }}></th>
-                {months.map((month, index) => (
-                  <th key={index} style={{ textAlign: 'center', minWidth: '60px' }}>
-                    {month}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {/* Строка "Подписано договоров" */}
-              <tr>
-                <td style={{ fontWeight: 'bold' }}>Подписано договоров</td>
-                {months.map((_, monthIndex) => {
-                  const monthData = dataByYear[year].find((item) => item.month === monthIndex + 1);
-                  return (
-                    <td key={monthIndex} style={{ textAlign: 'center' }}>
-                      {monthData ? monthData.signed : 0}
+          <div className="report-projects-table-container">
+            <div className="report-projects-table-wrapper">
+              <Table bordered size="sm">
+                <thead>
+                  <tr>
+                    <th className="report-projects-th mobile" style={{ width: '120px' }}></th>
+                    {months.map((month, index) => (
+                      <th key={index} style={{ textAlign: 'center', minWidth: '60px' }}>
+                        {month}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Строка "Подписано договоров" */}
+                  <tr>
+                    <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
+                      Подписано договоров
                     </td>
-                  );
-                })}
-              </tr>
+                    {months.map((_, monthIndex) => {
+                      const monthData = dataByYear[year].find(
+                        (item) => item.month === monthIndex + 1,
+                      );
+                      return (
+                        <td key={monthIndex} style={{ textAlign: 'center' }}>
+                          {monthData ? monthData.signed : 0}
+                        </td>
+                      );
+                    })}
+                  </tr>
 
-              {/* Строка "Сдано проектов" */}
-              <tr>
-                <td style={{ fontWeight: 'bold' }}>Сдано проектов</td>
-                {months.map((_, monthIndex) => {
-                  const monthData = dataByYear[year].find((item) => item.month === monthIndex + 1);
-                  return (
-                    <td key={monthIndex} style={{ textAlign: 'center' }}>
-                      {monthData ? monthData.finished : 0}
+                  {/* Строка "Сдано проектов" */}
+                  <tr>
+                    <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
+                      Сдано проектов
                     </td>
-                  );
-                })}
-              </tr>
-            </tbody>
-          </Table>
+                    {months.map((_, monthIndex) => {
+                      const monthData = dataByYear[year].find(
+                        (item) => item.month === monthIndex + 1,
+                      );
+                      return (
+                        <td key={monthIndex} style={{ textAlign: 'center' }}>
+                          {monthData ? monthData.finished : 0}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
+          </div>
         </div>
       ))}
 
