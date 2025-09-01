@@ -352,7 +352,12 @@ function ChangeBrigade() {
                 selectedBrigadeName
               ) : (
                 <div>
-                  Бригада <img src="./img/arrow-down.png" alt="arrow down" />
+                  Бригада{' '}
+                  <img
+                    className="calendar-brigade__dropdown-icon"
+                    src="./img/arrow-down.png"
+                    alt="arrow down"
+                  />
                 </div>
               )}
             </button>

@@ -46,7 +46,18 @@ function GantBrigade(props) {
                       gantBrigName.regionId === selectedRegion && gantBrigName.active === 'true',
                   )
                   .map((gantBrigName) => (
-                    <th key={gantBrigName.id} className="project-th">
+                    <th
+                      key={gantBrigName.id}
+                      className="project-th"
+                      style={{
+                        whiteSpace: 'nowrap', // запрет переноса текста
+                        overflow: 'hidden', // скрытие выходящего за границы содержимого
+                        textOverflow: 'ellipsis', // добавление многоточия в конце
+                        maxWidth: '120px', // ограничение максимальной ширины
+                        minWidth: '50px', // минимальная ширина
+                        textAlign: 'center', // выравнивание по центру
+                      }}
+                      title={gantBrigName.name}>
                       {gantBrigName.name}
                     </th>
                   ))}
