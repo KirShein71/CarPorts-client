@@ -857,10 +857,10 @@ function ProjectInfoList() {
           </div>
         )}
         {activeTab === 'procurement' && (
-          <Table bordered hover size="sm" responsive="sm" className="mt-3">
+          <Table bordered hover size="sm" className="mt-3">
             <thead>
               <tr>
-                <th className="production_column">Тип материала</th>
+                <th className="report-projects-td mobile">Тип материала</th>
                 <th>Счёт</th>
                 <th>Оплаты</th>
                 <th>Готовность</th>
@@ -871,7 +871,7 @@ function ProjectInfoList() {
             <tbody>
               {project.projectmaterials.map((property) => (
                 <tr key={property.id}>
-                  <td className="production_column">{property.materialName}</td>
+                  <td className="report-projects-td mobile">{property.materialName}</td>
                   <td
                     onClick={() => handleOpenModalCreateCheck(property.id)}
                     style={{ cursor: 'pointer' }}>

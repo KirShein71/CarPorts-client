@@ -437,7 +437,36 @@ function ProjectList() {
 
                         const endDate = addWorkingDays(agreementDate, sumDays);
                         const formattedEndDate = formatDate(endDate);
-                        return formattedEndDate;
+
+                        // Проверяем, прошла ли дата дедлайна
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Убираем время для точного сравнения
+
+                        const deadlineDate = new Date(endDate);
+                        deadlineDate.setHours(0, 0, 0, 0);
+
+                        // Вычисляем разницу в днях
+                        const diffTime = deadlineDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                        // Определяем цвет в зависимости от условий
+                        let textColor = '#000000'; // черный по умолчанию
+
+                        if (diffDays < 0) {
+                          textColor = '#dc3545'; // красный - дедлайн прошел
+                        } else if (diffDays <= 7) {
+                          textColor = '#e83e8c'; // розовый - осталось 7 дней или меньше
+                        }
+
+                        return (
+                          <span
+                            style={{
+                              color: textColor,
+                              fontWeight: diffDays <= 7 ? 'bold' : 'normal',
+                            }}>
+                            {formattedEndDate}
+                          </span>
+                        );
                       })()}
                     </td>
 
