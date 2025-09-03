@@ -24,6 +24,8 @@ import CreateDateInspection from '../PlanningList/modals/CreateDateInspection';
 import CreatePaymentDate from '../OrderMaterialsList/modals/createPaymentDate';
 import CreateReadyDate from '../OrderMaterialsList/modals/createReadyDate';
 import CreateShippingDate from '../OrderMaterialsList/modals/createShippingDate';
+import CreateCheck from '../OrderMaterialsList/modals/createCheck';
+import CreateColor from '../OrderMaterialsList/modals/createColor';
 import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
 import UpdateProjectDetails from '../ProductionList/modal/UpdateProjectDetails';
 import ClosedProject from './modals/ClosedProject';
@@ -71,6 +73,8 @@ function ProjectInfoList() {
   const [modalCreatePaymentDay, setModalCreatePaymentDay] = React.useState(false);
   const [modalCreateReadyDate, setModalCreateReadyDate] = React.useState(false);
   const [modalCreateShippingDate, setModalCreateShippingDate] = React.useState(false);
+  const [modalCreateCheck, setModalCreateCheck] = React.useState(false);
+  const [modalCreateColor, setModalCreateColor] = React.useState(false);
   const [projectDetailId, setProjectDetailId] = React.useState(null);
   const [detailId, setDetailId] = React.useState(null);
   const [modalCreateOneProjectDetail, setModalCreateOneProjectDetail] = React.useState(false);
@@ -190,6 +194,16 @@ function ProjectInfoList() {
   const handleOpenModalCreateShippingDate = (id) => {
     setProjectMaterialId(id);
     setModalCreateShippingDate(true);
+  };
+
+  const handleOpenModalCreateCheck = (id) => {
+    setProjectMaterialId(id);
+    setModalCreateCheck(true);
+  };
+
+  const handleOpenModalCreateColor = (id) => {
+    setProjectMaterialId(id);
+    setModalCreateColor(true);
   };
 
   const handleOpenModalCreateOneProjectDetail = (id, project) => {
@@ -451,6 +465,20 @@ function ProjectInfoList() {
         id={projectMaterialId}
         show={modalCreateShippingDate}
         setShow={setModalCreateShippingDate}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <CreateCheck
+        id={projectMaterialId}
+        show={modalCreateCheck}
+        setShow={setModalCreateCheck}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <CreateColor
+        id={projectMaterialId}
+        show={modalCreateColor}
+        setShow={setModalCreateColor}
         setChange={setChange}
         projectInfoPage={true}
       />
@@ -833,15 +861,22 @@ function ProjectInfoList() {
             <thead>
               <tr>
                 <th>Тип материала</th>
+                <th>Счёт</th>
                 <th>Оплаты</th>
                 <th>Готовность</th>
                 <th>Отгрузки</th>
+                <th>Цвет</th>
               </tr>
             </thead>
             <tbody>
               {project.projectmaterials.map((property) => (
                 <tr key={property.id}>
                   <td>{property.materialName}</td>
+                  <td
+                    onClick={() => handleOpenModalCreateCheck(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.check ? property.check : ''}
+                  </td>
                   <td
                     onClick={() => handleOpenModalCreatePaymentDate(property.id)}
                     style={{ cursor: 'pointer' }}>
@@ -869,6 +904,11 @@ function ProjectInfoList() {
                     ) : (
                       ''
                     )}
+                  </td>
+                  <td
+                    onClick={() => handleOpenModalCreateColor(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.color ? property.color : ''}
                   </td>
                 </tr>
               ))}
