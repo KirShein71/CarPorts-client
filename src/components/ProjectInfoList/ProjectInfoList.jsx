@@ -857,67 +857,62 @@ function ProjectInfoList() {
           </div>
         )}
         {activeTab === 'procurement' && (
-          <div className="planning-table-container">
-            <div className="planning-table-wrapper">
-              <Table bordered hover size="sm" className="mt-3">
-                <thead>
-                  <tr>
-                    <th className="planning-th mobile">Тип материала</th>
-                    <th className="planning-th">Счёт</th>
-                    <th className="planning-th">Оплаты</th>
-                    <th className="planning-th">Готовность</th>
-                    <th className="planning-th">Отгрузки</th>
-                    <th className="planning-th">Цвет</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {project.projectmaterials.map((property) => (
-                    <tr key={property.id}>
-                      <td className="planning-td mobile">{property.materialName}</td>
-                      <td
-                        onClick={() => handleOpenModalCreateCheck(property.id)}
-                        style={{ cursor: 'pointer' }}>
-                        {property.check ? property.check : ''}
-                      </td>
-                      <td
-                        onClick={() => handleOpenModalCreatePaymentDate(property.id)}
-                        style={{ cursor: 'pointer' }}>
-                        {property.date_payment ? (
-                          <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
-                        ) : (
-                          ''
-                        )}
-                      </td>
-
-                      <td
-                        onClick={() => handleOpenModalCreateReadyDate(property.id)}
-                        style={{ cursor: 'pointer' }}>
-                        {property.ready_date ? (
-                          <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
-                        ) : (
-                          ''
-                        )}
-                      </td>
-                      <td
-                        onClick={() => handleOpenModalCreateShippingDate(property.id)}
-                        style={{ cursor: 'pointer' }}>
-                        {property.shipping_date ? (
-                          <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
-                        ) : (
-                          ''
-                        )}
-                      </td>
-                      <td
-                        onClick={() => handleOpenModalCreateColor(property.id)}
-                        style={{ cursor: 'pointer' }}>
-                        {property.color ? property.color : ''}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </div>
+          <Table bordered hover size="sm" responsive="sm" className="mt-3">
+            <thead>
+              <tr>
+                <th className="production_column">Тип материала</th>
+                <th>Счёт</th>
+                <th>Оплаты</th>
+                <th>Готовность</th>
+                <th>Отгрузки</th>
+                <th>Цвет</th>
+              </tr>
+            </thead>
+            <tbody>
+              {project.projectmaterials.map((property) => (
+                <tr key={property.id}>
+                  <td className="production_column">{property.materialName}</td>
+                  <td
+                    onClick={() => handleOpenModalCreateCheck(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.check ? property.check : ''}
+                  </td>
+                  <td
+                    onClick={() => handleOpenModalCreatePaymentDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.date_payment ? (
+                      <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                  <td
+                    onClick={() => handleOpenModalCreateReadyDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.ready_date ? (
+                      <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                  <td
+                    onClick={() => handleOpenModalCreateShippingDate(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.shipping_date ? (
+                      <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
+                    ) : (
+                      ''
+                    )}
+                  </td>
+                  <td
+                    onClick={() => handleOpenModalCreateColor(property.id)}
+                    style={{ cursor: 'pointer' }}>
+                    {property.color ? property.color : ''}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         )}
         {activeTab === 'production' && (
           <Production
