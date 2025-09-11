@@ -477,9 +477,9 @@ function PlanningList() {
         scrollPosition={scrollPosition}
       />
 
-      <div className="planning-table-container">
-        <div className="planning-table-wrapper">
-          {selectedDesignerName === null ? (
+      {selectedDesignerName === null ? (
+        <div className="planning-table-container">
+          <div className="planning-table-wrapper">
             <Table Table bordered hover size="sm">
               <thead>
                 <tr>
@@ -715,11 +715,17 @@ function PlanningList() {
                   ))}
               </tbody>
             </Table>
-          ) : (
+          </div>
+        </div>
+      ) : (
+        <div className="planning-designer-table-container">
+          <div className="planning-designer-table-wrapper">
             <Table bordered hover size="sm">
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'center' }}>Проектировщик</th>
+                  <th className="planning-th mobile" style={{ textAlign: 'center' }}>
+                    Проектировщик
+                  </th>
                   <th style={{ textAlign: 'center' }}>Название</th>
                   <th style={{ textAlign: 'center' }}>Дата начала</th>
                   <th style={{ textAlign: 'center' }}>Дата сдачи</th>
@@ -767,7 +773,9 @@ function PlanningList() {
 
                     return (
                       <tr key={projectDesigner.id}>
-                        <td style={{ textAlign: 'center' }}>{projectDesigner.designer}</td>
+                        <td className="planning-td mobile" style={{ textAlign: 'center' }}>
+                          {projectDesigner.designer}
+                        </td>
                         <td style={{ textAlign: 'left' }}>{projectDesigner.name}</td>
                         <td style={{ textAlign: 'center' }}>
                           <Moment format="DD.MM.YYYY">{projectDesigner.design_start}</Moment>
@@ -787,9 +795,9 @@ function PlanningList() {
                   })}
               </tbody>
             </Table>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
