@@ -42,6 +42,12 @@ function PlanningList() {
   const navigateToProjectInfo = useNavigate();
   const location = useLocation();
   const { user } = React.useContext(AppContext);
+  const modalRef = React.useRef();
+  const designers = ['Алла', 'Дмитрий', 'Егор', 'Екатерина', 'Константин'];
+  const [selectedDesignerName, setSelectedDesignerName] = React.useState(null);
+  const [openModalSelectedDesigner, setOpenModalSelectedDesigner] = React.useState(false);
+  const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
 
   React.useEffect(() => {
     fetchAllProjects()
@@ -273,6 +279,28 @@ function PlanningList() {
     return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
   }
 
+  const hadleOpenModalSelectedDesigner = () => {
+    setOpenModalSelectedDesigner(!openModalSelectedDesigner);
+  };
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -341,6 +369,67 @@ function PlanningList() {
         value={searchQuery}
         onChange={handleSearch}
       />
+      {user.isAdmin ? (
+        <div className="planning__dropdown" ref={modalRef}>
+          <button className="planning__dropdown-brigade" onClick={hadleOpenModalSelectedDesigner}>
+            {selectedDesignerName ? (
+              selectedDesignerName
+            ) : (
+              <div>
+                Проектировщик <img src="./img/arrow-down.png" alt="arrow down" />
+              </div>
+            )}
+          </button>
+          {openModalSelectedDesigner && (
+            <div className="planning__dropdown-modal">
+              <div className="planning__dropdown-content">
+                <div className="planning__dropdown-items">
+                  <div
+                    className="planning__dropdown-item planning__dropdown-item--reset"
+                    onClick={() => {
+                      setSelectedDesignerName(null);
+                      setOpenModalSelectedDesigner(false);
+                    }}>
+                    <div>Сбросить</div>
+                  </div>
+                  {designers.map((designerName) => (
+                    <div key={designerName.id}>
+                      <div
+                        className="planning__dropdown-item"
+                        onClick={() => {
+                          setSelectedDesignerName(designerName);
+                          setOpenModalSelectedDesigner(false);
+                        }}>
+                        {designerName}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        ''
+      )}
+      {selectedDesignerName !== null ? (
+        <div className="planning__month">
+          <div className="planning__month-arrow" onClick={handlePrevMonth}>
+            <img src="./img/left.png" alt="left arrow" />
+          </div>
+          <p className="planning__month-name">
+            {new Date(currentYear, currentMonth).toLocaleString('default', {
+              month: 'long',
+              year: 'numeric',
+            })}
+          </p>
+          <div className="planning__month-arrow" onClick={handleNextMonth}>
+            <img src="./img/right.png" alt="right arrow" />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
       <CreateProjectDelivery
         id={project}
         show={updateShow}
@@ -387,224 +476,318 @@ function PlanningList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
+
       <div className="planning-table-container">
         <div className="planning-table-wrapper">
-          <Table Table bordered hover size="sm">
-            <thead>
-              <tr>
-                <th className="planning-th mobile">
-                  Название<div className="border_bottom"></div>
-                </th>
-                <th className="planning-th">Примечание</th>
-                <th className="planning-th" onClick={() => handleSort('agreement_date')}>
-                  <div style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
-                    <img
-                      style={{ marginLeft: '5px', height: '100%' }}
-                      src="./img/sort.png"
-                      alt="icon_sort"
-                    />
-                  </div>
-                </th>
-                <th className="planning-th">Срок</th>
-                <th className="planning-th">Дедлайн</th>
-                <th className="planning-th">Дата начала</th>
-                <th className="planning-th">Дата сдачи</th>
-                <th className="planning-th">Дата проверки</th>
-                <th className="planning-th">Осталось дней</th>
-                <th className="planning-th">Проектировщик</th>
-                <th className="planning-th">Проверяет проект</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProjects
-                .slice()
-                .sort((a, b) => {
-                  const dateA = new Date(a[sortField]);
-                  const dateB = new Date(b[sortField]);
+          {selectedDesignerName === null ? (
+            <Table Table bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th className="planning-th mobile">
+                    Название<div className="border_bottom"></div>
+                  </th>
+                  <th className="planning-th">Примечание</th>
+                  <th className="planning-th" onClick={() => handleSort('agreement_date')}>
+                    <div style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
+                      <img
+                        style={{ marginLeft: '5px', height: '100%' }}
+                        src="./img/sort.png"
+                        alt="icon_sort"
+                      />
+                    </div>
+                  </th>
+                  <th className="planning-th">Срок</th>
+                  <th className="planning-th">Дедлайн</th>
+                  <th className="planning-th">Дата начала</th>
+                  <th className="planning-th">Дата сдачи</th>
+                  <th className="planning-th">Дата проверки</th>
+                  <th className="planning-th">Осталось дней</th>
+                  <th className="planning-th">Проектировщик</th>
+                  <th className="planning-th">Проверяет проект</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProjects
+                  .slice()
+                  .sort((a, b) => {
+                    const dateA = new Date(a[sortField]);
+                    const dateB = new Date(b[sortField]);
 
-                  if (sortOrder === 'desc') {
-                    return dateB - dateA;
-                  } else {
-                    return dateA - dateB;
-                  }
-                })
-                .map((item) => (
-                  <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }} key={item.id}>
-                    {user.isConstructor ? (
-                      <td className="planning-td mobile" style={{ cursor: 'pointer' }}>
-                        <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
-                        <div>{item.number}</div>
+                    if (sortOrder === 'desc') {
+                      return dateB - dateA;
+                    } else {
+                      return dateA - dateB;
+                    }
+                  })
+                  .map((item) => (
+                    <tr
+                      style={{ color: item.finish === 'true' ? '#808080' : 'black' }}
+                      key={item.id}>
+                      {user.isConstructor ? (
+                        <td className="planning-td mobile" style={{ cursor: 'pointer' }}>
+                          <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
+                          <div>{item.number}</div>
 
-                        <div className="border_top"></div>
+                          <div className="border_top"></div>
+                        </td>
+                      ) : (
+                        <td
+                          className="planning-td mobile"
+                          onClick={() => addToProjectInfo(item.id)}
+                          style={{ cursor: 'pointer' }}>
+                          <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
+                          <div>{item.number}</div>
+
+                          <div className="border_top"></div>
+                        </td>
+                      )}
+
+                      <td style={{ cursor: 'pointer' }}>
+                        {item.note && (
+                          <div onClick={() => handleUpdateNote(item.id)}>
+                            {selectedNote === item.id
+                              ? item.note
+                              : item.note.slice(0, window.innerWidth < 460 ? 20 : 180)}
+                          </div>
+                        )}
+                        {item.note.length > 180 ||
+                        (window.innerWidth < 460 && item.note.length > 20) ? (
+                          <div className="show" onClick={() => handleToggleText(item.id)}>
+                            {selectedNote === item.id ? 'Скрыть' : '...'}
+                          </div>
+                        ) : null}
                       </td>
-                    ) : (
+                      <td>
+                        <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>{item.design_period}</td>
+                      <td>
+                        {(() => {
+                          const agreementDate = new Date(item.agreement_date);
+                          const designPeriod = item.design_period;
+
+                          const endDate = addWorkingDays(agreementDate, designPeriod);
+                          const formattedEndDate = formatDate(endDate);
+                          return formattedEndDate;
+                        })()}
+                      </td>
                       <td
-                        className="planning-td mobile"
-                        onClick={() => addToProjectInfo(item.id)}
-                        style={{ cursor: 'pointer' }}>
-                        <div style={{ whiteSpace: 'nowrap' }}>{item.name}</div>
-                        <div>{item.number}</div>
-
-                        <div className="border_top"></div>
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => handleCreateDesignerStart(item.id)}>
+                        {item.design_start ? (
+                          <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}>
+                            +
+                          </span>
+                        )}
                       </td>
-                    )}
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => handleUpdateProjectDelivery(item.id)}>
+                        {item.project_delivery ? (
+                          <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => handleCreateDateInspection(item.id)}>
+                        {item.date_inspection ? (
+                          <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
+                            {item.date_inspection}
+                          </Moment>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: 'center',
+                          backgroundColor: (() => {
+                            const targetDate = moment(
+                              item.agreement_date,
+                              'YYYY/MM/DD',
+                            ).businessAdd(item.design_period, 'days');
 
-                    <td style={{ cursor: 'pointer' }}>
-                      {item.note && (
-                        <div onClick={() => handleUpdateNote(item.id)}>
-                          {selectedNote === item.id
-                            ? item.note
-                            : item.note.slice(0, window.innerWidth < 460 ? 20 : 180)}
-                        </div>
-                      )}
-                      {item.note.length > 180 ||
-                      (window.innerWidth < 460 && item.note.length > 20) ? (
-                        <div className="show" onClick={() => handleToggleText(item.id)}>
-                          {selectedNote === item.id ? 'Скрыть' : '...'}
-                        </div>
-                      ) : null}
-                    </td>
-                    <td>
-                      <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                    </td>
-                    <td style={{ textAlign: 'center' }}>{item.design_period}</td>
-                    <td>
-                      {(() => {
-                        const agreementDate = new Date(item.agreement_date);
-                        const designPeriod = item.design_period;
+                            // Если есть дата сдачи проекта, используем ее для расчета
+                            if (item.project_delivery) {
+                              const deliveryDate = moment(item.project_delivery, 'YYYY/MM/DD');
+                              const daysDifference = targetDate.diff(deliveryDate, 'days'); // положительное - сдали раньше, отрицательное - опоздали
 
-                        const endDate = addWorkingDays(agreementDate, designPeriod);
-                        const formattedEndDate = formatDate(endDate);
-                        return formattedEndDate;
-                      })()}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => handleCreateDesignerStart(item.id)}>
-                      {item.design_start ? (
-                        <Moment format="DD.MM.YYYY">{item.design_start}</Moment>
-                      ) : (
-                        <span
-                          style={{
-                            color: 'red',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => handleUpdateProjectDelivery(item.id)}>
-                      {item.project_delivery ? (
-                        <Moment format="DD.MM.YYYY">{item.project_delivery}</Moment>
-                      ) : (
-                        <span
-                          style={{
-                            color: 'red',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            textAlign: 'center',
-                          }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => handleCreateDateInspection(item.id)}>
-                      {item.date_inspection ? (
-                        <Moment format="DD.MM.YYYY" parse="YYYY-MM-DD">
-                          {item.date_inspection}
-                        </Moment>
-                      ) : (
-                        <span
-                          style={{
-                            color: 'red',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            textAlign: 'center',
-                          }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        backgroundColor: (() => {
+                              if (daysDifference < 0) {
+                                return '#ff0000'; // красный - сдали после дедлайна (опоздание)
+                              } else if (daysDifference < 7) {
+                                return '#ffe6e6'; // бледно-розовый - сдали за 0-6 дней до дедлайна
+                              } else {
+                                return 'transparent'; // прозрачный - сдали за 7+ дней до дедлайна
+                              }
+                            } else {
+                              // Если даты сдачи нет, считаем оставшиеся дни до дедлайна
+                              const today = moment();
+                              const daysLeft = targetDate.diff(today, 'days');
+
+                              if (daysLeft < 0) {
+                                return '#ff0000'; // красный - дедлайн прошел
+                              } else if (daysLeft < 7) {
+                                return '#ffe6e6'; // бледно-розовый - менее 7 дней осталось
+                              } else {
+                                return 'transparent'; // прозрачный - все нормально
+                              }
+                            }
+                          })(),
+                        }}>
+                        {(() => {
                           const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
                             item.design_period,
                             'days',
                           );
 
-                          function getDaysLeft(targetDate) {
-                            const today = moment();
-                            return targetDate.diff(today, 'days');
-                          }
+                          if (item.project_delivery) {
+                            const deliveryDate = moment(item.project_delivery, 'YYYY/MM/DD');
+                            const daysDifference = targetDate.diff(deliveryDate, 'days'); // положительное - сдали раньше
 
-                          const daysLeft = getDaysLeft(targetDate);
-
-                          if (daysLeft < 0) {
-                            return '#ff0000'; // красный для минусовых значений
-                          } else if (daysLeft < 7) {
-                            return '#ffe6e6'; // бледно-розовый для менее 7 дней
+                            // Показываем сколько дней ДО дедлайна сдали (положительное) или после (отрицательное)
+                            return daysDifference >= 0 ? daysDifference : daysDifference;
                           } else {
-                            return 'transparent'; // прозрачный для остальных
+                            const today = moment();
+                            const daysLeft = targetDate.diff(today, 'days');
+                            return daysLeft;
                           }
-                        })(),
-                      }}>
-                      {(() => {
-                        const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
-                          item.design_period,
-                          'days',
-                        );
+                        })()}
+                      </td>
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => handleUpdateDisegnerModal(item.id)}>
+                        {item.designer ? (
+                          <div>{item.designer}</div>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => handleCreateInspectionDesigner(item.id)}>
+                        {item.inspection_designer ? (
+                          <div>{item.inspection_designer}</div>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          ) : (
+            <Table bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'center' }}>Проектировщик</th>
+                  <th style={{ textAlign: 'center' }}>Название</th>
+                  <th style={{ textAlign: 'center' }}>Дата начала</th>
+                  <th style={{ textAlign: 'center' }}>Дата сдачи</th>
+                  <th style={{ textAlign: 'center' }}>Осталось дней</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects
+                  .filter((projectDesigner) => {
+                    // Проверяем совпадение проектировщика
+                    if (projectDesigner.designer !== selectedDesignerName) return false;
 
-                        const today = moment();
-                        return targetDate.diff(today, 'days'); // Просто возвращаем разницу в днях
-                      })()}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => handleUpdateDisegnerModal(item.id)}>
-                      {item.designer ? (
-                        <div>{item.designer}</div>
-                      ) : (
-                        <span
+                    // Проверяем что дата сдачи не null
+                    if (!projectDesigner.project_delivery) return false;
+
+                    // Проверяем совпадение месяца и года даты сдачи с выбранными
+                    const deliveryDate = moment(projectDesigner.project_delivery, 'YYYY/MM/DD');
+                    const deliveryMonth = deliveryDate.month(); // 0-11
+                    const deliveryYear = deliveryDate.year();
+
+                    return deliveryMonth === currentMonth && deliveryYear === currentYear;
+                  })
+                  .map((projectDesigner) => {
+                    const targetDate = moment(
+                      projectDesigner.agreement_date,
+                      'YYYY/MM/DD',
+                    ).businessAdd(projectDesigner.design_period, 'days');
+
+                    let backgroundColor = 'transparent';
+                    let daysText = '';
+
+                    if (projectDesigner.project_delivery) {
+                      const deliveryDate = moment(projectDesigner.project_delivery, 'YYYY/MM/DD');
+                      const daysDifference = targetDate.diff(deliveryDate, 'days');
+
+                      if (daysDifference < 0) {
+                        backgroundColor = '#ff0000'; // опоздание
+                      } else if (daysDifference < 7) {
+                        backgroundColor = '#ffe6e6'; // за 0-6 дней до дедлайна
+                      }
+
+                      daysText =
+                        daysDifference >= 0 ? daysDifference.toString() : daysDifference.toString();
+                    }
+
+                    return (
+                      <tr key={projectDesigner.id}>
+                        <td style={{ textAlign: 'center' }}>{projectDesigner.designer}</td>
+                        <td style={{ textAlign: 'left' }}>{projectDesigner.name}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          <Moment format="DD.MM.YYYY">{projectDesigner.design_start}</Moment>
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <Moment format="DD.MM.YYYY">{projectDesigner.project_delivery}</Moment>{' '}
+                        </td>
+                        <td
                           style={{
-                            color: 'red',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => handleCreateInspectionDesigner(item.id)}>
-                      {item.inspection_designer ? (
-                        <div>{item.inspection_designer}</div>
-                      ) : (
-                        <span
-                          style={{
-                            color: 'red',
-                            fontWeight: 600,
-                            cursor: 'pointer',
                             textAlign: 'center',
+                            backgroundColor: backgroundColor,
                           }}>
-                          +
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
-          {/* <CSVLink data={flattenedProjects} headers={headers} filename={'данные.csv'}>
-            Экспорт в CSV
-          </CSVLink> */}
+                          {daysText}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </Table>
+          )}
         </div>
       </div>
     </div>

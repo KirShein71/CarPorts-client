@@ -185,7 +185,11 @@ function ProductionList() {
       // Функция для определения статуса отгрузки проекта
       const getShippingStatus = (project) => {
         const projectDetails = (project.props || []).filter(
-          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0,
+          (prop) =>
+            prop.detailId !== null &&
+            prop.quantity !== null &&
+            prop.quantity !== 0 &&
+            prop.quantity > 0,
         );
 
         if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
