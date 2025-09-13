@@ -860,11 +860,11 @@ function ProjectInfoList() {
               <thead>
                 <tr>
                   <th className="production_column">Тип материала</th>
-                  <th>Счёт</th>
-                  <th>Оплаты</th>
-                  <th>Готовность</th>
-                  <th>Отгрузки</th>
-                  <th>Цвет</th>
+                  <th style={{ textAlign: 'center' }}>Счёт</th>
+                  <th style={{ textAlign: 'center' }}>Оплаты</th>
+                  <th style={{ textAlign: 'center' }}>Готовность</th>
+                  <th style={{ textAlign: 'center' }}>Отгрузки</th>
+                  <th style={{ textAlign: 'center' }}>Цвет</th>
                 </tr>
               </thead>
               <tbody>
@@ -873,12 +873,12 @@ function ProjectInfoList() {
                     <td className="production_column">{property.materialName}</td>
                     <td
                       onClick={() => handleOpenModalCreateCheck(property.id)}
-                      style={{ cursor: 'pointer' }}>
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.check ? property.check : ''}
                     </td>
                     <td
                       onClick={() => handleOpenModalCreatePaymentDate(property.id)}
-                      style={{ cursor: 'pointer' }}>
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.date_payment ? (
                         <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
                       ) : (
@@ -887,7 +887,7 @@ function ProjectInfoList() {
                     </td>
                     <td
                       onClick={() => handleOpenModalCreateReadyDate(property.id)}
-                      style={{ cursor: 'pointer' }}>
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.ready_date ? (
                         <Moment format="DD.MM.YYYY">{property.ready_date}</Moment>
                       ) : (
@@ -896,7 +896,7 @@ function ProjectInfoList() {
                     </td>
                     <td
                       onClick={() => handleOpenModalCreateShippingDate(property.id)}
-                      style={{ cursor: 'pointer' }}>
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.shipping_date ? (
                         <Moment format="DD.MM.YYYY">{property.shipping_date}</Moment>
                       ) : (
@@ -905,7 +905,7 @@ function ProjectInfoList() {
                     </td>
                     <td
                       onClick={() => handleOpenModalCreateColor(property.id)}
-                      style={{ cursor: 'pointer' }}>
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.color ? property.color : ''}
                     </td>
                   </tr>
