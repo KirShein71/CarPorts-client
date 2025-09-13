@@ -63,7 +63,12 @@ function UserFile({ project, change, setChange, userId }) {
               </div>
             </div>
           ))}
-        <Button variant="dark" className="mt-3" size="md" onClick={() => handleCreateFile()}>
+        <Button
+          style={{ display: 'block', margin: '0 auto' }}
+          variant="dark"
+          className="mt-3"
+          size="md"
+          onClick={() => handleCreateFile()}>
           Добавить файл
         </Button>
       </div>

@@ -4,6 +4,7 @@
         margin-bottom: 25px;
         display: flex;
         flex-direction: column;
+        
     }
     &__image {
         display: flex;
@@ -137,6 +138,23 @@
 
         }
     }
+
+    //deadline 
+    .deadline {
+        margin: 0 auto; /* Центрируем через margin */
+        width: fit-content; /* Ширина по содержимому */
+        max-width: 100%;
+    }
+
+    //designer 
+    .designer {
+        margin: 0 auto; /* Центрируем через margin */
+        width: fit-content; /* Ширина по содержимому */
+        max-width: 100%;
+    }
+
+    
+   
 
     //table planning 
     .table-planning {
