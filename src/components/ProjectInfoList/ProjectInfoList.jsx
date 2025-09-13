@@ -578,7 +578,7 @@ function ProjectInfoList() {
         </Link>
         <h1 className="header__title">Подробная информация</h1>
       </div>
-      <div className="projectinfo__content">
+      <div className="projectinfo_content">
         <div className="projectinfo__image">
           {project &&
           project.userProject &&
