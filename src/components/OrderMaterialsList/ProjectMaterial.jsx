@@ -32,7 +32,7 @@ function ProjectMaterial({
     <div className="projectmaterial">
       <>
         <div>
-          <div className="table-scrollable">
+          <div className="projectmaterial__info">
             <div className="projectmaterial__top">
               <div className="projectmaterial__number">{number}</div>
               <div className="projectmaterial__project">{name}</div>

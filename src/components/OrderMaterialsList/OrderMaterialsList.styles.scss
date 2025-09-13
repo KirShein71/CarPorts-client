@@ -38,6 +38,11 @@
             table-layout: auto;
         }
     }
+    &__info {
+        @media(max-width: 768px){
+           overflow-x: auto;
+        }
+    }
     &__top {
         margin-top: 25px;
         display: flex;

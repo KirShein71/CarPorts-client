@@ -291,14 +291,43 @@ function GantContracts() {
                   </th>
                   <th className="gant-contracts-table-th">Дедлайн</th>
                   <th className="gant-contracts-table-th">Регион</th>
-                  {filteredDatesGant.map((gantDate) => (
-                    <th key={gantDate.id} className="gant-contracts-table-th">
-                      {new Date(gantDate.date).toLocaleDateString('ru-RU', {
-                        day: 'numeric',
-                        month: 'numeric',
-                      })}
-                    </th>
-                  ))}
+                  {filteredDatesGant.map((gantDate) => {
+                    const currentDate = new Date(gantDate.date);
+                    const today = new Date();
+                    const isToday =
+                      currentDate.getDate() === today.getDate() &&
+                      currentDate.getMonth() === today.getMonth() &&
+                      currentDate.getFullYear() === today.getFullYear();
+
+                    return (
+                      <th
+                        key={gantDate.id}
+                        className="gant-contracts-table-th"
+                        style={{
+                          fontWeight: isToday ? 'bold' : 'normal',
+                          borderLeft: isToday ? '3px solid #000' : '1px solid #dee2e6',
+                          borderRight: isToday ? '3px solid #000' : '1px solid #dee2e6',
+                          position: 'relative',
+                        }}>
+                        {new Date(gantDate.date).toLocaleDateString('ru-RU', {
+                          day: 'numeric',
+                          month: 'numeric',
+                        })}
+                        {isToday && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              borderTop: '3px solid #000',
+                              height: '3px',
+                            }}
+                          />
+                        )}
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
@@ -314,7 +343,6 @@ function GantContracts() {
                       return dateA - dateB;
                     }
                   })
-
                   .map((gantProject) => (
                     <tr key={gantProject.id}>
                       <td
@@ -350,7 +378,6 @@ function GantContracts() {
                             );
                             installationEndDate.setHours(0, 0, 0, 0);
 
-                            // Проверяем периоды в правильном порядке
                             if (
                               currentDate > productionEndDate &&
                               currentDate <= installationEndDate
@@ -404,80 +431,69 @@ function GantContracts() {
                       </td>
                       {filteredDatesGant.map((gantDate) => {
                         const currentDate = new Date(gantDate.date);
+                        const today = new Date();
+                        const isToday =
+                          currentDate.getDate() === today.getDate() &&
+                          currentDate.getMonth() === today.getMonth() &&
+                          currentDate.getFullYear() === today.getFullYear();
 
-                        // Вычисляем даты начала и конца design периода
                         const agreementDate = new Date(gantProject?.agreement_date);
                         const designPeriod = gantProject?.design_period || 0;
                         const designEndDate = addWorkingDays(agreementDate, designPeriod);
 
-                        // Вычисляем даты начала и конца production периода
                         const expirationDate = gantProject?.expiration_date || 0;
                         const productionEndDate = addWorkingDays(
                           agreementDate,
                           designPeriod + expirationDate,
                         );
 
-                        // Вычисляем даты начала и конца installation периода
                         const installationPeriod = gantProject?.installation_period || 0;
                         const installationEndDate = addWorkingDays(
                           agreementDate,
                           designPeriod + expirationDate + installationPeriod,
                         );
 
-                        // Определяем период работы дизайнера
                         const designerStartDate = gantProject?.designer_start
                           ? new Date(gantProject.designer_start)
                           : agreementDate;
                         const designerEndDate = gantProject?.project_delivery
                           ? new Date(gantProject.project_delivery)
-                          : new Date(); // текущая дата если project_delivery = null
+                          : new Date();
 
-                        // Проверяем, попадает ли текущая дата в design диапазон
                         const isInDesignRange =
                           agreementDate &&
                           designEndDate &&
                           currentDate >= agreementDate &&
                           currentDate <= designEndDate;
 
-                        // Проверяем, попадает ли текущая дата в production диапазон
                         const isInProductionRange =
                           agreementDate &&
                           productionEndDate &&
                           currentDate > designEndDate &&
                           currentDate <= productionEndDate;
 
-                        // Проверяем, попадает ли текущая дата в installation диапазон
                         const isInInstallationRange =
                           agreementDate &&
                           installationEndDate &&
                           currentDate > productionEndDate &&
                           currentDate <= installationEndDate;
 
-                        // Проверяем, попадает ли текущая дата в период работы дизайнера
                         const isDesignerWorking =
                           designerStartDate &&
                           designerEndDate &&
                           currentDate >= designerStartDate &&
                           currentDate <= designerEndDate;
 
-                        // Функция для преобразования имени в инициал, а фамилии полностью
                         const formatBrigadeName = (brigadeName) => {
                           if (!brigadeName) return '';
-
-                          // Разделяем название на слова (предполагаем, что это ФИО)
                           const words = brigadeName.split(' ').filter((word) => word.length > 0);
-
                           if (words.length === 0) return '';
-                          if (words.length === 1) return words[0]; // если только одно слово - возвращаем как есть
-
-                          // Первое слово - имя (делаем инициал), остальные - фамилия (оставляем полностью)
+                          if (words.length === 1) return words[0];
                           const firstName = words[0];
                           const lastName = words.slice(1).join(' ');
-
                           return `${firstName.charAt(0).toUpperCase()}. ${lastName}`;
                         };
 
-                        // Находим все бригады, работающие в эту дату
                         const brigadesForThisDate =
                           gantProject?.brigades_dates?.filter(
                             (brigadeDate) => brigadeDate.date?.date === gantDate.date,
@@ -488,26 +504,29 @@ function GantContracts() {
                             key={gantDate.id}
                             style={{
                               color: isInInstallationRange
-                                ? '#C49D9D' // Розовый для installation
+                                ? '#C49D9D'
                                 : isInProductionRange
-                                ? '#83C78A' // Зеленый для production
+                                ? '#83C78A'
                                 : isInDesignRange
-                                ? '#B4AFE0' // Синий для design
+                                ? '#B4AFE0'
                                 : 'inherit',
                               backgroundColor: isInInstallationRange
-                                ? '#C49D9D' // Светло-розовый фон для installation
+                                ? '#C49D9D'
                                 : isInProductionRange
-                                ? '#83C78A' // Светло-зеленый фон для production
+                                ? '#83C78A'
                                 : isInDesignRange
-                                ? '#B4AFE0' // Светло-синий фон для design
+                                ? '#B4AFE0'
                                 : 'transparent',
-                              fontWeight:
-                                isInInstallationRange || isInProductionRange || isInDesignRange
-                                  ? 'bold'
-                                  : 'normal',
+                              fontWeight: isToday
+                                ? 'bolder'
+                                : isInInstallationRange || isInProductionRange || isInDesignRange
+                                ? 'bold'
+                                : 'normal',
                               position: 'relative',
                               minWidth: '40px',
                               height: '40px',
+                              borderLeft: isToday ? '3px solid #000' : '1px solid #dee2e6',
+                              borderRight: isToday ? '3px solid #000' : '1px solid #dee2e6',
                             }}
                             title={
                               isDesignerWorking

@@ -860,7 +860,7 @@ function ProjectInfoList() {
           <Table bordered hover size="sm" className="mt-3">
             <thead>
               <tr>
-                <th className="report-projects-td mobile">Тип материала</th>
+                <th>Тип материала</th>
                 <th>Счёт</th>
                 <th>Оплаты</th>
                 <th>Готовность</th>
@@ -871,7 +871,7 @@ function ProjectInfoList() {
             <tbody>
               {project.projectmaterials.map((property) => (
                 <tr key={property.id}>
-                  <td className="report-projects-td mobile">{property.materialName}</td>
+                  <td>{property.materialName}</td>
                   <td
                     onClick={() => handleOpenModalCreateCheck(property.id)}
                     style={{ cursor: 'pointer' }}>

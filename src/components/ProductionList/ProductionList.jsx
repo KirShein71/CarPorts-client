@@ -96,7 +96,7 @@ function ProductionList() {
         if (!project.props || !Array.isArray(project.props)) return false;
 
         return project.props.some(
-          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity !== 0, // возможно также стоит исключить нулевые quantity
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity !== 0,
         );
       };
 
@@ -122,45 +122,49 @@ function ProductionList() {
         return uniqueProps;
       };
 
-      // Новая логика проверки отгрузки: ищем полное совпадение projectId и props (игнорируя null значения и дубликаты)
-      const isShipped = shipmentDetails.some((shipment) => {
-        // Проверяем совпадение projectId
-        if (shipment.projectId !== project.projectId) return false;
-
-        // Фильтруем props, удаляя элементы с detailId = null или quantity = null и дубликаты
-        const shipmentProps = removeDuplicateProps(
-          (shipment.props || []).filter(
-            (prop) => prop.detailId !== null && prop.shipment_quantity !== null,
-          ),
-        );
-
+      // Новая логика проверки отгрузки с учетом деталей с quantity = 0
+      const isShipped = () => {
+        // Фильтруем props проекта, удаляя элементы с detailId = null или quantity = null и дубликаты
         const projectProps = removeDuplicateProps(
           (project.props || []).filter((prop) => prop.detailId !== null && prop.quantity !== null),
         );
 
-        // Если количество уникальных props разное - не совпадает
-        if (shipmentProps.length !== projectProps.length) return false;
+        // Если нет деталей для проверки, считаем проект отгруженным
+        if (projectProps.length === 0) return true;
 
-        // Если оба массива пустые после фильтрации - считаем совпадением
-        if (shipmentProps.length === 0 && projectProps.length === 0) return true;
+        // Для каждой детали проекта проверяем статус отгрузки
+        const allDetailsShipped = projectProps.every((projectProp) => {
+          // Если количество в заказе = 0, считаем деталь автоматически отгруженной
+          if (projectProp.quantity === 0) return true;
 
-        // Проверяем, что все уникальные детали и их количества совпадают
-        return shipmentProps.every((shipmentProp) => {
-          const matchingProjectProp = projectProps.find(
-            (projectProp) => projectProp.detailId === shipmentProp.detailId,
+          // Ищем все отгрузки для этой детали
+          const shipmentPropsForDetail = shipmentDetails
+            .filter((shipment) => shipment.projectId === project.projectId)
+            .flatMap((shipment) => shipment.props || [])
+            .filter(
+              (shipmentProp) =>
+                shipmentProp.detailId === projectProp.detailId &&
+                shipmentProp.shipment_quantity !== null,
+            );
+
+          // Суммируем количество отгруженных деталей
+          const totalShipped = shipmentPropsForDetail.reduce(
+            (sum, shipmentProp) => sum + (shipmentProp.shipment_quantity || 0),
+            0,
           );
 
-          return (
-            matchingProjectProp && matchingProjectProp.quantity === shipmentProp.shipment_quantity
-          );
+          // Проверяем, достаточно ли отгружено
+          return totalShipped >= projectProp.quantity;
         });
-      });
+
+        return allDetailsShipped;
+      };
 
       // Фильтрация для отгрузки
       const matchesShippingFilter = () => {
         if (filters.isShipped && filters.isNoShipped) return true; // обе кнопки активны - показываем все
-        if (filters.isShipped) return isShipped; // только отгруженные
-        if (filters.isNoShipped) return !isShipped; // только не отгруженные
+        if (filters.isShipped) return isShipped(); // только отгруженные
+        if (filters.isNoShipped) return !isShipped(); // только не отгруженные
         return true; // ни одна кнопка не активна - показываем все
       };
 
@@ -185,28 +189,33 @@ function ProductionList() {
       // Функция для определения статуса отгрузки проекта
       const getShippingStatus = (project) => {
         const projectDetails = (project.props || []).filter(
-          (prop) =>
-            prop.detailId !== null &&
-            prop.quantity !== null &&
-            prop.quantity !== 0 &&
-            prop.quantity > 0,
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0, // Исключаем quantity = 0, так как они считаются отгруженными
         );
 
         if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
 
-        const shippedDetails = shipmentDetails
-          .filter((shipment) => shipment.projectId === project.projectId)
-          .flatMap((shipment) => shipment.props || [])
-          .filter(
-            (prop) =>
-              prop.detailId !== null &&
-              prop.shipment_quantity !== null &&
-              prop.shipment_quantity > 0,
+        // Проверяем статус отгрузки для каждой детали
+        const notShippedDetails = projectDetails.filter((projectProp) => {
+          const shipmentPropsForDetail = shipmentDetails
+            .filter((shipment) => shipment.projectId === project.projectId)
+            .flatMap((shipment) => shipment.props || [])
+            .filter(
+              (shipmentProp) =>
+                shipmentProp.detailId === projectProp.detailId &&
+                shipmentProp.shipment_quantity !== null,
+            );
+
+          const totalShipped = shipmentPropsForDetail.reduce(
+            (sum, shipmentProp) => sum + (shipmentProp.shipment_quantity || 0),
+            0,
           );
 
-        if (shippedDetails.length === 0) {
+          return totalShipped < projectProp.quantity;
+        });
+
+        if (notShippedDetails.length === projectDetails.length) {
           return 0; // не отгружено ни одной детали (высший приоритет)
-        } else if (shippedDetails.length < projectDetails.length) {
+        } else if (notShippedDetails.length > 0) {
           return 1; // отгружены не все детали (средний приоритет)
         } else {
           return 2; // все детали отгружены (низший приоритет)
