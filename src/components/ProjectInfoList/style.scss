@@ -2,8 +2,12 @@
     &__content {
         margin-top: 25px;
         margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
     }
     &__image {
+        display: flex;
+        justify-content: center;
         img {
             display: block;
             margin: 0 auto;

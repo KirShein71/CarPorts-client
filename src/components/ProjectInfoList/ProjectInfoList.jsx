@@ -579,35 +579,33 @@ function ProjectInfoList() {
         <h1 className="header__title">Подробная информация</h1>
       </div>
       <div className="projectinfo__content">
-        <div className="projectinfo__content">
-          <div className="projectinfo__image">
-            {project &&
+        <div className="projectinfo__image">
+          {project &&
+          project.userProject &&
+          (project.userProject.length === 0 || project.userProject.every((user) => !user.image)) ? (
+            <img
+              src="../img/fon.jpg"
+              alt="image__company"
+              onClick={() => handleCreateMainImage(user.userId)}
+              style={{ cursor: 'pointer' }}
+            />
+          ) : (
             project.userProject &&
-            (project.userProject.length === 0 ||
-              project.userProject.every((user) => !user.image)) ? (
-              <img
-                src="../img/fon.jpg"
-                alt="image__company"
-                onClick={() => handleCreateMainImage(user.userId)}
-                style={{ cursor: 'pointer' }}
-              />
-            ) : (
-              project.userProject &&
-              project.userProject.map(
-                (user) =>
-                  user.image && (
-                    <img
-                      key={user.id}
-                      src={process.env.REACT_APP_IMG_URL + user.image}
-                      alt="main"
-                      onClick={() => handleCreateMainImage(user.userId)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  ),
-              )
-            )}
-          </div>
+            project.userProject.map(
+              (user) =>
+                user.image && (
+                  <img
+                    key={user.id}
+                    src={process.env.REACT_APP_IMG_URL + user.image}
+                    alt="main"
+                    onClick={() => handleCreateMainImage(user.userId)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                ),
+            )
+          )}
         </div>
+
         <div className="projectinfo__information">
           <div className="projectinfo__number">{project.project && project.project.number}</div>
           <div className="projectinfo__name">{project.project && project.project.name}</div>
