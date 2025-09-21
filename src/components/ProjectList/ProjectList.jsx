@@ -512,20 +512,23 @@ function ProjectList() {
                       )}
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      {item && item.date_finish !== null
-                        ? (() => {
-                            const finishDate = new Date(item.date_finish);
-                            const agreementDate = new Date(item.agreement_date);
+                      {item &&
+                        item.agreement_date &&
+                        (() => {
+                          // Используем текущую дату, если date_finish равен null или undefined
+                          const finishDate = item.date_finish
+                            ? new Date(item.date_finish)
+                            : new Date();
+                          const agreementDate = new Date(item.agreement_date);
 
-                            // Разница в миллисекундах
-                            const diffTime = finishDate - agreementDate;
+                          // Разница в миллисекундах
+                          const diffTime = finishDate - agreementDate;
 
-                            // Конвертируем в дни
-                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                          // Конвертируем в дни
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                            return diffDays;
-                          })()
-                        : ''}
+                          return diffDays;
+                        })()}
                     </td>
                     <td>
                       {item.installation_billing === null || item.regionId === null ? (

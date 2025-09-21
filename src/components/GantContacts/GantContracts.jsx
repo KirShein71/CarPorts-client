@@ -6,6 +6,7 @@ import { getAllDate, getAllBrigadesDate } from '../../http/brigadesDateApi';
 import Moment from 'react-moment';
 import './style.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
+import CreateDateBrigade from './modals/CreateDateBrigade';
 
 function GantContracts() {
   const [projects, setProjects] = React.useState([]);
@@ -22,6 +23,11 @@ function GantContracts() {
   const [isLoadingGant, setIsLoadingGant] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [modalCreateDateBrigade, setModalCreateDateBrigade] = React.useState(false);
+  const [change, setChange] = React.useState(true);
+  const [projectId, setProjectId] = React.useState(null);
+  const [dateId, setDateId] = React.useState(null);
+  const [regionId, setRegionId] = React.useState(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +54,7 @@ function GantContracts() {
     };
 
     fetchData();
-  }, []);
+  }, [change]);
 
   const handlePrevMonthGant = () => {
     setIsLoadingGant(true);
@@ -131,6 +137,13 @@ function GantContracts() {
       }
       setIsLoadingGant(false);
     }, 300);
+  };
+
+  const handleOpenModalCreateDateBrigade = (projectId, regionId, dateId) => {
+    setModalCreateDateBrigade(true);
+    setProjectId(projectId);
+    setRegionId(regionId);
+    setDateId(dateId);
   };
 
   const handleSort = (field) => {
@@ -219,6 +232,14 @@ function GantContracts() {
 
   return (
     <div className="gant-contracts">
+      <CreateDateBrigade
+        projectId={projectId}
+        dateId={dateId}
+        regionId={regionId}
+        show={modalCreateDateBrigade}
+        setShow={setModalCreateDateBrigade}
+        setChange={setChange}
+      />
       <Header title={'Гант договоров'} />
       <div style={{ display: 'flex' }}>
         <button
@@ -291,43 +312,14 @@ function GantContracts() {
                   </th>
                   <th className="gant-contracts-table-th">Дедлайн</th>
                   <th className="gant-contracts-table-th">Регион</th>
-                  {filteredDatesGant.map((gantDate) => {
-                    const currentDate = new Date(gantDate.date);
-                    const today = new Date();
-                    const isToday =
-                      currentDate.getDate() === today.getDate() &&
-                      currentDate.getMonth() === today.getMonth() &&
-                      currentDate.getFullYear() === today.getFullYear();
-
-                    return (
-                      <th
-                        key={gantDate.id}
-                        className="gant-contracts-table-th"
-                        style={{
-                          fontWeight: isToday ? 'bold' : 'normal',
-                          borderLeft: isToday ? '3px solid #000' : '1px solid #dee2e6',
-                          borderRight: isToday ? '3px solid #000' : '1px solid #dee2e6',
-                          position: 'relative',
-                        }}>
-                        {new Date(gantDate.date).toLocaleDateString('ru-RU', {
-                          day: 'numeric',
-                          month: 'numeric',
-                        })}
-                        {isToday && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              borderTop: '3px solid #000',
-                              height: '3px',
-                            }}
-                          />
-                        )}
-                      </th>
-                    );
-                  })}
+                  {filteredDatesGant.map((gantDate) => (
+                    <th className="gant-contracts-table-th" key={gantDate.id}>
+                      {new Date(gantDate.date).toLocaleDateString('ru-RU', {
+                        day: 'numeric',
+                        month: 'numeric',
+                      })}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -437,6 +429,9 @@ function GantContracts() {
                           currentDate.getMonth() === today.getMonth() &&
                           currentDate.getFullYear() === today.getFullYear();
 
+                        // Проверяем, является ли день выходным (суббота = 6, воскресенье = 0)
+                        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+
                         const agreementDate = new Date(gantProject?.agreement_date);
                         const designPeriod = gantProject?.design_period || 0;
                         const designEndDate = addWorkingDays(agreementDate, designPeriod);
@@ -501,6 +496,13 @@ function GantContracts() {
 
                         return (
                           <td
+                            // onClick={() =>
+                            //   handleOpenModalCreateDateBrigade(
+                            //     gantProject.id,
+                            //     gantProject.regionId,
+                            //     gantDate.id,
+                            //   )
+                            // }
                             key={gantDate.id}
                             style={{
                               color: isInInstallationRange
@@ -516,6 +518,8 @@ function GantContracts() {
                                 ? '#83C78A'
                                 : isInDesignRange
                                 ? '#B4AFE0'
+                                : isWeekend
+                                ? '#f8f9fa' // Светло-серый фон для выходных
                                 : 'transparent',
                               fontWeight: isToday
                                 ? 'bolder'
@@ -525,11 +529,22 @@ function GantContracts() {
                               position: 'relative',
                               minWidth: '40px',
                               height: '40px',
-                              borderLeft: isToday ? '3px solid #000' : '1px solid #dee2e6',
-                              borderRight: isToday ? '3px solid #000' : '1px solid #dee2e6',
+                              borderLeft: isToday
+                                ? '3px solid #000'
+                                : isWeekend
+                                ? '2px solid #6c757d' // Серая жирная рамка для выходных
+                                : '1px solid #dee2e6',
+                              borderRight: isToday
+                                ? '3px solid #000'
+                                : isWeekend
+                                ? '2px solid #6c757d' // Серая жирная рамка для выходных
+                                : '1px solid #dee2e6',
+                              borderTop: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6', // Верхняя рамка для выходных
+                              borderBottom: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6', // Нижняя рамка для выходных
                             }}
                             title={
-                              isDesignerWorking
+                              (isWeekend ? 'Выходной день\n' : '') +
+                              (isDesignerWorking
                                 ? `Дизайнер: ${
                                     gantProject?.designer || 'Не указан'
                                   }\nПериод: ${designerStartDate.toLocaleDateString()} - ${
@@ -541,8 +556,27 @@ function GantContracts() {
                                 ? `Бригады: ${brigadesForThisDate
                                     .map((b) => b.brigade?.name)
                                     .join(', ')}`
-                                : ''
+                                : '')
                             }>
+                            {/* Показываем метку выходного дня */}
+                            {isWeekend && (
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  top: '2px',
+                                  right: '2px',
+                                  fontSize: '6px',
+                                  fontWeight: 'bold',
+                                  color: '#6c757d',
+                                  background: 'rgba(255, 255, 255, 0.7)',
+                                  padding: '1px',
+                                  borderRadius: '2px',
+                                  lineHeight: '1',
+                                }}>
+                                {currentDate.getDay() === 0 ? 'ВС' : 'СБ'}
+                              </div>
+                            )}
+
                             {/* Отображаем designer только в период его работы */}
                             {isDesignerWorking && gantProject?.designer && (
                               <div
