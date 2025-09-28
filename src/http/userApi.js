@@ -84,7 +84,17 @@ export const createAccount = async (user) => {
     export const getUserForBrigade = async(projectId) => {
         const {data} = await guestInstance.get(`user/getUserForBrigade/${projectId}`);
         return data;
-      }
+    }
+
+    export const updatePhone = async(id, user) => {
+        const { data } = await guestInstance.put(`user/updatePhone/${id}`, user);
+        return data
+    }
+
+    export const updatePassword = async(id, user) => {
+        const { data } = await guestInstance.put(`user/updatePassword/${id}`, user);
+        return data
+    }
 
     export const deleteUser = async(id) => {
         const { data } = await guestInstance.delete(`user/delete/${id}`);
