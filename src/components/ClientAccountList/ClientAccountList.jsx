@@ -97,6 +97,7 @@ function ClientAccountList() {
                 <td>
                   <Button
                     variant="dark"
+                    size="sm"
                     onClick={() => handleOpenModalUpdatePasswordClient(user.id)}>
                     Изменить
                   </Button>
