@@ -85,36 +85,38 @@ function ClientAccountList() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.project.number}</td>
-                <td>{user.project.name}</td>
-                <td
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleOpenModalUpdatePhoneClient(user.id)}>
-                  {user.phone}
-                </td>
-                <td>
-                  <Button
-                    variant="dark"
-                    size="sm"
-                    onClick={() => handleOpenModalUpdatePasswordClient(user.id)}>
-                    Изменить
-                  </Button>
-                </td>
-                <td>{user.telegram_chat_id ? 'Да' : 'Нет'}</td>
-                <td>
-                  <Button variant="dark" size="sm" onClick={() => addToInfo(user.id)}>
-                    Добавить информацию
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="dark" size="sm" onClick={() => handleDeleteClick(user.id)}>
-                    Удалить
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {users
+              .sort((a, b) => b.id - a.id)
+              .map((user) => (
+                <tr key={user.id}>
+                  <td>{user.project.number}</td>
+                  <td>{user.project.name}</td>
+                  <td
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleOpenModalUpdatePhoneClient(user.id)}>
+                    {user.phone}
+                  </td>
+                  <td>
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      onClick={() => handleOpenModalUpdatePasswordClient(user.id)}>
+                      Изменить
+                    </Button>
+                  </td>
+                  <td>{user.telegram_chat_id ? 'Да' : 'Нет'}</td>
+                  <td>
+                    <Button variant="dark" size="sm" onClick={() => addToInfo(user.id)}>
+                      Добавить информацию
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="dark" size="sm" onClick={() => handleDeleteClick(user.id)}>
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
