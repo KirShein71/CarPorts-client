@@ -89,7 +89,11 @@ function ClientAccountList() {
               <tr key={user.id}>
                 <td>{user.project.number}</td>
                 <td>{user.project.name}</td>
-                <td onClick={() => handleOpenModalUpdatePhoneClient(user.id)}>{user.phone}</td>
+                <td
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleOpenModalUpdatePhoneClient(user.id)}>
+                  {user.phone}
+                </td>
                 <td>
                   <Button
                     variant="dark"
