@@ -96,8 +96,8 @@ export const createAccount = async (user) => {
         return data
     }
 
-    export const generationUrlForClientAccount = async(id) => {
-        const {data} = await guestInstance.get(`user/generationUrlForClientAccount/${id}`);
+    export const generationUrlForClientAccount = async(id, user) => {
+        const {data} = await guestInstance.put(`user/generationUrlForClientAccount/${id}`, user);
         return data;
     }
 

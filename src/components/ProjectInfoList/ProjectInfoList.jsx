@@ -44,6 +44,7 @@ import UpdateExpirationDate from './modals/UpdateExpirationDate';
 import UpdateInstallationDate from './modals/UpdateInstallationDate';
 import UserFile from './UserFile';
 import ProjectLogistic from './ProjectLogistic';
+import ModalUrlClient from './modals/ModalUrlClient';
 
 import './style.scss';
 
@@ -96,6 +97,8 @@ function ProjectInfoList() {
   const [modalUpdateDesignPeriod, setModalUpdateDesignPeriod] = React.useState(false);
   const [modalUpdateExpirationDate, setModalUpdateExpirationDate] = React.useState(false);
   const [modalUpdateInstallationDate, setModalUpdateInstallationDate] = React.useState(false);
+  const [openModalUrl, setOpenModalUrl] = React.useState(false);
+  const [personalAccountLink, setPersonalAccountLink] = React.useState(null);
   const [userId, setUserId] = React.useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -284,7 +287,9 @@ function ProjectInfoList() {
     generationUrlForClientAccount(id)
       .then((data) => {
         setChange(!change);
-        alert(`Строка будет удалена`);
+        setOpenModalUrl(true);
+        setPersonalAccountLink(data); // убрали .response
+        console.log(data); // убрали .response
         console.log(id);
       })
       .catch((error) => alert(error.response.data.message));
@@ -577,6 +582,11 @@ function ProjectInfoList() {
         show={modalUpdateInstallationDate}
         setShow={setModalUpdateInstallationDate}
         setChange={setChange}
+      />
+      <ModalUrlClient
+        show={openModalUrl}
+        setShow={setOpenModalUrl}
+        personalAccountLink={personalAccountLink}
       />
       <div className="header">
         <Link
