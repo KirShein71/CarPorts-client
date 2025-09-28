@@ -49,13 +49,24 @@ function TableBrigadeCalendar() {
   return (
     <div className="table-brigade" style={{ marginTop: '25px', width: '360px' }}>
       {dates.map((date) => (
-        <Table bordered hover size="sm" key={date.toISOString()}>
+        <Table
+          bordered
+          hover
+          size="sm"
+          key={date.toISOString()}
+          style={{
+            border:
+              date.toISOString().split('T')[0] === todayString
+                ? '3px solid #000'
+                : '1px solid #dee2e6',
+          }}>
           <thead>
             <tr>
               <th
                 className="table-brigade__header"
                 style={{
                   backgroundColor: '#e1dede',
+                  borderBottom: '1px solid #dee2e6',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
@@ -63,6 +74,7 @@ function TableBrigadeCalendar() {
                 className="table-brigade__header"
                 style={{
                   backgroundColor: '#e1dede',
+                  borderBottom: '1px solid #dee2e6',
                 }}>
                 МО{' '}
                 {
@@ -87,24 +99,8 @@ function TableBrigadeCalendar() {
               })
               .map((dateMoscow) => (
                 <tr key={dateMoscow.id}>
-                  <td
-                    className="table-brigade__body"
-                    style={{
-                      backgroundColor:
-                        date.toISOString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : 'transparent',
-                    }}>
-                    {dateMoscow.brigade.name}
-                  </td>
-                  <td
-                    className="table-brigade__body"
-                    style={{
-                      backgroundColor:
-                        date.toISOString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : 'transparent',
-                    }}>
+                  <td className="table-brigade__body">{dateMoscow.brigade.name}</td>
+                  <td className="table-brigade__body">
                     {dateMoscow.project?.name}{' '}
                     {dateMoscow.complaint ? `*${dateMoscow.complaint.project.name}*` : ''}
                     {dateMoscow.warranty} {dateMoscow.weekend}
@@ -118,6 +114,8 @@ function TableBrigadeCalendar() {
                 className="table-brigade__header"
                 style={{
                   backgroundColor: '#e1dede',
+                  borderTop: '1px solid #dee2e6',
+                  borderBottom: '1px solid #dee2e6',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
@@ -125,6 +123,8 @@ function TableBrigadeCalendar() {
                 className="table-brigade__header"
                 style={{
                   backgroundColor: '#e1dede',
+                  borderTop: '1px solid #dee2e6',
+                  borderBottom: '1px solid #dee2e6',
                 }}>
                 ЛО{' '}
                 {
@@ -149,25 +149,10 @@ function TableBrigadeCalendar() {
               })
               .map((dateSpb) => (
                 <tr key={dateSpb.id}>
-                  <td
-                    className="table-brigade__body"
-                    style={{
-                      backgroundColor:
-                        date.toISOString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : 'transparent',
-                    }}>
+                  <td className="table-brigade__body">
                     {dateSpb.brigade ? dateSpb.brigade.name : ''}
                   </td>
-
-                  <td
-                    className="table-brigade__body"
-                    style={{
-                      backgroundColor:
-                        date.toISOString().split('T')[0] === todayString
-                          ? '#bbbbbb'
-                          : 'transparent',
-                    }}>
+                  <td className="table-brigade__body">
                     {dateSpb.project?.name}{' '}
                     {dateSpb.complaint ? `*${dateSpb.complaint.project.name}*` : ''}
                     {dateSpb.warranty} {dateSpb.weekend}

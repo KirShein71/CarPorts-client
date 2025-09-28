@@ -2,6 +2,7 @@ import React from 'react';
 import { getProjectInfo } from '../../http/projectApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { deleteProjectBrigades } from '../../http/projectBrigadesApi';
+import { generationUrlForClientAccount } from '../../http/userApi';
 import CreateAccountModal from '../ClientAccountList/CreateAccountList/modal/CreateAccauntModal';
 import CreateMainImage from '../ClientAccountList/CreateInformationClientList/modals/CreateMainImage';
 import UpdateNote from './modals/UpdateNote';
@@ -277,6 +278,16 @@ function ProjectInfoList() {
         })
         .catch((error) => alert(error.response.data.message));
     }
+  };
+
+  const handleGenerationUrl = (id) => {
+    generationUrlForClientAccount(id)
+      .then((data) => {
+        setChange(!change);
+        alert(`Строка будет удалена`);
+        console.log(id);
+      })
+      .catch((error) => alert(error.response.data.message));
   };
 
   const handleToggleText = () => {
@@ -1074,6 +1085,9 @@ function ProjectInfoList() {
                   ) : (
                     ''
                   )}
+                  <div className="cabinet__item" onClick={() => handleGenerationUrl(user.userId)}>
+                    Сформировать ссылку
+                  </div>
                 </div>
               ))
             ) : (

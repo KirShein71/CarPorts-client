@@ -96,6 +96,13 @@ export const createAccount = async (user) => {
         return data
     }
 
+    export const generationUrlForClientAccount = async(id) => {
+        const {data} = await guestInstance.get(`user/generationUrlForClientAccount/${id}`);
+        return data;
+    }
+
+    
+
     export const deleteUser = async(id) => {
         const { data } = await guestInstance.delete(`user/delete/${id}`);
         return data
