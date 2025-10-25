@@ -18,6 +18,7 @@ const MenuItems = ({ items }) => {
         <div
           className={`homepage__item ${
             item.label === 'Все проекты' ||
+            item.label === 'Технадзор' ||
             item.label === 'Рекламация' ||
             item.label === 'Гант договоров' ||
             item.label === 'Подписано/Сдано'
@@ -90,6 +91,7 @@ function HomePageList() {
     { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Рекламация', link: '/complaint' },
     { label: 'Гант договоров', link: '/gant-contracts' },
     { label: 'Подписано/Сдано', link: '/report-project' },

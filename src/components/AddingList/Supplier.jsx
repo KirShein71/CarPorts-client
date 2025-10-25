@@ -1,7 +1,7 @@
 import React from 'react';
 import CreateSupplier from './modals/CreateSupplier';
 import ModalCardSupplier from './modals/ModalCardSupplier';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal } from 'react-bootstrap';
 import { fetchSuppliers, deleteSupplier } from '../../http/supplierApi';
 
 function Supplier() {
@@ -10,6 +10,8 @@ function Supplier() {
   const [supplierModal, setSupplierModal] = React.useState(false);
   const [supplierCardModal, setSupplierCardModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [supplierToDelete, setSupplierToDelete] = React.useState(null);
 
   React.useEffect(() => {
     fetchSuppliers().then((data) => setSuppliers(data));
@@ -21,15 +23,30 @@ function Supplier() {
   };
 
   const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить поставщика?');
-    if (confirmed) {
-      deleteSupplier(id)
+    const supplier = suppliers.find((item) => item.id === id);
+    setSupplierToDelete(supplier);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (supplierToDelete) {
+      deleteSupplier(supplierToDelete.id)
         .then((data) => {
           setChange(!change);
-          alert(`Поставщик «${data.name}» будет удален`);
+          setDeleteModal(false);
+          setSupplierToDelete(null);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          setDeleteModal(false);
+          setSupplierToDelete(null);
+          alert(error.response.data.message);
+        });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal(false);
+    setSupplierToDelete(null);
   };
 
   return (
@@ -43,6 +60,28 @@ function Supplier() {
         change={change}
         setChange={setChange}
       />
+      <Modal
+        show={deleteModal}
+        onHide={cancelDelete}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          Вы уверены, что хотите удалить поставщика
+          {supplierToDelete && ` «${supplierToDelete.name}»`}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelDelete}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button variant="dark" onClick={() => setSupplierModal(true)} className="mt-3">
         Добавить поставщика
       </Button>

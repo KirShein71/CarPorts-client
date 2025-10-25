@@ -5,6 +5,7 @@ import Materials from './Materials';
 import Brigade from './Brigade';
 import Service from './Service';
 import Supplier from './Supplier';
+import Examination from './Examination';
 
 function AddingList() {
   return (
@@ -15,6 +16,7 @@ function AddingList() {
       <Supplier />
       <Brigade />
       <Service />
+      <Examination />
     </>
   );
 }

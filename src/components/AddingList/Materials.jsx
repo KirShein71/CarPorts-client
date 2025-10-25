@@ -2,7 +2,7 @@ import React from 'react';
 import CreateMaterial from './modals/CreateMaterial';
 import UpdateMaterial from './modals/UpdateMaterial';
 import CreateSupplierMaterial from './modals/CreateSupplierMaterial';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal } from 'react-bootstrap';
 import { fetchMaterials, deleteMaterial } from '../../http/materialsApi';
 
 function Materials() {
@@ -12,6 +12,8 @@ function Materials() {
   const [materialUpdateModal, setMaterialUpdateModal] = React.useState(false);
   const [supplierMaterialCreateModal, setSupplierMaterialCreateModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [materialToDelete, setMaterialToDelete] = React.useState(null);
 
   React.useEffect(() => {
     fetchMaterials().then((data) => setMaterials(data));
@@ -28,15 +30,30 @@ function Materials() {
   };
 
   const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить материал?');
-    if (confirmed) {
-      deleteMaterial(id)
+    const material = materials.find((item) => item.id === id);
+    setMaterialToDelete(material);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (materialToDelete) {
+      deleteMaterial(materialToDelete.id)
         .then((data) => {
           setChange(!change);
-          alert(`Материал «${data.name}» будет удален`);
+          setDeleteModal(false);
+          setMaterialToDelete(null);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          setDeleteModal(false);
+          setMaterialToDelete(null);
+          alert(error.response.data.message);
+        });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal(false);
+    setMaterialToDelete(null);
   };
 
   return (
@@ -55,6 +72,28 @@ function Materials() {
         setChange={setChange}
         id={material}
       />
+      <Modal
+        show={deleteModal}
+        onHide={cancelDelete}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          Вы уверены, что хотите удалить материал
+          {materialToDelete && ` «${materialToDelete.name}»`}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelDelete}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button variant="dark" onClick={() => setMaterialModal(true)} className="mt-3">
         Создать материал
       </Button>

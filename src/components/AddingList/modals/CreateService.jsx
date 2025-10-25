@@ -69,24 +69,24 @@ const CreateService = (props) => {
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="name"
-                value={value.name}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.name === true}
-                isInvalid={valid.name === false}
-                placeholder="Введите название услуги"
-              />
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
                 name="number"
                 value={value.number}
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.number === true}
                 isInvalid={valid.number === false}
                 placeholder="Номер"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="name"
+                value={value.name}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.name === true}
+                isInvalid={valid.name === false}
+                placeholder="Введите название услуги"
               />
             </Col>
           </Row>

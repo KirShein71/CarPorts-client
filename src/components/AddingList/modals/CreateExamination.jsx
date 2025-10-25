@@ -1,25 +1,23 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createDetail } from '../../../http/detailsApi';
+import { createExamination } from '../../../http/examinationApi';
 
-const defaultValue = { number: '', name: '', price: '' };
+const defaultValue = { name: '', number: '' };
 const defaultValid = {
-  number: null,
   name: null,
-  price: null,
+  number: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'number') result.number = value.number.trim() !== '';
     if (key === 'name') result.name = value.name.trim() !== '';
-    if (key === 'price') result.price = value.price.trim() !== '';
+    if (key === 'number') result.number = value.number.trim() !== '';
   }
   return result;
 };
 
-const CreateDetail = (props) => {
+const CreateExamination = (props) => {
   const { show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -35,13 +33,12 @@ const CreateDetail = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name && correct.price) {
+    if (correct.name) {
       const data = new FormData();
-      data.append('number', value.number.trim());
       data.append('name', value.name.trim());
-      data.append('price', value.price.trim());
+      data.append('number', value.number.trim());
       setIsLoading(true);
-      createDetail(data)
+      createExamination(data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -65,7 +62,7 @@ const CreateDetail = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Введите название детали</Modal.Title>
+        <Modal.Title>Введите название проверки</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
@@ -89,19 +86,7 @@ const CreateDetail = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
-                placeholder="Введите название детали"
-              />
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="price"
-                value={value.price}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.price === true}
-                isInvalid={valid.price === false}
-                placeholder="Себестоимость"
+                placeholder="Введите название проверки"
               />
             </Col>
           </Row>
@@ -118,4 +103,4 @@ const CreateDetail = (props) => {
   );
 };
 
-export default CreateDetail;
+export default CreateExamination;

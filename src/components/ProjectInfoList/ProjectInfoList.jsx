@@ -45,6 +45,7 @@ import UpdateInstallationDate from './modals/UpdateInstallationDate';
 import UserFile from './UserFile';
 import ProjectLogistic from './ProjectLogistic';
 import ModalUrlClient from './modals/ModalUrlClient';
+import TechExamination from './TechExamination';
 
 import './style.scss';
 
@@ -681,6 +682,13 @@ function ProjectInfoList() {
                   Смета
                 </div>
               )}
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'techSupervision' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('techSupervision')}>
+                Тех.надзор
+              </div>
               {project.complaints?.length > 0 ? (
                 <div
                   className={`projectinfo__filter-card__item ${
@@ -1076,6 +1084,9 @@ function ProjectInfoList() {
           : activeTab === 'estimate' && (
               <Estimate projectId={id} regionId={project.project.regionId} />
             )}
+        {activeTab === 'techSupervision' && (
+          <TechExamination projectId={id} regionId={project.project.regionId} />
+        )}
         {activeTab === 'cabinet' && (
           <div className="cabinet">
             {project.userProject && project.userProject.length > 0 ? (
@@ -1111,6 +1122,7 @@ function ProjectInfoList() {
             )}
           </div>
         )}
+
         {activeTab === 'userFile' && (
           <UserFile
             project={project}

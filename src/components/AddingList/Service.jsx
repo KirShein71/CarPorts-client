@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal } from 'react-bootstrap';
 import { getAllService, deleteService } from '../../http/serviceApi';
 import CreateService from './modals/CreateService';
 import UpdateService from './modals/UpdateService';
@@ -12,6 +12,8 @@ function Service() {
   const [updateServiceModal, setUpdateServiceModal] = React.useState(false);
   const [createNumberServiceModal, setCreateNumberServiceModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [serviceToDelete, setServiceToDelete] = React.useState(null);
 
   React.useEffect(() => {
     getAllService().then((data) => setServices(data));
@@ -28,15 +30,30 @@ function Service() {
   };
 
   const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить услугу?');
-    if (confirmed) {
-      deleteService(id)
+    const service = services.find((item) => item.id === id);
+    setServiceToDelete(service);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (serviceToDelete) {
+      deleteService(serviceToDelete.id)
         .then((data) => {
           setChange(!change);
-          alert(`Услуга «${data.name}» будет удалена`);
+          setDeleteModal(false);
+          setServiceToDelete(null);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          setDeleteModal(false);
+          setServiceToDelete(null);
+          alert(error.response.data.message);
+        });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal(false);
+    setServiceToDelete(null);
   };
 
   return (
@@ -59,6 +76,28 @@ function Service() {
         setChange={setChange}
         id={service}
       />
+      <Modal
+        show={deleteModal}
+        onHide={cancelDelete}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          Вы уверены, что хотите удалить услугу
+          {serviceToDelete && ` «${serviceToDelete.name}»`}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelDelete}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button variant="dark" onClick={() => setCreateServiceModal(true)} className="mt-3">
         Создать услугу монтажных работ
       </Button>

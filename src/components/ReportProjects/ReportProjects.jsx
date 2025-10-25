@@ -1,15 +1,30 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import Header from '../Header/Header';
-import { getAllStatSignedProject } from '../../http/projectApi';
+import { getAllStatSignedProject, getAllYearStatProject } from '../../http/projectApi';
 
 import './style.scss';
 
 function ReportProjects() {
   const [reportProjects, setReportProjects] = React.useState([]);
+  const [reportYearProjects, setReportYearProjects] = React.useState([]);
 
   React.useEffect(() => {
-    getAllStatSignedProject().then((data) => setReportProjects(data));
+    const fetchReportData = async () => {
+      try {
+        const [monthlyData, yearlyData] = await Promise.all([
+          getAllStatSignedProject(),
+          getAllYearStatProject(),
+        ]);
+
+        setReportProjects(monthlyData);
+        setReportYearProjects(yearlyData);
+      } catch (error) {
+        console.error('Error fetching report data:', error);
+      }
+    };
+
+    fetchReportData();
   }, []);
 
   // Группируем данные по годам
@@ -55,62 +70,90 @@ function ReportProjects() {
     <div className="report-projects">
       <Header title={'Подписано/Сдано'} />
 
-      {years.map((year) => (
-        <div key={year} style={{ marginTop: '30px' }}>
-          <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>{year}</h3>
-          <div className="report-projects-table-container">
-            <div className="report-projects-table-wrapper">
-              <Table bordered size="sm">
-                <thead>
-                  <tr>
-                    <th className="report-projects-th mobile" style={{ width: '120px' }}></th>
-                    {months.map((month, index) => (
-                      <th key={index} style={{ textAlign: 'center', minWidth: '60px' }}>
-                        {month}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Строка "Подписано договоров" */}
-                  <tr>
-                    <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
-                      Подписано договоров
-                    </td>
-                    {months.map((_, monthIndex) => {
-                      const monthData = dataByYear[year].find(
-                        (item) => item.month === monthIndex + 1,
-                      );
-                      return (
-                        <td key={monthIndex} style={{ textAlign: 'center' }}>
-                          {monthData ? monthData.signed : 0}
-                        </td>
-                      );
-                    })}
-                  </tr>
+      {years.map((year) => {
+        // Находим данные за текущий год
+        const currentYearData = reportYearProjects.find((repYear) => repYear.year === Number(year));
 
-                  {/* Строка "Сдано проектов" */}
-                  <tr>
-                    <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
-                      Сдано проектов
-                    </td>
-                    {months.map((_, monthIndex) => {
-                      const monthData = dataByYear[year].find(
-                        (item) => item.month === monthIndex + 1,
-                      );
-                      return (
-                        <td key={monthIndex} style={{ textAlign: 'center' }}>
-                          {monthData ? monthData.finished : 0}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                </tbody>
-              </Table>
+        return (
+          <div key={year} style={{ marginTop: '30px' }}>
+            <h3 style={{ textAlign: 'left', marginBottom: '15px' }}>{year}</h3>
+            <div className="report-projects-table-container">
+              <div className="report-projects-table-wrapper">
+                <Table bordered size="sm">
+                  <thead>
+                    <tr>
+                      <th className="report-projects-th mobile" style={{ width: '120px' }}></th>
+
+                      <th></th>
+                      {/* Заголовки для месяцев */}
+                      {months.map((month, index) => (
+                        <th key={index} style={{ textAlign: 'center', minWidth: '60px' }}>
+                          {month}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* Строка "Подписано договоров" */}
+                    <tr>
+                      <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
+                        Подписано договоров
+                      </td>
+                      {/* Данные по текущему году - подписано */}
+                      <td
+                        style={{
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          backgroundColor: '#f8f9fa',
+                        }}>
+                        {currentYearData ? currentYearData.signed : 0}
+                      </td>
+                      {/* Данные по месяцам - подписано */}
+                      {months.map((_, monthIndex) => {
+                        const monthData = dataByYear[year]?.find(
+                          (item) => item.month === monthIndex + 1,
+                        );
+                        return (
+                          <td key={monthIndex} style={{ textAlign: 'center' }}>
+                            {monthData ? monthData.signed : 0}
+                          </td>
+                        );
+                      })}
+                    </tr>
+
+                    {/* Строка "Сдано проектов" */}
+                    <tr>
+                      <td className="report-projects-td mobile" style={{ fontWeight: 'bold' }}>
+                        Сдано проектов
+                      </td>
+                      {/* Данные по текущему году - сдано */}
+                      <td
+                        style={{
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          backgroundColor: '#f8f9fa',
+                        }}>
+                        {currentYearData ? currentYearData.finished : 0}
+                      </td>
+                      {/* Данные по месяцам - сдано */}
+                      {months.map((_, monthIndex) => {
+                        const monthData = dataByYear[year]?.find(
+                          (item) => item.month === monthIndex + 1,
+                        );
+                        return (
+                          <td key={monthIndex} style={{ textAlign: 'center' }}>
+                            {monthData ? monthData.finished : 0}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {years.length === 0 && (
         <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>

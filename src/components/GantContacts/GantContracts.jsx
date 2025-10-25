@@ -374,17 +374,17 @@ function GantContracts() {
                               currentDate > productionEndDate &&
                               currentDate <= installationEndDate
                             ) {
-                              return '#C49D9D';
+                              return '#EFDDDD'; // Монтаж
                             } else if (
                               currentDate > designEndDate &&
                               currentDate <= productionEndDate
                             ) {
-                              return '#83C78A';
+                              return '#E2EFDC'; // Снабжение
                             } else if (
                               currentDate >= agreementDate &&
                               currentDate <= designEndDate
                             ) {
-                              return '#B4AFE0';
+                              return '#DFEDFF'; // Проектирование
                             } else {
                               return '#ffffff';
                             }
@@ -506,25 +506,25 @@ function GantContracts() {
                             key={gantDate.id}
                             style={{
                               color: isInInstallationRange
-                                ? '#C49D9D'
+                                ? '#000000' // Черный текст для монтажа
                                 : isInProductionRange
-                                ? '#83C78A'
+                                ? '#000000' // Черный текст для снабжения
                                 : isInDesignRange
-                                ? '#B4AFE0'
+                                ? '#000000' // Черный текст для проектирования
                                 : 'inherit',
                               backgroundColor: isInInstallationRange
-                                ? '#C49D9D'
+                                ? '#EFDDDD' // Монтаж
                                 : isInProductionRange
-                                ? '#83C78A'
+                                ? '#E2EFDC' // Снабжение
                                 : isInDesignRange
-                                ? '#B4AFE0'
+                                ? '#DFEDFF' // Проектирование
                                 : isWeekend
                                 ? '#f8f9fa' // Светло-серый фон для выходных
                                 : 'transparent',
                               fontWeight: isToday
                                 ? 'bolder'
                                 : isInInstallationRange || isInProductionRange || isInDesignRange
-                                ? 'bold'
+                                ? 'normal'
                                 : 'normal',
                               position: 'relative',
                               minWidth: '40px',
@@ -583,15 +583,13 @@ function GantContracts() {
                                 style={{
                                   fontSize: '8px',
                                   fontWeight: 'normal',
-                                  color: '#000',
+                                  color: '#000000', // Черный текст
                                   textAlign: 'center',
                                   whiteSpace: 'nowrap',
                                   textOverflow: 'ellipsis',
                                   overflow: 'hidden',
                                   padding: '1px',
-                                  background: isInDesignRange
-                                    ? 'rgba(180, 175, 224, 0.3)'
-                                    : 'rgba(255, 255, 255, 0.7)',
+                                  background: 'transparent', // Убрана подцветка
                                   borderRadius: '2px',
                                 }}>
                                 {gantProject.designer}
@@ -615,9 +613,9 @@ function GantContracts() {
                                     key={index}
                                     style={{
                                       fontSize: '7px',
-                                      fontWeight: 'bold',
-                                      color: '#000',
-                                      background: 'rgba(255, 255, 255, 0.8)',
+
+                                      color: '#000000', // Черный текст
+                                      background: 'transparent', // Убрана подцветка
                                       padding: '1px 3px',
                                       borderRadius: '3px',
                                       textAlign: 'center',

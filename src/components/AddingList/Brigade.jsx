@@ -5,7 +5,7 @@ import CreateRegionBrigade from './modals/CreateRegionBrigade';
 import CreatePasswordBrigade from './modals/CreatePasswordBrigade';
 import UpdateBrigadePhone from './modals/UpdateBrigadePhone';
 import UpdateBrigadeName from './modals/UpdateBrigadeName';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal } from 'react-bootstrap';
 import { fetchBrigades, deleteBrigade, updateActiveBrigade } from '../../http/bragadeApi';
 
 const defaultValue = { active: '' };
@@ -34,22 +34,12 @@ function Brigade() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [brigadeToDelete, setBrigadeToDelete] = React.useState(null);
 
   React.useEffect(() => {
     fetchBrigades().then((data) => setBrigades(data));
   }, [change]);
-
-  const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить бригаду?');
-    if (confirmed) {
-      deleteBrigade(id)
-        .then((data) => {
-          setChange(!change);
-          alert(`Бригада «${data.name}» будет удалена`);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
-  };
 
   const handleUpdateBrigade = (id) => {
     setBrigade(id);
@@ -112,6 +102,33 @@ function Brigade() {
       });
   };
 
+  const handleDeleteClick = (id) => {
+    const brig = brigades.find((brigade) => brigade.id === id);
+    setBrigadeToDelete(brig);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (brigadeToDelete) {
+      deleteBrigade(brigadeToDelete.id)
+        .then((data) => {
+          setChange(!change);
+          setDeleteModal(false);
+          setBrigadeToDelete(null);
+        })
+        .catch((error) => {
+          setDeleteModal(false);
+          setBrigadeToDelete(null);
+          alert(error.response.data.message);
+        });
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal(false);
+    setBrigadeToDelete(null);
+  };
+
   return (
     <div className="details">
       <h2 className="details__title">Монтажные бригады</h2>
@@ -146,6 +163,28 @@ function Brigade() {
         setChange={setChange}
         id={brigade}
       />
+      <Modal
+        show={deleteModal}
+        onHide={cancelDelete}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          Вы уверены, что хотите удалить бригаду
+          {brigadeToDelete && ` «${brigadeToDelete.name}»`}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelDelete}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button variant="dark" onClick={() => setBrigadeModal(true)} className="mt-3">
         Создать бригаду
       </Button>

@@ -36,10 +36,10 @@ import InstallationComplaint from '../pages/InstallationComplaint';
 import ViewingInstallationComplaintPage from '../pages/ViewingInstallationComplaintPage';
 import Logistics from '../pages/Logistics';
 import GantContract from '../pages/GantContact';
+import TechSuperVision from '../pages/TechSupervision';
+import ReportProject from '../pages/ReportProject';
 
 import { observer } from 'mobx-react';
-import { Component } from 'react';
-import ReportProject from '../pages/ReportProject';
 
 const userRoutes = [
   { path: '/personalaccount', Component: PersonalAccount },
@@ -109,6 +109,7 @@ const adminRoutes = [
   { path: '/logistics', Component: Logistics },
   { path: '/gant-contracts', Component: GantContract },
   { path: '/report-project', Component: ReportProject },
+  { path: '/technical-supervision', Component: TechSuperVision },
 ];
 
 const managerSaleRoutes = [

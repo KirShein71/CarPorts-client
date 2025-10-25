@@ -3,7 +3,7 @@ import CreateDetail from './modals/CreateDetail';
 import UpdateDetail from './modals/UpdateDetail';
 import CreatePriceDetail from './modals/CreatePriceDetail';
 import CreateNumberDetail from './modals/CreateNumberDetail';
-import { Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Button, Spinner, Modal } from 'react-bootstrap';
 import { fetchAllDetails, deleteDetail } from '../../http/detailsApi';
 
 function Details() {
@@ -15,6 +15,8 @@ function Details() {
   const [createNumberModal, setCreateNumberModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [fetching, setFetching] = React.useState(true);
+  const [deleteModal, setDeleteModal] = React.useState(false);
+  const [detailToDelete, setDetailToDelete] = React.useState(null);
 
   React.useEffect(() => {
     fetchAllDetails()
@@ -23,15 +25,30 @@ function Details() {
   }, [change]);
 
   const handleDeleteClick = (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить деталь?');
-    if (confirmed) {
-      deleteDetail(id)
+    const detail = details.find((item) => item.id === id);
+    setDetailToDelete(detail);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (detailToDelete) {
+      deleteDetail(detailToDelete.id)
         .then((data) => {
           setChange(!change);
-          alert(`Деталь «${data.name}» будет удалена`);
+          setDeleteModal(false);
+          setDetailToDelete(null);
         })
-        .catch((error) => alert(error.response.data.message));
+        .catch((error) => {
+          setDeleteModal(false);
+          setDetailToDelete(null);
+          alert(error.response.data.message);
+        });
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal(false);
+    setDetailToDelete(null);
   };
 
   const handleCreatePrice = (id) => {
@@ -75,6 +92,28 @@ function Details() {
         setChange={setChange}
         id={detail}
       />
+      <Modal
+        show={deleteModal}
+        onHide={cancelDelete}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          Вы уверены, что хотите удалить деталь
+          {detailToDelete && ` «${detailToDelete.name}»`}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelDelete}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Button variant="dark" onClick={() => setDetailModal(true)} className="mt-3">
         Создать деталь
       </Button>
