@@ -153,6 +153,7 @@ const managerProjectRoutes = [
   { path: '/viewinginstallationcomplaintpage/:id', Component: ViewingInstallationComplaintPage },
   { path: '/report-project', Component: ReportProject },
   { path: '/gant-contracts', Component: GantContract },
+  { path: '/technical-supervision', Component: TechSuperVision },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];

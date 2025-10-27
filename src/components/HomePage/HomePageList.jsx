@@ -70,6 +70,7 @@ function HomePageList() {
     { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Рекламация', link: '/complaint' },
     { label: 'Гант договоров', link: '/gant-contracts' },
     { label: 'Подписано/Сдано', link: '/report-project' },
