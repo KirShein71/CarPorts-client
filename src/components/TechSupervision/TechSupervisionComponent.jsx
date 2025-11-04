@@ -105,100 +105,117 @@ function TechSupervisionComponent() {
             onClick={() => handleOpenModalCreateTechSupervision()}>
             Добавить проверку
           </button>
-          <Table bordered size="sm" className="mt-3">
-            <thead>
-              <tr>
-                <th style={{ textAlign: 'center' }}>Номер</th>
-                <th style={{ textAlign: 'center' }}>Проект</th>
-                <th style={{ textAlign: 'center' }}>Бригада</th>
-                <th style={{ textAlign: 'center' }}>Результат</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {projectExaminations.reduce((acc, proExam, index, array) => {
-                const isFirstOfProject =
-                  index === 0 || proExam.projectId !== array[index - 1].projectId;
+          <div className="tech-supervision-table-container">
+            <div className="tech-supervision-table-wrapper">
+              <Table bordered size="sm" className="mt-3">
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'center' }}>Номер</th>
+                    <th className="tech-supervision-th mobile" style={{ textAlign: 'center' }}>
+                      Проект
+                    </th>
+                    <th style={{ textAlign: 'center' }}>Бригада</th>
+                    <th style={{ textAlign: 'center' }}>Результат</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projectExaminations.reduce((acc, proExam, index, array) => {
+                    const isFirstOfProject =
+                      index === 0 || proExam.projectId !== array[index - 1].projectId;
 
-                if (isFirstOfProject) {
-                  const projectBrigades = array.filter(
-                    (item) => item.projectId === proExam.projectId,
-                  );
+                    if (isFirstOfProject) {
+                      const projectBrigades = array.filter(
+                        (item) => item.projectId === proExam.projectId,
+                      );
 
-                  // Добавляем первую строку с проектом
-                  acc.push(
-                    <tr key={`project-${proExam.projectId}`}>
-                      <td style={{ textAlign: 'center' }} rowSpan={projectBrigades.length}>
-                        {proExam.project.number}
-                      </td>
-                      <td rowSpan={projectBrigades.length}>{proExam.project.name}</td>
-                      <td style={{ textAlign: 'center' }}>{proExam.brigade.name}</td>
-                      <td style={{ textAlign: 'center' }}>{proExam.averagePercentage}</td>
-                      <td style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button
-                          size="sm"
-                          variant="dark"
-                          onClick={() =>
-                            handleOpenModalDetailExamination(proExam.projectId, proExam.brigadeId)
-                          }>
-                          Подробнее
-                        </Button>
-                      </td>
-                      <td>
-                        <img
-                          onClick={() => handleDeleteClick(proExam.projectId, proExam.brigadeId)}
-                          style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                          src="./img/delete.png"
-                          alt="delete"
-                        />
-                      </td>
-                    </tr>,
-                  );
+                      // Добавляем первую строку с проектом
+                      acc.push(
+                        <tr key={`project-${proExam.projectId}`}>
+                          <td style={{ textAlign: 'center' }} rowSpan={projectBrigades.length}>
+                            {proExam.project.number}
+                          </td>
+                          <td
+                            className="tech-supervision-td mobile"
+                            rowSpan={projectBrigades.length}>
+                            {proExam.project.name}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>{proExam.brigade.name}</td>
+                          <td style={{ textAlign: 'center' }}>{proExam.averagePercentage}</td>
+                          <td style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              size="sm"
+                              variant="dark"
+                              onClick={() =>
+                                handleOpenModalDetailExamination(
+                                  proExam.projectId,
+                                  proExam.brigadeId,
+                                )
+                              }>
+                              Подробнее
+                            </Button>
+                          </td>
+                          <td>
+                            <img
+                              onClick={() =>
+                                handleDeleteClick(proExam.projectId, proExam.brigadeId)
+                              }
+                              style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                              src="./img/delete.png"
+                              alt="delete"
+                            />
+                          </td>
+                        </tr>,
+                      );
 
-                  // Добавляем остальные бригады этого проекта
-                  for (let i = 1; i < projectBrigades.length; i++) {
-                    acc.push(
-                      <tr key={`brigade-${projectBrigades[i].id}`}>
-                        <td style={{ textAlign: 'center' }}>{projectBrigades[i].brigade.name}</td>
-                        <td style={{ textAlign: 'center' }}>
-                          {projectBrigades[i].averagePercentage}
-                        </td>
-                        <td style={{ display: 'flex', justifyContent: 'center' }}>
-                          <Button
-                            size="sm"
-                            variant="dark"
-                            onClick={() =>
-                              handleOpenModalDetailExamination(
-                                projectBrigades[i].projectId,
-                                projectBrigades[i].brigadeId,
-                              )
-                            }>
-                            Подробнее
-                          </Button>
-                        </td>
-                        <td>
-                          <img
-                            onClick={() =>
-                              handleDeleteClick(
-                                projectBrigades[i].projectId,
-                                projectBrigades[i].brigadeId,
-                              )
-                            }
-                            style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                            src="./img/delete.png"
-                            alt="delete"
-                          />
-                        </td>
-                      </tr>,
-                    );
-                  }
-                }
+                      // Добавляем остальные бригады этого проекта
+                      for (let i = 1; i < projectBrigades.length; i++) {
+                        acc.push(
+                          <tr key={`brigade-${projectBrigades[i].id}`}>
+                            <td style={{ textAlign: 'center' }}>
+                              {projectBrigades[i].brigade.name}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {projectBrigades[i].averagePercentage}
+                            </td>
+                            <td style={{ display: 'flex', justifyContent: 'center' }}>
+                              <Button
+                                size="sm"
+                                variant="dark"
+                                onClick={() =>
+                                  handleOpenModalDetailExamination(
+                                    projectBrigades[i].projectId,
+                                    projectBrigades[i].brigadeId,
+                                  )
+                                }>
+                                Подробнее
+                              </Button>
+                            </td>
+                            <td>
+                              <img
+                                onClick={() =>
+                                  handleDeleteClick(
+                                    projectBrigades[i].projectId,
+                                    projectBrigades[i].brigadeId,
+                                  )
+                                }
+                                style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                                src="./img/delete.png"
+                                alt="delete"
+                              />
+                            </td>
+                          </tr>,
+                        );
+                      }
+                    }
 
-                return acc;
-              }, [])}
-            </tbody>
-          </Table>
+                    return acc;
+                  }, [])}
+                </tbody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
 

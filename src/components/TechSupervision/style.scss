@@ -4,23 +4,79 @@
     }
 
     &__button {
-    height: 30px;
-    border: 1px solid #212529;
-    background-color: #212529;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    &.active {
-        background-color: #212529; /* Черный фон для активной кнопки */
-        color: #ffffff; /* Белый текст для активной кнопки */
-    }
-    @media(max-width: 460px) {
-        width: auto;
-        height: 20px;
-        font-size: 10px;
-        margin-right: 5px;
+        height: 30px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+            width: auto;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
+        }
     }
 }
+
+.tech-supervision-table-container {
+    position: relative;
+    margin-top: 20px; 
+    overflow: hidden;
+    
+}
+  
+.tech-supervision-table-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    overscroll-behavior: contain;
+}
+
+.tech-supervision-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+}
+
+.tech-supervision-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+.tech-supervision-td.mobile {
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    @media(max-width: 1024px) {
+        background-color: #ffffff !important;
+    }
+}
+
+.tech-supervision-td.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 1px;
+    height: 100%;
+    background-color: #dee2e6;
 }
