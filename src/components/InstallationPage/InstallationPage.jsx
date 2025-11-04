@@ -9,6 +9,7 @@ import {
   getAllNumberOfDaysBrigadeForProject,
   getDaysInstallerForProjects,
 } from '../../http/brigadesDateApi';
+import { getAllExaminationForBrigade } from '../../http/projectExaminationApi';
 import { logout, fetchOneBrigade } from '../../http/bragadeApi';
 import { Button, Table } from 'react-bootstrap';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -17,6 +18,7 @@ import InstallationDays from './InstallationDays/InstallationDays';
 import { getAllPaymentForBrigade } from '../../http/paymentApi';
 import './style.scss';
 import ImageProject from './ImagePorject';
+import ExaminationBrigades from './ExaminationBrigades';
 
 function InstallationPage() {
   const { user } = React.useContext(AppContext);
@@ -34,8 +36,10 @@ function InstallationPage() {
   const [filteredServiceEstimates, setFilteredServiceEstimates] = React.useState([]);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [buttonActiveExamination, setButtonActiveExamination] = React.useState(false);
   const location = useLocation();
   const navigateToComplaint = useNavigate();
+  const [brigadeExaminations, setBrigadeExaminations] = React.useState([]);
 
   React.useEffect(() => {
     const brigadeId = localStorage.getItem('id');
@@ -55,6 +59,7 @@ function InstallationPage() {
       getAllNumberOfDaysBrigadeForProject(brigadeId).then(setDaysProject),
       getAllPaymentForBrigade(brigadeId).then(setPaymentBrigade),
       fetchOneBrigade(brigadeId).then((data) => setBrigade(data)),
+      getAllExaminationForBrigade(brigadeId).then((data) => setBrigadeExaminations(data)),
     ];
 
     // Используем Promise.all для ожидания завершения всех промисов
@@ -106,6 +111,10 @@ function InstallationPage() {
     }
   };
 
+  const handleButtonExaminationTable = () => {
+    setButtonActiveExamination(!buttonActiveExamination);
+  };
+
   const handleLogout = () => {
     logout();
     user.logout();
@@ -147,152 +156,172 @@ function InstallationPage() {
             <button className="installation-page__button-complaint" onClick={addToComplaint}>
               Рекламация
             </button>
+            <button
+              onClick={handleButtonExaminationTable}
+              className={`installation-page__button-supervision ${
+                buttonActiveExamination === true ? 'active' : 'inactive'
+              }`}>
+              Технадзор
+            </button>
           </div>
-          <div className="table-scrollable">
-            <Table bordered className="mt-3">
-              <thead>
-                <tr>
-                  <th className="production_column" style={{ textAlign: 'center' }}>
-                    Наименование
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Фото
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Расчетный срок монтажа
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Факт монтажа
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Сумма сметы
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Выплачено
-                  </th>
-                  <th style={{ textAlign: 'center' }} className="thead_column">
-                    Остаток
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredServiceEstimates.map((estimateProject) => (
+          {buttonActiveExamination ? (
+            brigadeExaminations.map((brigadeExam) => (
+              <ExaminationBrigades
+                key={brigadeExam.brigadeId}
+                brigadeId={brigadeExam.brigadeId}
+                projects={brigadeExam.projects}
+              />
+            ))
+          ) : (
+            <div className="table-scrollable">
+              <Table bordered className="mt-3">
+                <thead>
                   <tr>
-                    <td className="td_column" style={{ textAlign: 'center' }}>
-                      {estimateProject.projectName}
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button
-                          variant="link"
-                          style={{
-                            color: 'black',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            padding: '0px',
-                          }}
-                          onClick={() => addToInfo(estimateProject.projectId)}>
-                          Подробнее
-                        </Button>
-                      </div>
-                      <ImageProject projectId={estimateProject.projectId} />
-                    </td>
-                    <td style={{ textAlign: 'center' }}>{estimateProject.installationBilling}</td>
-                    {projectDays.some(
-                      (projectDay) => projectDay.projectId === estimateProject.projectId,
-                    ) ? (
-                      projectDays
-                        .filter((projectDay) => projectDay.projectId === estimateProject.projectId)
-                        .map((projectDay) => (
-                          <>
-                            <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
-                          </>
-                        ))
-                    ) : (
-                      <>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </>
-                    )}
-                    <td>
-                      {' '}
-                      {(() => {
-                        const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
-                          const projectTotal = sumEst.estimates
-                            .filter(
-                              (estimateForProject) =>
-                                estimateForProject.done === 'true' &&
-                                estimateForProject.projectId === estimateProject.projectId,
-                            )
-                            .reduce(
-                              (accumulator, current) => accumulator + Number(current.price),
-                              0,
-                            );
-                          return total + projectTotal;
-                        }, 0);
-
-                        return (
-                          <div style={{ textAlign: 'center' }}>
-                            {new Intl.NumberFormat('ru-RU').format(totalEstimate)}₽
-                          </div>
-                        );
-                      })()}{' '}
-                    </td>
-                    <td>
-                      {(() => {
-                        const totalPayment = paymentBrigade
-                          .filter(
-                            (paymentForBrigade) =>
-                              paymentForBrigade.projectId === estimateProject.projectId,
-                          )
-                          .reduce((total, sumEst) => {
-                            return total + Number(sumEst.sum);
-                          }, 0);
-
-                        return (
-                          <div style={{ textAlign: 'center' }}>
-                            {new Intl.NumberFormat('ru-RU').format(totalPayment)}₽
-                          </div>
-                        ); // Отображаем итоговую сумму
-                      })()}
-                    </td>
-                    <td>
-                      {(() => {
-                        const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
-                          const projectTotal = sumEst.estimates
-                            .filter(
-                              (estimateForProject) =>
-                                estimateForProject.done === 'true' &&
-                                estimateForProject.projectId === estimateProject.projectId,
-                            )
-                            .reduce(
-                              (accumulator, current) => accumulator + Number(current.price),
-                              0,
-                            );
-                          return total + projectTotal;
-                        }, 0);
-
-                        const totalPayment = paymentBrigade
-                          .filter(
-                            (paymentForBrigade) =>
-                              paymentForBrigade.projectId === estimateProject.projectId,
-                          )
-                          .reduce((total, sumEst) => {
-                            return total + Number(sumEst.sum); // Замените 'sum' на нужное вам свойство
-                          }, 0);
-                        return (
-                          <div style={{ textAlign: 'center' }}>
-                            {new Intl.NumberFormat('ru-RU').format(totalEstimate - totalPayment)} ₽
-                          </div>
-                        );
-                      })()}{' '}
-                    </td>
+                    <th className="production_column" style={{ textAlign: 'center' }}>
+                      Наименование
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Фото
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Расчетный срок монтажа
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Факт монтажа
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Сумма сметы
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Выплачено
+                    </th>
+                    <th style={{ textAlign: 'center' }} className="thead_column">
+                      Остаток
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
+                </thead>
+                <tbody>
+                  {filteredServiceEstimates.map((estimateProject) => (
+                    <tr>
+                      <td className="td_column" style={{ textAlign: 'center' }}>
+                        {estimateProject.projectName}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            variant="link"
+                            style={{
+                              color: 'black',
+                              fontSize: '16px',
+                              fontWeight: '600',
+                              padding: '0px',
+                            }}
+                            onClick={() => addToInfo(estimateProject.projectId)}>
+                            Подробнее
+                          </Button>
+                        </div>
+                        <ImageProject projectId={estimateProject.projectId} />
+                      </td>
+                      <td style={{ textAlign: 'center' }}>{estimateProject.installationBilling}</td>
+                      {projectDays.some(
+                        (projectDay) => projectDay.projectId === estimateProject.projectId,
+                      ) ? (
+                        projectDays
+                          .filter(
+                            (projectDay) => projectDay.projectId === estimateProject.projectId,
+                          )
+                          .map((projectDay) => (
+                            <>
+                              <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
+                            </>
+                          ))
+                      ) : (
+                        <>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </>
+                      )}
+                      <td>
+                        {' '}
+                        {(() => {
+                          const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
+                            const projectTotal = sumEst.estimates
+                              .filter(
+                                (estimateForProject) =>
+                                  estimateForProject.done === 'true' &&
+                                  estimateForProject.projectId === estimateProject.projectId,
+                              )
+                              .reduce(
+                                (accumulator, current) => accumulator + Number(current.price),
+                                0,
+                              );
+                            return total + projectTotal;
+                          }, 0);
+
+                          return (
+                            <div style={{ textAlign: 'center' }}>
+                              {new Intl.NumberFormat('ru-RU').format(totalEstimate)}₽
+                            </div>
+                          );
+                        })()}{' '}
+                      </td>
+                      <td>
+                        {(() => {
+                          const totalPayment = paymentBrigade
+                            .filter(
+                              (paymentForBrigade) =>
+                                paymentForBrigade.projectId === estimateProject.projectId,
+                            )
+                            .reduce((total, sumEst) => {
+                              return total + Number(sumEst.sum);
+                            }, 0);
+
+                          return (
+                            <div style={{ textAlign: 'center' }}>
+                              {new Intl.NumberFormat('ru-RU').format(totalPayment)}₽
+                            </div>
+                          ); // Отображаем итоговую сумму
+                        })()}
+                      </td>
+                      <td>
+                        {(() => {
+                          const totalEstimate = serviceEstimate.reduce((total, sumEst) => {
+                            const projectTotal = sumEst.estimates
+                              .filter(
+                                (estimateForProject) =>
+                                  estimateForProject.done === 'true' &&
+                                  estimateForProject.projectId === estimateProject.projectId,
+                              )
+                              .reduce(
+                                (accumulator, current) => accumulator + Number(current.price),
+                                0,
+                              );
+                            return total + projectTotal;
+                          }, 0);
+
+                          const totalPayment = paymentBrigade
+                            .filter(
+                              (paymentForBrigade) =>
+                                paymentForBrigade.projectId === estimateProject.projectId,
+                            )
+                            .reduce((total, sumEst) => {
+                              return total + Number(sumEst.sum); // Замените 'sum' на нужное вам свойство
+                            }, 0);
+                          return (
+                            <div style={{ textAlign: 'center' }}>
+                              {new Intl.NumberFormat('ru-RU').format(totalEstimate - totalPayment)}{' '}
+                              ₽
+                            </div>
+                          );
+                        })()}{' '}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
       </div>
       <div className="installation-page__title">Календарь</div>

@@ -20,6 +20,11 @@ export const getAllExaminationForProject = async (id) => {
     return data
 }
 
+export const getAllExaminationForBrigade = async (brigadeId) => {
+    const {data} = await guestInstance.get(`projectexamination/getAllExaminationForBrigade/${brigadeId}`)
+    return data
+}
+
 export const createProjectExanamination = async (projectexamination) => {
     const { data } = await authInstance.post(`projectexamination/create`, projectexamination)
     return data
