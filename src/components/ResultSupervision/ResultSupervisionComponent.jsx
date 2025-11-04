@@ -104,7 +104,7 @@ function ResultSupervisionComponent() {
           .map((brigExam) => (
             <Table
               key={brigExam.brigadeId}
-              borderless
+              bordered
               style={{
                 width: '100%',
                 minWidth: '200px',
