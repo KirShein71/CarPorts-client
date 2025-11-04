@@ -5,6 +5,11 @@ export const getAllProjectExamination = async () => {
     return data
 }
 
+export const getAllGroupByBrigade = async () => {
+    const { data } = await authInstance.get(`projectexamination/getAllGroupByBrigade`)
+    return data
+}
+
 export const getAllProjectBrigadeExamination = async (brigadeId, projectId) => {
     const { data } = await guestInstance.get(`projectexamination/getAllProjectBrigadeExamination/${brigadeId}/${projectId}`)
     return data

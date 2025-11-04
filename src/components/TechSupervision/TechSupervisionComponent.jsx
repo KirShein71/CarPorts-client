@@ -111,6 +111,7 @@ function TechSupervisionComponent() {
                 <th style={{ textAlign: 'center' }}>Номер</th>
                 <th style={{ textAlign: 'center' }}>Проект</th>
                 <th style={{ textAlign: 'center' }}>Бригада</th>
+                <th style={{ textAlign: 'center' }}>Результат</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -133,6 +134,7 @@ function TechSupervisionComponent() {
                       </td>
                       <td rowSpan={projectBrigades.length}>{proExam.project.name}</td>
                       <td style={{ textAlign: 'center' }}>{proExam.brigade.name}</td>
+                      <td style={{ textAlign: 'center' }}>{proExam.averagePercentage}</td>
                       <td style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
                           size="sm"
@@ -159,6 +161,9 @@ function TechSupervisionComponent() {
                     acc.push(
                       <tr key={`brigade-${projectBrigades[i].id}`}>
                         <td style={{ textAlign: 'center' }}>{projectBrigades[i].brigade.name}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {projectBrigades[i].averagePercentage}
+                        </td>
                         <td style={{ display: 'flex', justifyContent: 'center' }}>
                           <Button
                             size="sm"

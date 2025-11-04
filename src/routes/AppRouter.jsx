@@ -38,6 +38,7 @@ import Logistics from '../pages/Logistics';
 import GantContract from '../pages/GantContact';
 import TechSuperVision from '../pages/TechSupervision';
 import ReportProject from '../pages/ReportProject';
+import ResultSupervision from '../pages/ResultSupervision';
 
 import { observer } from 'mobx-react';
 
@@ -110,6 +111,7 @@ const adminRoutes = [
   { path: '/gant-contracts', Component: GantContract },
   { path: '/report-project', Component: ReportProject },
   { path: '/technical-supervision', Component: TechSuperVision },
+  { path: '/result-supervision', Component: ResultSupervision },
 ];
 
 const managerSaleRoutes = [
@@ -154,6 +156,7 @@ const managerProjectRoutes = [
   { path: '/report-project', Component: ReportProject },
   { path: '/gant-contracts', Component: GantContract },
   { path: '/technical-supervision', Component: TechSuperVision },
+  { path: '/result-supervision', Component: ResultSupervision },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
