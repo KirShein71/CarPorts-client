@@ -94,6 +94,7 @@ function ResultSupervisionComponent() {
       </div>
       <div className="result-supervision__content">
         {brigadeExaminations
+          .sort((a, b) => b.brigadeAverage - a.brigadeAverage)
           .filter((brigExam) => {
             // Если бригада не выбрана, показываем все проекты
             if (!selectedBrigade) return true;
@@ -104,15 +105,19 @@ function ResultSupervisionComponent() {
           .map((brigExam) => (
             <Table
               key={brigExam.brigadeId}
-              bordered
+              borderless
               style={{
                 width: '100%',
                 minWidth: '200px',
               }}>
               <thead>
                 <tr>
-                  <th className="result-supervision__brigade">{brigExam.brigade}</th>
-                  <th className="result-supervision__brigRes">{brigExam.brigadeAverage}</th>
+                  <th width={150} className="result-supervision__brigade">
+                    {brigExam.brigade}
+                  </th>
+                  <th width={50} className="result-supervision__brigRes">
+                    {brigExam.brigadeAverage}
+                  </th>
                 </tr>
               </thead>
               <tbody>

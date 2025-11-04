@@ -16,28 +16,40 @@
     }
 
     &__brigade {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
         text-align: left;
+        @media(max-width: 460px) {
+            font-size: 14px;
+        }
     }
 
     &__brigRes {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 700;
         text-align: center;
+        @media(max-width: 460px) {
+            font-size: 14px;
+        }
     }
 
     &__project {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 500;
         text-align: left;
         cursor: pointer;
+        @media(max-width: 460px) {
+            font-size: 12px;
+        }
     }
 
     &__proRes {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 500;
         text-align: center;
+        @media(max-width: 460px) {
+            font-size: 12px;
+        }
     }
     
 
