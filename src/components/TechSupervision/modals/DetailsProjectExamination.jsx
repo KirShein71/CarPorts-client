@@ -6,8 +6,11 @@ import {
   deleteProjectExanamination,
   updateResult,
 } from '../../../http/projectExaminationApi';
+import { AppContext } from '../../../context/AppContext';
 
 const DetailsProjectExamination = (props) => {
+  const { user } = React.useContext(AppContext);
+  console.log(user);
   const { show, setShow, projectId, brigadeId } = props;
   const [examinationParagraphs, setExaminationParagraphs] = React.useState([]);
   const [examinations, setExaminations] = React.useState([]);
@@ -177,7 +180,7 @@ const DetailsProjectExamination = (props) => {
                   </div>
                 </th>
                 <th>Результат</th>
-                <th></th>
+                {user.isBrigade ? '' : <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -193,22 +196,36 @@ const DetailsProjectExamination = (props) => {
                           : examName?.name ?? ''}
                       </td>
                     ))}
-                  <td
-                    style={{
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                    }}
-                    onClick={() => handleEditClick(examParagraph)}>
-                    {examParagraph.result === 1 ? '+1' : examParagraph.result}
-                  </td>
-                  <td style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
-                    <img
-                      onClick={() => handleDeleteClick(examParagraph.id)}
-                      src="./img/delete.png"
-                      alt="delete"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </td>
+                  {user.isBrigade ? (
+                    <td
+                      style={{
+                        textAlign: 'center',
+                      }}>
+                      {examParagraph.result === 1 ? '+1' : examParagraph.result}
+                    </td>
+                  ) : (
+                    <td
+                      style={{
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                      }}
+                      onClick={() => handleEditClick(examParagraph)}>
+                      {examParagraph.result === 1 ? '+1' : examParagraph.result}
+                    </td>
+                  )}
+
+                  {user.isBrigade ? (
+                    ''
+                  ) : (
+                    <td style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
+                      <img
+                        onClick={() => handleDeleteClick(examParagraph.id)}
+                        src="./img/delete.png"
+                        alt="delete"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
