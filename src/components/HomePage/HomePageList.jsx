@@ -20,7 +20,6 @@ const MenuItems = ({ items }) => {
             item.label === 'Все проекты' ||
             item.label === 'Технадзор' ||
             item.label === 'Рекламация' ||
-            item.label === 'Гант договоров' ||
             item.label === 'Подписано/Сдано'
               ? 'bold'
               : ''
@@ -51,7 +50,9 @@ function HomePageList() {
   const managerSaleItems = [
     { label: 'Все проекты', link: '/project' },
     { label: 'Рекламация', link: '/complaint' },
+    { title: 'Гант' },
     { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Гант монтажников', link: '/gant-installers' },
     { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Снабжение' },
     { label: 'Логистика', link: '/logistics' },
@@ -73,7 +74,9 @@ function HomePageList() {
     { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Итоги Технадзора', link: '/result-supervision' },
     { label: 'Рекламация', link: '/complaint' },
+    { title: 'Гант' },
     { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Гант монтажников', link: '/gant-installers' },
     { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Администирование' },
     { label: 'Справочники', link: '/adding' },
@@ -96,7 +99,9 @@ function HomePageList() {
     { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Итоги Технадзора', link: '/result-supervision' },
     { label: 'Рекламация', link: '/complaint' },
+    { title: 'Гант' },
     { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Гант монтажников', link: '/gant-installers' },
     { label: 'Подписано/Сдано', link: '/report-project' },
     { title: 'Администирование' },
     { label: 'Сметы', link: '/distribution' },
@@ -115,7 +120,9 @@ function HomePageList() {
     { label: 'В покраску', link: '/shipment' },
     { label: 'Итоговая производство', link: '/manufacture' },
     { label: 'Рекламация', link: '/complaint' },
+    { title: 'Гант' },
     { label: 'Гант договоров', link: '/gant-contracts' },
+    { label: 'Гант монтажников', link: '/gant-installers' },
     { label: 'Подписано/Сдано', link: '/report-project' },
   ];
 

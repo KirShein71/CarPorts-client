@@ -7,6 +7,13 @@ export const fetchBrigades = async () => {
     return data
 }
 
+export const getAllActiveBrigade = async () => {
+    const { data } = await guestInstance.get('brigade/getAllActiveBrigade')
+    return data
+}
+
+
+
 export const fetchOneBrigade = async (id) => {
     const { data } = await guestInstance.get(`brigade/getone/${id}`)
     return data
