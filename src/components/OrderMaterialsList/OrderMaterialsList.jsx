@@ -11,6 +11,7 @@ import CreateCheck from './modals/createCheck';
 import './OrderMaterialsList.styles.scss';
 import CreateReadyDate from './modals/createReadyDate';
 import CreateShippingDate from './modals/createShippingDate';
+import CreatePlanDate from './modals/CreatePlanDate';
 import CreatePaymentDate from './modals/createPaymentDate';
 import CreateMaterial from './modals/createMaterial';
 import CreateColor from './modals/createColor';
@@ -27,6 +28,7 @@ function OrderMaterialsList() {
   const [updateShow, setUpdateShow] = React.useState(false);
   const [readyDateShow, setReadyDateShow] = React.useState(false);
   const [shippingDateShow, setShippingDateShow] = React.useState(false);
+  const [planDateShow, setPlanDateShow] = React.useState(false);
   const [paymentDateShow, setPaymentDateShow] = React.useState(false);
   const [createMaterial, setCreateMaterial] = React.useState(false);
   const [createColor, setCreateColor] = React.useState(false);
@@ -132,6 +134,11 @@ function OrderMaterialsList() {
   const hadleShippingDate = (id) => {
     setProjectMaterials(id);
     setShippingDateShow(true);
+  };
+
+  const hadlePlanDate = (id) => {
+    setProjectMaterials(id);
+    setPlanDateShow(true);
   };
 
   const handlePaymentDate = (id) => {
@@ -300,6 +307,13 @@ function OrderMaterialsList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
+      <CreatePlanDate
+        id={projectMaterials}
+        show={planDateShow}
+        setShow={setPlanDateShow}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+      />
       <CreatePaymentDate
         id={projectMaterials}
         show={paymentDateShow}
@@ -424,6 +438,7 @@ function OrderMaterialsList() {
                 handlePaymentDate={handlePaymentDate}
                 hadleReadyDate={hadleReadyDate}
                 hadleShippingDate={hadleShippingDate}
+                hadlePlanDate={hadlePlanDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateMaterial={handleCreateMaterial}
                 handleCreateColor={handleCreateColor}
@@ -449,6 +464,7 @@ function OrderMaterialsList() {
                 handlePaymentDate={handlePaymentDate}
                 hadleReadyDate={hadleReadyDate}
                 hadleShippingDate={hadleShippingDate}
+                hadlePlanDate={hadlePlanDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateColor={handleCreateColor}
                 handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}

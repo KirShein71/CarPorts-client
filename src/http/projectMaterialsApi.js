@@ -75,6 +75,16 @@ export const deleteShippingDateProjectMaterials = async (id) => {
     return data;
 };
 
+export const createPlanDateProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createPlanDateProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
+export const deletePlanDateProjectMaterials = async (id) => {
+    const { data } = await guestInstance.delete(`projectmaterials/deletePlanDateProjectMaterials/${id}`);
+    return data;
+};
+
 
 export const createColorProjectMaterials = async(id, projectmaterials) => {
     const {data} = await guestInstance.put(`projectmaterials/createColorProjectMaterials/${id}`, projectmaterials)

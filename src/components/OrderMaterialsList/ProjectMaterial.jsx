@@ -16,6 +16,7 @@ function ProjectMaterial({
   handlePaymentDate,
   hadleReadyDate,
   hadleShippingDate,
+  hadlePlanDate,
   handleDeleteProjectMaterials,
   handleCreateMaterial,
   handleCreateColor,
@@ -95,6 +96,7 @@ function ProjectMaterial({
                   </th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Счёт</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Оплата</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>План</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Готовность</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Отгрузка</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Цвет</th>
@@ -154,6 +156,25 @@ function ProjectMaterial({
                           }>
                           {prop.date_payment ? (
                             <Moment format="DD.MM.YYYY">{prop.date_payment}</Moment>
+                          ) : (
+                            <span
+                              style={{
+                                color: 'red',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}>
+                              +
+                            </span>
+                          )}
+                        </td>
+                        <td
+                          style={{ cursor: 'pointer', textAlign: 'center' }}
+                          onClick={
+                            user.isManagerProduction ? undefined : () => hadlePlanDate(prop.id)
+                          }>
+                          {prop.plan_date ? (
+                            <Moment format="DD.MM.YYYY">{prop.plan_date}</Moment>
                           ) : (
                             <span
                               style={{

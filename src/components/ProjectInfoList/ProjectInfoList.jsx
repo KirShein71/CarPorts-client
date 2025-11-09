@@ -25,6 +25,7 @@ import CreateDateInspection from '../PlanningList/modals/CreateDateInspection';
 import CreatePaymentDate from '../OrderMaterialsList/modals/createPaymentDate';
 import CreateReadyDate from '../OrderMaterialsList/modals/createReadyDate';
 import CreateShippingDate from '../OrderMaterialsList/modals/createShippingDate';
+import CreatePlanDate from '../OrderMaterialsList/modals/CreatePlanDate';
 import CreateCheck from '../OrderMaterialsList/modals/createCheck';
 import CreateColor from '../OrderMaterialsList/modals/createColor';
 import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
@@ -76,6 +77,7 @@ function ProjectInfoList() {
   const [modalCreatePaymentDay, setModalCreatePaymentDay] = React.useState(false);
   const [modalCreateReadyDate, setModalCreateReadyDate] = React.useState(false);
   const [modalCreateShippingDate, setModalCreateShippingDate] = React.useState(false);
+  const [modalCreatePlanDate, setModalCreatePlanDate] = React.useState(false);
   const [modalCreateCheck, setModalCreateCheck] = React.useState(false);
   const [modalCreateColor, setModalCreateColor] = React.useState(false);
   const [projectDetailId, setProjectDetailId] = React.useState(null);
@@ -199,6 +201,11 @@ function ProjectInfoList() {
   const handleOpenModalCreateShippingDate = (id) => {
     setProjectMaterialId(id);
     setModalCreateShippingDate(true);
+  };
+
+  const handleOpenModalCreatePlanDate = (id) => {
+    setProjectMaterialId(id);
+    setModalCreatePlanDate(true);
   };
 
   const handleOpenModalCreateCheck = (id) => {
@@ -482,6 +489,13 @@ function ProjectInfoList() {
         id={projectMaterialId}
         show={modalCreateShippingDate}
         setShow={setModalCreateShippingDate}
+        setChange={setChange}
+        projectInfoPage={true}
+      />
+      <CreatePlanDate
+        id={projectMaterialId}
+        show={modalCreatePlanDate}
+        setShow={setModalCreatePlanDate}
         setChange={setChange}
         projectInfoPage={true}
       />
@@ -891,6 +905,7 @@ function ProjectInfoList() {
                   <th className="production_column">Тип материала</th>
                   <th style={{ textAlign: 'center' }}>Счёт</th>
                   <th style={{ textAlign: 'center' }}>Оплаты</th>
+                  <th style={{ textAlign: 'center' }}>План</th>
                   <th style={{ textAlign: 'center' }}>Готовность</th>
                   <th style={{ textAlign: 'center' }}>Отгрузки</th>
                   <th style={{ textAlign: 'center' }}>Цвет</th>
@@ -910,6 +925,15 @@ function ProjectInfoList() {
                       style={{ cursor: 'pointer', textAlign: 'center' }}>
                       {property.date_payment ? (
                         <Moment format="DD.MM.YYYY">{property.date_payment}</Moment>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td
+                      onClick={() => handleOpenModalCreatePlanDate(property.id)}
+                      style={{ cursor: 'pointer', textAlign: 'center' }}>
+                      {property.plan_date ? (
+                        <Moment format="DD.MM.YYYY">{property.plan_date}</Moment>
                       ) : (
                         ''
                       )}

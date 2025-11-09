@@ -9,6 +9,7 @@ const defaultValue = {
   supplier: '',
   expirationMaterial_date: '',
   date_payment: '',
+  plan_date: '',
 };
 const defaultValid = {
   material: null,
@@ -51,6 +52,7 @@ const CreateMaterial = (props) => {
         materialName: value.materialName,
         supplierId: value.supplier,
         date_payment: value.date_payment,
+        plan_date: value.plan_date,
         expirationMaterial_date: value.expirationMaterial_date,
       };
       setSelectedMaterials((prev) => [...prev, newDetail]);
@@ -81,6 +83,11 @@ const CreateMaterial = (props) => {
       if (material.date_payment) {
         // Проверка на пустое значение
         formData.append('date_payment', material.date_payment);
+      }
+
+      if (material.plan_date) {
+        // Проверка на пустое значение
+        formData.append('plan_date', material.plan_date);
       }
 
       return formData;
@@ -171,6 +178,36 @@ const CreateMaterial = (props) => {
                   isValid={valid.date_payment === true}
                   isInvalid={valid.date_payment === false}
                   placeholder="Дата платежа"
+                  type="text"
+                  onFocus={(e) => (e.target.type = 'date')}
+                  onBlur={(e) => (e.target.type = 'text')}
+                />
+              )}
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <>
+                  <label for="plan_date">Плановая дата</label>
+                  <Form.Control
+                    id="plan_date"
+                    name="plan_date"
+                    value={value.plan_date}
+                    onChange={(e) => handleInputChange(e)}
+                    isValid={valid.plan_date === true}
+                    isInvalid={valid.plan_date === false}
+                    type="date"
+                  />
+                </>
+              ) : (
+                <Form.Control
+                  name="plan_date"
+                  value={value.plan_date}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.plan_date === true}
+                  isInvalid={valid.plan_date === false}
+                  placeholder="Плановая дата"
                   type="text"
                   onFocus={(e) => (e.target.type = 'date')}
                   onBlur={(e) => (e.target.type = 'text')}

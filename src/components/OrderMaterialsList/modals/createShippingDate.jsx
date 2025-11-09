@@ -24,9 +24,10 @@ const CreateShippingDate = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [deleteModal, setDeleteModal] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchOneProjectMaterials(id)
         .then((data) => {
           const prod = {
@@ -43,7 +44,7 @@ const CreateShippingDate = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -91,58 +92,92 @@ const CreateShippingDate = (props) => {
     }
   };
 
-  const handleDeleteShippingDate = () => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить дату отгрузки?');
-    if (confirmed) {
-      deleteShippingDateProjectMaterials(id) // Передаем параметр id для удаления
-        .then(() => {
-          alert('Дата отгрузки была удалена');
-          setShow(false);
-          setChange((state) => !state);
-        })
-        .catch((error) => alert(error.response.data.message));
-    }
+  const handleDeleteClick = () => {
+    setDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteShippingDateProjectMaterials(id)
+      .then(() => {
+        setShow(false);
+        setChange((state) => !state);
+        setDeleteModal(false);
+      })
+      .catch((error) => {
+        alert(error.response?.data?.message || 'Ошибка при удалении');
+        setDeleteModal(false);
+      });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModal(false);
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={() => setShow(false)}
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      size="md"
-      className="modal__shippingdate">
-      <Modal.Header closeButton>
-        <Modal.Title>Добавьте дату отгрузки</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="shipping_date"
-                value={value.shipping_date}
-                onChange={(e) => handleInputChange(e)}
-                isValid={valid.shipping_date === true}
-                isInvalid={valid.shipping_date === false}
-                placeholder="Дата отгрузки"
-                type="date"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
-                {isLoading ? 'Сохранение...' : 'Сохранить'}
-              </Button>
-              <Button className="mb-3" variant="dark" onClick={() => handleDeleteShippingDate()}>
-                Удалить
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </Modal.Body>
-    </Modal>
+    <>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        size="md"
+        className="modal__shippingdate">
+        <Modal.Header closeButton>
+          <Modal.Title>Добавьте дату отгрузки</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3">
+              <Col>
+                <Form.Control
+                  name="shipping_date"
+                  value={value.shipping_date}
+                  onChange={(e) => handleInputChange(e)}
+                  isValid={valid.shipping_date === true}
+                  isInvalid={valid.shipping_date === false}
+                  placeholder="Дата отгрузки"
+                  type="date"
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
+                  {isLoading ? 'Сохранение...' : 'Сохранить'}
+                </Button>
+                <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
+                  Удалить
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Модальное окно подтверждения удаления */}
+      <Modal
+        show={deleteModal}
+        onHide={handleCancelDelete}
+        aria-labelledby="delete-confirmation-modal"
+        centered
+        size="md"
+        className="modal__delete-confirm">
+        <Modal.Header closeButton>
+          <Modal.Title>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Вы уверены, что хотите удалить дату отгрузки?</p>
+          <div className="d-flex justify-content-end gap-2">
+            <Button variant="dark" onClick={handleCancelDelete}>
+              Отмена
+            </Button>
+            <Button variant="dark" onClick={handleConfirmDelete}>
+              Удалить
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

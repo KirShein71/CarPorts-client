@@ -1,25 +1,25 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import {
-  createReadyDateProjectMaterials,
-  deleteReadyDateProjectMaterials,
+  createPlanDateProjectMaterials,
+  deletePlanDateProjectMaterials,
   fetchOneProjectMaterials,
 } from '../../../http/projectMaterialsApi';
 
-const defaultValue = { ready_date: '' };
+const defaultValue = { plan_date: '' };
 const defaultValid = {
-  ready_date: null,
+  plan_date: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'ready_date') result.ready_date = value.ready_date;
+    if (key === 'plan_date') result.plan_date = value.plan_date;
   }
   return result;
 };
 
-const CreateReadyDate = (props) => {
+const CreatePlanDate = (props) => {
   const { id, show, setShow, setChange, scrollPosition, projectInfoPage } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -31,7 +31,7 @@ const CreateReadyDate = (props) => {
       fetchOneProjectMaterials(id)
         .then((data) => {
           const prod = {
-            ready_date: data.ready_date.toString(),
+            plan_date: data.plan_date.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -65,14 +65,14 @@ const CreateReadyDate = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.ready_date) {
+    if (correct.plan_date) {
       const data = new FormData();
-      data.append('ready_date', value.ready_date.trim());
+      data.append('plan_date', value.plan_date.trim());
       setIsLoading(true);
-      createReadyDateProjectMaterials(id, data)
+      createPlanDateProjectMaterials(id, data)
         .then((data) => {
           const prod = {
-            ready_date: data.ready_date.toString(),
+            plan_date: data.plan_date.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -97,7 +97,7 @@ const CreateReadyDate = (props) => {
   };
 
   const handleConfirmDelete = () => {
-    deleteReadyDateProjectMaterials(id)
+    deletePlanDateProjectMaterials(id)
       .then(() => {
         setShow(false);
         setChange((state) => !state);
@@ -121,21 +121,21 @@ const CreateReadyDate = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
         size="md"
-        className="modal__readydate">
+        className="modal__plandate">
         <Modal.Header closeButton>
-          <Modal.Title>Внести дату готовности</Modal.Title>
+          <Modal.Title>Добавьте плановую дату</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Col>
                 <Form.Control
-                  name="ready_date"
-                  value={value.ready_date}
+                  name="plan_date"
+                  value={value.plan_date}
                   onChange={(e) => handleInputChange(e)}
-                  isValid={valid.ready_date === true}
-                  isInvalid={valid.ready_date === false}
-                  placeholder="Дата готовности"
+                  isValid={valid.plan_date === true}
+                  isInvalid={valid.plan_date === false}
+                  placeholder="Плановая дата"
                   type="date"
                 />
               </Col>
@@ -145,7 +145,7 @@ const CreateReadyDate = (props) => {
                 <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
                   {isLoading ? 'Сохранение...' : 'Сохранить'}
                 </Button>
-                <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
+                <Button className="mb-3" variant="dark" onClick={handleDeleteClick}>
                   Удалить
                 </Button>
               </Col>
@@ -166,7 +166,7 @@ const CreateReadyDate = (props) => {
           <Modal.Title>Подтверждение удаления</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Вы уверены, что хотите удалить дату готовности?</p>
+          <p>Вы уверены, что хотите удалить плановую дату?</p>
           <div className="d-flex justify-content-end gap-2">
             <Button variant="dark" onClick={handleCancelDelete}>
               Отмена
@@ -181,4 +181,4 @@ const CreateReadyDate = (props) => {
   );
 };
 
-export default CreateReadyDate;
+export default CreatePlanDate;
