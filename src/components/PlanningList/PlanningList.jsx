@@ -603,6 +603,7 @@ function PlanningList() {
                           </span>
                         )}
                       </td>
+
                       <td
                         style={{ cursor: 'pointer', textAlign: 'center' }}
                         onClick={() => handleCreateDateInspection(item.id)}>
@@ -623,6 +624,61 @@ function PlanningList() {
                         )}
                       </td>
                       <td
+                        style={{
+                          textAlign: 'center',
+                          backgroundColor: (() => {
+                            const targetDate = moment(
+                              item.agreement_date,
+                              'YYYY/MM/DD',
+                            ).businessAdd(item.design_period, 'days');
+
+                            // Если есть дата сдачи проекта, используем ее для расчета
+                            if (item.project_delivery) {
+                              const deliveryDate = moment(item.project_delivery, 'YYYY/MM/DD');
+                              const daysDifference = targetDate.diff(deliveryDate, 'days'); // положительное - сдали раньше, отрицательное - опоздали
+
+                              if (daysDifference < 0) {
+                                return '#ff0000'; // красный - сдали после дедлайна (опоздание)
+                              } else if (daysDifference < 7) {
+                                return '#ffe6e6'; // бледно-розовый - сдали за 0-6 дней до дедлайна
+                              } else {
+                                return 'transparent'; // прозрачный - сдали за 7+ дней до дедлайна
+                              }
+                            } else {
+                              // Если даты сдачи нет, считаем оставшиеся дни до дедлайна
+                              const today = moment();
+                              const daysLeft = targetDate.diff(today, 'days');
+
+                              if (daysLeft < 0) {
+                                return '#ff0000'; // красный - дедлайн прошел
+                              } else if (daysLeft < 7) {
+                                return '#ffe6e6'; // бледно-розовый - менее 7 дней осталось
+                              } else {
+                                return 'transparent'; // прозрачный - все нормально
+                              }
+                            }
+                          })(),
+                        }}>
+                        {(() => {
+                          const targetDate = moment(item.agreement_date, 'YYYY/MM/DD').businessAdd(
+                            item.design_period,
+                            'days',
+                          );
+
+                          if (item.project_delivery) {
+                            const deliveryDate = moment(item.project_delivery, 'YYYY/MM/DD');
+                            const daysDifference = targetDate.diff(deliveryDate, 'days'); // положительное - сдали раньше
+
+                            // Показываем сколько дней ДО дедлайна сдали (положительное) или после (отрицательное)
+                            return daysDifference >= 0 ? daysDifference : daysDifference;
+                          } else {
+                            const today = moment();
+                            const daysLeft = targetDate.diff(today, 'days');
+                            return daysLeft;
+                          }
+                        })()}
+                      </td>
+                      <td
                         style={{ cursor: 'pointer', textAlign: 'center' }}
                         onClick={() => handleUpdateDisegnerModal(item.id)}>
                         {item.designer ? (
@@ -638,6 +694,7 @@ function PlanningList() {
                           </span>
                         )}
                       </td>
+
                       <td
                         style={{ cursor: 'pointer', textAlign: 'center' }}
                         onClick={() => handleCreateInspectionDesigner(item.id)}>
