@@ -67,6 +67,9 @@ function TableBrigadeCalendar() {
                 style={{
                   backgroundColor: '#e1dede',
                   borderBottom: '1px solid #dee2e6',
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: '#000000',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
@@ -75,6 +78,9 @@ function TableBrigadeCalendar() {
                 style={{
                   backgroundColor: '#e1dede',
                   borderBottom: '1px solid #dee2e6',
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: '#000000',
                 }}>
                 МО{' '}
                 {
@@ -99,8 +105,22 @@ function TableBrigadeCalendar() {
               })
               .map((dateMoscow) => (
                 <tr key={dateMoscow.id}>
-                  <td className="table-brigade__body">{dateMoscow.brigade.name}</td>
-                  <td className="table-brigade__body">
+                  <td
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#000000',
+                    }}
+                    className="table-brigade__body">
+                    {dateMoscow.brigade.name}
+                  </td>
+                  <td
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#000000',
+                    }}
+                    className="table-brigade__body">
                     {dateMoscow.project?.name}{' '}
                     {dateMoscow.complaint ? `*${dateMoscow.complaint.project.name}*` : ''}
                     {dateMoscow.warranty} {dateMoscow.weekend}
@@ -116,6 +136,9 @@ function TableBrigadeCalendar() {
                   backgroundColor: '#e1dede',
                   borderTop: '1px solid #dee2e6',
                   borderBottom: '1px solid #dee2e6',
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: '#000000',
                 }}>
                 {date.toLocaleDateString()} - {getDayName(date)}
               </th>
@@ -125,6 +148,9 @@ function TableBrigadeCalendar() {
                   backgroundColor: '#e1dede',
                   borderTop: '1px solid #dee2e6',
                   borderBottom: '1px solid #dee2e6',
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: '#000000',
                 }}>
                 ЛО{' '}
                 {
@@ -149,10 +175,22 @@ function TableBrigadeCalendar() {
               })
               .map((dateSpb) => (
                 <tr key={dateSpb.id}>
-                  <td className="table-brigade__body">
+                  <td
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#000000',
+                    }}
+                    className="table-brigade__body">
                     {dateSpb.brigade ? dateSpb.brigade.name : ''}
                   </td>
-                  <td className="table-brigade__body">
+                  <td
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '500',
+                      color: '#000000',
+                    }}
+                    className="table-brigade__body">
                     {dateSpb.project?.name}{' '}
                     {dateSpb.complaint ? `*${dateSpb.complaint.project.name}*` : ''}
                     {dateSpb.warranty} {dateSpb.weekend}
