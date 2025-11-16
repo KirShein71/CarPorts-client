@@ -12,9 +12,10 @@ import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
 import { Spinner, Table } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
+import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
+import CreatePriceProject from './modals/CreatePriceProject';
 
 import './style.scss';
-import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
@@ -33,6 +34,7 @@ function ProjectList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [createRegionModal, setCreateRegionModal] = React.useState(false);
   const [createInstallationBillingModal, setCreateInstallationBillingModal] = React.useState(false);
+  const [createPriceProjectModal, setCreatePriceProjectModal] = React.useState(false);
   const [buttonMskProject, setButtonMskProject] = React.useState(true);
   const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
@@ -172,6 +174,11 @@ function ProjectList() {
     setCreateInstallationBillingModal(true);
   };
 
+  const hadleCreatePriceProject = (id) => {
+    setProject(id);
+    setCreatePriceProjectModal(true);
+  };
+
   const hadleOpenGearModal = (id) => {
     setProject(id);
     setOpenGearModal(true);
@@ -306,6 +313,13 @@ function ProjectList() {
         id={project}
         scrollPosition={scrollPosition}
       />
+      <CreatePriceProject
+        show={createPriceProjectModal}
+        setShow={setCreatePriceProjectModal}
+        setChange={setChange}
+        id={project}
+        scrollPosition={scrollPosition}
+      />
       <GearModal
         show={openGearModal}
         setShow={setOpenGearModal}
@@ -379,6 +393,7 @@ function ProjectList() {
                 </th>
                 <th className="project-th">Дедлайн</th>
                 <th className="project-th">Регион</th>
+                <th className="project-th">Работы</th>
                 <th className="project-th">Срок</th>
                 <th className="project-th">Факт</th>
                 <th className="project-th">План</th>
@@ -475,6 +490,11 @@ function ProjectList() {
                       style={{ cursor: 'pointer', textAlign: 'center' }}
                       onClick={() => hadleCreateRegionProject(item.id)}>
                       {item.region?.region}
+                    </td>
+                    <td
+                      style={{ cursor: 'pointer', textAlign: 'center' }}
+                      onClick={() => hadleCreatePriceProject(item.id)}>
+                      {item.price?.toLocaleString('ru-RU')}
                     </td>
                     <td
                       style={{ cursor: 'pointer', textAlign: 'center' }}

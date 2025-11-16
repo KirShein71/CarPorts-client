@@ -12,6 +12,7 @@ const defaultValue = {
   expiration_date: '',
   installation_period: '',
   installation_billing: '',
+  price: '',
   note: '',
   region: '',
   phone: '',
@@ -29,6 +30,7 @@ const defaultValid = {
   expiration_date: null,
   installation_period: null,
   installation_billing: null,
+  price: null,
   note: null,
   region: null,
   phone: null,
@@ -140,6 +142,7 @@ const CreateProject = (props) => {
         data.append('expiration_date', value.expiration_date.trim());
         data.append('installation_period', value.installation_period.trim());
         data.append('installation_billing', value.installation_billing.trim());
+        data.append('price', value.price.trim());
         data.append('note', value.note.trim());
         data.append('regionId', value.region);
         data.append('contact', value.contact.trim());
@@ -297,6 +300,16 @@ const CreateProject = (props) => {
                   isValid={valid.installation_billing === true}
                   isInvalid={valid.installation_billing === false}
                   placeholder="Расчетный срок монтажа"
+                />
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Control
+                  name="price"
+                  value={value.price}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.price === true}
+                  isInvalid={valid.price === false}
+                  placeholder="Стоимость работ"
                 />
               </Col>
               <Col className="mt-3">
@@ -565,6 +578,18 @@ const CreateProject = (props) => {
                     isValid={valid.password === true}
                     isInvalid={valid.password === false}
                     placeholder="Пароль личн.кабинета"
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <Form.Control
+                    name="price"
+                    value={value.price}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.price === true}
+                    isInvalid={valid.price === false}
+                    placeholder="Стоимость работ"
                   />
                 </Col>
               </Row>

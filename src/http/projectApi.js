@@ -37,6 +37,11 @@ export const createInstallationBilling = async (id, project) => {
     return data
 }
 
+export const createPriceProject = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createPriceProject/${id}`, project)
+    return data
+}
+
 export const fetchAllProjects = async () => {
     const { data } = await guestInstance.get('project/getall')
     return data
