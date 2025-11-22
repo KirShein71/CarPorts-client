@@ -59,7 +59,7 @@ function Coefficient() {
 
   return (
     <div className="details">
-      <h2 className="details__title">Проектировщики</h2>
+      <h2 className="details__title">Коэффициенты</h2>
       <CreateCoefficient
         show={createCoefficientModal}
         setShow={setCreateCoefficientModal}
