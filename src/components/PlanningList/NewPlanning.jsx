@@ -25,7 +25,7 @@ function NewPlanning(props) {
           return deliveryMonth === currentMonth && deliveryYear === currentYear;
         })
         .map((projectDesigner) => (
-          <Table key={projectDesigner.id} bordered className="mt-4" size="md">
+          <Table key={projectDesigner.id} bordered className="new-planning__table" size="md">
             <tbody>
               <tr>
                 <td colSpan={2}>
@@ -37,13 +37,32 @@ function NewPlanning(props) {
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">Стоимость</div>
-                    <div className="cell-subtitle">{projectDesigner.price * 0.08}</div>
+                    <div className="cell-subtitle">
+                      {Math.round(projectDesigner.price * 0.08).toLocaleString('ru-RU')}
+                    </div>
                   </div>
                 </td>
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">Задержка начала работ</div>
-                    <div className="cell-subtitle">30</div>
+                    <div className="cell-subtitle">
+                      {(() => {
+                        if (!projectDesigner.design_start || !projectDesigner.agreement_date) {
+                          return <span style={{ color: '#000000' }}>0</span>;
+                        }
+
+                        const designStart = new Date(projectDesigner.design_start);
+                        const agreementDate = new Date(projectDesigner.agreement_date);
+
+                        const delay = Math.round(
+                          (designStart - agreementDate) / (1000 * 60 * 60 * 24),
+                        );
+
+                        return (
+                          <span style={{ color: delay > 0 ? '#dc3545' : '#000000' }}>{delay}</span>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -54,7 +73,11 @@ function NewPlanning(props) {
                   <div className="cell-table">
                     <div className="cell-title">Дата договора</div>
                     <div className="cell-subtitle">
-                      <Moment format="DD.MM.YYYY">{projectDesigner.agreement_date}</Moment>
+                      {projectDesigner.agreement_date ? (
+                        <Moment format="DD.MM.YYYY">{projectDesigner.agreement_date}</Moment>
+                      ) : (
+                        <span className="cell-subtitle">дата не добавлена</span>
+                      )}
                     </div>
                   </div>
                 </td>
@@ -67,13 +90,43 @@ function NewPlanning(props) {
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">ГИП</div>
-                    <div className="cell-subtitle">{projectDesigner.inspection_designer}</div>
+                    <div className="cell-subtitle">
+                      {projectDesigner.inspection_designer
+                        ? projectDesigner.inspection_designer
+                        : 'ГИП не назначен'}
+                    </div>
                   </div>
                 </td>
                 <td>
                   <div className="cell-table">
-                    <div className="cell-title">Задержка по дог.</div>
-                    <div className="cell-subtitle">4</div>
+                    <div className="cell-title">Задержка по договору</div>
+                    <div
+                      className="cell-subtitle"
+                      style={{
+                        color: (() => {
+                          const projectDelivery = new Date(projectDesigner.project_delivery);
+                          const agreementDate = new Date(projectDesigner.agreement_date);
+                          const designPeriod = projectDesigner.design_period;
+                          const deadline = addWorkingDays(agreementDate, designPeriod);
+
+                          const delay = Math.round(
+                            (projectDelivery - deadline) / (1000 * 60 * 60 * 24),
+                          );
+                          return delay > 0 ? '#dc3545' : '#000000';
+                        })(),
+                      }}>
+                      {(() => {
+                        const projectDelivery = new Date(projectDesigner.project_delivery);
+                        const agreementDate = new Date(projectDesigner.agreement_date);
+                        const designPeriod = projectDesigner.design_period;
+                        const deadline = addWorkingDays(agreementDate, designPeriod);
+
+                        const delay = Math.round(
+                          (projectDelivery - deadline) / (1000 * 60 * 60 * 24),
+                        );
+                        return delay;
+                      })()}
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -99,7 +152,11 @@ function NewPlanning(props) {
                   <div className="cell-table">
                     <div className="cell-title">Взят в работу</div>
                     <div className="cell-subtitle">
-                      <Moment format="DD.MM.YYYY">{projectDesigner.design_start}</Moment>
+                      {projectDesigner.design_start ? (
+                        <Moment format="DD.MM.YYYY">{projectDesigner.design_start}</Moment>
+                      ) : (
+                        <span className="cell-subtitle">дата не добавлена</span>
+                      )}
                     </div>
                   </div>
                 </td>
@@ -107,14 +164,31 @@ function NewPlanning(props) {
                   <div className="cell-table">
                     <div className="cell-title">Дата проверки</div>
                     <div className="cell-subtitle">
-                      <Moment format="DD.MM.YYYY">{projectDesigner.date_inspection}</Moment>
+                      {projectDesigner.date_inspection ? (
+                        <Moment format="DD.MM.YYYY">{projectDesigner.date_inspection}</Moment>
+                      ) : (
+                        <span className="cell-subtitle">дата не добавлена</span>
+                      )}
                     </div>
                   </div>
                 </td>
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">Задержка проверки</div>
-                    <div className="cell-subtitle">0</div>
+                    <div className="cell-subtitle">
+                      {(() => {
+                        const dateInspection = new Date(projectDesigner.date_inspection);
+                        const projectDelivery = new Date(projectDesigner.project_delivery);
+
+                        const delay = Math.round(
+                          (dateInspection - projectDelivery) / (1000 * 60 * 60 * 24),
+                        );
+
+                        return (
+                          <span style={{ color: delay > 0 ? '#dc3545' : '#000000' }}>{delay}</span>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -131,20 +205,51 @@ function NewPlanning(props) {
                   <div className="cell-table">
                     <div className="cell-title">Сдан на проверку</div>
                     <div className="cell-subtitle">
-                      <Moment format="DD.MM.YYYY">{projectDesigner.project_delivery}</Moment>{' '}
+                      {projectDesigner.project_delivery ? (
+                        <Moment format="DD.MM.YYYY">{projectDesigner.project_delivery}</Moment>
+                      ) : (
+                        <span className="cell-subtitle">дата не добавлена</span>
+                      )}
                     </div>
                   </div>
                 </td>
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">Время план/факт</div>
-                    <div className="cell-subtitle">10 / 13</div>
+                    <div className="cell-subtitle">
+                      {Math.round((projectDesigner.price * 0.08) / 5000) || 0} /{' '}
+                      {projectDesigner.project_delivery && projectDesigner.design_start
+                        ? Math.round(
+                            (new Date(projectDesigner.project_delivery) -
+                              new Date(projectDesigner.design_start)) /
+                              (1000 * 60 * 60 * 24) +
+                              1,
+                          )
+                        : 0}
+                    </div>
                   </div>
                 </td>
                 <td>
                   <div className="cell-table">
                     <div className="cell-title">Скорость проект.</div>
-                    <div className="cell-subtitle">76%</div>
+                    <div className="cell-subtitle">
+                      {(() => {
+                        const plan = Math.round((projectDesigner.price * 0.08) / 5000);
+                        const fact =
+                          projectDesigner.project_delivery && projectDesigner.design_start
+                            ? Math.round(
+                                (new Date(projectDesigner.project_delivery) -
+                                  new Date(projectDesigner.design_start)) /
+                                  (1000 * 60 * 60 * 24) +
+                                  1,
+                              )
+                            : 0;
+
+                        const percentage = fact > 0 ? Math.round((plan / fact) * 100) : 0;
+
+                        return `${percentage}%`;
+                      })()}
+                    </div>
                   </div>
                 </td>
               </tr>

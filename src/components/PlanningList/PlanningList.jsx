@@ -722,7 +722,7 @@ function PlanningList() {
         </div>
       ) : (
         <>
-          <div className="planning-designer-table-container">
+          {/* <div className="planning-designer-table-container">
             <div className="planning-designer-table-wrapper">
               <Table bordered hover size="sm">
                 <thead>
@@ -802,15 +802,15 @@ function PlanningList() {
                 </tbody>
               </Table>
             </div>
-          </div>
-          {/* <NewPlanning
+          </div> */}
+          <NewPlanning
             projects={projects}
             selectedDesignerName={selectedDesignerName}
             currentMonth={currentMonth}
             currentYear={currentYear}
             addWorkingDays={addWorkingDays}
             formatDate={formatDate}
-          /> */}
+          />
         </>
       )}
     </div>

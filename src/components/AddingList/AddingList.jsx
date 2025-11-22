@@ -6,6 +6,7 @@ import Brigade from './Brigade';
 import Service from './Service';
 import Supplier from './Supplier';
 import Examination from './Examination';
+import Designer from './Designer';
 
 function AddingList() {
   return (
@@ -15,6 +16,7 @@ function AddingList() {
       <Materials />
       <Supplier />
       <Brigade />
+      <Designer />
       <Service />
       <Examination />
     </>

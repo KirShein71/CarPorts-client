@@ -1,21 +1,21 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneBrigade, updateBrigadeName } from '../../../http/bragadeApi';
+import { fetchOneCoefficient, updateCoefficientNumber } from '../../../../http/coefficientApi';
 
-const defaultValue = { name: '' };
+const defaultValue = { number: '' };
 const defaultValid = {
-  name: null,
+  number: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'name') result.name = value.name.trim() !== '';
+    if (key === 'number') result.number = value.number.trim() !== '';
   }
   return result;
 };
 
-const UpdateBrigadeName = (props) => {
+const UpdateNumberCoefficient = (props) => {
   const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -23,11 +23,11 @@ const UpdateBrigadeName = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
-      fetchOneBrigade(id)
+    if (show) {
+      fetchOneCoefficient(id)
         .then((data) => {
           const prod = {
-            name: data.name,
+            number: data.number,
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -52,11 +52,11 @@ const UpdateBrigadeName = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.name) {
+    if (correct.number) {
       const data = new FormData();
-      data.append('name', value.name.trim());
+      data.append('number', value.number.trim());
       setIsLoading(true);
-      updateBrigadeName(id, data)
+      updateCoefficientNumber(id, data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -79,19 +79,19 @@ const UpdateBrigadeName = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Изменить название</Modal.Title>
+        <Modal.Title>Изменить коэффициент</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form ref={form} noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control
-                name="name"
-                value={value.name}
+                name="number"
+                value={value.number}
                 onChange={(e) => handleInputChange(e)}
-                isValid={valid.name === true}
-                isInvalid={valid.name === false}
-                placeholder="Введите название бригады"
+                isValid={valid.number === true}
+                isInvalid={valid.number === false}
+                placeholder="Введите коэффициент"
               />
             </Col>
           </Row>
@@ -108,4 +108,4 @@ const UpdateBrigadeName = (props) => {
   );
 };
 
-export default UpdateBrigadeName;
+export default UpdateNumberCoefficient;

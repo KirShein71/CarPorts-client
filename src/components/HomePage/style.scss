@@ -126,8 +126,17 @@
         margin-bottom: 25px;
     }
 
-    &__table {
-        background-color: #bbbbbb;
-        
+    &__region {
+        font-size: 22px;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 10px;
     }
+
+    &__text {
+        font-size: 15px;
+        font-weight: 500;
+        color: #000000;
+    }
+    
 }

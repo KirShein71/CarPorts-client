@@ -293,6 +293,11 @@
                 width: 25px;
                 height: 25px;
                 cursor: pointer;
+                @media(max-width: 460px) {
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: baseline;
+                }
             }
         }
 
@@ -300,6 +305,9 @@
             font-size: 18px;
             font-weight: 400;
             padding: 0px 7px 0px 7px;
+            @media(max-width: 460px) {
+                font-size: 12px;
+            }
         }
     }
 }
@@ -322,17 +330,31 @@
 
 //new-planning
 
+.new-planning__table {
+    margin-top: 25px;
+    @media(max-width: 460px) {
+        margin-top: 5px;
+    }
+}
+
 .project-number {
     color: #6c757d;
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 8px;
+    @media(max-width: 460px) {
+        font-size: 7px;
+        margin-bottom: 3px;
+    }
 }
 
 .project-name {
     font-size: 22px;
     font-weight: 700;
     color: #000000;
+    @media(max-width: 460px) {
+        font-size: 10px;
+    }
         
 }
 
@@ -343,6 +365,10 @@
     font-weight: 600;
     font-size: 18px;  
     margin-bottom: 8px;  
+    @media(max-width: 460px) {
+        font-size: 7px;
+        margin-bottom: 3px;
+    }
     
 } 
 
@@ -351,6 +377,9 @@
     font-weight: 700;
     color: #000000;
     text-align: center;
+    @media(max-width: 460px) {
+        font-size: 10px;
+    }
 }
 
 
@@ -359,6 +388,10 @@
     font-weight: 600;
     font-size: 18px;  
     margin-bottom: 8px;  
+    @media(max-width: 460px) {
+        font-size: 7px;
+        margin-bottom: 3px;
+    }
     
 } 
 
@@ -367,6 +400,9 @@
     font-weight: 700;
     color: #000000;
     text-align: center;
+    @media(max-width: 460px) {
+        font-size: 10px;
+    }
 }
 
 

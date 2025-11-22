@@ -215,17 +215,7 @@ const CreateMaterial = (props) => {
               )}
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Control
-                name="expirationMaterial_date"
-                value={value.expirationMaterial_date}
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Срок производства"
-                className="mb-3"
-              />
-            </Col>
-          </Row>
+
           <Col>
             <Button variant="dark" className="mb-3" onClick={handleAddMaterial}>
               Добавить

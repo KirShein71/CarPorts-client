@@ -8,6 +8,7 @@ import ManagerSale from './managerSale/ManagerSale';
 import ManagerProject from './managerproject/ManagerProject';
 import Constructor from './constructor/Constructor';
 import ManagerProduction from './managerProduction/ManagerProduction';
+import Coefficient from './coefficient/Coefficient';
 
 function Admin() {
   const [employees, setEmployees] = React.useState([]);
@@ -74,6 +75,7 @@ function Admin() {
       <ManagerProject />
       <Constructor />
       <ManagerProduction />
+      <Coefficient />
     </div>
   );
 }

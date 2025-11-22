@@ -77,38 +77,63 @@ function InstallationBilling() {
           <thead>
             <tr>
               <th></th>
-              <th style={{ textAlign: 'center' }}>МО</th>
-              <th style={{ textAlign: 'center' }}>ЛО</th>
+              <th className="installation-billing__region" style={{ textAlign: 'center' }}>
+                МО
+              </th>
+              <th className="installation-billing__region" style={{ textAlign: 'center' }}>
+                ЛО
+              </th>
             </tr>
           </thead>
           {billingNumber.map((billing) => (
             <>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Планируемое кол-во дней монтажа</td>
-                  <td style={{ textAlign: 'center' }}>{billing.billingMskDay}</td>
-                  <td style={{ textAlign: 'center' }}>{billing.billingSpbDay}</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Планируемое кол-во дней монтажа
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.billingMskDay}
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.billingSpbDay}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Отработанных дней</td>
-                  <td style={{ textAlign: 'center' }}>{billing.workingMskDay}</td>
-                  <td style={{ textAlign: 'center' }}>{billing.workingSpbDay}</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Отработанных дней
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.workingMskDay}
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.workingSpbDay}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Осталось отработать</td>
-                  <td style={{ textAlign: 'center' }}>{billing.remainderMsk}</td>
-                  <td style={{ textAlign: 'center' }}>{billing.remainderSpb}</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Осталось отработать
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.remainderMsk}
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.remainderSpb}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Количество бригад с учетом вых.</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Количество бригад с учетом вых.
+                  </td>
                   {billing.countWorkMsk ? (
                     <td
+                      className="installation-billing__text"
                       style={{ textAlign: 'center', cursor: 'pointer' }}
                       onClick={() => handleUpdateCountBrigade(billing.regionMsk)}>
                       {formatNumber(billing.countWorkMsk)}
@@ -118,6 +143,7 @@ function InstallationBilling() {
                   )}
                   {billing.countWorkSpb ? (
                     <td
+                      className="installation-billing__text"
                       style={{ textAlign: 'center', cursor: 'pointer' }}
                       onClick={() => handleUpdateCountBrigade(billing.regionSpb)}>
                       {formatNumber(billing.countWorkSpb)}
@@ -129,35 +155,51 @@ function InstallationBilling() {
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Остаток/Количество бригад</td>
-                  <td style={{ textAlign: 'center' }}>{billing.workPerBrigadeMsk}</td>
-                  <td style={{ textAlign: 'center' }}>{billing.workPerBrigadeSpb}</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Остаток/Количество бригад
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.workPerBrigadeMsk}
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.workPerBrigadeSpb}
+                  </td>
                 </tr>
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Прогноз завершения работ</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Прогноз завершения работ
+                  </td>
                   {billing.countWorkMsk && billing.remainderMsk ? (
-                    <td style={{ textAlign: 'center' }}>
+                    <td className="installation-billing__text" style={{ textAlign: 'center' }}>
                       {formatFutureDate(Math.round(billing.remainderMsk / billing.countWorkMsk))}
                     </td>
                   ) : (
                     <td style={{ textAlign: 'center' }}>Нет данных</td>
                   )}
                   {billing.countWorkSpb && billing.remainderSpb ? (
-                    <td style={{ textAlign: 'center' }}>
+                    <td className="installation-billing__text" style={{ textAlign: 'center' }}>
                       {formatFutureDate(Math.round(billing.remainderSpb / billing.countWorkSpb))}
                     </td>
                   ) : (
-                    <td style={{ textAlign: 'center' }}>Нет данных</td>
+                    <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                      Нет данных
+                    </td>
                   )}
                 </tr>
               </tbody>
               <tbody>
                 <tr key={billing.id}>
-                  <td style={{ textAlign: 'left' }}>Загрузка</td>
-                  <td style={{ textAlign: 'center' }}>{billing.LoadProcentMsk}%</td>
-                  <td style={{ textAlign: 'center' }}>{billing.LoadProcentSpb}%</td>
+                  <td className="installation-billing__text" style={{ textAlign: 'left' }}>
+                    Загрузка
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.LoadProcentMsk}%
+                  </td>
+                  <td className="installation-billing__text" style={{ textAlign: 'center' }}>
+                    {billing.LoadProcentSpb}%
+                  </td>
                   <td></td>
                 </tr>
               </tbody>

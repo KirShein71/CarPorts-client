@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneBrigade, updateBrigadeName } from '../../../http/bragadeApi';
+import { fetchOneCoefficient, updateCoefficientName } from '../../../../http/coefficientApi';
 
 const defaultValue = { name: '' };
 const defaultValid = {
@@ -15,7 +15,7 @@ const isValid = (value) => {
   return result;
 };
 
-const UpdateBrigadeName = (props) => {
+const UpdateCoefficientName = (props) => {
   const { show, setShow, setChange, id } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
@@ -23,8 +23,8 @@ const UpdateBrigadeName = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) {
-      fetchOneBrigade(id)
+    if (show) {
+      fetchOneCoefficient(id)
         .then((data) => {
           const prod = {
             name: data.name,
@@ -56,7 +56,7 @@ const UpdateBrigadeName = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       setIsLoading(true);
-      updateBrigadeName(id, data)
+      updateCoefficientName(id, data)
         .then((data) => {
           setValue(defaultValue);
           setValid(defaultValid);
@@ -91,7 +91,7 @@ const UpdateBrigadeName = (props) => {
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.name === true}
                 isInvalid={valid.name === false}
-                placeholder="Введите название бригады"
+                placeholder="Введите название коэффициента"
               />
             </Col>
           </Row>
@@ -108,4 +108,4 @@ const UpdateBrigadeName = (props) => {
   );
 };
 
-export default UpdateBrigadeName;
+export default UpdateCoefficientName;
