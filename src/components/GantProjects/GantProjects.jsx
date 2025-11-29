@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { getAllWeeksDate, getAllBrigadesDate } from '../../http/brigadesDateApi';
 import { getAllGanttData } from '../../http/gantApi';
 import { Table } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import './style.scss';
 
@@ -16,6 +16,8 @@ function GantProjects() {
   const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
   const tableWrapperRef = React.useRef(null);
   const [currentWeekIndex, setCurrentWeekIndex] = React.useState(-1);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -153,6 +155,10 @@ function GantProjects() {
     return `${day}.${monthNames[month]}`;
   };
 
+  const addToInfo = (id) => {
+    navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
+  };
+
   return (
     <div className="gant-projects">
       <Header title={'Гант проектов'} />
@@ -217,7 +223,13 @@ function GantProjects() {
                     </tr>
                     {/* Строка проекта */}
                     <tr>
-                      <td className="gant-projects-table__td mobile-project">{proGP.name}</td>
+                      <td
+                        className="gant-projects-table__td mobile-project"
+                        onClick={() => {
+                          addToInfo(proGP.id);
+                        }}>
+                        {proGP.name}
+                      </td>
                       {proGP.colors?.map((colorData) => (
                         <td
                           key={`project-${proGP.id}-${colorData.week_start}`}
