@@ -85,33 +85,35 @@
     left: 0;
     top: 0;
     z-index: 3;
+
+    &.date-header {
+      height: 70px;
+      min-width: 25px;
+      width: 25px;
+      padding: 2px !important;
+      position: relative;
+      
+      span {
+        display: inline-block;
+        transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        transform-origin: center;
+        -webkit-transform-origin: center;
+        white-space: nowrap;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-90deg);
+        -webkit-transform: translate(-50%, -50%) rotate(-90deg);
+        width: 70px; /* высота ячейки */
+        height: 25px; /* ширина ячейки */
+        line-height: 25px;
+      }
+    }
    
    
     
-    // Стили для дат
-    &:not(.mobile) {
-      writing-mode: vertical-lr;
-      transform: rotate(180deg);
-      vertical-align: bottom;
-      height: 70px;
-      white-space: nowrap;
-      min-width: 25px;
-      width: 25px;
-      
-      // Улучшенная поддержка для iOS
-      -webkit-writing-mode: vertical-lr;
-      -webkit-transform: rotate(180deg);
-      -ms-writing-mode: vertical-lr;
-      -ms-transform: rotate(180deg);
-      
-      // Форматирование текста даты
-      &::before {
-        content: attr(data-date);
-        display: inline-block;
-        transform: rotate(180deg);
-        writing-mode: horizontal-tb;
-      }
-    }
+   
 }
 
 .gant-projects-table-th::after {
@@ -189,6 +191,7 @@
     background-color: white; 
     @media(max-width: 460px) {
         font-size: 13px;
+        padding-left: 8px;
     }
 }
 

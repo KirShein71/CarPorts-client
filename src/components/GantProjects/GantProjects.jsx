@@ -203,12 +203,12 @@ function GantProjects() {
                   {ganttData.weeks?.map((week) => (
                     <th
                       key={week.week_start}
-                      className="gant-projects-table-th"
+                      className="gant-projects-table-th date-header"
+                      data-date={formatWeekDate(week.week_start)}
                       style={{
                         backgroundColor: '#ffffff',
-                        border: '1px solid #dee2e6',
                       }}>
-                      {formatWeekDate(week.week_start)}
+                      <span>{formatWeekDate(week.week_start)}</span>
                     </th>
                   ))}
                 </tr>
