@@ -1,0 +1,230 @@
+.button__msk {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-right: 10px;
+    &.active {
+        background-color: #212529; /* Черный фон для активной кнопки */
+        color: #ffffff; /* Белый текст для активной кнопки */
+    }
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+      
+    }
+}
+
+.button__spb {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #212529;
+    background-color: #212529;
+    color: #ffffff;
+    font-size: 14px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &.active {
+        background-color: #212529; /* Черный фон для активной кнопки */
+        color: #ffffff; /* Белый текст для активной кнопки */
+    }
+    @media(max-width: 460px) {
+        width: 30px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 5px;
+   
+    }
+}
+
+
+.inactive {
+    background-color: #ffffff; /* Белый фон для неактивной кнопки */
+    color: #212529; /* Черный текст для неактивной кнопки */
+}
+
+.gant-projects-table-container {
+    margin-top: 25px;
+    position: relative;
+    overflow: hidden;
+    height: calc(100vh - var(--header-height, 150px));
+    @media(max-width: 768px) {
+        height: calc(100vh - var(--header-height, 280px));
+    }
+}
+  
+.gant-projects-table-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    // border: 1px solid #dee2e6;
+    overscroll-behavior: contain;
+}
+
+.gant-projects-table-th {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6;
+    padding: 8px 4px;
+    text-align: center;
+    font-weight: normal;
+    font-size: 15px;
+    color: #000000;
+    min-width: 20px;
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+   
+   
+    
+    // Стили для дат
+    &:not(.mobile) {
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      vertical-align: bottom;
+      height: 70px;
+      white-space: nowrap;
+      
+      // Форматирование текста даты
+      &::before {
+        content: attr(data-date);
+        display: inline-block;
+        transform: rotate(180deg);
+        writing-mode: horizontal-tb;
+      }
+    }
+}
+
+.gant-projects-table-th::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+   
+    width: 100%;  
+}
+
+
+.gant-projects-table-th.mobile {
+    padding: 5px !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    background-color: white !important; 
+    text-align: center;
+    width: 50px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.gant-projects-table-th.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-bottom: 2px solid #dee2e6;
+    width: 100%;
+}
+
+.gant-projects-table__td.mobile-project {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000000;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    white-space: nowrap;
+    background-color: white; 
+    @media(max-width: 460px) {
+        font-size: 14px;
+    }
+}
+
+.gant-projects-table__td.mobile-project::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px; // Смещаем на 1px для перекрытия
+    height: 100%;
+    width: 2px;
+    background-color: #dee2e6;
+    z-index: 2;
+}
+
+
+.gant-projects-table__td.mobile {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(0, 0, 0);
+    padding-left: 20px;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    white-space: nowrap;
+    background-color: white; 
+    @media(max-width: 460px) {
+        font-size: 13px;
+    }
+}
+
+.gant-projects-table__td.mobile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -1px; // Смещаем на 1px для перекрытия
+    height: 100%;
+    width: 2px;
+    background-color: #dee2e6;
+    z-index: 2;
+}
+
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+.gant-loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.gant-projects-table-container.loading {
+  position: relative;
+  min-height: 200px;
+}
+
+.gant-projects-table-container.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
