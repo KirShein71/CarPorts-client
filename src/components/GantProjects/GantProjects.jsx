@@ -112,23 +112,27 @@ function GantProjects() {
   const handleButtonMskProject = () => {
     setIsLoadingGant(true);
     setTimeout(() => {
-      setButtonMskProject((prev) => !prev);
-      if (!buttonMskProject) {
+      const newButtonMskProject = !buttonMskProject;
+      setButtonMskProject(newButtonMskProject);
+
+      if (!newButtonMskProject) {
         setButtonSpbProject(true);
       }
       setIsLoadingGant(false);
-    }, 100);
+    }, 300);
   };
 
   const handleButtonSpbProject = () => {
     setIsLoadingGant(true);
     setTimeout(() => {
-      setButtonSpbProject((prev) => !prev);
-      if (!buttonSpbProject) {
+      const newButtonSpbProject = !buttonSpbProject;
+      setButtonSpbProject(newButtonSpbProject);
+
+      if (!newButtonSpbProject) {
         setButtonMskProject(true);
       }
       setIsLoadingGant(false);
-    }, 100);
+    }, 300);
   };
 
   // Функция для форматирования даты

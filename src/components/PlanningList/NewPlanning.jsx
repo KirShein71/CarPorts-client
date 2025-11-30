@@ -4,8 +4,17 @@ import moment from 'moment-business-days';
 import Moment from 'react-moment';
 
 function NewPlanning(props) {
-  const { projects, selectedDesignerName, currentMonth, currentYear, addWorkingDays, formatDate } =
-    props;
+  const {
+    projects,
+    selectedDesignerName,
+    selectedDesignerId,
+    currentMonth,
+    currentYear,
+    addWorkingDays,
+    formatDate,
+  } = props;
+
+  console.log(selectedDesignerId);
 
   return (
     <div className="card-project">

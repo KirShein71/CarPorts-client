@@ -155,6 +155,11 @@ export const updateInstallationPeriod = async (id, project) => {
     return data
 }
 
+export const updateDesigner = async (id, project) => {
+    const { data} = await guestInstance.put(`project/updateDesigner/${id}`, project)
+    return data
+}
+
 export const fetchOneProject = async (id) => {
     const { data } = await guestInstance.get(`project/getone/${id}`)
     return data

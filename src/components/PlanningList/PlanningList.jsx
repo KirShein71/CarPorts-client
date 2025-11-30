@@ -7,6 +7,7 @@ import CreateDesignerStart from './modals/CreateDesignerStart';
 import UpdateDesigner from './modals/UpdateDisegner';
 import UpdateNote from './modals/UpdateNote';
 import { fetchAllProjects } from '../../http/projectApi';
+import { getAllActiveDesigner } from '../../http/designerApi';
 import { Spinner, Table } from 'react-bootstrap';
 import Moment from 'react-moment';
 import moment from 'moment-business-days';
@@ -44,18 +45,31 @@ function PlanningList() {
   const location = useLocation();
   const { user } = React.useContext(AppContext);
   const modalRef = React.useRef();
-  const designers = ['Алла', 'Дмитрий', 'Егор', 'Екатерина', 'Константин'];
+  const [designers, setDesigners] = React.useState([]);
   const [selectedDesignerName, setSelectedDesignerName] = React.useState(null);
+  const [selectedDesignerId, setSelectedDesignerId] = React.useState(null);
   const [openModalSelectedDesigner, setOpenModalSelectedDesigner] = React.useState(false);
   const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = React.useState(new Date().getFullYear());
 
   React.useEffect(() => {
-    fetchAllProjects()
-      .then((data) => {
-        setProjects(data);
-      })
-      .finally(() => setFetching(false));
+    const fetchData = async () => {
+      try {
+        const [designersData, projectsData] = await Promise.all([
+          getAllActiveDesigner(),
+          fetchAllProjects(),
+        ]);
+
+        setDesigners(designersData);
+        setProjects(projectsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchData();
   }, [change]);
 
   React.useEffect(() => {
@@ -389,6 +403,7 @@ function PlanningList() {
                     className="planning__dropdown-item planning__dropdown-item--reset"
                     onClick={() => {
                       setSelectedDesignerName(null);
+                      setSelectedDesignerId(null);
                       setOpenModalSelectedDesigner(false);
                     }}>
                     <div>Сбросить</div>
@@ -398,10 +413,11 @@ function PlanningList() {
                       <div
                         className="planning__dropdown-item"
                         onClick={() => {
-                          setSelectedDesignerName(designerName);
+                          setSelectedDesignerId(designerName.id);
+                          setSelectedDesignerName(designerName.name);
                           setOpenModalSelectedDesigner(false);
                         }}>
-                        {designerName}
+                        {designerName.name}
                       </div>
                     </div>
                   ))}
@@ -413,7 +429,7 @@ function PlanningList() {
       ) : (
         ''
       )}
-      {selectedDesignerName !== null ? (
+      {selectedDesignerId !== null ? (
         <div className="planning__month">
           <div className="planning__month-arrow" onClick={handlePrevMonth}>
             <img src="./img/left.png" alt="left arrow" />
@@ -724,6 +740,7 @@ function PlanningList() {
         <>
           <NewPlanning
             projects={projects}
+            selectedDesignerId={selectedDesignerId}
             selectedDesignerName={selectedDesignerName}
             currentMonth={currentMonth}
             currentYear={currentYear}

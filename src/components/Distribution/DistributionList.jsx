@@ -46,35 +46,44 @@ function DistributionList() {
       <div className="container">
         <Header title={'Сметы'} />
         <div className="dropdown" ref={modalRef}>
-          <div className="dropdown__title" onClick={hadleOpenModalSelectedBrigade}>
-            Бригада: <span>{selectedBrigadeName ? selectedBrigadeName : 'Все'}</span>
-          </div>
+          <button
+            className="distribution-list__dropdown-brigade"
+            onClick={hadleOpenModalSelectedBrigade}>
+            {selectedBrigadeName ? (
+              selectedBrigadeName
+            ) : (
+              <div>
+                Бригада <img src="./img/arrow-down.png" alt="arrow down" />
+              </div>
+            )}
+          </button>
           {openModalSelectedBrigade && (
-            <div className="dropdown__modal">
-              <div className="dropdown__modal-content">
-                <ul className="dropdown__modal-items">
-                  <li
-                    className="dropdown__modal-item"
+            <div className="distribution-list__dropdown-modal">
+              <div className="distribution-list__dropdown-content">
+                <div className="distribution-list__dropdown-items">
+                  <div
+                    className="distribution-list__dropdown-item planning__dropdown-item--reset"
                     onClick={() => {
-                      setSelectedBrigadeName('Все');
+                      setSelectedBrigadeName(null);
                       setSelectedBrigade(null);
                       setOpenModalSelectedBrigade(false);
                     }}>
-                    Все
-                  </li>
+                    <div>Сбросить</div>
+                  </div>
                   {brigades.map((brigadesName) => (
-                    <li
-                      key={brigadesName.id}
-                      className="dropdown__modal-item"
-                      onClick={() => {
-                        setSelectedBrigadeName(brigadesName.name);
-                        setSelectedBrigade(brigadesName.id);
-                        setOpenModalSelectedBrigade(false);
-                      }}>
-                      {brigadesName.name}
-                    </li>
+                    <div key={brigadesName.id}>
+                      <div
+                        className="distribution-list__dropdown-item"
+                        onClick={() => {
+                          setSelectedBrigadeName(brigadesName.name);
+                          setSelectedBrigade(brigadesName.id);
+                          setOpenModalSelectedBrigade(false);
+                        }}>
+                        {brigadesName.name}
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           )}
@@ -82,120 +91,100 @@ function DistributionList() {
         <div className="distribution-list__content">
           {calculations
             .filter((calculation) => {
-              // Если бригада не выбрана, показываем все проекты
               if (!selectedBrigade) return true;
-
-              // Проверяем, есть ли в проекте выбранная бригада
               return calculation.brigades.some((brigade) => brigade.brigadeId === selectedBrigade);
             })
             .map((calculation) => (
               <div key={calculation.id} className="distribution-list__estimate">
-                <div
-                  className="distribution-list__projectName"
-                  onClick={() => addToInfo(calculation.projectId)}>
-                  {calculation.projectName}
-                </div>
-                <Table borderless className="distribution-list__table mt-3">
+                <Table borderless className="distribution-list__table">
                   <thead>
-                    <tr>
-                      <th className="distribution-list__firstThead"></th>
+                    <tr className="distribution-list__project-header">
+                      <th></th>
                       <th className="distribution-list__thead">смета</th>
-                      <th className="distribution-list__thead">выполнено</th>
                       <th className="distribution-list__thead">выплачено</th>
-                      <th className="distribution-list__thead">остаток</th>
                     </tr>
                   </thead>
-                  {calculation.brigades
-                    .filter((brigade) => {
-                      if (selectedBrigade) {
-                        return brigade.brigadeId === selectedBrigade;
-                      }
-                      return true;
-                    })
-                    .map((brigade) => (
-                      <React.Fragment key={brigade.id}>
-                        <tbody>
-                          <tr key={brigade.id}>
-                            <td
-                              className="distribution-list__brigadeName"
-                              onClick={() => addToInstallationPage(brigade.brigadeId)}>
-                              {brigade.brigadeName}
-                            </td>
-                            <td className="distribution-list__total">
-                              {new Intl.NumberFormat('en-US').format(
-                                brigade.estimates.reduce((acc, cur) => acc + Number(cur.price), 0),
-                              )}
-                            </td>
-                            <td className="distribution-list__total">
-                              {new Intl.NumberFormat('en-US').format(
-                                brigade.estimates
-                                  .filter((esCol) => esCol.done === 'true')
-                                  .reduce((acc, cur) => acc + Number(cur.price), 0),
-                              )}
-                            </td>
-                            <td className="distribution-list__total">
-                              {new Intl.NumberFormat('en-US').format(
-                                brigade.payments.reduce((acc, cur) => acc + Number(cur.sum), 0),
-                              )}
-                            </td>
-                            <td className="distribution-list__total">
-                              {(() => {
-                                const totalPayments = brigade.payments.reduce(
-                                  (acc, cur) => acc + Number(cur.sum),
-                                  0,
-                                );
-                                const totalEstimates = brigade.estimates
-                                  .filter((esCol) => esCol.done === 'true')
-                                  .reduce((acc, cur) => acc + Number(cur.price), 0);
-                                return new Intl.NumberFormat('en-US').format(
-                                  totalPayments - totalEstimates,
-                                );
-                              })()}
-                            </td>
-                          </tr>
-                        </tbody>
-                        <tbody>
-                          {brigade.payments
-                            .sort((a, b) => new Date(a.date) - new Date(b.date))
-                            .map((paymentDate) => (
-                              <tr key={`payment-${paymentDate.id}`}>
-                                <td>
-                                  <div className="distribution-list__datePayment">
-                                    <Moment format="DD/MM/YYYY">{paymentDate.date}</Moment>
-                                  </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td className="distribution-list__totalPayment">
-                                  {new Intl.NumberFormat('en-US').format(paymentDate.sum)}
-                                </td>
-                                <td></td>
-                              </tr>
-                            ))}
-                        </tbody>
-                      </React.Fragment>
-                    ))}
 
-                  <tbody className="mt-3">
-                    <tr key={`total-${calculation.id}`}>
-                      <td className="project-name"></td>
-                      <td className="distribution-list__totalBottom">
+                  <tbody>
+                    <tr style={{ backgroundColor: '#afacac' }}>
+                      <td
+                        className="distribution-list__projectName"
+                        onClick={() => addToInfo(calculation.projectId)}>
+                        {calculation.projectName}
+                      </td>
+                      <td className="distribution-list__total-project">
                         {new Intl.NumberFormat('en-US').format(calculation.totalPrice)}
                       </td>
-                      <td className="distribution-list__totalBottom">
-                        {new Intl.NumberFormat('en-US').format(calculation.totalSumDone)}
-                      </td>
-                      <td className="distribution-list__totalBottom">
+                      <td className="distribution-list__total-project">
                         {new Intl.NumberFormat('en-US').format(calculation.totalPaymentSum)}
                       </td>
-                      <td className="distribution-list__totalBottom">
-                        {isNaN(calculation.totalPaymentSum - calculation.totalSumDone)
-                          ? '—'
-                          : new Intl.NumberFormat('en-US').format(
-                              calculation.totalPaymentSum - calculation.totalSumDone,
-                            )}
-                      </td>
                     </tr>
+                  </tbody>
+
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+
+                  <tbody>
+                    {calculation.brigades
+                      .filter((brigade) => {
+                        if (selectedBrigade) {
+                          return brigade.brigadeId === selectedBrigade;
+                        }
+                        return true;
+                      })
+                      .map((brigade) => {
+                        const brigadeEstimate = brigade.estimates.reduce(
+                          (acc, cur) => acc + Number(cur.price),
+                          0,
+                        );
+                        const brigadePayment = brigade.payments.reduce(
+                          (acc, cur) => acc + Number(cur.sum),
+                          0,
+                        );
+
+                        return (
+                          <React.Fragment key={brigade.id}>
+                            {/* Строка бригады */}
+                            <tr
+                              className="distribution-list__brigade-row"
+                              style={{ backgroundColor: '#e9e3e3' }}>
+                              <td
+                                className="distribution-list__brigadeName"
+                                onClick={() => addToInstallationPage(brigade.brigadeId)}>
+                                {brigade.brigadeName}
+                              </td>
+                              <td className="distribution-list__total">
+                                {new Intl.NumberFormat('en-US').format(brigadeEstimate)}
+                              </td>
+                              <td className="distribution-list__total">
+                                {new Intl.NumberFormat('en-US').format(brigadePayment)}
+                              </td>
+                            </tr>
+
+                            {/* Строки с датами выплат для этой бригады */}
+                            {brigade.payments
+                              .sort((a, b) => new Date(a.date) - new Date(b.date))
+                              .map((paymentDate) => (
+                                <tr
+                                  key={`payment-${paymentDate.id}`}
+                                  className="distribution-list__payment-row">
+                                  <td className="distribution-list__datePayment">
+                                    <Moment format="DD/MM/YYYY">{paymentDate.date}</Moment>
+                                  </td>
+                                  <td></td>
+                                  <td className="distribution-list__totalPayment">
+                                    {new Intl.NumberFormat('en-US').format(paymentDate.sum)}
+                                  </td>
+                                </tr>
+                              ))}
+                          </React.Fragment>
+                        );
+                      })}
                   </tbody>
                 </Table>
               </div>

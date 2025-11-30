@@ -1,16 +1,19 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { fetchOneProject, updateProject } from '../../../http/projectApi';
+import { fetchOneProject, updateDesigner } from '../../../http/projectApi';
+import { getAllActiveDesigner } from '../../../http/designerApi';
 
-const defaultValue = { designer: '' };
+const defaultValue = { designer: '', designerId: '' };
 const defaultValid = {
   designer: null,
+  designerId: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'designer') result.designer = value.designer;
+    if (key === 'designer') result.designer = value.designer.trim() !== '';
+    if (key === 'designerId') result.designerId = value.designerId.trim() !== '';
   }
   return result;
 };
@@ -19,31 +22,49 @@ const UpdateDesigner = (props) => {
   const { id, show, setShow, setChange, planningPage, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-
+  const [designers, setDesigners] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (show) {
-      fetchOneProject(id)
-        .then((data) => {
+    const fetchData = async () => {
+      try {
+        // Загружаем дизайнеров только когда модальное окно открыто
+        if (show) {
+          const [designersData, projectData] = await Promise.all([
+            getAllActiveDesigner(),
+            fetchOneProject(id),
+          ]);
+
+          setDesigners(designersData);
+
           const prod = {
-            designer: data.designer.toString(),
+            designer: projectData.designer?.toString() || '',
+            designerId: projectData.designerId?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            alert(error.response.data.message);
-          } else {
-            console.log('An error occurred');
-          }
-        });
-    }
-  }, [show]);
+        }
+      } catch (error) {
+        if (error.response && error.response.data) {
+          alert(error.response.data.message);
+        } else {
+          console.log('An error occurred');
+        }
+      }
+    };
+
+    fetchData();
+  }, [show, id]);
 
   const handleInputChange = (event) => {
-    const data = { ...value, [event.target.name]: event.target.value };
+    const selectedDesignerId = event.target.value;
+    const selectedDesigner = designers.find((item) => item.id.toString() === selectedDesignerId);
+
+    const data = {
+      designer: selectedDesigner ? selectedDesigner.name : '',
+      designerId: selectedDesignerId,
+    };
+
     setValue(data);
     setValid(isValid(data));
   };
@@ -61,14 +82,18 @@ const UpdateDesigner = (props) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.designer) {
+
+    if (correct.designer && correct.designerId) {
       const data = new FormData();
       data.append('designer', value.designer.trim());
+      data.append('designerId', value.designerId);
+
       setIsLoading(true);
-      updateProject(id, data)
+      updateDesigner(id, data)
         .then((data) => {
           const prod = {
-            designer: data.designer.toString(),
+            designer: data.designer?.toString() || '',
+            designerId: data.designerId?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -102,15 +127,22 @@ const UpdateDesigner = (props) => {
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
-            <Form.Control
-              name="designer"
-              value={value.designer}
-              onChange={(e) => handleInputChange(e)}
-              isValid={valid.designer === true}
-              isInvalid={valid.designer === false}
-              placeholder="Проектировщик"
-              type="text"
-            />
+            <Form.Select
+              name="designerId"
+              value={value.designerId}
+              onChange={handleInputChange}
+              isValid={valid.designerId === true}
+              isInvalid={valid.designerId === false}>
+              <option value="">Выберите проектировщика</option>
+              {designers &&
+                designers
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+            </Form.Select>
           </Col>
           <Row>
             <Col>

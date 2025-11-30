@@ -50,70 +50,135 @@ function OrderMaterialsList() {
     Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])
       .then(([projectMaterialsData, materialProjectsData]) => {
         setProjectsMaterials(projectMaterialsData);
-
         setMaterialProjects(materialProjectsData);
+
+        const filters = {
+          isNoPayment: buttonNoDatePaymentProject,
+          isNoColor: buttonNoColorProject,
+          isNoReady: buttonNoReadyDateProject,
+          isNoShipping: buttonNoShippingDateProject,
+        };
+
+        const filteredProjects = projectMaterialsData
+          .filter((projectMaterials) => {
+            const matchesSearchProject = projectMaterials.name
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+
+            if (!matchesSearchProject) return false;
+
+            // Если нет активных фильтров - показываем проект со всеми материалами
+            if (
+              !filters.isNoPayment &&
+              !filters.isNoColor &&
+              !filters.isNoReady &&
+              !filters.isNoShipping
+            ) {
+              return true;
+            }
+
+            // ФИЛЬТРУЕМ МАТЕРИАЛЫ ВНУТРИ ПРОЕКТА
+            const filteredProps = projectMaterials.props.filter((prop) => {
+              const matchesNoPayment = filters.isNoPayment ? !prop.date_payment : true;
+              const matchesNoColor = filters.isNoColor ? !prop.color : true;
+              const matchesNoReady = filters.isNoReady ? !prop.ready_date : true;
+              const matchesNoShipping = filters.isNoShipping ? !prop.shipping_date : true;
+              return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
+            });
+
+            // Если после фильтрации остались материалы - показываем проект
+            return filteredProps.length > 0;
+          })
+          .map((project) => {
+            // Если нет активных фильтров - возвращаем проект как есть
+            if (
+              !filters.isNoPayment &&
+              !filters.isNoColor &&
+              !filters.isNoReady &&
+              !filters.isNoShipping
+            ) {
+              return project;
+            }
+
+            // ФИЛЬТРУЕМ МАТЕРИАЛЫ ВНУТРИ ПРОЕКТА
+            const filteredProps = project.props.filter((prop) => {
+              const matchesNoPayment = filters.isNoPayment ? !prop.date_payment : true;
+              const matchesNoColor = filters.isNoColor ? !prop.color : true;
+              const matchesNoReady = filters.isNoReady ? !prop.ready_date : true;
+              const matchesNoShipping = filters.isNoShipping ? !prop.shipping_date : true;
+              return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
+            });
+
+            // Возвращаем проект только с отфильтрованными материалами
+            return {
+              ...project,
+              props: filteredProps,
+            };
+          });
+
+        const filteredMaterialProjects = materialProjectsData
+          .filter((materialProject) => {
+            const matchesSearchProject = materialProject.materialName
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+
+            if (!matchesSearchProject) return false;
+
+            // Если нет активных фильтров - показываем материал со всеми свойствами
+            if (
+              !filters.isNoPayment &&
+              !filters.isNoColor &&
+              !filters.isNoReady &&
+              !filters.isNoShipping
+            ) {
+              return true;
+            }
+
+            // ФИЛЬТРУЕМ СВОЙСТВА МАТЕРИАЛА
+            const filteredProps = materialProject.props.filter((prop) => {
+              const matchesNoPayment = filters.isNoPayment ? !prop.date_payment : true;
+              const matchesNoColor = filters.isNoColor ? !prop.color : true;
+              const matchesNoReady = filters.isNoReady ? !prop.ready_date : true;
+              const matchesNoShipping = filters.isNoShipping ? !prop.shipping_date : true;
+              return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
+            });
+
+            // Если после фильтрации остались свойства - показываем материал
+            return filteredProps.length > 0;
+          })
+          .map((material) => {
+            // Если нет активных фильтров - возвращаем материал как есть
+            if (
+              !filters.isNoPayment &&
+              !filters.isNoColor &&
+              !filters.isNoReady &&
+              !filters.isNoShipping
+            ) {
+              return material;
+            }
+
+            // ФИЛЬТРУЕМ СВОЙСТВА МАТЕРИАЛА
+            const filteredProps = material.props.filter((prop) => {
+              const matchesNoPayment = filters.isNoPayment ? !prop.date_payment : true;
+              const matchesNoColor = filters.isNoColor ? !prop.color : true;
+              const matchesNoReady = filters.isNoReady ? !prop.ready_date : true;
+              const matchesNoShipping = filters.isNoShipping ? !prop.shipping_date : true;
+              return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
+            });
+
+            // Возвращаем материал только с отфильтрованными свойствами
+            return {
+              ...material,
+              props: filteredProps,
+            };
+          });
+
+        setFilteredProjectMaterials(filteredProjects);
+        setFilteredMaterialProjects(filteredMaterialProjects);
       })
       .finally(() => setFetching(false));
-  }, [change]);
-
-  React.useEffect(() => {
-    const filters = {
-      isNoPayment: buttonNoDatePaymentProject,
-      isNoColor: buttonNoColorProject,
-      isNoReady: buttonNoReadyDateProject,
-      isNoShipping: buttonNoShippingDateProject,
-    };
-
-    const filteredProjects = projectsMaterials.filter((projectMaterials) => {
-      // Условие для поиска по имени
-      const matchesSearchProject = projectMaterials.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-
-      // Проверяем, есть ли хотя бы одно свойство, соответствующее фильтрам
-      const hasMatchingProps = projectMaterials.props.some((prop) => {
-        const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
-        const matchesNoColor = filters.isNoColor ? prop.color === null : true;
-        const matchesNoReady = filters.isNoReady ? prop.ready_date === null : true;
-        const matchesNoShipping = filters.isNoShipping ? prop.shipping_date === null : true;
-        return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
-      });
-
-      return (
-        matchesSearchProject &&
-        (filters.isNoPayment || filters.isNoColor || filters.isNoReady || filters.isNoShipping
-          ? hasMatchingProps
-          : true)
-      );
-    });
-
-    const filteredMaterialProjects = materialProjects.filter((materialProject) => {
-      // Условие для поиска по имени
-      const matchesSearchProject = materialProject.materialName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-
-      // Проверяем, есть ли хотя бы одно свойство, соответствующее фильтрам
-      const hasMatchingProps = materialProject.props.some((prop) => {
-        const matchesNoPayment = filters.isNoPayment ? prop.date_payment === null : true;
-        const matchesNoColor = filters.isNoColor ? prop.color === null : true;
-        const matchesNoReady = filters.isNoReady ? prop.ready_date === null : true;
-        const matchesNoShipping = filters.isNoShipping ? prop.shipping_date === null : true;
-        return matchesNoPayment && matchesNoColor && matchesNoReady && matchesNoShipping;
-      });
-
-      return (
-        matchesSearchProject &&
-        (filters.isNoPayment || filters.isNoColor || filters.isNoReady || filters.isNoShipping
-          ? hasMatchingProps
-          : true)
-      );
-    });
-
-    setFilteredProjectMaterials(filteredProjects);
-    setFilteredMaterialProjects(filteredMaterialProjects);
   }, [
-    projectsMaterials,
+    change,
     buttonNoColorProject,
     buttonNoDatePaymentProject,
     buttonNoReadyDateProject,
