@@ -25,6 +25,7 @@ function GantProjects() {
       setIsLoadingGant(true);
       try {
         const gantData = await getAllGanttData();
+        console.log('Загруженные данные:', gantData); // Для отладки
         setGanttData(gantData);
 
         // Находим индекс текущей недели сразу после загрузки данных
@@ -225,6 +226,7 @@ function GantProjects() {
                         colSpan={ganttData.weeks.length + 1}
                         style={{ padding: 0, border: 'none' }}></td>
                     </tr>
+
                     {/* Строка проекта */}
                     <tr>
                       <td
@@ -263,24 +265,54 @@ function GantProjects() {
                     </tr>
 
                     {/* Строки бригад - по одной на каждую бригаду */}
-                    {proGP.brigades && proGP.brigades.length > 0
-                      ? proGP.brigades.map((brigadeName, index) => (
-                          <tr key={`brigade-${proGP.id}-${index}`}>
-                            <td className="gant-projects-table__td mobile">{brigadeName}</td>
-                            {proGP.brigadeColors?.map((colorData) => (
-                              <td
-                                key={`brigade-${proGP.id}-${brigadeName}-${colorData.week_start}`}
-                                className="brigade-cell"
-                                style={{
-                                  backgroundColor: colorData.color,
-                                  border: '1px solid #dee2e6',
-                                  height: '20px',
-                                }}
-                              />
-                            ))}
-                          </tr>
-                        ))
-                      : ''}
+                    {proGP.brigadesDetails && proGP.brigadesDetails.length > 0 ? (
+                      proGP.brigadesDetails.map((brigade) => (
+                        <tr key={`brigade-${proGP.id}-${brigade.id}`}>
+                          <td className="gant-projects-table__td mobile">{brigade.name}</td>
+                          {/* Используем brigadeColors по ID бригады */}
+                          {proGP.brigadeColors && proGP.brigadeColors[brigade.id]
+                            ? proGP.brigadeColors[brigade.id].map((colorData) => (
+                                <td
+                                  key={`brigade-${proGP.id}-${brigade.id}-${colorData.week_start}`}
+                                  className="brigade-cell"
+                                  style={{
+                                    backgroundColor: colorData.color,
+                                    border: '1px solid #dee2e6',
+                                    height: '20px',
+                                  }}
+                                />
+                              ))
+                            : // Если нет данных о цветах для этой бригады, показываем прозрачные ячейки
+                              ganttData.weeks?.map((week) => (
+                                <td
+                                  key={`empty-${proGP.id}-${brigade.id}-${week.week_start}`}
+                                  className="brigade-cell"
+                                  style={{
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #dee2e6',
+                                    height: '20px',
+                                  }}
+                                />
+                              ))}
+                        </tr>
+                      ))
+                    ) : (
+                      // Если нет бригад, показываем одну пустую строку
+                      <tr>
+                        <td className="gant-projects-table__td mobile">Нет бригад</td>
+                        {ganttData.weeks?.map((week) => (
+                          <td
+                            key={`empty-${proGP.id}-${week.week_start}`}
+                            className="brigade-cell"
+                            style={{
+                              backgroundColor: 'transparent',
+                              border: '1px solid #dee2e6',
+                              height: '20px',
+                            }}
+                          />
+                        ))}
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
