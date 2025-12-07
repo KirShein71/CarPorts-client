@@ -14,8 +14,6 @@ function NewPlanning(props) {
     formatDate,
   } = props;
 
-  console.log(selectedDesignerId);
-
   return (
     <div className="card-project">
       {projects
