@@ -74,6 +74,10 @@ const employeeRoutes = [
   { path: '/changebrigadedate', Component: ChangeBrigadeDate },
   { path: './report-project', Component: ReportProject },
   { path: '/gant-contracts', Component: GantContract },
+  { path: '/technical-supervision', Component: TechSuperVision },
+  { path: '/result-supervision', Component: ResultSupervision },
+  { path: '/gant-installers', Component: GantInstaller },
+  { path: '/gant-projects', Component: GantProject },
 ];
 
 const adminRoutes = [
