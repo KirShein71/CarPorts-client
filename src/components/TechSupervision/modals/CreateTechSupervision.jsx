@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Table, Modal } from 'react-bootstrap';
 import { fetchBrigades } from '../../../http/bragadeApi';
-import { getAllActiveProject } from '../../../http/projectApi';
+import { getAllActiveWithDateFinishProject } from '../../../http/projectApi';
 import { getAllExamination } from '../../../http/examinationApi';
 import { createProjectExanamination } from '../../../http/projectExaminationApi';
 
@@ -20,7 +20,7 @@ const CreateTechSupervision = (props) => {
     const fetchData = async () => {
       try {
         const [projectsData, brigadesData, examinationsData] = await Promise.all([
-          getAllActiveProject(),
+          getAllActiveWithDateFinishProject(),
           fetchBrigades(),
           getAllExamination(),
         ]);

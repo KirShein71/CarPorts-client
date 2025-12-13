@@ -17,6 +17,7 @@ function ResultSupervisionComponent() {
   const [selectedBrigadeName, setSelectedBrigadeName] = React.useState(null);
   const [openModalSelectedBrigade, setOpenModalSelectedBrigade] = React.useState(false);
   const modalRef = React.useRef();
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 460);
 
   React.useEffect(() => {
     Promise.all([getAllGroupByBrigade(), fetchBrigades()])
@@ -27,6 +28,15 @@ function ResultSupervisionComponent() {
       .catch((error) => {
         console.error('Ошибка при загрузке данных:', error);
       });
+  }, []);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 460);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleOpenModalDetailExamination = (projectId, brigadeId) => {
@@ -112,10 +122,18 @@ function ResultSupervisionComponent() {
               }}>
               <thead>
                 <tr>
-                  <th width={150} className="result-supervision__brigade">
+                  <th
+                    width={150}
+                    className="result-supervision__brigade"
+                    style={{ padding: isMobile ? '0px' : '.5rem .5rem' }} // ← условие
+                  >
                     {brigExam.brigade}
                   </th>
-                  <th width={50} className="result-supervision__brigRes">
+                  <th
+                    width={50}
+                    className="result-supervision__brigRes"
+                    style={{ padding: isMobile ? '0px' : '.5rem .5rem' }} // ← условие
+                  >
                     {brigExam.brigadeAverage}
                   </th>
                 </tr>
@@ -127,10 +145,17 @@ function ResultSupervisionComponent() {
                       onClick={() =>
                         handleOpenModalDetailExamination(proResult.projectId, brigExam.brigadeId)
                       }
-                      className="result-supervision__project">
+                      className="result-supervision__project"
+                      style={{ padding: isMobile ? '0px' : '.5rem .5rem' }} // ← условие
+                    >
                       {proResult.project}
                     </td>
-                    <td className="result-supervision__proRes">{proResult.result}</td>
+                    <td
+                      className="result-supervision__proRes"
+                      style={{ padding: isMobile ? '0px' : '.5rem .5rem' }} // ← условие
+                    >
+                      {proResult.result}
+                    </td>
                   </tr>
                 ))}
               </tbody>

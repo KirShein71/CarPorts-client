@@ -296,8 +296,8 @@ function ProjectInfoList() {
       .then((data) => {
         setChange(!change);
         setOpenModalUrl(true);
-        setPersonalAccountLink(data); // убрали .response
-        console.log(data); // убрали .response
+        setPersonalAccountLink(data);
+        console.log(data);
         console.log(id);
       })
       .catch((error) => alert(error.response.data.message));

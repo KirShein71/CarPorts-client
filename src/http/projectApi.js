@@ -57,6 +57,11 @@ export const getAllStatProject = async () => {
     return data
 }
 
+export const getAllActiveWithDateFinishProject = async () => {
+    const { data } = await guestInstance.get('project/getAllActiveWithDateFinishProject')
+    return data
+}
+
 export const getAllYearStatProject = async () => {
     const { data } = await guestInstance.get('project/getAllYearStatProject')
     return data
