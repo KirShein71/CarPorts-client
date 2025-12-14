@@ -85,7 +85,13 @@ function MobilePlanning(props) {
                   <div
                     className="cell-subtitle"
                     onClick={() => handleUpdateDisegnerModal(mobilePlanning.id)}>
-                    {mobilePlanning.designer}
+                    {mobilePlanning.designer ? (
+                      mobilePlanning.designer
+                    ) : (
+                      <span style={{ color: 'red' }} className="cell-subtitle">
+                        +
+                      </span>
+                    )}
                   </div>
                 </div>
               </td>
