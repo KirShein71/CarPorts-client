@@ -463,12 +463,14 @@ function GantContracts() {
                           designPeriod + expirationDate + installationPeriod,
                         );
 
-                        const designerStartDate = gantProject?.designer_start
-                          ? new Date(gantProject.designer_start)
-                          : agreementDate;
+                        // ИСПРАВЛЕНО: Используем design_start, если он есть, иначе не показываем дизайнера
+                        const designerStartDate = gantProject?.design_start
+                          ? new Date(gantProject.design_start)
+                          : null; // null вместо agreementDate
+
                         const designerEndDate = gantProject?.project_delivery
                           ? new Date(gantProject.project_delivery)
-                          : new Date();
+                          : null; // null вместо current date
 
                         const isInDesignRange =
                           agreementDate &&
@@ -488,11 +490,13 @@ function GantContracts() {
                           currentDate > productionEndDate &&
                           currentDate <= installationEndDate;
 
+                        // ИСПРАВЛЕНО: Проверяем, что оба даты существуют
                         const isDesignerWorking =
                           designerStartDate &&
-                          designerEndDate &&
-                          currentDate >= designerStartDate &&
-                          currentDate <= designerEndDate;
+                          ((designerEndDate &&
+                            currentDate >= designerStartDate &&
+                            currentDate <= designerEndDate) ||
+                            (!designerEndDate && currentDate >= designerStartDate)); // Если нет project_delivery, показываем от design_start до сегодня
 
                         const formatBrigadeName = (brigadeName) => {
                           if (!brigadeName) return '';
@@ -511,30 +515,23 @@ function GantContracts() {
 
                         return (
                           <td
-                            // onClick={() =>
-                            //   handleOpenModalCreateDateBrigade(
-                            //     gantProject.id,
-                            //     gantProject.regionId,
-                            //     gantDate.id,
-                            //   )
-                            // }
                             key={gantDate.id}
                             style={{
                               color: isInInstallationRange
-                                ? '#000000' // Черный текст для монтажа
+                                ? '#000000'
                                 : isInProductionRange
-                                ? '#000000' // Черный текст для снабжения
+                                ? '#000000'
                                 : isInDesignRange
-                                ? '#000000' // Черный текст для проектирования
+                                ? '#000000'
                                 : 'inherit',
                               backgroundColor: isInInstallationRange
-                                ? '#EFDDDD' // Монтаж
+                                ? '#EFDDDD'
                                 : isInProductionRange
-                                ? '#E2EFDC' // Снабжение
+                                ? '#E2EFDC'
                                 : isInDesignRange
-                                ? '#DFEDFF' // Проектирование
+                                ? '#DFEDFF'
                                 : isWeekend
-                                ? '#f8f9fa' // Светло-серый фон для выходных
+                                ? '#f8f9fa'
                                 : 'transparent',
                               fontWeight: isToday
                                 ? 'bolder'
@@ -547,30 +544,28 @@ function GantContracts() {
                               borderLeft: isToday
                                 ? '3px solid #000'
                                 : isWeekend
-                                ? '2px solid #6c757d' // Серая жирная рамка для выходных
+                                ? '2px solid #6c757d'
                                 : '1px solid #dee2e6',
                               borderRight: isToday
                                 ? '3px solid #000'
                                 : isWeekend
-                                ? '2px solid #6c757d' // Серая жирная рамка для выходных
+                                ? '2px solid #6c757d'
                                 : '1px solid #dee2e6',
-                              borderTop: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6', // Верхняя рамка для выходных
-                              borderBottom: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6', // Нижняя рамка для выходных
+                              borderTop: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6',
+                              borderBottom: isWeekend ? '2px solid #6c757d' : '1px solid #dee2e6',
                             }}
                             title={
                               (isWeekend ? 'Выходной день\n' : '') +
-                              (isDesignerWorking
+                              (isDesignerWorking && designerStartDate
                                 ? `Дизайнер: ${
                                     gantProject?.designer || 'Не указан'
-                                  }\nПериод: ${designerStartDate.toLocaleDateString()} - ${
-                                    gantProject?.project_delivery
-                                      ? new Date(gantProject.project_delivery).toLocaleDateString()
-                                      : 'по настоящее время'
+                                  }\nПериод работы: ${designerStartDate.toLocaleDateString(
+                                    'ru-RU',
+                                  )}${
+                                    designerEndDate
+                                      ? ` - ${designerEndDate.toLocaleDateString('ru-RU')}`
+                                      : ' - по настоящее время'
                                   }`
-                                : brigadesForThisDate.length > 0
-                                ? `Бригады: ${brigadesForThisDate
-                                    .map((b) => b.brigade?.name)
-                                    .join(', ')}`
                                 : '')
                             }>
                             {/* Показываем метку выходного дня */}
@@ -598,13 +593,13 @@ function GantContracts() {
                                 style={{
                                   fontSize: '8px',
                                   fontWeight: 'normal',
-                                  color: '#000000', // Черный текст
+                                  color: '#000000',
                                   textAlign: 'center',
                                   whiteSpace: 'nowrap',
                                   textOverflow: 'ellipsis',
                                   overflow: 'hidden',
                                   padding: '1px',
-                                  background: 'transparent', // Убрана подцветка
+                                  background: 'transparent',
                                   borderRadius: '2px',
                                 }}>
                                 {gantProject.designer}
@@ -628,9 +623,8 @@ function GantContracts() {
                                     key={index}
                                     style={{
                                       fontSize: '7px',
-
-                                      color: '#000000', // Черный текст
-                                      background: 'transparent', // Убрана подцветка
+                                      color: '#000000',
+                                      background: 'transparent',
                                       padding: '1px 3px',
                                       borderRadius: '3px',
                                       textAlign: 'center',
