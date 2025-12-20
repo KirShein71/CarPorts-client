@@ -160,6 +160,12 @@ function GantProjects() {
     return `${day}.${monthNames[month]}`;
   };
 
+  const isCurrentWeek = (weekStartDate) => {
+    const today = new Date();
+    const currentWeekStart = getWeekStartDate(today);
+    return weekStartDate === currentWeekStart;
+  };
+
   const addToInfo = (id) => {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
   };
@@ -211,9 +217,23 @@ function GantProjects() {
                       className="gant-projects-table-th date-header"
                       data-date={formatWeekDate(week.week_start)}
                       style={{
-                        backgroundColor: '#ffffff',
+                        backgroundColor: isCurrentWeek(week.week_start) ? '#f0f0f0' : '#ffffff',
+                        fontWeight: isCurrentWeek(week.week_start) ? 'bold' : 'normal',
+                        position: 'relative',
                       }}>
                       <span>{formatWeekDate(week.week_start)}</span>
+                      {isCurrentWeek(week.week_start) && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: '3px',
+                            backgroundColor: '#007bff',
+                          }}
+                        />
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -227,7 +247,7 @@ function GantProjects() {
                         style={{ padding: 0, border: 'none' }}></td>
                     </tr>
 
-                    {/* Строка проекта */}
+                    {/* Строка проекта - выделяем текущую неделю */}
                     <tr>
                       <td
                         className="gant-projects-table__td mobile-project"
@@ -236,81 +256,104 @@ function GantProjects() {
                         }}>
                         {proGP.name}
                       </td>
-                      {proGP.colors?.map((colorData) => (
-                        <td
-                          key={`project-${proGP.id}-${colorData.week_start}`}
-                          className="project-cell"
-                          style={{
-                            backgroundColor: colorData.color,
-                            border: '1px solid #dee2e6',
-                          }}
-                        />
-                      ))}
+                      {proGP.colors?.map((colorData) => {
+                        const isCurrent = isCurrentWeek(colorData.week_start);
+                        return (
+                          <td
+                            key={`project-${proGP.id}-${colorData.week_start}`}
+                            className="project-cell"
+                            style={{
+                              backgroundColor: colorData.color,
+                              border: '1px solid #dee2e6',
+                              position: 'relative',
+                              // Добавляем серую рамку для текущей недели
+                              boxShadow: isCurrent ? 'inset 0 0 0 2px #6c757d' : 'none',
+                            }}
+                          />
+                        );
+                      })}
                     </tr>
 
-                    {/* Строка проектировщика */}
+                    {/* Строка проектировщика - выделяем текущую неделю */}
                     <tr>
                       <td className="gant-projects-table__td mobile">{proGP.designer || ''}</td>
-                      {proGP.designerColors?.map((colorData) => (
-                        <td
-                          key={`designer-${proGP.id}-${colorData.week_start}`}
-                          className="designer-cell"
-                          style={{
-                            backgroundColor: colorData.color,
-                            border: '1px solid #dee2e6',
-                            height: '20px',
-                          }}
-                        />
-                      ))}
+                      {proGP.designerColors?.map((colorData) => {
+                        const isCurrent = isCurrentWeek(colorData.week_start);
+                        return (
+                          <td
+                            key={`designer-${proGP.id}-${colorData.week_start}`}
+                            className="designer-cell"
+                            style={{
+                              backgroundColor: colorData.color,
+                              border: '1px solid #dee2e6',
+                              height: '20px',
+                              position: 'relative',
+                              boxShadow: isCurrent ? 'inset 0 0 0 2px #6c757d' : 'none',
+                            }}
+                          />
+                        );
+                      })}
                     </tr>
 
-                    {/* Строки бригад - по одной на каждую бригаду */}
+                    {/* Строки бригад - выделяем текущую неделю */}
                     {proGP.brigadesDetails && proGP.brigadesDetails.length > 0 ? (
                       proGP.brigadesDetails.map((brigade) => (
                         <tr key={`brigade-${proGP.id}-${brigade.id}`}>
                           <td className="gant-projects-table__td mobile">{brigade.name}</td>
-                          {/* Используем brigadeColors по ID бригады */}
                           {proGP.brigadeColors && proGP.brigadeColors[brigade.id]
-                            ? proGP.brigadeColors[brigade.id].map((colorData) => (
-                                <td
-                                  key={`brigade-${proGP.id}-${brigade.id}-${colorData.week_start}`}
-                                  className="brigade-cell"
-                                  style={{
-                                    backgroundColor: colorData.color,
-                                    border: '1px solid #dee2e6',
-                                    height: '20px',
-                                  }}
-                                />
-                              ))
-                            : // Если нет данных о цветах для этой бригады, показываем прозрачные ячейки
-                              ganttData.weeks?.map((week) => (
-                                <td
-                                  key={`empty-${proGP.id}-${brigade.id}-${week.week_start}`}
-                                  className="brigade-cell"
-                                  style={{
-                                    backgroundColor: 'transparent',
-                                    border: '1px solid #dee2e6',
-                                    height: '20px',
-                                  }}
-                                />
-                              ))}
+                            ? proGP.brigadeColors[brigade.id].map((colorData) => {
+                                const isCurrent = isCurrentWeek(colorData.week_start);
+                                return (
+                                  <td
+                                    key={`brigade-${proGP.id}-${brigade.id}-${colorData.week_start}`}
+                                    className="brigade-cell"
+                                    style={{
+                                      backgroundColor: colorData.color,
+                                      border: '1px solid #dee2e6',
+                                      height: '20px',
+                                      position: 'relative',
+                                      boxShadow: isCurrent ? 'inset 0 0 0 2px #6c757d' : 'none',
+                                    }}
+                                  />
+                                );
+                              })
+                            : ganttData.weeks?.map((week) => {
+                                const isCurrent = isCurrentWeek(week.week_start);
+                                return (
+                                  <td
+                                    key={`empty-${proGP.id}-${brigade.id}-${week.week_start}`}
+                                    className="brigade-cell"
+                                    style={{
+                                      backgroundColor: 'transparent',
+                                      border: '1px solid #dee2e6',
+                                      height: '20px',
+                                      position: 'relative',
+                                      boxShadow: isCurrent ? 'inset 0 0 0 2px #6c757d' : 'none',
+                                    }}
+                                  />
+                                );
+                              })}
                         </tr>
                       ))
                     ) : (
-                      // Если нет бригад, показываем одну пустую строку
                       <tr>
                         <td className="gant-projects-table__td mobile">Нет бригад</td>
-                        {ganttData.weeks?.map((week) => (
-                          <td
-                            key={`empty-${proGP.id}-${week.week_start}`}
-                            className="brigade-cell"
-                            style={{
-                              backgroundColor: 'transparent',
-                              border: '1px solid #dee2e6',
-                              height: '20px',
-                            }}
-                          />
-                        ))}
+                        {ganttData.weeks?.map((week) => {
+                          const isCurrent = isCurrentWeek(week.week_start);
+                          return (
+                            <td
+                              key={`empty-${proGP.id}-${week.week_start}`}
+                              className="brigade-cell"
+                              style={{
+                                backgroundColor: 'transparent',
+                                border: '1px solid #dee2e6',
+                                height: '20px',
+                                position: 'relative',
+                                boxShadow: isCurrent ? 'inset 0 0 0 2px #6c757d' : 'none',
+                              }}
+                            />
+                          );
+                        })}
                       </tr>
                     )}
                   </React.Fragment>
