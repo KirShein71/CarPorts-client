@@ -170,13 +170,40 @@ function GantProjects() {
     navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
   };
 
-  // Функция для получения индекса текущей недели
-  const getCurrentWeekIndex = () => {
-    if (currentWeekIndex !== -1) return currentWeekIndex;
+  // Функция для смешивания цветов (добавления серого оттенка)
+  const mixWithGray = (color, opacity = 0.7) => {
+    if (color === 'transparent') {
+      return 'transparent'; // Оставляем прозрачным
+    }
 
-    const today = new Date();
-    const currentWeekStart = getWeekStartDate(today);
-    return ganttData.weeks?.findIndex((week) => week.week_start === currentWeekStart) || -1;
+    // Разбираем цвет на RGB
+    let r, g, b;
+    if (color.startsWith('#')) {
+      // HEX цвет
+      const hex = color.slice(1);
+      r = parseInt(hex.slice(0, 2), 16);
+      g = parseInt(hex.slice(2, 4), 16);
+      b = parseInt(hex.slice(4, 6), 16);
+    } else if (color.startsWith('rgb')) {
+      // RGB цвет
+      const match = color.match(/\d+/g);
+      r = parseInt(match[0]);
+      g = parseInt(match[1]);
+      b = parseInt(match[2]);
+    } else {
+      return color; // Возвращаем исходный цвет
+    }
+
+    // Смешиваем с серым (200, 200, 200)
+    const grayR = 200;
+    const grayG = 200;
+    const grayB = 200;
+
+    const mixedR = Math.round(r * opacity + grayR * (1 - opacity));
+    const mixedG = Math.round(g * opacity + grayG * (1 - opacity));
+    const mixedB = Math.round(b * opacity + grayB * (1 - opacity));
+
+    return `rgb(${mixedR}, ${mixedG}, ${mixedB})`;
   };
 
   return (
@@ -226,9 +253,18 @@ function GantProjects() {
                       className="gant-projects-table-th date-header"
                       data-date={formatWeekDate(week.week_start)}
                       style={{
-                        backgroundColor: isCurrentWeek(week.week_start) ? '#f0f0f0' : '#ffffff',
+                        backgroundColor: '#ffffff',
+                        color: '#000000',
                         fontWeight: isCurrentWeek(week.week_start) ? 'bold' : 'normal',
                         position: 'relative',
+                        border: '1px solid #dee2e6',
+                        // Вертикальные линии для текущей недели
+                        borderLeft: isCurrentWeek(week.week_start)
+                          ? '3px solid #808080'
+                          : '1px solid #dee2e6',
+                        borderRight: isCurrentWeek(week.week_start)
+                          ? '3px solid #808080'
+                          : '1px solid #dee2e6',
                       }}>
                       <span>{formatWeekDate(week.week_start)}</span>
                       {isCurrentWeek(week.week_start) && (
@@ -267,6 +303,25 @@ function GantProjects() {
                       </td>
                       {proGP.colors?.map((colorData, index) => {
                         const isCurrent = isCurrentWeek(colorData.week_start);
+                        // Если текущая неделя - смешиваем цвет с серым и добавляем вертикальные границы
+                        if (isCurrent) {
+                          return (
+                            <td
+                              key={`project-${proGP.id}-${colorData.week_start}`}
+                              className="project-cell"
+                              style={{
+                                backgroundColor: mixWithGray(colorData.color, 0.8), // Легкий серый оттенок
+                                borderTop: '1px solid #dee2e6',
+                                borderBottom: '1px solid #dee2e6',
+                                // Только вертикальные линии
+                                borderLeft: '3px solid #808080',
+                                borderRight: '3px solid #808080',
+                                position: 'relative',
+                              }}
+                            />
+                          );
+                        }
+                        // Если не текущая неделя - стандартный цвет
                         return (
                           <td
                             key={`project-${proGP.id}-${colorData.week_start}`}
@@ -275,17 +330,6 @@ function GantProjects() {
                               backgroundColor: colorData.color,
                               border: '1px solid #dee2e6',
                               position: 'relative',
-                              // Добавляем выделение столбца
-                              borderLeft: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              borderRight: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              borderTop:
-                                index === 0 && isCurrent
-                                  ? '3px solid #007bff'
-                                  : '1px solid #dee2e6',
-                              borderBottom: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              boxShadow: isCurrent
-                                ? 'inset 0 0 0 2px rgba(0, 123, 255, 0.2)'
-                                : 'none',
                             }}
                           />
                         );
@@ -297,6 +341,26 @@ function GantProjects() {
                       <td className="gant-projects-table__td mobile">{proGP.designer || ''}</td>
                       {proGP.designerColors?.map((colorData, index) => {
                         const isCurrent = isCurrentWeek(colorData.week_start);
+                        // Если текущая неделя - смешиваем цвет с серым и добавляем вертикальные границы
+                        if (isCurrent) {
+                          return (
+                            <td
+                              key={`designer-${proGP.id}-${colorData.week_start}`}
+                              className="designer-cell"
+                              style={{
+                                backgroundColor: mixWithGray(colorData.color, 0.8), // Легкий серый оттенок
+                                borderTop: '1px solid #dee2e6',
+                                borderBottom: '1px solid #dee2e6',
+                                // Только вертикальные линии
+                                borderLeft: '3px solid #808080',
+                                borderRight: '3px solid #808080',
+                                height: '20px',
+                                position: 'relative',
+                              }}
+                            />
+                          );
+                        }
+                        // Если не текущая неделя - стандартный цвет
                         return (
                           <td
                             key={`designer-${proGP.id}-${colorData.week_start}`}
@@ -306,13 +370,6 @@ function GantProjects() {
                               border: '1px solid #dee2e6',
                               height: '20px',
                               position: 'relative',
-                              // Добавляем выделение столбца
-                              borderLeft: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              borderRight: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              borderBottom: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                              boxShadow: isCurrent
-                                ? 'inset 0 0 0 2px rgba(0, 123, 255, 0.2)'
-                                : 'none',
                             }}
                           />
                         );
@@ -327,6 +384,26 @@ function GantProjects() {
                           {proGP.brigadeColors && proGP.brigadeColors[brigade.id]
                             ? proGP.brigadeColors[brigade.id].map((colorData, index) => {
                                 const isCurrent = isCurrentWeek(colorData.week_start);
+                                // Если текущая неделя - смешиваем цвет с серым и добавляем вертикальные границы
+                                if (isCurrent) {
+                                  return (
+                                    <td
+                                      key={`brigade-${proGP.id}-${brigade.id}-${colorData.week_start}`}
+                                      className="brigade-cell"
+                                      style={{
+                                        backgroundColor: mixWithGray(colorData.color, 0.8), // Легкий серый оттенок
+                                        borderTop: '1px solid #dee2e6',
+                                        borderBottom: '1px solid #dee2e6',
+                                        // Только вертикальные линии
+                                        borderLeft: '3px solid #808080',
+                                        borderRight: '3px solid #808080',
+                                        height: '20px',
+                                        position: 'relative',
+                                      }}
+                                    />
+                                  );
+                                }
+                                // Если не текущая неделя - стандартный цвет
                                 return (
                                   <td
                                     key={`brigade-${proGP.id}-${brigade.id}-${colorData.week_start}`}
@@ -336,27 +413,32 @@ function GantProjects() {
                                       border: '1px solid #dee2e6',
                                       height: '20px',
                                       position: 'relative',
-                                      // Добавляем выделение столбца
-                                      borderLeft: isCurrent
-                                        ? '3px solid #007bff'
-                                        : '1px solid #dee2e6',
-                                      borderRight: isCurrent
-                                        ? '3px solid #007bff'
-                                        : '1px solid #dee2e6',
-                                      borderBottom:
-                                        brigadeIndex === proGP.brigadesDetails.length - 1 &&
-                                        isCurrent
-                                          ? '3px solid #007bff'
-                                          : '1px solid #dee2e6',
-                                      boxShadow: isCurrent
-                                        ? 'inset 0 0 0 2px rgba(0, 123, 255, 0.2)'
-                                        : 'none',
                                     }}
                                   />
                                 );
                               })
                             : ganttData.weeks?.map((week, index) => {
                                 const isCurrent = isCurrentWeek(week.week_start);
+                                // Если текущая неделя - только вертикальные линии
+                                if (isCurrent) {
+                                  return (
+                                    <td
+                                      key={`empty-${proGP.id}-${brigade.id}-${week.week_start}`}
+                                      className="brigade-cell"
+                                      style={{
+                                        backgroundColor: 'transparent',
+                                        borderTop: '1px solid #dee2e6',
+                                        borderBottom: '1px solid #dee2e6',
+                                        // Только вертикальные линии
+                                        borderLeft: '3px solid #808080',
+                                        borderRight: '3px solid #808080',
+                                        height: '20px',
+                                        position: 'relative',
+                                      }}
+                                    />
+                                  );
+                                }
+                                // Если не текущая неделя - прозрачный
                                 return (
                                   <td
                                     key={`empty-${proGP.id}-${brigade.id}-${week.week_start}`}
@@ -366,21 +448,6 @@ function GantProjects() {
                                       border: '1px solid #dee2e6',
                                       height: '20px',
                                       position: 'relative',
-                                      // Добавляем выделение столбца
-                                      borderLeft: isCurrent
-                                        ? '3px solid #007bff'
-                                        : '1px solid #dee2e6',
-                                      borderRight: isCurrent
-                                        ? '3px solid #007bff'
-                                        : '1px solid #dee2e6',
-                                      borderBottom:
-                                        brigadeIndex === proGP.brigadesDetails.length - 1 &&
-                                        isCurrent
-                                          ? '3px solid #007bff'
-                                          : '1px solid #dee2e6',
-                                      boxShadow: isCurrent
-                                        ? 'inset 0 0 0 2px rgba(0, 123, 255, 0.2)'
-                                        : 'none',
                                     }}
                                   />
                                 );
@@ -392,6 +459,26 @@ function GantProjects() {
                         <td className="gant-projects-table__td mobile">Нет бригад</td>
                         {ganttData.weeks?.map((week, index) => {
                           const isCurrent = isCurrentWeek(week.week_start);
+                          // Если текущая неделя - только вертикальные линии
+                          if (isCurrent) {
+                            return (
+                              <td
+                                key={`empty-${proGP.id}-${week.week_start}`}
+                                className="brigade-cell"
+                                style={{
+                                  backgroundColor: 'transparent',
+                                  borderTop: '1px solid #dee2e6',
+                                  borderBottom: '1px solid #dee2e6',
+                                  // Только вертикальные линии
+                                  borderLeft: '3px solid #808080',
+                                  borderRight: '3px solid #808080',
+                                  height: '20px',
+                                  position: 'relative',
+                                }}
+                              />
+                            );
+                          }
+                          // Если не текущая неделя - прозрачный
                           return (
                             <td
                               key={`empty-${proGP.id}-${week.week_start}`}
@@ -401,13 +488,6 @@ function GantProjects() {
                                 border: '1px solid #dee2e6',
                                 height: '20px',
                                 position: 'relative',
-                                // Добавляем выделение столбца
-                                borderLeft: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                                borderRight: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                                borderBottom: isCurrent ? '3px solid #007bff' : '1px solid #dee2e6',
-                                boxShadow: isCurrent
-                                  ? 'inset 0 0 0 2px rgba(0, 123, 255, 0.2)'
-                                  : 'none',
                               }}
                             />
                           );
