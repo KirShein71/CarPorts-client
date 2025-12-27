@@ -488,12 +488,16 @@ function ProductionOrders() {
                           <td
                             className="production-orders__antypicalName"
                             onClick={() => handleCreateAntypicalName(antypDetails.id)}>
-                            {antypDetails.name === '' ? '+' : antypDetails.name}
+                            {antypDetails.name === '' || antypDetails.name === null
+                              ? '+'
+                              : antypDetails.name}
                           </td>
                           <td
                             className="production-orders__antypicalColor"
                             onClick={() => handleCreateAntypicalColor(antypDetails.id)}>
-                            {antypDetails.color === '' ? '+' : antypDetails.color}
+                            {antypDetails.color === '' || antypDetails.color === null
+                              ? '+'
+                              : antypDetails.color}
                           </td>
                           <td
                             className="production-orders__quantityDetail"
