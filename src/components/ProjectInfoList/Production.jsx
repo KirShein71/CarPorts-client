@@ -9,10 +9,12 @@ function Production(props) {
     handleOpenModalCreateOneProjectDetail,
     handleOpenModalCreateOneShipmentDetail,
     handleOpenModalUpdateShipmentDetail,
-    handleOpenModalCreateAntypical,
-    handleOpenModalAntypicalImage,
     handleOpenModalCreateOneDeliveryDetail,
     handleOpenModalUpdateDeliveryDetail,
+    handleCreateAntypicalsQuantity,
+    handleCreateAntypicalsShipmentQuantity,
+    handleCreateAntypicalsDeliveryQuantity,
+    handleOpenModalCreateAntypical,
   } = props;
 
   const [showAllDetails, setShowAllDetails] = React.useState(false);
@@ -110,33 +112,33 @@ function Production(props) {
         </tbody>
         <tbody>
           <tr>
-            <td>Нетиповые</td>
-            <td>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div
-                  onClick={() => handleOpenModalCreateAntypical(project.project.id)}
-                  style={{
-                    cursor: 'pointer',
-                    color: 'red',
-                    fontWeight: 600,
-                    paddingRight: '15px',
-                  }}>
-                  +
-                </div>
-                <div
-                  onClick={() => handleOpenModalAntypicalImage(project.antypicalDetails)}
-                  className="production__eye">
-                  {project.antypicalDetails?.length > 0 ? (
-                    <img src="../img/eye.png" alt="eye" />
-                  ) : (
-                    ''
-                  )}
-                </div>
-              </div>
-            </td>
+            <td onClick={() => handleOpenModalCreateAntypical(project.project.id)}>Нетиповые</td>
+            <td></td>
             <td></td>
             <td></td>
           </tr>
+        </tbody>
+        <tbody>
+          {project.antypicalDetails.map((antyDetPro) => (
+            <tr key={antyDetPro.id}>
+              <td>{antyDetPro.name}</td>
+              <td
+                onClick={() => handleCreateAntypicalsQuantity(antyDetPro.id)}
+                style={{ textAlign: 'center' }}>
+                {antyDetPro.antypicals_quantity}
+              </td>
+              <td
+                onClick={() => handleCreateAntypicalsShipmentQuantity(antyDetPro.id)}
+                style={{ textAlign: 'center' }}>
+                {antyDetPro.antypicals_shipment_quantity}
+              </td>
+              <td
+                onClick={() => handleCreateAntypicalsDeliveryQuantity(antyDetPro.id)}
+                style={{ textAlign: 'center' }}>
+                {antyDetPro.antypicals_delivery_quantity}
+              </td>
+            </tr>
+          ))}
         </tbody>
         <tfoot>
           <tr>

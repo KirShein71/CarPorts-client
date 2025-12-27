@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import { fetchAllDetails } from '../../../http/detailsApi';
 import { createProjectDetails } from '../../../http/projectDetailsApi';
-import './styles.scss';
 
 const defaultValue = {
   detail: '',
@@ -28,16 +27,23 @@ const isValid = (value) => {
   return result;
 };
 
-const CreateDetails = (props) => {
-  const { show, setShow, setChange, projectId } = props;
+const CreateProjectDetails = (props) => {
+  const { show, setShow, setChange, projectId, existingDetailIds = [] } = props; // Добавляем пропс
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [details, setDetails] = React.useState(null);
   const [selectedDetails, setSelectedDetails] = React.useState([]);
+  const [filteredDetails, setFilteredDetails] = React.useState([]);
 
   React.useEffect(() => {
-    fetchAllDetails().then((data) => setDetails(data));
-  }, []);
+    fetchAllDetails().then((data) => {
+      setDetails(data);
+
+      // Фильтруем детали: оставляем только те, которых еще нет в проекте
+      const filtered = data.filter((detail) => !existingDetailIds.includes(detail.id));
+      setFilteredDetails(filtered);
+    });
+  }, [existingDetailIds]); // Зависимость от existingDetailIds
 
   const handleInputChange = (event) => {
     const regex = /^[0-9]*$/;
@@ -62,6 +68,10 @@ const CreateDetails = (props) => {
         color: value.color,
       };
       setSelectedDetails((prev) => [...prev, newDetail]);
+
+      // Удаляем выбранную деталь из доступных
+      setFilteredDetails((prev) => prev.filter((d) => d.id !== parseInt(value.detail)));
+
       setValue(defaultValue);
       setValid(defaultValid);
     }
@@ -99,10 +109,28 @@ const CreateDetails = (props) => {
   };
 
   const handleRemoveDetail = (index) => {
+    const removedDetail = selectedDetails[index];
     setSelectedDetails((prev) => prev.filter((_, i) => i !== index));
+
+    // Возвращаем удаленную деталь в список доступных
+    if (removedDetail && removedDetail.detailId && details) {
+      const detailToRestore = details.find((d) => d.id === parseInt(removedDetail.detailId));
+      if (detailToRestore) {
+        setFilteredDetails((prev) => [...prev, detailToRestore].sort((a, b) => a.id - b.id));
+      }
+    }
   };
 
   const handleRemoveAllDetails = () => {
+    // Возвращаем все выбранные детали в список доступных
+    if (selectedDetails.length > 0 && details) {
+      const restoredDetails = selectedDetails
+        .map((detail) => details.find((d) => d.id === parseInt(detail.detailId)))
+        .filter(Boolean);
+
+      setFilteredDetails((prev) => [...prev, ...restoredDetails].sort((a, b) => a.id - b.id));
+    }
+
     setSelectedDetails([]);
   };
 
@@ -125,17 +153,23 @@ const CreateDetails = (props) => {
               value={value.detail}
               onChange={handleDetailChange}
               isValid={valid.detail === true}
-              isInvalid={valid.detail === false}>
-              <option value="">Детали</option>
-              {details &&
-                details
-                  .sort((a, b) => a.id - b.id)
-                  .map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
+              isInvalid={valid.detail === false}
+              disabled={filteredDetails.length === 0} // Деактивируем если нет доступных деталей
+            >
+              <option value="">
+                {filteredDetails.length === 0 ? 'Все детали уже добавлены' : 'Детали'}
+              </option>
+              {filteredDetails
+                .sort((a, b) => a.id - b.id)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
             </Form.Select>
+            {filteredDetails.length === 0 && (
+              <p className="text-muted mt-2">Все доступные детали уже добавлены в этот проект.</p>
+            )}
           </Col>
           <Row className="mb-3 mt-4">
             <Col>
@@ -147,6 +181,7 @@ const CreateDetails = (props) => {
                 isInvalid={valid.quantity === false}
                 placeholder="Количество деталей"
                 className="mb-3"
+                disabled={!value.detail} // Деактивируем если не выбрана деталь
               />
             </Col>
           </Row>
@@ -160,39 +195,52 @@ const CreateDetails = (props) => {
                 isInvalid={valid.color === false}
                 placeholder="Цвет деталей"
                 className="mb-3"
+                disabled={!value.detail} // Деактивируем если не выбрана деталь
               />
             </Col>
           </Row>
           <Col>
-            <Button variant="dark" className="mb-3" onClick={handleAddDetail}>
+            <Button
+              variant="dark"
+              className="mb-3"
+              onClick={handleAddDetail}
+              disabled={!value.detail || !value.quantity}>
               Добавить
             </Button>
           </Col>
-          {selectedDetails.map((detail, index) => (
-            <div key={index}>
-              <Row className="mb-3">
-                <Col>
-                  <Form.Control disabled value={detail.detailName} />
-                </Col>
-                <Col>
-                  <Form.Control disabled value={detail.quantity} />
-                </Col>
-                <Col>
-                  <Button variant="dark" onClick={() => handleRemoveDetail(index)}>
-                    Удалить
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-          ))}
+
           {selectedDetails.length > 0 && (
             <>
-              <Button variant="dark" className="me-3" onClick={handleSaveDetails}>
-                Сохранить все детали
-              </Button>
-              <Button variant="dark" onClick={handleRemoveAllDetails}>
-                Удалить все
-              </Button>
+              <h6 className="mt-3">Выбранные детали:</h6>
+              {selectedDetails.map((detail, index) => (
+                <div key={index}>
+                  <Row className="mb-3 align-items-center">
+                    <Col xs={5}>
+                      <Form.Control disabled value={detail.detailName} />
+                    </Col>
+                    <Col xs={3}>
+                      <Form.Control disabled value={detail.quantity} />
+                    </Col>
+                    <Col xs={4}>
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => handleRemoveDetail(index)}
+                        size="sm">
+                        Удалить
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+              ))}
+
+              <div className="d-flex gap-2 mt-3">
+                <Button variant="dark" onClick={handleSaveDetails}>
+                  Сохранить все детали
+                </Button>
+                <Button variant="outline-danger" onClick={handleRemoveAllDetails}>
+                  Удалить все
+                </Button>
+              </div>
             </>
           )}
         </Form>
@@ -201,4 +249,4 @@ const CreateDetails = (props) => {
   );
 };
 
-export default CreateDetails;
+export default CreateProjectDetails;

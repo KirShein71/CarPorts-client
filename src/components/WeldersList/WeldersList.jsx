@@ -10,6 +10,9 @@ import CreateOneStockDetail from './modals/createOneStockDetail';
 import './modals/style.scss';
 import CreateStockAntypical from './modals/createStockAntypical';
 import { AppContext } from '../../context/AppContext';
+import WeldersAntypicals from './WeldersAntypicals';
+import { fetchAllAntypical } from '../../http/antypicalApi';
+import CreateAntypicalsWeldersQuantity from './modals/CreateAntypicalsWeldersQuanity';
 
 function WeldersList() {
   const { user } = React.useContext(AppContext);
@@ -27,18 +30,35 @@ function WeldersList() {
   const [sortOrder, setSortOrder] = React.useState('desc');
   const [sortField, setSortField] = React.useState('stock_date');
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [activeWeldersAntypicals, setActiveWeldersAntypicals] = React.useState(false);
+  const [antypicalsDetails, setAntypicalsDetails] = React.useState([]);
+  const [openModalCreateAntypicalsWeldersQuantity, setOpenModalCreateAntypicalsWeldersQuantity] =
+    React.useState(false);
+  const [antypicalsId, setAntypicalsId] = React.useState(null);
 
   React.useEffect(() => {
-    fetchAllStockDetails()
-      .then((data) => {
-        setStockDetails(data);
-      })
-      .finally(() => setFetching(false));
+    const fetchAllData = async () => {
+      try {
+        setFetching(true);
+
+        const [stockData, nameData, antypicalsData] = await Promise.all([
+          fetchAllStockDetails(),
+          fetchAllDetails(),
+          fetchAllAntypical(),
+        ]);
+
+        setStockDetails(stockData);
+        setNameDetails(nameData);
+        setAntypicalsDetails(antypicalsData);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchAllData();
   }, [change]);
-
-  React.useEffect(() => {
-    fetchAllDetails().then((data) => setNameDetails(data));
-  }, []);
 
   const handleUpdateDetailClick = (id) => {
     setStockDetail(id);
@@ -57,6 +77,19 @@ function WeldersList() {
   };
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleClickActiveWeldersAntypicals = () => {
+    setActiveWeldersAntypicals(true);
+  };
+
+  const handleClickActiveMainWelders = () => {
+    setActiveWeldersAntypicals(false);
+  };
+
+  const handleOpenModalCreateAntypicalsWeldersQuantity = (id) => {
+    setAntypicalsId(id);
+    setOpenModalCreateAntypicalsWeldersQuantity(true);
   };
 
   const handleDeleteStockDetails = (stock_date) => {
@@ -104,6 +137,21 @@ function WeldersList() {
     }
   });
 
+  const handleDownloadFile = (fileUrl) => {
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileUrl.substring(fileUrl.lastIndexOf('/') + 1));
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => console.error('Ошибка при скачивании файла:', error));
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -112,15 +160,26 @@ function WeldersList() {
     <div className="welderslist">
       <Header title={'Произведено'} />
       <div style={{ display: 'flex' }}>
-        <button className="button__welders" onClick={() => setCreateDetailsModal(true)}>
-          Внести детали
-        </button>
-        <input
-          class="welders__search"
-          placeholder="Поиск по дате"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+        {activeWeldersAntypicals ? (
+          <button className="button__main" onClick={handleClickActiveMainWelders}>
+            Главная
+          </button>
+        ) : (
+          <>
+            <button className="button__welders" onClick={() => setCreateDetailsModal(true)}>
+              Внести детали
+            </button>
+            <button className="button__antypicals" onClick={handleClickActiveWeldersAntypicals}>
+              Нетиповые
+            </button>
+            <input
+              class="welders__search"
+              placeholder="Поиск по дате"
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+          </>
+        )}
       </div>
       <CreateStockDetails
         show={createDetailsModal}
@@ -146,90 +205,105 @@ function WeldersList() {
         setShow={setCreateOneStockDetailModal}
         setChange={setChange}
       />
-      <div className="welders-table-container">
-        <div className="welders-table-wrapper">
-          <Table
-            bordered
-            size="sm"
-            className="mt-3"
-            style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th className="welders_column">Сумма</th>
-                {detailSums.map((sum, index) => (
-                  <th className="welders_thead" key={index}>
-                    {sum}
-                  </th>
-                ))}
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <thead>
-              <tr>
-                <th className="welders-th mobile" onClick={() => handleSort('stock_date')}>
-                  Отметка времени{' '}
-                  <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
-                </th>
-                {nameDetails
-                  .sort((a, b) => a.id - b.id)
-                  .map((part) => (
-                    <th className="welders-th" key={part.id}>
-                      {part.name}
+      <CreateAntypicalsWeldersQuantity
+        show={openModalCreateAntypicalsWeldersQuantity}
+        setShow={setOpenModalCreateAntypicalsWeldersQuantity}
+        id={antypicalsId}
+        setChange={setChange}
+      />
+      {activeWeldersAntypicals ? (
+        <WeldersAntypicals
+          antypicalsDetails={antypicalsDetails}
+          handleOpenModalCreateAntypicalsWeldersQuantity={
+            handleOpenModalCreateAntypicalsWeldersQuantity
+          }
+          handleDownloadFile={handleDownloadFile}
+        />
+      ) : (
+        <div className="welders-table-container">
+          <div className="welders-table-wrapper">
+            <Table
+              bordered
+              size="sm"
+              className="mt-3"
+              style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th className="welders_column">Сумма</th>
+                  {detailSums.map((sum, index) => (
+                    <th className="welders_thead" key={index}>
+                      {sum}
                     </th>
                   ))}
-                <th className="welders-th">Нетиповые</th>
-                <th className="welders-th"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedStockDetails
-                .filter((stock) => {
-                  const searchValue = searchQuery.toLowerCase();
-                  const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
-                  const formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // Преобразуем дату в формат "dd.mm.yyyy"
-                  return formattedDate.includes(searchValue); // Проверяем, содержит ли преобразованная дата искомое значение
-                })
-                .map((stock) => (
-                  <tr>
-                    <td className="welders-td mobile">
-                      <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
-                    </td>
-                    {nameDetails
-                      .sort((a, b) => a.id - b.id)
-                      .map((part) => {
-                        const detail = stock.props.find((el) => el.detailId === part.id);
-                        const quantity = detail ? detail.stock_quantity : '';
-                        return (
-                          <td
-                            style={{ cursor: 'pointer' }}
-                            onClick={
-                              user.isManagerProduction
-                                ? undefined
-                                : () =>
-                                    quantity
-                                      ? handleUpdateDetailClick(detail.id)
-                                      : handleCreateOneStockDetail(part.id, stock.stock_date)
-                            }>
-                            {quantity}
-                          </td>
-                        );
-                      })}
-                    <td onClick={() => handleCreateStockAntypical(stock.stock_date)}></td>
-                    <td>
-                      <Button
-                        variant="dark"
-                        size="sm"
-                        onClick={() => handleDeleteStockDetails(stock.stock_date)}>
-                        Удалить
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th className="welders-th mobile" onClick={() => handleSort('stock_date')}>
+                    Отметка времени{' '}
+                    <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
+                  </th>
+                  {nameDetails
+                    .sort((a, b) => a.id - b.id)
+                    .map((part) => (
+                      <th className="welders-th" key={part.id}>
+                        {part.name}
+                      </th>
+                    ))}
+
+                  <th className="welders-th"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedStockDetails
+                  .filter((stock) => {
+                    const searchValue = searchQuery.toLowerCase();
+                    const parts = stock.stock_date.split('-'); // Разбиваем дату на части по дефису
+                    const formattedDate = `${parts[2]}.${parts[1]}.${parts[0]}`; // Преобразуем дату в формат "dd.mm.yyyy"
+                    return formattedDate.includes(searchValue); // Проверяем, содержит ли преобразованная дата искомое значение
+                  })
+                  .map((stock) => (
+                    <tr>
+                      <td className="welders-td mobile">
+                        <Moment format="DD.MM.YYYY">{stock.stock_date}</Moment>
+                      </td>
+                      {nameDetails
+                        .sort((a, b) => a.id - b.id)
+                        .map((part) => {
+                          const detail = stock.props.find((el) => el.detailId === part.id);
+                          const quantity = detail ? detail.stock_quantity : '';
+                          return (
+                            <td
+                              style={{ cursor: 'pointer' }}
+                              onClick={
+                                user.isManagerProduction
+                                  ? undefined
+                                  : () =>
+                                      quantity
+                                        ? handleUpdateDetailClick(detail.id)
+                                        : handleCreateOneStockDetail(part.id, stock.stock_date)
+                              }>
+                              {quantity}
+                            </td>
+                          );
+                        })}
+                      <td>
+                        <Button
+                          variant="dark"
+                          size="sm"
+                          onClick={() => handleDeleteStockDetails(stock.stock_date)}>
+                          Удалить
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

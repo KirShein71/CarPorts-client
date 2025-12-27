@@ -2,10 +2,35 @@ import React, { useEffect } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createAntypical } from '../../../http/antypicalApi';
 
+const defaultValue = {
+  name: '',
+  color: '',
+  antypicals_quantity: '',
+};
+const defaultValid = {
+  name: null,
+  color: null,
+  antypicals_quantity: null,
+};
+
+const isValid = (value) => {
+  const result = {};
+  for (let key in value) {
+    if (key === 'name') result.name = value.name.trim() !== '';
+    if (key === 'color') result.color = value.color.trim() !== '';
+    if (key === 'antypicals_quantity')
+      result.antypicals_quantity = value.antypicals_quantity.trim() !== '';
+  }
+  return result;
+};
+
 const CreateAntypical = (props) => {
-  const { show, setShow, setChange, projectId } = props;
+  const { show, setShow, setChange, projectId, scrollPosition } = props;
   const [image, setImage] = React.useState(null);
-  const [selectedImages, setSelectedImages] = React.useState([]);
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [value, setValue] = React.useState(defaultValue);
+  const [valid, setValid] = React.useState(defaultValid);
+  const [errors, setErrors] = React.useState({});
 
   // Обработчик вставки из буфера обмена
   useEffect(() => {
@@ -19,8 +44,12 @@ const CreateAntypical = (props) => {
       if (clipboardData.files && clipboardData.files.length > 0) {
         for (let i = 0; i < clipboardData.files.length; i++) {
           if (clipboardData.files[i].type.indexOf('image') !== -1) {
-            setImage(clipboardData.files[i]);
-            handleAddImage(clipboardData.files[i]);
+            const pastedImage = clipboardData.files[i];
+            setImage(pastedImage);
+            setSelectedImage({
+              image: pastedImage,
+              preview: URL.createObjectURL(pastedImage),
+            });
             break;
           }
         }
@@ -34,7 +63,10 @@ const CreateAntypical = (props) => {
             const fileName = `screenshot-${new Date().toISOString().slice(0, 10)}.png`;
             const pastedImage = new File([blob], fileName, { type: 'image/png' });
             setImage(pastedImage);
-            handleAddImage(pastedImage);
+            setSelectedImage({
+              image: pastedImage,
+              preview: URL.createObjectURL(pastedImage),
+            });
             break;
           }
         }
@@ -47,69 +79,205 @@ const CreateAntypical = (props) => {
     };
   }, [show]);
 
+  // Очистка preview URL при размонтировании
+  useEffect(() => {
+    return () => {
+      if (selectedImage?.preview) {
+        URL.revokeObjectURL(selectedImage.preview);
+      }
+    };
+  }, [selectedImage]);
+
+  const handleInputChange = (event) => {
+    const { name, value: inputValue } = event.target;
+    const data = { ...value, [name]: inputValue };
+    setValue(data);
+
+    // Очищаем ошибку при вводе
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+
+    // Валидация количества в реальном времени
+    if (name === 'antypicals_quantity') {
+      const trimmedValue = inputValue.trim();
+      if (trimmedValue === '') {
+        setValid((prev) => ({ ...prev, antypicals_quantity: false }));
+      } else if (!isNaN(trimmedValue) && parseInt(trimmedValue) > 0) {
+        setValid((prev) => ({ ...prev, antypicals_quantity: true }));
+      }
+    }
+  };
+
   const handleImageChange = (event) => {
     if (event.target.files[0]) {
-      setImage(event.target.files[0]);
+      const file = event.target.files[0];
+      setImage(file);
+      setSelectedImage({
+        image: file,
+        preview: URL.createObjectURL(file),
+      });
     }
   };
 
-  const handleAddImage = (img = null) => {
-    const imageToAdd = img || image;
-    if (imageToAdd) {
-      const newImage = {
-        image: imageToAdd,
-      };
-      setSelectedImages((prev) => [...prev, newImage]);
-      setImage(null); // Сбрасываем текущее изображение после добавления
+  const handleAddImage = () => {
+    if (image) {
+      setSelectedImage({
+        image: image,
+        preview: URL.createObjectURL(image),
+      });
+      setImage(null);
     }
   };
 
-  // Остальной код без изменений
-  const handleSaveImages = () => {
-    const data = selectedImages.map((image) => {
-      const formData = new FormData();
-      formData.append('projectId', projectId);
-      formData.append('image', image.image);
-      return formData;
-    });
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+  };
 
-    Promise.all(data.map(createAntypical))
+  const handleSave = () => {
+    let hasError = false;
+    const newErrors = {};
+
+    // Проверка наличия изображения
+    if (!selectedImage) {
+      newErrors.image = 'Пожалуйста, добавьте изображение';
+      hasError = true;
+    }
+
+    // Проверка количества (единственное обязательное поле)
+    const quantity = value.antypicals_quantity.trim();
+    if (!quantity) {
+      newErrors.antypicals_quantity = 'Количество - обязательное поле';
+      hasError = true;
+    } else if (isNaN(quantity) || parseInt(quantity) <= 0) {
+      newErrors.antypicals_quantity = 'Укажите положительное число';
+      hasError = true;
+    }
+
+    // Название и цвет НЕ обязательные
+    const name = value.name.trim();
+    const color = value.color.trim();
+
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('projectId', projectId);
+    formData.append('image', selectedImage.image);
+    formData.append('name', name);
+    formData.append('color', color);
+    formData.append('antypicals_quantity', parseInt(quantity));
+
+    createAntypical(formData)
       .then(() => {
-        setSelectedImages([]);
-        setShow(false);
+        // Очищаем все данные
+        setSelectedImage(null);
+        setImage(null);
+        setValue(defaultValue);
+        setValid(defaultValid);
+        setErrors({});
+        handleCloseModal();
         setChange((state) => !state);
       })
       .catch((error) => {
+        let errorMessage = 'Произошла ошибка при обработке запроса';
+
         if (error.response && error.response.data) {
-          alert(error.response.data.message);
-        } else {
-          alert('Произошла ошибка при обработке запроса');
+          errorMessage = error.response.data.message || errorMessage;
         }
+
+        setErrors((prev) => ({ ...prev, form: errorMessage }));
       });
   };
 
-  const handleRemoveImage = (index) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveImage = () => {
+    if (selectedImage?.preview) {
+      URL.revokeObjectURL(selectedImage.preview);
+    }
+    setSelectedImage(null);
+    setImage(null);
   };
 
-  const handleRemoveAllImages = () => {
-    setSelectedImages([]);
+  const handleClose = () => {
+    if (selectedImage?.preview) {
+      URL.revokeObjectURL(selectedImage.preview);
+    }
+    setSelectedImage(null);
+    setImage(null);
+    setValue(defaultValue);
+    setValid(defaultValid);
+    setErrors({});
+    setShow(false);
   };
 
   return (
     <Modal
       show={show}
-      onHide={() => setShow(false)}
+      onHide={handleClose}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
-      onShow={() => setImage(null)} // Сбрасываем изображение при открытии
-    >
+      onShow={() => {
+        setImage(null);
+        setSelectedImage(null);
+        setValue(defaultValue);
+        setValid(defaultValid);
+        setErrors({});
+      }}>
       <Modal.Header closeButton>
         <Modal.Title>Нетипичная деталь</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
+          {/* Ошибка формы */}
+          {errors.form && <div className="alert alert-danger mb-3">{errors.form}</div>}
+
+          {/* Ошибка изображения */}
+          {errors.image && <div className="alert alert-warning mb-3">{errors.image}</div>}
+
+          <Row className="mb-3 mt-4">
+            <Col>
+              <Form.Control
+                name="name"
+                value={value.name}
+                onChange={handleInputChange}
+                placeholder="Название"
+              />
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="color"
+                value={value.color}
+                onChange={handleInputChange}
+                placeholder="Цвет"
+              />
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="antypicals_quantity"
+                value={value.antypicals_quantity}
+                onChange={handleInputChange}
+                isInvalid={!!errors.antypicals_quantity}
+                placeholder="Количество"
+              />
+              {errors.antypicals_quantity && (
+                <Form.Control.Feedback type="invalid" className="d-block">
+                  {errors.antypicals_quantity}
+                </Form.Control.Feedback>
+              )}
+              <Form.Text className="text-muted">Обязательное поле</Form.Text>
+            </Col>
+          </Row>
+
           <Row className="mb-3">
             <Col>
               <Form.Control
@@ -121,36 +289,50 @@ const CreateAntypical = (props) => {
               />
             </Col>
           </Row>
-          <Col>
-            <Button variant="dark" className="mb-3" onClick={() => handleAddImage()}>
-              Добавить
-            </Button>
-          </Col>
+
           <p className="text-muted small mt-2">Или вставьте изображение через Ctrl+V</p>
 
-          {selectedImages.map((image, index) => (
-            <div key={index}>
-              <Row className="mb-3">
+          {selectedImage && (
+            <div className="mb-3">
+              <Row className="mb-3 align-items-center">
                 <Col>
-                  <Form.Control disabled value={image.image.name} className="mb-3" />
+                  <Form.Control disabled value={selectedImage.image.name} className="mb-2" />
                 </Col>
-                <Col>
-                  <Button variant="dark" onClick={() => handleRemoveImage(index)}>
+                <Col xs="auto">
+                  <Button variant="dark" onClick={handleRemoveImage}>
                     Удалить
                   </Button>
                 </Col>
               </Row>
+              {/* Предпросмотр изображения */}
+              <div className="text-center mb-3">
+                <img
+                  src={selectedImage.preview}
+                  alt="Предпросмотр"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '200px',
+                    objectFit: 'contain',
+                  }}
+                />
+              </div>
             </div>
-          ))}
-          {selectedImages.length > 0 && (
-            <>
-              <Button variant="dark" className="me-3 mb-3" onClick={handleSaveImages}>
-                Сохранить все изображения
+          )}
+
+          {!selectedImage && image && (
+            <div className="mb-3">
+              <Button variant="dark" onClick={handleAddImage}>
+                Добавить изображение
               </Button>
-              <Button className="mb-3" variant="dark" onClick={handleRemoveAllImages}>
-                Удалить все
+            </div>
+          )}
+
+          {selectedImage && (
+            <div className="d-grid gap-2">
+              <Button variant="dark" onClick={handleSave}>
+                Сохранить деталь
               </Button>
-            </>
+            </div>
           )}
         </Form>
       </Modal.Body>

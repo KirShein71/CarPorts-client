@@ -149,6 +149,51 @@
     width: 100%;
 }
 
+.gant-projects-table-th.date-header {
+  padding: 5px !important;
+  position: sticky !important;
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 4 !important;
+  background-color: white !important;
+  text-align: left !important;
+  width: 50px !important;
+  white-space: nowrap !important;
+}
+
+.gant-projects-table-th.date-header::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  border-bottom: 2px solid #dee2e6 !important;
+  width: 100% !important;
+}
+
+/* Если хотите отдельный класс */
+.mobile-date-header {
+  padding: 5px !important;
+  position: sticky !important;
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 4 !important;
+  background-color: white !important;
+  text-align: left !important;
+  width: 50px !important;
+  white-space: nowrap !important;
+}
+
+.mobile-date-header::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  border-bottom: 2px solid #dee2e6 !important;
+  width: 100% !important;
+}
+
 .gant-projects-table__td.mobile-project {
     font-size: 17px;
     font-weight: 700;
@@ -239,3 +284,4 @@
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
+

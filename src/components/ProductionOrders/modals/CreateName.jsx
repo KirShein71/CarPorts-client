@@ -1,36 +1,32 @@
 import React from 'react';
-import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
-import { fetchOneShipmentDetails, updateShipmentDetails } from '../../../http/shipmentDetailsApi';
-import './styles.scss';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { fetchOneAntypical, createName } from '../../../http/antypicalApi';
 
-const defaultValue = {
-  shipment_quantity: '',
-};
+const defaultValue = { name: '' };
 const defaultValid = {
-  shipment_quantity: null,
+  name: null,
 };
 
 const isValid = (value) => {
   const result = {};
   for (let key in value) {
-    if (key === 'shipment_quantity')
-      result.shipment_quantity = value.shipment_quantity.trim() !== '';
+    if (key === 'name') result.name = value.name.trim() !== '';
   }
   return result;
 };
 
-const UpdateShipmentDetails = (props) => {
-  const { show, setShow, setChange, id } = props;
+const CreateName = (props) => {
+  const { id, show, setShow, setChange, scrollPosition } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (show) {
-      fetchOneShipmentDetails(id)
+      fetchOneAntypical(id)
         .then((data) => {
           const prod = {
-            shipment_quantity: data.shipment_quantity.toString(),
+            name: data.name.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -45,30 +41,35 @@ const UpdateShipmentDetails = (props) => {
     }
   }, [id]);
 
+  const handleCloseModal = () => {
+    setShow(false);
+    window.scrollTo(0, scrollPosition);
+  };
+
   const handleInputChange = (event) => {
-    const regex = /^[0-9]*$/;
-    if (regex.test(event.target.value)) {
-      setValue({ ...value, [event.target.name]: event.target.value });
-      setValid(isValid({ ...value, [event.target.name]: event.target.value }));
-    }
+    const data = { ...value, [event.target.name]: event.target.value };
+    setValue(data);
+    setValid(isValid(data));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
-    if (correct.shipment_quantity) {
+    if (correct.name) {
       const data = new FormData();
-      data.append('shipment_quantity', value.shipment_quantity.trim());
+      data.append('name', value.name.trim());
       setIsLoading(true);
-      updateShipmentDetails(id, data)
+      createName(id, data)
         .then((data) => {
           const prod = {
-            shipment_quantity: data.shipment_quantity.toString(),
+            name: data.name.toString(),
           };
           setValue(prod);
           setValid(isValid(prod));
           setChange((state) => !state);
+
+          handleCloseModal();
         })
         .catch((error) => {
           if (error.response && error.response.data) {
@@ -81,7 +82,6 @@ const UpdateShipmentDetails = (props) => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (
@@ -90,23 +90,25 @@ const UpdateShipmentDetails = (props) => {
       onHide={() => setShow(false)}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
-      centered>
+      centered
+      className="modal__name">
       <Modal.Header closeButton>
-        <Modal.Title>Добавить количество детали</Modal.Title>
+        <Modal.Title>Название</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
-          <Col>
-            <Form.Control
-              name="shipment_quantity"
-              value={value.shipment_quantity}
-              onChange={(e) => handleInputChange(e)}
-              isValid={valid.shipment_quantity === true}
-              isInvalid={valid.shipment_quantity === false}
-              placeholder="Количество деталей"
-              className="mb-3"
-            />
-          </Col>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="name"
+                value={value.name}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.name === true}
+                isInvalid={valid.name === false}
+                placeholder="Название"
+              />
+            </Col>
+          </Row>
           <Row>
             <Col>
               <Button variant="dark" type="submit" disabled={isLoading}>
@@ -120,4 +122,4 @@ const UpdateShipmentDetails = (props) => {
   );
 };
 
-export default UpdateShipmentDetails;
+export default CreateName;

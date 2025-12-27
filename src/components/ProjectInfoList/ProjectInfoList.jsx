@@ -47,6 +47,9 @@ import UserFile from './UserFile';
 import ProjectLogistic from './ProjectLogistic';
 import ModalUrlClient from './modals/ModalUrlClient';
 import TechExamination from './TechExamination';
+import CreateAntypicalsQuantity from '../ProductionOrders/modals/CreateAntypicalsQuantity';
+import CreateAntypicalsDeliveryQuantity from '../ProductionOrders/modals/CreateAntypicalsDeliveryQuantity';
+import CreateAntypicalsShipmentQuantity from '../ProductionOrders/modals/CreateAntypicalsShipmentQuantity';
 
 import './style.scss';
 
@@ -105,6 +108,13 @@ function ProjectInfoList() {
   const [userId, setUserId] = React.useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [antypicalId, setAntypicalId] = React.useState(null);
+  const [openModalCreateAntypicalsShipmentQuantity, setOpenModalCreateAntypicalsShipmentQuantity] =
+    React.useState(false);
+  const [openModalCreateAntypicalsDeliveryQuantity, setOpenModalCreateAntypicalsDeliveryQuantity] =
+    React.useState(false);
+  const [openModalCreateAntypicalsQuantity, setOpenModalCreateAntypicalsQuantity] =
+    React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -278,6 +288,21 @@ function ProjectInfoList() {
     setModalUpdateInstallationDate(true);
   };
 
+  const handleCreateAntypicalsQuantity = (id) => {
+    setAntypicalId(id);
+    setOpenModalCreateAntypicalsQuantity(true);
+  };
+
+  const handleCreateAntypicalsShipmentQuantity = (id) => {
+    setAntypicalId(id);
+    setOpenModalCreateAntypicalsShipmentQuantity(true);
+  };
+
+  const handleCreateAntypicalsDeliveryQuantity = (id) => {
+    setAntypicalId(id);
+    setOpenModalCreateAntypicalsDeliveryQuantity(true);
+  };
+
   const handleDeleteProjectBrigades = (id) => {
     const confirmed = window.confirm('Вы уверены, что хотите удалить бригаду?');
     if (confirmed) {
@@ -310,11 +335,6 @@ function ProjectInfoList() {
   const handleOpenModalCreateAntypical = (project) => {
     setProjectId(project);
     setModalCreateAntypical(true);
-  };
-
-  const handleOpenModalAntypicalImage = (images, id) => {
-    setImages(images, id);
-    setAntypicalImageModal(true);
   };
 
   const holidays = [
@@ -586,6 +606,24 @@ function ProjectInfoList() {
         show={modalCreateAntypical}
         setShow={setModalCreateAntypical}
         setChange={setChange}
+      />
+      <CreateAntypicalsQuantity
+        show={openModalCreateAntypicalsQuantity}
+        setShow={setOpenModalCreateAntypicalsQuantity}
+        setChange={setChange}
+        id={antypicalId}
+      />
+      <CreateAntypicalsShipmentQuantity
+        show={openModalCreateAntypicalsShipmentQuantity}
+        setShow={setOpenModalCreateAntypicalsShipmentQuantity}
+        setChange={setChange}
+        id={antypicalId}
+      />
+      <CreateAntypicalsDeliveryQuantity
+        show={openModalCreateAntypicalsDeliveryQuantity}
+        setShow={setOpenModalCreateAntypicalsDeliveryQuantity}
+        setChange={setChange}
+        id={antypicalId}
       />
       <ImageModal
         show={antypicalImageModal}
@@ -991,9 +1029,11 @@ function ProjectInfoList() {
             handleOpenModalCreateOneShipmentDetail={handleOpenModalCreateOneShipmentDetail}
             handleOpenModalUpdateShipmentDetail={handleOpenModalUpdateShipmentDetail}
             handleOpenModalCreateAntypical={handleOpenModalCreateAntypical}
-            handleOpenModalAntypicalImage={handleOpenModalAntypicalImage}
             handleOpenModalCreateOneDeliveryDetail={handleOpenModalCreateOneDeliveryDetail}
             handleOpenModalUpdateDeliveryDetail={handleOpenModalUpdateDeliveryDetail}
+            handleCreateAntypicalsQuantity={handleCreateAntypicalsQuantity}
+            handleCreateAntypicalsShipmentQuantity={handleCreateAntypicalsShipmentQuantity}
+            handleCreateAntypicalsDeliveryQuantity={handleCreateAntypicalsDeliveryQuantity}
           />
         )}
         {activeTab === 'brigade' && (

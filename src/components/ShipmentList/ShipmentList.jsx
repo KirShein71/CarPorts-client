@@ -6,7 +6,9 @@ import { fetchAllShipmentDetails, deleteShipmentDetails } from '../../http/shipm
 import { fetchAllDetails } from '../../http/detailsApi';
 import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
-import Moment from 'react-moment';
+import { getAllForAntypicalsShipment } from '../../http/antypicalApi';
+import ShipmentAntypicals from './ShipmentAntypicals';
+import CreateAntypicalsShipmentQuantity from '../ProductionOrders/modals/CreateAntypicalsShipmentQuantity';
 
 import './modals/styles.scss';
 
@@ -27,18 +29,35 @@ function ShipmentList() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [activeShipmentAntypicals, setActiveShipmentAntypicals] = React.useState(false);
+  const [antypicalsDetails, setAntypicalsDetails] = React.useState([]);
+  const [openModalCreateAntypicalsShipmentQuantity, setOpenModalCreateAntypicalsShipmentQuantity] =
+    React.useState(false);
+  const [antypicalsId, setAntypicalsId] = React.useState(null);
 
   React.useEffect(() => {
-    fetchAllShipmentDetails()
-      .then((data) => {
-        setShipmentDetails(data);
-      })
-      .finally(() => setFetching(false));
+    const fetchAllData = async () => {
+      try {
+        setFetching(true);
+
+        const [shipmentData, nameData, antypicalsData] = await Promise.all([
+          fetchAllShipmentDetails(),
+          fetchAllDetails(),
+          getAllForAntypicalsShipment(),
+        ]);
+
+        setShipmentDetails(shipmentData);
+        setNameDetails(nameData);
+        setAntypicalsDetails(antypicalsData);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchAllData();
   }, [change]);
-
-  React.useEffect(() => {
-    fetchAllDetails().then((data) => setNameDetails(data));
-  }, []);
 
   React.useEffect(() => {
     const filters = {
@@ -104,6 +123,19 @@ function ShipmentList() {
     setSearchQuery(event.target.value);
   };
 
+  const handleClickActiveShipmentAntypicals = () => {
+    setActiveShipmentAntypicals(true);
+  };
+
+  const handleClickActiveMainShipment = () => {
+    setActiveShipmentAntypicals(false);
+  };
+
+  const handleOpenModalCreateAntypicalsShipmentQuantity = (id) => {
+    setAntypicalsId(id);
+    setOpenModalCreateAntypicalsShipmentQuantity(true);
+  };
+
   const detailSums = nameDetails
     .sort((a, b) => a.number - b.number)
     .map((part) => {
@@ -144,6 +176,21 @@ function ShipmentList() {
     }
   };
 
+  const handleDownloadFile = (fileUrl) => {
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileUrl.substring(fileUrl.lastIndexOf('/') + 1));
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => console.error('Ошибка при скачивании файла:', error));
+  };
+
   if (fetching) {
     return <Spinner animation="border" />;
   }
@@ -151,30 +198,42 @@ function ShipmentList() {
     <div className="shipmentlist">
       <Header title={'Детали в покраску'} />
       <div style={{ display: 'flex' }}>
-        <Link to="/shipmentchange">
-          <button className="button__shipment">Внести данные</button>
-        </Link>
-
-        <button
-          className={`button__shipment-active ${
-            buttonActiveProject === true ? 'active' : 'inactive'
-          }`}
-          onClick={handleButtonActiveProject}>
-          Активные
-        </button>
-        <button
-          className={`button__shipment-noactive ${
-            buttonClosedProject === true ? 'active' : 'inactive'
-          }`}
-          onClick={handleButtonClosedProject}>
-          Завершенные
-        </button>
-        <input
-          class="shipment__search"
-          placeholder="Поиск"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+        {activeShipmentAntypicals ? (
+          <button className="button__shipment-main" onClick={handleClickActiveMainShipment}>
+            Главная
+          </button>
+        ) : (
+          <>
+            <Link to="/shipmentchange">
+              <button className="button__shipment">Внести данные</button>
+            </Link>
+            <button
+              className={`button__shipment-active ${
+                buttonActiveProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonActiveProject}>
+              Активные
+            </button>
+            <button
+              className={`button__shipment-noactive ${
+                buttonClosedProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonClosedProject}>
+              Завершенные
+            </button>
+            <button
+              className="button__shipment-antypicals"
+              onClick={handleClickActiveShipmentAntypicals}>
+              Нетиповые
+            </button>
+            <input
+              class="shipment__search"
+              placeholder="Поиск"
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+          </>
+        )}
       </div>
       <UpdateShipmentDetails
         id={shipmentDetail}
@@ -190,25 +249,40 @@ function ShipmentList() {
         setShow={setCreateOneShipmentDetailModal}
         setChange={setChange}
       />
-      <div className="shipment-table-container">
-        <div className="shipment-table-wrapper">
-          <Table bordered size="sm" className="mt-3">
-            <thead>
-              <tr>
-                <th>Сумма</th>
-                <th className="shipment-th mobile"></th>
-                {/* <th></th> */}
-                {detailSums.map((sum, index) => (
-                  <th key={index}>{sum}</th>
-                ))}
-                <th></th>
-              </tr>
-            </thead>
-            <thead>
-              <tr>
-                <th className="shipment-th">Номер проекта</th>
-                <th className="shipment-th mobile">Название проекта</th>
-                {/* <th
+      <CreateAntypicalsShipmentQuantity
+        show={openModalCreateAntypicalsShipmentQuantity}
+        setShow={setOpenModalCreateAntypicalsShipmentQuantity}
+        setChange={setChange}
+        id={antypicalsId}
+      />
+      {activeShipmentAntypicals ? (
+        <ShipmentAntypicals
+          antypicalsDetails={antypicalsDetails}
+          handleOpenModalCreateAntypicalsShipmentQuantity={
+            handleOpenModalCreateAntypicalsShipmentQuantity
+          }
+          handleDownloadFile={handleDownloadFile}
+        />
+      ) : (
+        <div className="shipment-table-container">
+          <div className="shipment-table-wrapper">
+            <Table bordered size="sm" className="mt-3">
+              <thead>
+                <tr>
+                  <th>Сумма</th>
+                  <th className="shipment-th mobile"></th>
+                  {/* <th></th> */}
+                  {detailSums.map((sum, index) => (
+                    <th key={index}>{sum}</th>
+                  ))}
+                  <th></th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th className="shipment-th">Номер проекта</th>
+                  <th className="shipment-th mobile">Название проекта</th>
+                  {/* <th
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   handleSort('shipment_date');
@@ -216,77 +290,78 @@ function ShipmentList() {
                 Отметка времени{' '}
                 <img styles={{ marginLeft: '5px' }} src="./img/sort.png" alt="icon_sort" />
               </th> */}
-                {nameDetails
-                  .sort((a, b) => a.number - b.number)
-                  .map((part) => (
-                    <th className="shipment-th" key={part.id}>
-                      {part.name}
-                    </th>
-                  ))}
-                <th className="shipment-th"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProjects
-                .slice()
-                .sort((a, b) => {
-                  const dateA = new Date(a[sortField]);
-                  const dateB = new Date(b[sortField]);
+                  {nameDetails
+                    .sort((a, b) => a.number - b.number)
+                    .map((part) => (
+                      <th className="shipment-th" key={part.id}>
+                        {part.name}
+                      </th>
+                    ))}
+                  <th className="shipment-th"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProjects
+                  .slice()
+                  .sort((a, b) => {
+                    const dateA = new Date(a[sortField]);
+                    const dateB = new Date(b[sortField]);
 
-                  if (sortOrder === 'desc') {
-                    return dateB - dateA;
-                  } else {
-                    return dateA - dateB;
-                  }
-                })
-                .map((shipment) => (
-                  <tr
-                    key={shipment.id}
-                    style={{
-                      color: shipment.project.finish === 'true' ? '#808080' : 'black',
-                    }}>
-                    <td>{shipment.project ? shipment.project.number : ''}</td>
-                    <td className="shipment-td mobile">
-                      {shipment.project ? shipment.project.name : ''}
-                    </td>
-                    {/* <td>
+                    if (sortOrder === 'desc') {
+                      return dateB - dateA;
+                    } else {
+                      return dateA - dateB;
+                    }
+                  })
+                  .map((shipment) => (
+                    <tr
+                      key={shipment.id}
+                      style={{
+                        color: shipment.project.finish === 'true' ? '#808080' : 'black',
+                      }}>
+                      <td>{shipment.project ? shipment.project.number : ''}</td>
+                      <td className="shipment-td mobile">
+                        {shipment.project ? shipment.project.name : ''}
+                      </td>
+                      {/* <td>
                     <Moment format="DD.MM.YYYY">{shipment.shipment_date}</Moment>
                   </td> */}
-                    {nameDetails
-                      .sort((a, b) => a.number - b.number)
-                      .map((part) => {
-                        const detail = shipment.props.find((el) => el.detailId === part.id);
-                        const quantity = detail ? detail.shipment_quantity : '';
-                        return (
-                          <td
-                            style={{ cursor: 'pointer' }}
-                            onClick={() =>
-                              quantity
-                                ? handleUpdateShipmentDetailClick(detail.id)
-                                : handleCreateOneShipmentDetail(
-                                    part.id,
-                                    shipment.projectId,
-                                    shipment.shipment_date,
-                                  )
-                            }>
-                            {quantity}
-                          </td>
-                        );
-                      })}
-                    <td>
-                      <Button
-                        variant="dark"
-                        size="sm"
-                        onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
-                        Удалить
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+                      {nameDetails
+                        .sort((a, b) => a.number - b.number)
+                        .map((part) => {
+                          const detail = shipment.props.find((el) => el.detailId === part.id);
+                          const quantity = detail ? detail.shipment_quantity : '';
+                          return (
+                            <td
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                quantity
+                                  ? handleUpdateShipmentDetailClick(detail.id)
+                                  : handleCreateOneShipmentDetail(
+                                      part.id,
+                                      shipment.projectId,
+                                      shipment.shipment_date,
+                                    )
+                              }>
+                              {quantity}
+                            </td>
+                          );
+                        })}
+                      <td>
+                        <Button
+                          variant="dark"
+                          size="sm"
+                          onClick={() => handleDeleteShipmentDetails(shipment.projectId)}>
+                          Удалить
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -15,6 +15,11 @@ export const createProjectDetails = async (projectdetails) => {
     return data
 }
 
+export const createColorProjectDetails = async (id, projectdetails) => {
+    const {data} = await authInstance.put(`projectdetails/createColor/${id}`, projectdetails)
+    return data
+}
+
 export const addToProduction = async (projectdetails) => {
     const { data } = await authInstance.post(`projectdetails/addToProduction`, projectdetails)
     return data

@@ -351,7 +351,7 @@ function ManufactureList() {
                           {partAntypical.name}
                         </th>
                       ))}
-                    <th className="manufacture-table__thead">Нетиповые</th>
+                    {/* <th className="manufacture-table__thead">Нетиповые</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -444,7 +444,7 @@ function ManufactureList() {
                                 : ''}
                             </td>
                           ))}
-                        <td>
+                        {/* <td>
                           {waitShipment.antypical?.length > 0 ? (
                             <span
                               style={{ color: 'red', cursor: 'pointer' }}
@@ -454,7 +454,7 @@ function ManufactureList() {
                           ) : (
                             ''
                           )}
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                 </tbody>

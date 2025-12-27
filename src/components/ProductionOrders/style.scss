@@ -1,0 +1,238 @@
+.production-orders {
+  &__table-container {
+    position: relative;
+    height: 650px;
+    overflow-y: auto;
+    overflow-x: auto;
+    width: 100%;
+   
+  }
+
+  
+
+  &__table {
+    border: none !important;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    
+  }
+
+  &__header {
+    border: 2px solid #333 !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fff;
+    
+    th {
+      border: 1px solid #333 !important;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
+      
+    }
+  }
+
+  &__body {
+    tr,
+    td {
+      border: none !important;
+      border-collapse: collapse !important;
+    }
+    
+  }
+
+  &__columnProject {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 11;
+        background-color: #fff;
+        font-size: 14px;
+    }
+    
+  }
+
+  &__columnNumber {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 11;
+        background-color: #fff;
+        font-size: 13px;
+    }
+  }
+
+  &__columnDetail {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 11;
+        background-color: #fff;
+        font-size: 13px;
+    }
+  }
+
+  &__columnColor {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    text-align: center;
+    vertical-align: middle;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 95px;
+        z-index: 11;
+        background-color: #fff !important;
+        font-size: 13px;
+    }
+  }
+
+  &__columnName {
+    font-size: 17px;
+    font-weight: 500;
+    color: #000000;
+    text-align: center;
+    @media(max-width: 460px) {
+        font-size: 13px;
+    }
+  }
+
+  &__projectName {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000000;
+    text-align: left;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 9;
+        background-color: #fff !important;
+        font-size: 13px;
+    }
+  }
+
+  &__added {
+    background-color: #000000 !important;
+    color: #ffffff;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        font-size: 12px;
+    }
+  }
+
+  &__numberProject {
+    font-size: 17px;
+    font-weight: 500;
+    color: #000000;
+    padding-left: 15px !important;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 9;
+        background-color: #fff;
+        font-size: 12px;
+    }
+  }
+
+  &__detailName {
+    font-size: 19px;
+    font-weight: 700;
+    color: #000000;
+    padding-left: 15px !important;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 9;
+        background-color: #fff !important;
+        font-size: 12px;
+    }
+  }
+
+   &__detailColor {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 95px;
+        z-index: 9;
+        background-color: #fff !important;
+        font-size: 12px;
+    }
+  }
+
+  &__quantityDetail {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        font-size: 12px;
+    }
+  }
+
+  &__antypicalTitle {
+    font-size: 19px;
+    font-weight: 700;
+    color: #000000;
+    padding-left: 15px !important;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 9;
+        background-color: #fff;
+        font-size: 12px;
+    }
+  }
+
+  &__antypicalName {
+    font-size: 19px;
+    font-weight: 700;
+    color: #000000;
+    padding-left: 15px !important;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 0;
+        z-index: 9;
+        background-color: #fff !important;
+        font-size: 12px;
+    }
+  }
+
+  &__antypicalColor {
+    font-size: 19px;
+    font-weight: 700;
+    color: #000000;
+    text-align: center;
+    cursor: pointer;
+    @media(max-width: 460px) {
+        position: sticky;
+        left: 95px;
+        z-index: 9;
+        background-color: #fff !important;
+        font-size: 12px;
+    }
+  }
+}
+
+

@@ -29,7 +29,6 @@ function ProductionList() {
   const [project, setProject] = React.useState(null);
   const [createAntypical, setCreateAntypical] = React.useState(false);
   const [imageModal, setImageModal] = React.useState(false);
-  const [images, setImages] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -258,8 +257,9 @@ function ProductionList() {
     setCreateAntypical(true);
   };
 
-  const handleOpenImage = (images, id) => {
-    setImages(images, id);
+  const handleOpenImage = (projectId) => {
+    setProject(projectId);
+
     setImageModal(true);
   };
 
@@ -481,14 +481,8 @@ function ProductionList() {
         setShow={setCreateAntypical}
         setChange={setChange}
       />
-      <ImageModal
-        show={imageModal}
-        images={images}
-        setImages={setImages}
-        setShow={setImageModal}
-        setChange={setChange}
-        change={change}
-      />
+      <ImageModal show={imageModal} setShow={setImageModal} id={project} />
+
       <div className="production-table-container">
         <div className="production-table-wrapper">
           <Table
@@ -603,7 +597,7 @@ function ProductionList() {
                             +
                           </div>
                           <div
-                            onClick={() => handleOpenImage(projectDetail.antypical)}
+                            onClick={() => handleOpenImage(projectDetail.projectId)}
                             className="production__eye">
                             {projectDetail.antypical.length > 0 ? (
                               <img src="./img/eye.png" alt="eye" />

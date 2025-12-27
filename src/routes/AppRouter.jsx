@@ -41,6 +41,7 @@ import ReportProject from '../pages/ReportProject';
 import ResultSupervision from '../pages/ResultSupervision';
 import GantInstaller from '../pages/GantInstaller';
 import GantProject from '../pages/GantProject';
+import ProductionOrder from '../pages/ProductionOrder';
 
 import { observer } from 'mobx-react';
 
@@ -78,6 +79,7 @@ const employeeRoutes = [
   { path: '/result-supervision', Component: ResultSupervision },
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
+  { path: '/production-orders', Component: ProductionOrder },
 ];
 
 const adminRoutes = [
@@ -120,6 +122,7 @@ const adminRoutes = [
   { path: '/result-supervision', Component: ResultSupervision },
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
+  { path: '/production-orders', Component: ProductionOrder },
 ];
 
 const managerSaleRoutes = [
@@ -169,6 +172,7 @@ const managerProjectRoutes = [
   { path: '/result-supervision', Component: ResultSupervision },
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
+  { path: '/production-orders', Component: ProductionOrder },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -187,6 +191,7 @@ const managerProductionRoutes = [
   { path: '/gant-contracts', Component: GantContract },
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
+  { path: '/production-orders', Component: ProductionOrder },
 ];
 
 const brigadesRoutes = [

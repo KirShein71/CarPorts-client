@@ -250,7 +250,7 @@ function GantProjects() {
                   {ganttData.weeks?.map((week, index) => (
                     <th
                       key={week.week_start}
-                      className="gant-projects-table-th date-header"
+                      className="gant-projects-table-th date-header mobile-date-header"
                       data-date={formatWeekDate(week.week_start)}
                       style={{
                         backgroundColor: '#ffffff',
@@ -265,6 +265,16 @@ function GantProjects() {
                         borderRight: isCurrentWeek(week.week_start)
                           ? '3px solid #808080'
                           : '1px solid #dee2e6',
+                        // Добавляем стили как у mobile
+                        padding: '5px !important',
+                        position: 'sticky',
+                        left: '0',
+                        top: '0',
+                        zIndex: '4',
+                        textAlign: 'center',
+                        width: '50px',
+                        textAlign: 'left',
+                        whiteSpace: 'nowrap',
                       }}>
                       <span>{formatWeekDate(week.week_start)}</span>
                       {isCurrentWeek(week.week_start) && (
