@@ -84,41 +84,49 @@ function PlanningList() {
     };
 
     const filteredProjects = projects.filter((project) => {
-      // Условие для поиска по имени
+      // 1. Фильтрация по поисковому запросу
       const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
+      if (!matchesSearch) return false;
 
-      // Проверяем активные проекты в зависимости от состояния кнопок
-      const isActiveProject = filters.isActive
-        ? project.finish === null
-        : filters.isClosed
-        ? project.finish === 'true'
-        : true; // Если ни одна кнопка не активна, показываем все проекты
+      // 2. Фильтрация по статусу проекта (активный/закрытый)
+      if (filters.isActive && !filters.isClosed) {
+        // Только активные проекты
+        if (project.finish === 'true') return false;
+      } else if (!filters.isActive && filters.isClosed) {
+        // Только закрытые проекты
+        if (project.finish !== 'true') return false;
+      }
+      // Если обе кнопки или ни одна - показываем все по этому критерию
 
-      // Проверяем, активны ли оба региона
-      const isButtonPlanningActive =
-        filters.isNoDesigner && filters.isProgress && filters.isCompleted;
+      // 3. Фильтрация по этапу проектирования
+      const hasDesignerFilter = filters.isNoDesigner || filters.isProgress || filters.isCompleted;
 
-      // Проверяем, соответствует ли регион проекту
-      const isButtonMatch =
-        (filters.isNoDesigner && project.designer === null) ||
-        (filters.isProgress && project.date_inspection === null && project.designer !== null) ||
-        (filters.isCompleted && project.project_delivery !== null);
+      if (hasDesignerFilter) {
+        let matchesDesignerFilter = false;
 
-      // Логика фильтрации
-      if (filters.isActive && filters.isClosed) {
-        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
-        return matchesSearch && (isButtonPlanningActive || isButtonMatch);
+        // Без дизайнера
+        if (filters.isNoDesigner && project.designer === null) {
+          matchesDesignerFilter = true;
+        }
+
+        // В работе
+        if (filters.isProgress && project.date_inspection === null && project.designer !== null) {
+          matchesDesignerFilter = true;
+        }
+
+        // Сданные
+        if (
+          filters.isCompleted &&
+          project.inspection_designer !== null &&
+          project.date_inspection !== null
+        ) {
+          matchesDesignerFilter = true;
+        }
+
+        if (!matchesDesignerFilter) return false;
       }
 
-      // Если одна из кнопок активна (либо только активные, либо только закрытые)
-      return (
-        matchesSearch &&
-        isActiveProject &&
-        (isButtonPlanningActive ||
-          (filters.isNoDesigner || filters.isProgress || filters.isCompleted
-            ? isButtonMatch
-            : true))
-      );
+      return true;
     });
 
     setFilteredProjects(filteredProjects);

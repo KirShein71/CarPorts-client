@@ -70,8 +70,7 @@ function ImageModal(props) {
       deleteAntypical(id)
         .then((data) => {
           setChange(!change);
-          const updatedImages = images.filter((image) => image.id !== id);
-          setImages(updatedImages);
+
           alert('Изображение удалено');
         })
         .catch((error) => alert(error.response.data.message));

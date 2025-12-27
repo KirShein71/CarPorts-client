@@ -513,18 +513,19 @@ function ProductionList() {
               </tr>
             </thead>
 
-            {filteredProjects.map((projectDetail, index) => {
-              const correspondingShipment = shipmentDetails.find(
-                (shipment) => shipment.projectId === projectDetail.projectId,
-              );
+            <tbody className="production-table__tbody">
+              {filteredProjects.map((projectDetail, index) => {
+                const correspondingShipment = shipmentDetails.find(
+                  (shipment) => shipment.projectId === projectDetail.projectId,
+                );
 
-              const correspondingDelivery = deliveryDetails.find(
-                (delivery) => delivery.projectId === projectDetail.projectId,
-              );
+                const correspondingDelivery = deliveryDetails.find(
+                  (delivery) => delivery.projectId === projectDetail.projectId,
+                );
 
-              return (
-                <React.Fragment key={projectDetail.id}>
-                  <tbody className="production-table__tbody">
+                return (
+                  <React.Fragment key={projectDetail.id}>
+                    {/* Первая строка проекта */}
                     <tr
                       className="production-table__row"
                       style={{
@@ -618,6 +619,7 @@ function ProductionList() {
                       </td>
                     </tr>
 
+                    {/* Строка отгрузки (если есть) */}
                     {correspondingShipment && (
                       <tr
                         className="production-table__row"
@@ -640,7 +642,6 @@ function ProductionList() {
                             );
                             const quantityDetail = detailProject ? detailProject.quantity : '';
 
-                            // Исправленное условие для окрашивания
                             const shouldHighlight =
                               quantityDetail > 0 && (quantity === 0 || quantity !== quantityDetail);
 
@@ -659,7 +660,7 @@ function ProductionList() {
                                   cursor: 'pointer',
                                   color: '#808080',
                                   backgroundColor: shouldHighlight
-                                    ? '#ffe6e6' // бледно-розовый если количества не совпадают
+                                    ? '#ffe6e6'
                                     : hoveredColumn === part.id
                                     ? '#d6d4d4'
                                     : 'transparent',
@@ -683,6 +684,7 @@ function ProductionList() {
                       </tr>
                     )}
 
+                    {/* Строка доставки (если есть) */}
                     {correspondingDelivery && (
                       <tr
                         className="production-table__row"
@@ -757,15 +759,17 @@ function ProductionList() {
                         <td></td>
                       </tr>
                     )}
-                  </tbody>
-                  <tbody style={{ borderColor: 'transparent' }}>
-                    <tr>
-                      <td></td>
+
+                    {/* Пустая строка-разделитель между проектами */}
+                    <tr style={{ height: '10px', backgroundColor: 'transparent' }}>
+                      <td
+                        colSpan={nameDetails.length + 4}
+                        style={{ border: 'none', padding: '0' }}></td>
                     </tr>
-                  </tbody>
-                </React.Fragment>
-              );
-            })}
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
           </Table>
         </div>
       </div>
