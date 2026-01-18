@@ -31,7 +31,7 @@ const isValid = (value) => {
 };
 
 function NpsModal(props) {
-  const { show, setShow, projectId, nameProject, numberProject } = props;
+  const { show, setShow, projectId, nameProject, numberProject, setChangeProject } = props;
   const [npsChapters, setNpsChapters] = React.useState([]);
   const [npsQuestions, setNpsQuestions] = React.useState([]);
   const [npsProjectScores, setNpsProjectScores] = React.useState([]);
@@ -314,7 +314,7 @@ function NpsModal(props) {
         const deletePromises = npsNotesProject.map((note) => deleteNpsNote(note.id));
         await Promise.all(deletePromises);
       }
-
+      setChangeProject((state) => !state);
       setShow(false);
     } catch (error) {
       console.error('Ошибка при сохранении:', error);

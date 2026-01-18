@@ -74,8 +74,8 @@ function ProjectList() {
       const isActiveProject = filters.isActive
         ? project.finish === null
         : filters.isClosed
-        ? project.finish === 'true'
-        : true; // Если ни одна кнопка не активна, показываем все проекты
+          ? project.finish === 'true'
+          : true; // Если ни одна кнопка не активна, показываем все проекты
 
       // Проверяем, активны ли оба региона
       const isBothRegionsActive = filters.isMsk && filters.isSpb;
@@ -367,6 +367,7 @@ function ProjectList() {
         projectId={project}
         nameProject={nameProject}
         numberProject={numberProject}
+        setChangeProject={setChange}
       />
       <div style={{ display: 'flex' }}>
         <button className="button__addproject" onClick={() => setCreateShow(true)}>
