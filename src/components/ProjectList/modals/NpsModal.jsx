@@ -539,7 +539,10 @@ function NpsModal(props) {
       {/* Основное модальное окно */}
       <Modal
         show={show}
-        onHide={() => setShow(false)}
+        onHide={() => {
+          setShow(false);
+          setChangeProject((state) => !state);
+        }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
