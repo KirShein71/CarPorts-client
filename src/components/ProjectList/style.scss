@@ -210,9 +210,8 @@
     left: 0;
     top: 0;
     z-index: 3;
-    @media(max-width: 1024px) {
-        background-color: #ffffff !important;
-    }
+    background-color: #ffffff !important;
+    
 }
 
 .project-td.mobile::after {
@@ -223,4 +222,9 @@
     width: 1px;
     height: 100%;
     background-color: #dee2e6;
+}
+
+.project__nps {
+    cursor: pointer;
+    text-align: center;
 }

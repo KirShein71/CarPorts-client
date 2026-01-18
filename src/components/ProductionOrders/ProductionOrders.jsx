@@ -27,7 +27,6 @@ function ProductionOrders() {
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
-  const [showAllDetails, setShowAllDetails] = React.useState(false);
   const [openModalCreateAntypical, setOpenModalCreateAntypical] = React.useState(false);
   const [openModalCreateAntypicalColor, setOpenModalCreateAntypicalColor] = React.useState(false);
   const [openModalCreateAntypicalName, setOpenModalCreateAntypicalName] = React.useState(false);
@@ -54,6 +53,11 @@ function ProductionOrders() {
   const [openModalCreateDetailColor, setOpenModalCreateDetailColor] = React.useState(false);
   const [openModalCreateProjectDetails, setOpenModalCreateProjectDetails] = React.useState(false);
   const [existingDetailIds, setExistingDetailIds] = React.useState([]);
+  const [filteredProjects, setFilteredProjects] = React.useState([]);
+  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+
+  console.log(buttonClosedProject);
 
   React.useEffect(() => {
     const fetchAllData = async () => {
@@ -79,6 +83,77 @@ function ProductionOrders() {
 
     fetchAllData();
   }, [change]);
+
+  React.useEffect(() => {
+    const filters = {
+      isActive: buttonActiveProject,
+      isClosed: buttonClosedProject,
+    };
+
+    const filteredProjects = projectDetails.filter((project) => {
+      // Проверяем активные проекты в зависимости от состояния кнопок
+      const isActiveProject = filters.isActive
+        ? project.project.finish === null
+        : filters.isClosed
+        ? project.project.finish === 'true'
+        : true;
+
+      // Логика фильтрации
+      if (filters.isActive && filters.isClosed) {
+        // Если обе кнопки активны - показываем все проекты
+        return true;
+      }
+
+      return isActiveProject;
+    });
+
+    // Сортируем проекты по приоритету отгрузки
+    const sortedProjects = filteredProjects.sort((a, b) => {
+      // Функция для определения статуса отгрузки проекта
+      const getShippingStatus = (project) => {
+        const projectDetails = (project.props || []).filter(
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0, // Исключаем quantity = 0, так как они считаются отгруженными
+        );
+
+        if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
+
+        // Проверяем статус отгрузки для каждой детали
+        const notShippedDetails = projectDetails.filter((projectProp) => {
+          const shipmentPropsForDetail = shipmentDetails
+            .filter((shipment) => shipment.projectId === project.projectId)
+            .flatMap((shipment) => shipment.props || [])
+            .filter(
+              (shipmentProp) =>
+                shipmentProp.detailId === projectProp.detailId &&
+                shipmentProp.shipment_quantity !== null,
+            );
+
+          const totalShipped = shipmentPropsForDetail.reduce(
+            (sum, shipmentProp) => sum + (shipmentProp.shipment_quantity || 0),
+            0,
+          );
+
+          return totalShipped < projectProp.quantity;
+        });
+
+        if (notShippedDetails.length === projectDetails.length) {
+          return 0; // не отгружено ни одной детали (высший приоритет)
+        } else if (notShippedDetails.length > 0) {
+          return 1; // отгружены не все детали (средний приоритет)
+        } else {
+          return 2; // все детали отгружены (низший приоритет)
+        }
+      };
+
+      const aStatus = getShippingStatus(a);
+      const bStatus = getShippingStatus(b);
+
+      // Сортировка по приоритету: 0 > 1 > 2
+      return aStatus - bStatus;
+    });
+
+    setFilteredProjects(sortedProjects);
+  }, [projectDetails, buttonActiveProject, buttonClosedProject, shipmentDetails]);
 
   // Фильтруем детали, которые есть в проектах или shipment
   const getFilteredDetails = React.useCallback(
@@ -192,6 +267,16 @@ function ProductionOrders() {
     setModalCreateOneDeliveryDetails(true);
   };
 
+  const handleButtonActiveProject = () => {
+    setButtonActiveProject(true);
+    setButtonClosedProject(false);
+  };
+
+  const handleButtonClosedProject = () => {
+    setButtonActiveProject(false);
+    setButtonClosedProject(true);
+  };
+
   return (
     <div className="production-orders">
       <CreateAntypical
@@ -291,251 +376,277 @@ function ProductionOrders() {
           </div>
         </div>
       ) : (
-        <div className="production-orders__table-container">
-          <Table className="production-orders__table" bordered={false}>
-            <thead className="production-orders__header">
-              <tr>
-                <th className="production-orders__columnProject" colSpan="2">
-                  Проект
-                </th>
-                <th className="production-orders__columnName">Заказ</th>
-                <th className="production-orders__columnName">Произведено</th>
-                <th className="production-orders__columnName">Покраска</th>
-                <th className="production-orders__columnName">На объект</th>
-              </tr>
-              <tr>
-                <th className="production-orders__columnNumber">Номер</th>
-                <th className="production-orders__columnColor" rowSpan="2">
-                  Цвет
-                </th>
-                <th className="production-orders__columnName">Дата</th>
-                <th className="production-orders__columnName">Дата</th>
-                <th className="production-orders__columnName">Дата</th>
-                <th className="production-orders__columnName">Дата</th>
-              </tr>
-              <tr>
-                <th className="production-orders__columnDetail">Деталь</th>
-                <th className="production-orders__columnName">Кол-во</th>
-                <th className="production-orders__columnName">Кол-во</th>
-                <th className="production-orders__columnName">Кол-во</th>
-                <th className="production-orders__columnName">Кол-во</th>
-              </tr>
-            </thead>
-            <tbody className="production-orders__body">
-              {projectDetails.map((proDetail) => {
-                const project = proDetail.project || {};
-                const projectProps = proDetail.props || [];
-                const projectId = proDetail.id || proDetail.projectId;
+        <>
+          <div className="production-orders__filter">
+            <button
+              className={`production-orders__button-active ${
+                buttonActiveProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonActiveProject}>
+              Активные
+            </button>
+            <button
+              className={`production-orders__button-noactive ${
+                buttonClosedProject === true ? 'active' : 'inactive'
+              }`}
+              onClick={handleButtonClosedProject}>
+              Завершенные
+            </button>
+          </div>
+          <div className="production-orders__table-container">
+            <Table className="production-orders__table" bordered={false}>
+              <thead className="production-orders__header">
+                <tr>
+                  <th className="production-orders__columnProject" colSpan="2">
+                    Проект
+                  </th>
+                  <th className="production-orders__columnName">Заказ</th>
+                  <th className="production-orders__columnName">Произведено</th>
+                  <th className="production-orders__columnName">Покраска</th>
+                  <th className="production-orders__columnName">На объект</th>
+                </tr>
+                <tr>
+                  <th className="production-orders__columnNumber">Номер</th>
+                  <th className="production-orders__columnColor" rowSpan="2">
+                    Цвет
+                  </th>
+                  <th className="production-orders__columnName">Дата</th>
+                  <th className="production-orders__columnName">Дата</th>
+                  <th className="production-orders__columnName">Дата</th>
+                  <th className="production-orders__columnName">Дата</th>
+                </tr>
+                <tr>
+                  <th className="production-orders__columnDetail">Деталь</th>
+                  <th className="production-orders__columnName">Кол-во</th>
+                  <th className="production-orders__columnName">Кол-во</th>
+                  <th className="production-orders__columnName">Кол-во</th>
+                  <th className="production-orders__columnName">Кол-во</th>
+                </tr>
+              </thead>
+              <tbody className="production-orders__body">
+                {filteredProjects.map((proDetail) => {
+                  const project = proDetail.project || {};
+                  const projectProps = proDetail.props || [];
+                  const projectId = proDetail.id || proDetail.projectId;
 
-                // Получаем отфильтрованные детали для этого проекта
-                const filteredDetails = getFilteredDetails(projectId, projectProps);
+                  // Получаем отфильтрованные детали для этого проекта
+                  const filteredDetails = getFilteredDetails(projectId, projectProps);
 
-                // Если нет деталей с данными - не показываем проект
-                if (filteredDetails.length === 0) {
-                  return null;
-                }
+                  // Если нет деталей с данными - не показываем проект
+                  if (filteredDetails.length === 0) {
+                    return null;
+                  }
 
-                return (
-                  <React.Fragment key={proDetail.id || proDetail.projectId}>
-                    {/* Строка с названием проекта */}
-                    <tr>
-                      <td className="production-orders__projectName" colSpan={2}>
-                        {project.name || ''}
-                      </td>
-                      <td
-                        onClick={() => handleCreateProjectDetails(proDetail)}
-                        style={{ backgroundColor: '#000000' }}
-                        className="production-orders__added">
-                        Добавить
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    {/* Строка с номером проекта и цветом */}
-                    <tr>
-                      <td className="production-orders__numberProject">{project.number || ''}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
+                  return (
+                    <React.Fragment key={proDetail.id || proDetail.projectId}>
+                      {/* Строка с названием проекта */}
+                      <tr>
+                        <td className="production-orders__projectName" colSpan={2}>
+                          {project.name || ''}
+                        </td>
+                        <td
+                          onClick={() => handleCreateProjectDetails(proDetail)}
+                          style={{ backgroundColor: '#000000' }}
+                          className="production-orders__added">
+                          Добавить
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      {/* Строка с номером проекта и цветом */}
+                      <tr>
+                        <td className="production-orders__numberProject">{project.number || ''}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
 
-                    {/* Строки с деталями и количеством - ОТСОРТИРОВАННЫЕ */}
-                    {filteredDetails
-                      .sort((a, b) => {
-                        // Находим detailProject для каждой детали
-                        const detailA = projectProps.find((prop) => prop.detailId === a.id);
-                        const detailB = projectProps.find((prop) => prop.detailId === b.id);
+                      {/* Строки с деталями и количеством - ОТСОРТИРОВАННЫЕ */}
+                      {filteredDetails
+                        .sort((a, b) => {
+                          // Находим detailProject для каждой детали
+                          const detailA = projectProps.find((prop) => prop.detailId === a.id);
+                          const detailB = projectProps.find((prop) => prop.detailId === b.id);
 
-                        // Получаем ID деталей для сортировки
-                        const detailIdA = detailA ? parseInt(detailA.detailId) : parseInt(a.id);
-                        const detailIdB = detailB ? parseInt(detailB.detailId) : parseInt(b.id);
+                          // Получаем ID деталей для сортировки
+                          const detailIdA = detailA ? parseInt(detailA.detailId) : parseInt(a.id);
+                          const detailIdB = detailB ? parseInt(detailB.detailId) : parseInt(b.id);
 
-                        // Сортируем по возрастанию detail_id
-                        return detailIdA - detailIdB;
-                      })
-                      .map((part) => {
-                        const detailProject = projectProps.find(
-                          (prop) => prop.detailId === part.id,
-                        );
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        const colorDetail = detailProject ? detailProject.color : '';
-
-                        // Находим shipment для данного проекта
-                        const shipmentForProject = shipmentDetails.find(
-                          (shipDetail) => shipDetail.projectId === projectId,
-                        );
-
-                        // Получаем shipment_quantity и detailShipment
-                        let quantityShipment = '';
-                        let detailShipment = null;
-
-                        if (shipmentForProject && shipmentForProject.props) {
-                          detailShipment = shipmentForProject.props.find(
+                          // Сортируем по возрастанию detail_id
+                          return detailIdA - detailIdB;
+                        })
+                        .map((part) => {
+                          const detailProject = projectProps.find(
                             (prop) => prop.detailId === part.id,
                           );
-                          quantityShipment = detailShipment ? detailShipment.shipment_quantity : '';
-                        }
+                          const quantity = detailProject ? detailProject.quantity : '';
+                          const colorDetail = detailProject ? detailProject.color : '';
 
-                        // Находим delivery для данного проекта
-                        const deliveryForProject = deliveryDetails.find(
-                          (delDetail) => delDetail.projectId === projectId,
-                        );
-
-                        // Получаем shipment_quantity и detailShipment
-                        let quantityDelivery = '';
-                        let detailDelivery = null;
-
-                        if (deliveryForProject && deliveryForProject.props) {
-                          detailDelivery = deliveryForProject.props.find(
-                            (prop) => prop.detailId === part.id,
+                          // Находим shipment для данного проекта
+                          const shipmentForProject = shipmentDetails.find(
+                            (shipDetail) => shipDetail.projectId === projectId,
                           );
-                          quantityDelivery = detailDelivery ? detailDelivery.delivery_quantity : '';
-                        }
 
-                        return (
-                          <tr key={`${proDetail.id || proDetail.projectId}-${part.id}`}>
-                            <td className="production-orders__detailName">{part.name}</td>
+                          // Получаем shipment_quantity и detailShipment
+                          let quantityShipment = '';
+                          let detailShipment = null;
+
+                          if (shipmentForProject && shipmentForProject.props) {
+                            detailShipment = shipmentForProject.props.find(
+                              (prop) => prop.detailId === part.id,
+                            );
+                            quantityShipment = detailShipment
+                              ? detailShipment.shipment_quantity
+                              : '';
+                          }
+
+                          // Находим delivery для данного проекта
+                          const deliveryForProject = deliveryDetails.find(
+                            (delDetail) => delDetail.projectId === projectId,
+                          );
+
+                          // Получаем shipment_quantity и detailShipment
+                          let quantityDelivery = '';
+                          let detailDelivery = null;
+
+                          if (deliveryForProject && deliveryForProject.props) {
+                            detailDelivery = deliveryForProject.props.find(
+                              (prop) => prop.detailId === part.id,
+                            );
+                            quantityDelivery = detailDelivery
+                              ? detailDelivery.delivery_quantity
+                              : '';
+                          }
+
+                          return (
+                            <tr key={`${proDetail.id || proDetail.projectId}-${part.id}`}>
+                              <td className="production-orders__detailName">{part.name}</td>
+                              <td
+                                className="production-orders__detailColor"
+                                onClick={() => handleCreateDetailColor(detailProject?.id)}>
+                                {colorDetail ? colorDetail : '+'}
+                              </td>
+                              <td
+                                className="production-orders__quantityDetail"
+                                onClick={() => handleUpdateProjectDetailClick(detailProject?.id)}>
+                                {quantity ? quantity : '+'}
+                              </td>
+                              <td></td>
+                              <td
+                                className="production-orders__quantityDetail"
+                                onClick={() => {
+                                  if (detailShipment?.id) {
+                                    handleOpenModalUpdateShipmentDetails(detailShipment.id);
+                                  } else if (shipmentForProject) {
+                                    handleOpenModalCreateOneShipmentDetail(
+                                      part.id,
+                                      shipmentForProject.projectId,
+                                      shipmentForProject.shipment_date,
+                                    );
+                                  } else {
+                                    handleOpenModalCreateOneShipmentDetail(part.id, projectId);
+                                  }
+                                }}>
+                                {quantityShipment ? quantityShipment : '+'}
+                              </td>
+                              <td
+                                className="production-orders__quantityDetail"
+                                onClick={() => {
+                                  if (detailDelivery?.id) {
+                                    handleOpenModalUpdateDeliveryDetails(detailDelivery.id);
+                                  } else if (deliveryForProject) {
+                                    handleOpenModalCreateOneDeliveryDetail(
+                                      part.id,
+                                      deliveryForProject.projectId,
+                                    );
+                                  } else {
+                                    handleOpenModalCreateOneDeliveryDetail(part.id, projectId);
+                                  }
+                                }}>
+                                {quantityDelivery ? quantityDelivery : '+'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+
+                      <tr>
+                        <td
+                          className="production-orders__antypicalTitle"
+                          onClick={() => handleCreateAntypical(proDetail.projectId)}>
+                          Нетиповые
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      {proDetail.antypical
+                        .sort((a, b) => {
+                          // Сортируем нетиповые по ID (чтобы новые были внизу)
+                          return a.id - b.id;
+                        })
+                        .map((antypDetails) => (
+                          <tr key={antypDetails.id}>
                             <td
-                              className="production-orders__detailColor"
-                              onClick={() => handleCreateDetailColor(detailProject?.id)}>
-                              {colorDetail ? colorDetail : '+'}
+                              className="production-orders__antypicalName"
+                              onClick={() => handleCreateAntypicalName(antypDetails.id)}>
+                              {antypDetails.name === '' || antypDetails.name === null
+                                ? '+'
+                                : antypDetails.name}
+                            </td>
+                            <td
+                              className="production-orders__antypicalColor"
+                              onClick={() => handleCreateAntypicalColor(antypDetails.id)}>
+                              {antypDetails.color === '' || antypDetails.color === null
+                                ? '+'
+                                : antypDetails.color}
                             </td>
                             <td
                               className="production-orders__quantityDetail"
-                              onClick={() => handleUpdateProjectDetailClick(detailProject?.id)}>
-                              {quantity ? quantity : '+'}
+                              onClick={() => handleCreateAntypicalsQuantity(antypDetails.id)}>
+                              {antypDetails.antypicals_quantity === null
+                                ? '+'
+                                : antypDetails.antypicals_quantity}
                             </td>
-                            <td></td>
-                            <td
-                              className="production-orders__quantityDetail"
-                              onClick={() => {
-                                if (detailShipment?.id) {
-                                  handleOpenModalUpdateShipmentDetails(detailShipment.id);
-                                } else if (shipmentForProject) {
-                                  handleOpenModalCreateOneShipmentDetail(
-                                    part.id,
-                                    shipmentForProject.projectId,
-                                    shipmentForProject.shipment_date,
-                                  );
-                                } else {
-                                  handleOpenModalCreateOneShipmentDetail(part.id, projectId);
-                                }
-                              }}>
-                              {quantityShipment ? quantityShipment : '+'}
+                            <td className="production-orders__quantityDetail">
+                              {antypDetails.antypicals_welders_quantity}
                             </td>
                             <td
                               className="production-orders__quantityDetail"
-                              onClick={() => {
-                                if (detailDelivery?.id) {
-                                  handleOpenModalUpdateDeliveryDetails(detailDelivery.id);
-                                } else if (deliveryForProject) {
-                                  handleOpenModalCreateOneDeliveryDetail(
-                                    part.id,
-                                    deliveryForProject.projectId,
-                                  );
-                                } else {
-                                  handleOpenModalCreateOneDeliveryDetail(part.id, projectId);
-                                }
-                              }}>
-                              {quantityDelivery ? quantityDelivery : '+'}
+                              onClick={() =>
+                                handleCreateAntypicalsShipmentQuantity(antypDetails.id)
+                              }>
+                              {antypDetails.antypicals_shipment_quantity === null
+                                ? '+'
+                                : antypDetails.antypicals_shipment_quantity}
+                            </td>
+                            <td
+                              className="production-orders__quantityDetail"
+                              onClick={() =>
+                                handleCreateAntypicalsDeliveryQuantity(antypDetails.id)
+                              }>
+                              {antypDetails.antypicals_delivery_quantity === null
+                                ? '+'
+                                : antypDetails.antypicals_delivery_quantity}
                             </td>
                           </tr>
-                        );
-                      })}
+                        ))}
 
-                    <tr>
-                      <td
-                        className="production-orders__antypicalTitle"
-                        onClick={() => handleCreateAntypical(proDetail.projectId)}>
-                        Нетиповые
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    {proDetail.antypical
-                      .sort((a, b) => {
-                        // Сортируем нетиповые по ID (чтобы новые были внизу)
-                        return a.id - b.id;
-                      })
-                      .map((antypDetails) => (
-                        <tr key={antypDetails.id}>
-                          <td
-                            className="production-orders__antypicalName"
-                            onClick={() => handleCreateAntypicalName(antypDetails.id)}>
-                            {antypDetails.name === '' || antypDetails.name === null
-                              ? '+'
-                              : antypDetails.name}
-                          </td>
-                          <td
-                            className="production-orders__antypicalColor"
-                            onClick={() => handleCreateAntypicalColor(antypDetails.id)}>
-                            {antypDetails.color === '' || antypDetails.color === null
-                              ? '+'
-                              : antypDetails.color}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_quantity === null
-                              ? '+'
-                              : antypDetails.antypicals_quantity}
-                          </td>
-                          <td className="production-orders__quantityDetail">
-                            {antypDetails.antypicals_welders_quantity}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsShipmentQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_shipment_quantity === null
-                              ? '+'
-                              : antypDetails.antypicals_shipment_quantity}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsDeliveryQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_delivery_quantity === null
-                              ? '+'
-                              : antypDetails.antypicals_delivery_quantity}
-                          </td>
-                        </tr>
-                      ))}
-
-                    {/* Пустая строка для разделения проектов */}
-                    <tr style={{ height: '20px', backgroundColor: '#f8f9fa' }}>
-                      <td colSpan="6"></td>
-                    </tr>
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </Table>
-        </div>
+                      {/* Пустая строка для разделения проектов */}
+                      <tr style={{ height: '20px', backgroundColor: '#f8f9fa' }}>
+                        <td colSpan="6"></td>
+                      </tr>
+                    </React.Fragment>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+        </>
       )}
     </div>
   );

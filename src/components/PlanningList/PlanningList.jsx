@@ -556,6 +556,7 @@ function PlanningList() {
                       Название<div className="border_bottom"></div>
                     </th>
                     <th className="planning-th">Примечание</th>
+                    <th className="planning-th">Стоимость</th>
                     <th className="planning-th" onClick={() => handleSort('agreement_date')}>
                       <div style={{ display: 'flex', justifyContent: 'center', cursor: 'pointer' }}>
                         <img
@@ -623,6 +624,9 @@ function PlanningList() {
                               {selectedNote === item.id ? 'Скрыть' : '...'}
                             </div>
                           ) : null}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {Math.round(item.price * 0.08).toLocaleString('ru-RU')}
                         </td>
                         <td>
                           <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>

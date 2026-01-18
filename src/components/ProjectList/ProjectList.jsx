@@ -16,6 +16,7 @@ import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
 import CreatePriceProject from './modals/CreatePriceProject';
 
 import './style.scss';
+import NpsModal from './modals/NpsModal';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);
@@ -42,6 +43,9 @@ function ProjectList() {
   const [openGearModal, setOpenGearModal] = React.useState(false);
   const [openModalUpdateDateFinishProject, setOpenModalUpdateDateFinishProject] =
     React.useState(false);
+  const [openModalNpsProject, setOpenModalNpsProject] = React.useState(false);
+  const [nameProject, setNameProject] = React.useState(null);
+  const [numberProject, setNumberProject] = React.useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -187,6 +191,13 @@ function ProjectList() {
   const hadleOpenModalUpdateDateFinishProject = (id) => {
     setProject(id);
     setOpenModalUpdateDateFinishProject(true);
+  };
+
+  const handleOpenModalNpsProject = (id, name, number) => {
+    setProject(id);
+    setNameProject(name);
+    setNumberProject(number);
+    setOpenModalNpsProject(true);
   };
 
   const handleSort = (field) => {
@@ -350,7 +361,13 @@ function ProjectList() {
         setChange={setChange}
         id={project}
       />
-
+      <NpsModal
+        show={openModalNpsProject}
+        setShow={setOpenModalNpsProject}
+        projectId={project}
+        nameProject={nameProject}
+        numberProject={numberProject}
+      />
       <div style={{ display: 'flex' }}>
         <button className="button__addproject" onClick={() => setCreateShow(true)}>
           Добавить
@@ -389,6 +406,7 @@ function ProjectList() {
             <thead>
               <tr>
                 <th className="project-th mobile">Название</th>
+                <th className="project-th">% вып</th>
                 <th className="project-th">Номер</th>
                 <th className="project-th" onClick={() => handleSort('agreement_date')}>
                   <div style={{ cursor: 'pointer', display: 'flex' }}>
@@ -416,6 +434,12 @@ function ProjectList() {
                 <th className="project-th">Дата закрытия</th>
                 <th className="project-th">Ср. реал.</th>
                 <th className="project-th">ТН</th>
+                <th className="project-th">Nps(1)</th>
+                <th className="project-th">Nps(2)</th>
+                <th className="project-th">Nps(3)</th>
+                <th className="project-th">Nps(4)</th>
+                <th className="project-th">Nps(5)</th>
+                <th className="project-th">Nps(6)</th>
                 <th className="project-th"></th>
               </tr>
             </thead>
@@ -446,6 +470,27 @@ function ProjectList() {
                       }}>
                       {item.name}
                     </td>
+                    {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
+                      projectDays
+                        .filter((projectDay) => projectDay.projectId === item.id)
+                        .map((projectDay) => (
+                          <>
+                            <td style={{ textAlign: 'center' }}>
+                              {projectDay.planDay !== 0
+                                ? `${
+                                    Math.round(
+                                      (projectDay.factDay / projectDay.planDay) * 100 * 100,
+                                    ) / 100
+                                  }%`
+                                : '0%'}
+                            </td>
+                          </>
+                        ))
+                    ) : (
+                      <>
+                        <td></td>
+                      </>
+                    )}
                     <td
                       style={{ cursor: 'pointer', textAlign: 'left' }}
                       onClick={() => {
@@ -576,6 +621,36 @@ function ProjectList() {
                       ) : (
                         ''
                       )}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter1 ? `${item.npsChapter1}%` : ''}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter2 ? `${item.npsChapter2}%` : ''}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter3 ? `${item.npsChapter3}%` : ''}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter4 ? `${item.npsChapter4}%` : ''}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter5 ? `${item.npsChapter5}%` : ''}
+                    </td>
+                    <td
+                      className="project__nps"
+                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+                      {item.npsChapter6 ? `${item.npsChapter6}%` : ''}
                     </td>
                     <td>
                       {item.installation_billing === null || item.regionId === null ? (

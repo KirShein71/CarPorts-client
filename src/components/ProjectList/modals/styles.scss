@@ -3,3 +3,97 @@
         width: 95%;
     }
 }
+
+.nps-modal {
+    &__nameProject {
+        font-size: 18px;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    &__chapter {
+        margin-bottom: 15px;
+        &-title {
+            text-align: left;
+            font-size: 16px;
+            font-weight: 600;
+            color: #000000;
+        }
+    }
+
+    &__question {
+        margin-top: 7px;
+
+        &-title {
+            text-align: left;
+            font-size: 15px;
+            font-weight: 400;
+            color: #000000;
+        }
+    }
+
+    &__scores {
+        margin-top: 7px;
+        &-btn {
+            width: 35px;
+            height: 25px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
+            
+            &--active {
+                background-color: #808080; 
+                color: #ffffff;
+                border-color: #606060;
+            }
+        }
+    }
+
+    &__update {
+        &-score {
+            width: 35px;
+            height: 25px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
+            
+            &--active {
+                background-color: #808080; 
+                color: #ffffff;
+                border-color: #606060;
+            }
+        }
+        
+    } 
+
+    &__existing-score {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__update {
+        margin-left: 7px;
+        
+        img {
+            width: 15px;
+            height: 15px;
+        }
+    }
+
+    &__delete {
+        margin-left: 5px;
+        
+        img {
+            width: 15px;
+            height: 15px;
+        }
+    }
+}
