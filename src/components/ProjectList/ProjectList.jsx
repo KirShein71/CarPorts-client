@@ -478,7 +478,7 @@ function ProjectList() {
                           <>
                             <td style={{ textAlign: 'center' }}>
                               {item.installation_billing !== 0
-                                ? `${Math.round((item.installation_billing / projectDay.factDay) * 100)}%`
+                                ? `${Math.round((projectDay.factDay / item.installation_billing) * 100)}%`
                                 : ''}
                             </td>
                           </>
