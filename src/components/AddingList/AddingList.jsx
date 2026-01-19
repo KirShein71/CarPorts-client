@@ -8,6 +8,7 @@ import Supplier from './Supplier';
 import Examination from './Examination';
 import Designer from './Designer';
 import Nps from './Nps';
+import WarehouseAssortment from './WarehouseAssortment';
 
 import './style.scss';
 
@@ -24,6 +25,7 @@ function AddingList() {
     'Услуги монтажный работ',
     'Список проверок',
     'Обратная связь',
+    'Ассортимент склада',
   ];
   const modalRef = React.useRef();
 
@@ -50,6 +52,8 @@ function AddingList() {
         return <Examination />;
       case 'Обратная связь':
         return <Nps />;
+      case 'Ассортимент склада':
+        return <WarehouseAssortment />;
       default:
         return <Details />;
     }

@@ -477,13 +477,9 @@ function ProjectList() {
                         .map((projectDay) => (
                           <>
                             <td style={{ textAlign: 'center' }}>
-                              {projectDay.planDay !== 0
-                                ? `${
-                                    Math.round(
-                                      (projectDay.factDay / projectDay.planDay) * 100 * 100,
-                                    ) / 100
-                                  }%`
-                                : '0%'}
+                              {item.installation_billing !== 0
+                                ? `${Math.round((item.installation_billing / projectDay.factDay) * 100)}%`
+                                : ''}
                             </td>
                           </>
                         ))
