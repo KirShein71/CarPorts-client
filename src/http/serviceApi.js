@@ -6,6 +6,11 @@ export const getAllService = async () => {
     return data
 }
 
+export const getAllActiveService = async () => {
+    const { data } = await guestInstance.get('service/getAllActiveService')
+    return data
+}
+
 export const getOneService = async (id) => {
     const { data } = await guestInstance.get(`service/getone/${id}`)
     return data
@@ -23,6 +28,11 @@ export const updateService = async(id, services) => {
 
 export const updateServiceNumber = async(id, services) => {
     const {data} = await guestInstance.put(`service/updateNumber/${id}`, services)
+    return data
+}
+
+export const updateActiveService = async(id, services) => {
+    const {data} = await guestInstance.patch(`service/updateActiveService/${id}`, services)
     return data
 }
 

@@ -5,7 +5,6 @@ import { Spinner, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CreateDetails from './modals/createDetails';
 import Moment from 'react-moment';
-import moment from 'moment-business-days';
 
 function ProductionChangeList() {
   const [projects, setProjects] = React.useState([]);

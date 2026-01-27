@@ -234,14 +234,14 @@ function Brigade() {
                   <td>
                     {brigade.active === 'true' ? (
                       <img
-                        style={{ display: 'block', margin: '0 auto' }}
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
                         src="./img/active.png"
                         alt="active"
                         onClick={() => handleActiveBrigade(brigade.id)}
                       />
                     ) : (
                       <img
-                        style={{ display: 'block', margin: '0 auto' }}
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
                         src="./img/inactive.png"
                         alt="inactive"
                         onClick={() => handleInactiveBrigade(brigade.id)}

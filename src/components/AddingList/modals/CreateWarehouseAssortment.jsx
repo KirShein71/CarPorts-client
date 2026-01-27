@@ -2,13 +2,21 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createWarehouseAssortment } from '../../../http/warehouseAssortmentApi';
 
-const defaultValue = { number: '', name: '', cost_price: '', shipment_price: '', weight: '' };
+const defaultValue = {
+  number: '',
+  name: '',
+  cost_price: '',
+  shipment_price: '',
+  weight: '',
+  active: '',
+};
 const defaultValid = {
   number: null,
   name: null,
   cost_price: null,
   shipment_price: null,
   weight: null,
+  active: null,
 };
 
 const isValid = (value) => {
@@ -46,6 +54,7 @@ const CreateWarehouseAssortment = (props) => {
       data.append('cost_price', value.cost_price.trim());
       data.append('shipment_price', value.shipment_price.trim());
       data.append('weight', value.weight.trim());
+      data.append('active', (value.active = 'true'));
       setIsLoading(true);
       createWarehouseAssortment(data)
         .then((data) => {

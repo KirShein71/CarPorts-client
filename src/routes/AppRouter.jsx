@@ -42,6 +42,8 @@ import ResultSupervision from '../pages/ResultSupervision';
 import GantInstaller from '../pages/GantInstaller';
 import GantProject from '../pages/GantProject';
 import ProductionOrder from '../pages/ProductionOrder';
+import Warehouse from '../pages/Warehouse';
+import ShipmentWarehouse from '../pages/ShipmentWarehouse';
 
 import { observer } from 'mobx-react';
 
@@ -80,6 +82,8 @@ const employeeRoutes = [
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
+  { path: '/warehouse', Component: Warehouse },
+  { path: '/shipment-warehouse', Component: ShipmentWarehouse },
 ];
 
 const adminRoutes = [
@@ -123,6 +127,8 @@ const adminRoutes = [
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
+  { path: '/warehouse', Component: Warehouse },
+  { path: '/shipment-warehouse', Component: ShipmentWarehouse },
 ];
 
 const managerSaleRoutes = [
@@ -173,6 +179,8 @@ const managerProjectRoutes = [
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
+  { path: '/warehouse', Component: Warehouse },
+  { path: '/shipment-warehouse', Component: ShipmentWarehouse },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -192,6 +200,8 @@ const managerProductionRoutes = [
   { path: '/gant-installers', Component: GantInstaller },
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
+  { path: '/warehouse', Component: Warehouse },
+  { path: '/shipment-warehouse', Component: ShipmentWarehouse },
 ];
 
 const brigadesRoutes = [

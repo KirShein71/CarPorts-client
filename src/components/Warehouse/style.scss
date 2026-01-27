@@ -1,0 +1,194 @@
+.warehouse {
+    &__filter {
+        display: flex;
+    }
+
+    &__search {
+        height: 30px;
+        width: 100px;
+        font-size: 14px;
+        outline: none; 
+        border: solid 1px #000000;
+        @media(max-width: 460px) {
+            width: 90px;
+            height: 20px;
+            font-size: 10px;
+        }
+    }
+
+
+    &-button___production {
+        width: 190px;
+        height: 30px;
+        border: 1px solid #212529;
+        background-color: #212529;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        margin-right: 10px;
+        &.active {
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; /* Белый текст для активной кнопки */
+        }
+        @media(max-width: 460px) {
+            width: 90px;
+            height: 20px;
+            font-size: 10px;
+            margin-right: 5px;
+        }
+
+        &-active {
+            width: 150px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            &.active {
+                background-color: #212529; /* Черный фон для активной кнопки */
+                color: #ffffff; /* Белый текст для активной кнопки */
+            }
+            @media(max-width: 460px) {
+                width: 60px;
+                height: 20px;
+                font-size: 10px;
+                margin-right: 5px;
+            }
+        }
+
+    
+    
+
+        &-noactive {
+            width: 150px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            &.active {
+                background-color: #212529; /* Черный фон для активной кнопки */
+                color: #ffffff; /* Белый текст для активной кнопки */
+            }
+            @media(max-width: 460px) {
+                width: 83px;
+                height: 20px;
+                font-size: 10px;
+                margin-right: 5px;
+            }
+        }
+
+        &-main {
+            width: 85px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            @media(max-width: 460px) {
+                width: 60px;
+                height: 20px;
+                font-size: 10px;
+                margin-right: 5px;
+            }
+        }
+    }
+
+    .inactive {
+        background-color: #ffffff; /* Белый фон для неактивной кнопки */
+        color: #212529; /* Черный текст для неактивной кнопки */
+    }
+
+    &-button__show {
+        font-size: 14px;
+        font-weight: 500;
+        color: #000000;
+        text-align: center; 
+        cursor: pointer;
+        @media(max-width: 460px) {
+            font-size: 11px;
+        }
+    }
+
+    &-table {
+        margin-top: 20px;
+        width: 550px;
+        border-collapse: separate; 
+        border-spacing: 0;
+        @media(max-width: 460px) {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        thead {
+            border-bottom: 2px solid #dee2e6;
+
+            th {
+                border: none; // убираем все границы у заголовков
+            }
+        }
+
+        tbody {
+            td {
+                border: 1px solid #dee2e6; // границы у ячеек тела таблицы
+            }
+        }
+
+        &__th {
+            width: 274px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #000000;
+            @media(max-width: 460px) {
+                width: 70%;
+                font-size: 14px;
+            }
+        }
+
+        &__th.quantity {
+            text-align: center;
+            width: 150px;
+            @media(max-width: 460px) {
+                width: 30%;
+                font-size: 14px;
+            }
+        }
+
+        
+        &__td {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            text-align-last: left;
+            @media(max-width: 460px) {
+                
+                font-size: 12px;
+            }
+        }
+
+        &__td.quantity {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            text-align-last: right;
+            cursor: pointer;
+            @media(max-width: 460px) {
+                font-size: 12px;
+            }
+        }
+    }
+}

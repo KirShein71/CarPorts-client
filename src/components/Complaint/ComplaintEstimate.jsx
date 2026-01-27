@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { fetchBrigades } from '../../http/bragadeApi';
-import { getAllService } from '../../http/serviceApi';
+import { getAllActiveService } from '../../http/serviceApi';
 import {
   createComplaintEstimate,
   getAllEstimateForComplaint,
@@ -56,7 +56,10 @@ function ComplaintEstimate(props) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [servicesData, brigadesData] = await Promise.all([getAllService(), fetchBrigades()]);
+        const [servicesData, brigadesData] = await Promise.all([
+          getAllActiveService(),
+          fetchBrigades(),
+        ]);
 
         setServices(servicesData);
         setBrigades(brigadesData);
@@ -446,7 +449,7 @@ function ComplaintEstimate(props) {
                                 ? `${estimateCol.service.number}. ${
                                     estimateCol.service?.name ?? ''
                                   }`
-                                : estimateCol.service?.name ?? ''}
+                                : (estimateCol.service?.name ?? '')}
                             </td>
                             <td
                               onClick={() =>
@@ -619,7 +622,7 @@ function ComplaintEstimate(props) {
                   <td>
                     {service?.number != null
                       ? `${service.number}. ${service?.name ?? ''}`
-                      : service?.name ?? ''}
+                      : (service?.name ?? '')}
                   </td>
                   <td>
                     <input

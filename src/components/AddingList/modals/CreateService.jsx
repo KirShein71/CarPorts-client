@@ -2,10 +2,11 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createService } from '../../../http/serviceApi';
 
-const defaultValue = { name: '', number: '' };
+const defaultValue = { name: '', number: '', active: '' };
 const defaultValid = {
   name: null,
   number: null,
+  active: null,
 };
 
 const isValid = (value) => {
@@ -37,6 +38,7 @@ const CreateService = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('number', value.number.trim());
+      data.append('active', (value.active = 'true'));
       setIsLoading(true);
       createService(data)
         .then((data) => {

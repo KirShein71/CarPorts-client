@@ -87,8 +87,8 @@ function ProductionList() {
       const isActiveProject = filters.isActive
         ? project.project.finish === null
         : filters.isClosed
-        ? project.project.finish === 'true'
-        : true;
+          ? project.project.finish === 'true'
+          : true;
 
       // Функция для проверки реальных деталей (не null и не пустые значения)
       const hasRealDetails = () => {
@@ -346,6 +346,7 @@ function ProductionList() {
   if (fetching) {
     return <Spinner animation="border" />;
   }
+
   return (
     <div className="productionlist">
       <Header title={'Производство'} />
@@ -662,8 +663,8 @@ function ProductionList() {
                                   backgroundColor: shouldHighlight
                                     ? '#ffe6e6'
                                     : hoveredColumn === part.id
-                                    ? '#d6d4d4'
-                                    : 'transparent',
+                                      ? '#d6d4d4'
+                                      : 'transparent',
                                 }}
                                 key={part.id}
                                 onClick={() =>
@@ -730,16 +731,16 @@ function ProductionList() {
                                     projectDetail.project.finish === 'true'
                                       ? '#808080'
                                       : quantityDetail > quantity
-                                      ? '#f12c4d'
-                                      : '#000000',
+                                        ? '#f12c4d'
+                                        : '#000000',
                                   backgroundColor:
                                     hoveredColumn === part.id
                                       ? '#d6d4d4'
                                       : quantity
-                                      ? quantityDetail > quantity
-                                        ? '#ffc0cb'
-                                        : 'transparent'
-                                      : 'transparent',
+                                        ? quantityDetail > quantity
+                                          ? '#ffc0cb'
+                                          : 'transparent'
+                                        : 'transparent',
                                 }}
                                 key={part.id}
                                 onClick={() =>

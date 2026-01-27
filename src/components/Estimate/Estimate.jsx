@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAllService } from '../../http/serviceApi';
+import { getAllActiveService } from '../../http/serviceApi';
 import {
   createEstimate,
   getAllEstimateForProject,
@@ -47,7 +47,10 @@ function Estimate(props) {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const [servicesData, brigadesData] = await Promise.all([getAllService(), fetchBrigades()]);
+        const [servicesData, brigadesData] = await Promise.all([
+          getAllActiveService(),
+          fetchBrigades(),
+        ]);
 
         setServices(servicesData);
         setBrigades(brigadesData);
@@ -444,7 +447,7 @@ function Estimate(props) {
                                   ? `${estimateCol.service.number}. ${
                                       estimateCol.service?.name ?? ''
                                     }`
-                                  : estimateCol.service?.name ?? ''}
+                                  : (estimateCol.service?.name ?? '')}
                               </td>
                               <td
                                 onClick={() => handleOpenModalUpdatePrice(estimateCol.id)}
@@ -611,7 +614,7 @@ function Estimate(props) {
                     <td>
                       {service?.number != null
                         ? `${service.number}. ${service?.name ?? ''}`
-                        : service?.name ?? ''}
+                        : (service?.name ?? '')}
                     </td>
                     <td>
                       <input

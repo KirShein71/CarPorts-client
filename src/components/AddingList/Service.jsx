@@ -1,9 +1,22 @@
 import React from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
-import { getAllService, deleteService } from '../../http/serviceApi';
+import { getAllService, deleteService, updateActiveService } from '../../http/serviceApi';
 import CreateService from './modals/CreateService';
 import UpdateService from './modals/UpdateService';
 import CreateNumberService from './modals/CreateNumberService';
+
+const defaultValue = { active: '' };
+const defaultValid = {
+  active: null,
+};
+
+const isValid = (value) => {
+  const result = {};
+  for (let key in value) {
+    if (key === 'active') result.active = value.active.trim() !== '';
+  }
+  return result;
+};
 
 function Service() {
   const [services, setServices] = React.useState([]);
@@ -14,6 +27,8 @@ function Service() {
   const [change, setChange] = React.useState(true);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [serviceToDelete, setServiceToDelete] = React.useState(null);
+  const [value, setValue] = React.useState(defaultValue);
+  const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     getAllService().then((data) => setServices(data));
@@ -54,6 +69,34 @@ function Service() {
   const cancelDelete = () => {
     setDeleteModal(false);
     setServiceToDelete(null);
+  };
+
+  const handleInactiveService = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'false');
+
+    updateActiveService(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
+
+  const handleActiveService = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'true');
+
+    updateActiveService(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
   };
 
   return (
@@ -109,6 +152,7 @@ function Service() {
               <th>Название услуги</th>
               <th></th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +186,23 @@ function Service() {
                     <Button variant="dark" onClick={() => handleUpdateService(service.id)}>
                       Редактировать
                     </Button>
+                  </td>
+                  <td>
+                    {service.active === 'true' ? (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/active.png"
+                        alt="active"
+                        onClick={() => handleInactiveService(service.id)}
+                      />
+                    ) : (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/inactive.png"
+                        alt="inactive"
+                        onClick={() => handleActiveService(service.id)}
+                      />
+                    )}
                   </td>
                   <td>
                     <Button variant="dark" onClick={() => handleDeleteClick(service.id)}>

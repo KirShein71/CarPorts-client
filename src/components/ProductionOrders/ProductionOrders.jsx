@@ -57,8 +57,6 @@ function ProductionOrders() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
 
-  console.log(buttonClosedProject);
-
   React.useEffect(() => {
     const fetchAllData = async () => {
       try {
@@ -95,8 +93,8 @@ function ProductionOrders() {
       const isActiveProject = filters.isActive
         ? project.project.finish === null
         : filters.isClosed
-        ? project.project.finish === 'true'
-        : true;
+          ? project.project.finish === 'true'
+          : true;
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {

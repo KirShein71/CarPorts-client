@@ -5,7 +5,21 @@ import { Table, Button, Spinner, Modal } from 'react-bootstrap';
 import {
   fetchAllWarehouseAssortments,
   deleteWarehouseAssortment,
+  updateActiveWarehouseAssortment,
 } from '../../http/warehouseAssortmentApi';
+
+const defaultValue = { active: '' };
+const defaultValid = {
+  active: null,
+};
+
+const isValid = (value) => {
+  const result = {};
+  for (let key in value) {
+    if (key === 'active') result.active = value.active.trim() !== '';
+  }
+  return result;
+};
 
 function WarehouseAssortment() {
   const [warehouseAssortments, setWarehouseAssortments] = React.useState([]);
@@ -16,6 +30,8 @@ function WarehouseAssortment() {
   const [fetching, setFetching] = React.useState(true);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [warehouseAssortmentToDelete, setWarehouseAssortmentToDelete] = React.useState(null);
+  const [value, setValue] = React.useState(defaultValue);
+  const [valid, setValid] = React.useState(defaultValid);
 
   React.useEffect(() => {
     fetchAllWarehouseAssortments()
@@ -59,13 +75,41 @@ function WarehouseAssortment() {
     setUpdateWarehouseAssortmentModal(true);
   };
 
+  const handleInactiveWarehouseAssortment = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'false');
+
+    updateActiveWarehouseAssortment(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
+
+  const handleActiveWarehouseAssortment = (id) => {
+    const correct = isValid(value);
+    setValid(correct);
+
+    const data = new FormData();
+    data.append('active', 'true');
+
+    updateActiveWarehouseAssortment(id, data)
+      .then((response) => {
+        setChange((state) => !state);
+      })
+      .catch((error) => alert(error.response.data.message));
+  };
+
   if (fetching) {
     return <Spinner />;
   }
 
   return (
-    <div className="details">
-      <h2 className="details__title">Ассортимент склада</h2>
+    <div className="warehouse-assortement">
+      <h2 className="warehouse-assortement__title">Ассортимент склада</h2>
       <CreateWarehouseAssortment
         show={createWarehouseAssortmentModal}
         setShow={setCreateWarehouseAssortmentModal}
@@ -110,6 +154,7 @@ function WarehouseAssortment() {
               <th>Порядковый номер</th>
               <th></th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -128,6 +173,23 @@ function WarehouseAssortment() {
                       onClick={() => handleUpdateWarehouseAssortment(warehouseAssortment.id)}>
                       Редактировать
                     </Button>
+                  </td>
+                  <td>
+                    {warehouseAssortment.active === 'true' ? (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/active.png"
+                        alt="active"
+                        onClick={() => handleInactiveWarehouseAssortment(warehouseAssortment.id)}
+                      />
+                    ) : (
+                      <img
+                        style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+                        src="./img/inactive.png"
+                        alt="inactive"
+                        onClick={() => handleActiveWarehouseAssortment(warehouseAssortment.id)}
+                      />
+                    )}
                   </td>
                   <td>
                     <Button

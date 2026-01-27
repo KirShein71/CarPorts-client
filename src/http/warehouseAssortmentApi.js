@@ -6,6 +6,11 @@ export const fetchAllWarehouseAssortments = async () => {
     return data
 }
 
+export const getAllActiveWarehouseAssortement = async () => {
+    const { data } = await guestInstance.get('warehouseassortment/getAllActiveWarehouseAssortement')
+    return data
+}
+
 export const fetchOneWarehouseAssortment = async (id) => {
     const { data } = await guestInstance.get(`warehouseassortment/getone/${id}`)
     return data
@@ -19,6 +24,11 @@ export const createWarehouseAssortment = async (warehouseassortment) => {
 
 export const updateWarehouseAssortment = async (id, warehouseassortments) => {
     const { data } = await guestInstance.put(`warehouseassortment/update/${id}`, warehouseassortments)
+    return data
+}
+
+export const updateActiveWarehouseAssortment = async (id, warehouseassortments) => {
+    const { data } = await guestInstance.patch(`warehouseassortment/updateActiveWarehouseAssortment/${id}`, warehouseassortments)
     return data
 }
 
