@@ -32,6 +32,14 @@ const CreateOneShipmentDetail = (props) => {
     }
   };
 
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleSaveDetail = (event) => {
     event.preventDefault();
     const correct = isValid(value);
@@ -41,7 +49,8 @@ const CreateOneShipmentDetail = (props) => {
       data.append('shipment_quantity', value.shipment_quantity.trim());
       data.append('detailId', detailId);
       data.append('projectId', projectId);
-      data.append('shipment_date', shipmentDate);
+      // Используем shipmentDate если он определен, иначе текущую дату
+      data.append('shipment_date', shipmentDate || getCurrentDate());
       setIsLoading(true);
       createShipmentDetails(data)
         .then((data) => {
