@@ -160,7 +160,7 @@ function WarehouseComponent() {
       return allDetails;
     } else {
       // Иначе возвращаем только детали с количеством (не более 4)
-      return detailsWithQuantity.slice(0, 4);
+      return detailsWithQuantity;
     }
   };
 
@@ -227,7 +227,7 @@ function WarehouseComponent() {
     // 1. Есть детали без количества (которые не показываются по умолчанию)
     // 2. Или деталей с количеством больше 4
     const hasEmptyDetails = allDetails.some((detail) => detail.quantity === '');
-    return hasEmptyDetails || detailsWithQuantity.length > 4;
+    return hasEmptyDetails || detailsWithQuantity;
   };
 
   return (
