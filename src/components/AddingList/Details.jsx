@@ -3,6 +3,7 @@ import CreateDetail from './modals/CreateDetail';
 import UpdateDetail from './modals/UpdateDetail';
 import CreatePriceDetail from './modals/CreatePriceDetail';
 import CreateNumberDetail from './modals/CreateNumberDetail';
+import CreateWeightDetail from './modals/CreateWeightDetail';
 import { Table, Button, Spinner, Modal } from 'react-bootstrap';
 import { fetchAllDetails, deleteDetail } from '../../http/detailsApi';
 
@@ -13,6 +14,7 @@ function Details() {
   const [updateDeatialModal, setUpdateDetailModal] = React.useState(null);
   const [createPriceModal, setCreatePriceModal] = React.useState(false);
   const [createNumberModal, setCreateNumberModal] = React.useState(false);
+  const [createWeightModal, setCreateWeightModal] = React.useState(false);
   const [change, setChange] = React.useState(true);
   const [fetching, setFetching] = React.useState(true);
   const [deleteModal, setDeleteModal] = React.useState(false);
@@ -66,6 +68,11 @@ function Details() {
     setCreateNumberModal(true);
   };
 
+  const handleOpenCreateWeightModal = (id) => {
+    setDetail(id);
+    setCreateWeightModal(true);
+  };
+
   if (fetching) {
     return <Spinner />;
   }
@@ -89,6 +96,12 @@ function Details() {
       <CreateNumberDetail
         show={createNumberModal}
         setShow={setCreateNumberModal}
+        setChange={setChange}
+        id={detail}
+      />
+      <CreateWeightDetail
+        show={createWeightModal}
+        setShow={setCreateWeightModal}
         setChange={setChange}
         id={detail}
       />
@@ -124,6 +137,7 @@ function Details() {
               <th>Номер</th>
               <th>Название детали</th>
               <th>Себестоимость</th>
+              <th>Вес</th>
               <th></th>
               <th></th>
             </tr>
@@ -142,6 +156,13 @@ function Details() {
                   <td onClick={() => handleCreatePrice(detail.id)}>
                     {detail.price ? (
                       <>{detail.price}</>
+                    ) : (
+                      <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
+                    )}
+                  </td>
+                  <td onClick={() => handleOpenCreateWeightModal(detail.id)}>
+                    {detail.weight ? (
+                      <>{detail.weight}</>
                     ) : (
                       <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
                     )}

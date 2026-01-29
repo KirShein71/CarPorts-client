@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Table, Spinner, Modal, Button } from 'react-bootstrap';
+import { Table, Modal, Button } from 'react-bootstrap';
 import { fetchAllWarehouseAssortments } from '../../http/warehouseAssortmentApi';
 import {
   fetchAllShipmentWarehouse,
@@ -50,8 +50,6 @@ function ShipmentWarehouseComponent() {
   const [projectWarehouseId, setProjectWarehouseId] = React.useState(null);
 
   React.useEffect(() => {
-    setFetching(true);
-
     Promise.all([fetchAllWarehouseAssortments(), fetchAllShipmentWarehouse()])
       .then(([warehouseData, projectData]) => {
         setWarehouseAssortements(warehouseData);
@@ -59,9 +57,6 @@ function ShipmentWarehouseComponent() {
       })
       .catch((error) => {
         console.error('Ошибка при загрузке данных:', error);
-      })
-      .finally(() => {
-        setFetching(false);
       });
   }, [change]);
 
@@ -201,10 +196,6 @@ function ShipmentWarehouseComponent() {
     setDeleteModal(false);
     setShipmentWarehouseToDelete(null);
   };
-
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
 
   return (
     <div className="shipment-warehouse">

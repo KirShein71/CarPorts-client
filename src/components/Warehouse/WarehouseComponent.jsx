@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../Header/Header';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import WarehouseChange from './change/WarehouseChange';
 import { getAllActiveWarehouseAssortement } from '../../http/warehouseAssortmentApi';
 import { fetchAllProjectWarehouse } from '../../http/projectWarehouseApi';
@@ -27,30 +27,38 @@ function WarehouseComponent() {
     React.useState(false);
   const [showAllRows, setShowAllRows] = React.useState({});
 
-  React.useEffect(() => {
-    setFetching(true);
+  // Кэш для деталей каждого проекта, чтобы избежать полного рендера
+  const [projectDetailsCache, setProjectDetailsCache] = React.useState({});
 
+  React.useEffect(() => {
     Promise.all([getAllActiveWarehouseAssortement(), fetchAllProjectWarehouse()])
       .then(([warehouseData, projectData]) => {
         setWarehouseAssortements(warehouseData);
         setProjectWarehouses(projectData);
+
+        // Инициализируем кэш деталей
+        const initialCache = {};
+        projectData.forEach((proWarehouse) => {
+          const projectId = proWarehouse.projectId || proWarehouse.id;
+          const details = getWarehouseDetailsForProject(
+            proWarehouse,
+            warehouseData,
+            showAllRows[projectId],
+          );
+          initialCache[projectId] = details;
+        });
+        setProjectDetailsCache(initialCache);
       })
       .catch((error) => {
         console.error('Ошибка при загрузке данных:', error);
-      })
-      .finally(() => {
-        setFetching(false);
       });
   }, [change]);
 
   React.useEffect(() => {
     const filteredProjects = projectWarehouses.filter((project) => {
-      // Поиск ТОЛЬКО по названию проекта
       const matchesSearch = project.project.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Фильтрация по статусу проекта
       if (buttonActiveProject && buttonClosedProject) {
-        // Если обе кнопки активны - показываем все проекты
         return matchesSearch;
       }
 
@@ -87,6 +95,21 @@ function WarehouseComponent() {
       ...prev,
       [projectId]: !prev[projectId],
     }));
+
+    // Обновляем кэш для конкретного проекта
+    const proWarehouse = projectWarehouses.find((p) => (p.projectId || p.id) === projectId);
+    if (proWarehouse) {
+      const shouldShowAll = !showAllRows[projectId];
+      const details = getWarehouseDetailsForProject(
+        proWarehouse,
+        warehouseAssortements,
+        shouldShowAll,
+      );
+      setProjectDetailsCache((prev) => ({
+        ...prev,
+        [projectId]: details,
+      }));
+    }
   };
 
   const handleClickToWarehouseChange = () => {
@@ -109,13 +132,12 @@ function WarehouseComponent() {
     setOpenModalUpdateWarehouseDetail(true);
   };
 
-  // Получаем warehouse details для конкретного проекта
-  const getWarehouseDetailsForProject = (proWarehouse) => {
-    // Получаем все warehouse assortments отсортированные по номеру
-    const allAssortments = warehouseAssortements.sort((a, b) => a.number - b.number);
+  // Функция для получения деталей проекта
+  const getWarehouseDetailsForProject = (proWarehouse, assortments, shouldShowAll) => {
+    const allAssortments = [...assortments].sort((a, b) => a.number - b.number);
 
-    // Сопоставляем с данными проекта
-    let details = allAssortments.map((wareAssortName) => {
+    // Получаем все детали с данными
+    const allDetails = allAssortments.map((wareAssortName) => {
       const warehouseProject = proWarehouse.props?.find(
         (prop) => prop.warehouse_assortement_id === wareAssortName.id,
       );
@@ -130,27 +152,83 @@ function WarehouseComponent() {
       };
     });
 
-    // Получаем ID проекта
-    const projectId = proWarehouse.projectId || proWarehouse.id;
+    // Фильтруем: по умолчанию показываем только детали с количеством
+    const detailsWithQuantity = allDetails.filter((detail) => detail.quantity !== '');
 
-    // Ограничиваем показ 4 строками, если не нажата кнопка "Показать все" для этого проекта
-    const shouldShowAll = showAllRows[projectId];
-    return shouldShowAll ? details : details.slice(0, 4);
+    if (shouldShowAll) {
+      // Если показать все - возвращаем все детали
+      return allDetails;
+    } else {
+      // Иначе возвращаем только детали с количеством (не более 4)
+      return detailsWithQuantity.slice(0, 4);
+    }
+  };
+
+  // Функция для обновления кэша после изменения детали
+  const updateProjectCache = (updatedDetail) => {
+    // Находим проект, к которому принадлежит обновленная деталь
+    const project = projectWarehouses.find((p) =>
+      p.props?.some((prop) => prop.id === updatedDetail.id),
+    );
+
+    if (!project) return;
+
+    const projectId = project.projectId || project.id;
+
+    // Обновляем props в проекте
+    const updatedProjects = projectWarehouses.map((p) => {
+      if ((p.projectId || p.id) === projectId) {
+        const updatedProps = p.props
+          ? p.props.map((prop) => (prop.id === updatedDetail.id ? updatedDetail : prop))
+          : [];
+        return { ...p, props: updatedProps };
+      }
+      return p;
+    });
+
+    setProjectWarehouses(updatedProjects);
+
+    // Обновляем кэш для этого проекта
+    const details = getWarehouseDetailsForProject(
+      updatedProjects.find((p) => (p.projectId || p.id) === projectId),
+      warehouseAssortements,
+      showAllRows[projectId],
+    );
+
+    setProjectDetailsCache((prev) => ({
+      ...prev,
+      [projectId]: details,
+    }));
   };
 
   // Проверяем, нужно ли показывать кнопку "Показать все/Скрыть" для проекта
   const shouldShowToggleButton = (proWarehouse) => {
-    return warehouseAssortements.length > 4;
-  };
+    const projectId = proWarehouse.projectId || proWarehouse.id;
+    const shouldShowAll = showAllRows[projectId];
 
-  // Проверяем, есть ли данные для отображения в проекте
-  const hasDataInProject = (proWarehouse) => {
-    return warehouseAssortements.length > 0;
-  };
+    if (shouldShowAll) {
+      return true; // Всегда показываем кнопку "Скрыть" когда показаны все детали
+    }
 
-  if (fetching) {
-    return <Spinner animation="border" />;
-  }
+    // Получаем все детали для проекта
+    const allDetails = warehouseAssortements.map((wareAssortName) => {
+      const warehouseProject = proWarehouse.props?.find(
+        (prop) => prop.warehouse_assortement_id === wareAssortName.id,
+      );
+      return {
+        quantity: warehouseProject ? warehouseProject.quantity : '',
+      };
+    });
+
+    // Детали с количеством
+    const detailsWithQuantity = allDetails.filter((detail) => detail.quantity !== '');
+
+    // Показываем кнопку если:
+    // 1. Есть детали без количества (которые не показываются по умолчанию)
+    // 2. Или деталей с количеством больше 4
+    const hasEmptyDetails = allDetails.some((detail) => detail.quantity === '');
+    return hasEmptyDetails || detailsWithQuantity.length > 4;
+  };
 
   return (
     <div className="warehouse">
@@ -161,12 +239,14 @@ function WarehouseComponent() {
         warehouseAssortementId={warehouseAssortementId}
         projectId={projectId}
         setChange={setChange}
+        onDetailCreated={updateProjectCache} // Передаем функцию для обновления кэша
       />
       <UpdateWarehouseDetail
         show={openModalUpdateWarehouseDetail}
         setShow={setOpenModalUpdateWarehouseDetail}
         setChange={setChange}
         id={oneProjectWarehouse}
+        onDetailUpdated={updateProjectCache} // Передаем функцию для обновления кэша
       />
       <div className="warehouse__filter">
         {warehouseChangeComponent ? (
@@ -212,13 +292,9 @@ function WarehouseComponent() {
       ) : (
         <div className="warehouse__content">
           {filteredProjects.map((proWarehouse) => {
-            const warehouseDetails = getWarehouseDetailsForProject(proWarehouse);
-            const hasData = hasDataInProject(proWarehouse);
-            const projectId = proWarehouse.projectId || proWarehouse.id; // Уникальный ID проекта
-
-            if (!hasData) {
-              return null;
-            }
+            const projectId = proWarehouse.projectId || proWarehouse.id;
+            const warehouseDetails = projectDetailsCache[projectId] || [];
+            const shouldShowAll = showAllRows[projectId];
 
             return (
               <Table key={projectId} className="warehouse-table">
@@ -231,23 +307,30 @@ function WarehouseComponent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {warehouseDetails.map((wareAssortName) => (
-                    <tr key={`${projectId}-${wareAssortName.id}`}>
-                      <td className="warehouse-table__td">{wareAssortName.name}</td>
-                      <td
-                        className="warehouse-table__td quantity"
-                        onClick={() =>
-                          wareAssortName.hasData
-                            ? handleOpenModalUpdateWareouseDetail(wareAssortName.warehouseProjectId)
-                            : handleOpenModalOneCreateWarehouseDetail(
-                                wareAssortName.id,
-                                proWarehouse.projectId,
-                              )
-                        }>
-                        {wareAssortName.quantity || ''}
-                      </td>
-                    </tr>
-                  ))}
+                  {warehouseDetails.length > 0 ? (
+                    warehouseDetails.map((wareAssortName) => (
+                      <tr key={`${projectId}-${wareAssortName.id}`}>
+                        <td className="warehouse-table__td">{wareAssortName.name}</td>
+                        <td
+                          className="warehouse-table__td quantity"
+                          onClick={() =>
+                            wareAssortName.hasData
+                              ? handleOpenModalUpdateWareouseDetail(
+                                  wareAssortName.warehouseProjectId,
+                                )
+                              : handleOpenModalOneCreateWarehouseDetail(
+                                  wareAssortName.id,
+                                  proWarehouse.projectId,
+                                )
+                          }>
+                          {wareAssortName.quantity || ''}
+                        </td>
+                      </tr>
+                    ))
+                  ) : !shouldShowAll ? (
+                    // Показываем сообщение только если не открыт полный список
+                    <tr></tr>
+                  ) : null}
                 </tbody>
                 {shouldShowToggleButton(proWarehouse) && (
                   <tfoot>

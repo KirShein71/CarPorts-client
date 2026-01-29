@@ -2,11 +2,12 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createDetail } from '../../../http/detailsApi';
 
-const defaultValue = { number: '', name: '', price: '' };
+const defaultValue = { number: '', name: '', price: '', weight: '' };
 const defaultValid = {
   number: null,
   name: null,
   price: null,
+  weight: null,
 };
 
 const isValid = (value) => {
@@ -15,6 +16,7 @@ const isValid = (value) => {
     if (key === 'number') result.number = value.number.trim() !== '';
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'price') result.price = value.price.trim() !== '';
+    if (key === 'weight') result.weight = value.weight.trim() !== '';
   }
   return result;
 };
@@ -40,6 +42,7 @@ const CreateDetail = (props) => {
       data.append('number', value.number.trim());
       data.append('name', value.name.trim());
       data.append('price', value.price.trim());
+      data.append('weight', value.weight.trim());
       setIsLoading(true);
       createDetail(data)
         .then((data) => {
@@ -102,6 +105,18 @@ const CreateDetail = (props) => {
                 isValid={valid.price === true}
                 isInvalid={valid.price === false}
                 placeholder="Себестоимость"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="weight"
+                value={value.weight}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.weight === true}
+                isInvalid={valid.weight === false}
+                placeholder="Вес детали"
               />
             </Col>
           </Row>

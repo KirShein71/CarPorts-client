@@ -21,6 +21,11 @@ export const createPrice = async (id, details) => {
     return data
 }
 
+export const createWeight = async (id, details) => {
+    const { data } = await guestInstance.patch(`details/createWeight/${id}`, details)
+    return data
+}
+
 export const createNumber = async (id, details) => {
     const { data } = await guestInstance.put(`details/createNumber/${id}`, details)
     return data
