@@ -101,7 +101,7 @@
 
     &__table {
        
-        width: 550px;
+        width: 650px;
         border-collapse: separate; 
         border-spacing: 0;
         @media(max-width: 460px) {
@@ -118,6 +118,14 @@
         }
 
         tbody {
+            tr:nth-child(even) {
+                background-color: #f5f5f5;
+            }
+
+            tr:nth-child(odd) {
+                background-color: #ffffff;
+            }
+
             td {
                 border: 1px solid #dee2e6; // границы у ячеек тела таблицы
             }
@@ -130,7 +138,7 @@
             font-weight: 600;
             color: #000000;
             @media(max-width: 460px) {
-                font-size: 14px;
+                font-size: 12px;
             }
         }
 
@@ -140,18 +148,26 @@
 
         &-th.quantity {
             text-align: center;
-            width: 25%;
+            width: 15%;
             @media(max-width: 460px) {
-                font-size: 14px;
+                font-size: 12px;
             }
         }
 
         &-th.weigth {
             text-align: center;
-            width: 25%;
+            width: 15%;
             color: #8f9296;
             @media(max-width: 460px) {
-                font-size: 14px;
+                font-size: 12px;
+            }
+        }
+
+        &-th.note {
+            text-align: center;
+            width: 25%;
+            @media(max-width: 460px) {
+                font-size: 12px;
             }
         }
 
@@ -199,6 +215,16 @@
             font-weight: 500;
             color: #8f9296;
             text-align-last: center;
+            @media(max-width: 460px) {
+                font-size: 12px;
+            }
+        }
+
+        &-td.note {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            cursor: pointer;
             @media(max-width: 460px) {
                 font-size: 12px;
             }
@@ -269,6 +295,7 @@
         }
     }
 }
+
 
 
 

@@ -432,9 +432,10 @@ function ProjectList() {
                 <th className="project-th">Факт</th>
                 <th className="project-th">План</th>
                 <th className="project-th">Остаток</th>
-                <th className="project-th">Дата закрытия</th>
+                <th className="project-th">Дата закр.</th>
                 <th className="project-th">Ср. реал.</th>
                 <th className="project-th">ТН</th>
+                <th className="project-th">СМ</th>
                 <th className="project-th">Nps(1)</th>
                 <th className="project-th">Nps(2)</th>
                 <th className="project-th">Nps(3)</th>
@@ -610,6 +611,17 @@ function ProjectList() {
                     </td>
                     <td>
                       {item.project_examinations.length > 0 ? (
+                        <img
+                          style={{ display: 'block', margin: '0 auto' }}
+                          src="./img/done.png"
+                          alt="done"
+                        />
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td>
+                      {item.estimate ? (
                         <img
                           style={{ display: 'block', margin: '0 auto' }}
                           src="./img/done.png"

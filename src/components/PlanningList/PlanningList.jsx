@@ -110,7 +110,11 @@ function PlanningList() {
         }
 
         // В работе
-        if (filters.isProgress && project.date_inspection === null && project.designer !== null) {
+        if (
+          filters.isProgress &&
+          project.inspection_designer === null &&
+          project.designer !== null
+        ) {
           matchesDesignerFilter = true;
         }
 

@@ -9,6 +9,7 @@ import {
 } from '../../http/shipmentWarehouseApi';
 import CreateWarehouseAssortmentProject from './modals/CreateWarehouseAssortmentProject';
 import UpdateQuantityWarehouseDetail from './modals/UpdateQuantityWarehouseDetail';
+import CreateNote from './modals/CreateNote';
 
 import './style.scss';
 
@@ -32,7 +33,6 @@ function ShipmentWarehouseComponent() {
   const [warehouseAssortements, setWarehouseAssortements] = React.useState([]);
   const [shipmentWarehouses, setShipmentWarehouses] = React.useState([]);
   const [change, setChange] = React.useState(true);
-  const [fetching, setFetching] = React.useState(true);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -45,9 +45,11 @@ function ShipmentWarehouseComponent() {
   const [valid, setValid] = React.useState(defaultValid);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [shipmentWarehouseToDelete, setShipmentWarehouseToDelete] = React.useState(null);
+  const [shipmentWarehouseId, setShipmentWarehouseId] = React.useState(null);
   const [modalUpdateQuantityWarehouseDetail, setModalQuantityWarehouseDetail] =
     React.useState(false);
   const [projectWarehouseId, setProjectWarehouseId] = React.useState(null);
+  const [modalCreateNote, setModalCreateNote] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([fetchAllWarehouseAssortments(), fetchAllShipmentWarehouse()])
@@ -171,6 +173,11 @@ function ShipmentWarehouseComponent() {
     setModalQuantityWarehouseDetail(true);
   };
 
+  const handleCreateNoteShipmentWarehouse = (id) => {
+    setShipmentWarehouseId(id);
+    setModalCreateNote(true);
+  };
+
   const handleDeleteShipmentWarehouse = (id) => {
     setShipmentWarehouseToDelete(id);
     setDeleteModal(true);
@@ -212,6 +219,12 @@ function ShipmentWarehouseComponent() {
         setShow={setModalQuantityWarehouseDetail}
         setChange={setChange}
         id={projectWarehouseId}
+      />
+      <CreateNote
+        show={modalCreateNote}
+        setShow={setModalCreateNote}
+        id={shipmentWarehouseId}
+        setChange={setChange}
       />
       <Modal
         show={deleteModal}
@@ -275,60 +288,76 @@ function ShipmentWarehouseComponent() {
                       <th className="shipment-warehouse__table-th">
                         {shipProject.project.name} {shipProject.project.number}
                       </th>
-                      <th className="shipment-warehouse__table-th done"></th>
                       <th className="shipment-warehouse__table-th quantity">Кол-во</th>
                       <th className="shipment-warehouse__table-th weigth">Вес</th>
+                      <th className="shipment-warehouse__table-th done"></th>
+                      <th className="shipment-warehouse__table-th note">Ком-ий</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {projectAssortments.map((wareName) => {
-                      // Находим заказ для этого ассортимента
-                      const orderForWarehouse = shipProject.orders.find(
-                        (order) => order.warehouse_assortement_id === wareName.id,
-                      );
+                    {projectAssortments
+                      .filter((wareName) => {
+                        // Фильтруем сразу, а не внутри map
+                        return shipProject.orders.some(
+                          (order) => order.warehouse_assortement_id === wareName.id,
+                        );
+                      })
+                      .map((wareName) => {
+                        // Используем find один раз, сохраняем в переменные
+                        const orderForWarehouse = shipProject.orders.find(
+                          (order) => order.warehouse_assortement_id === wareName.id,
+                        );
+                        const shipmentForWarehouse = shipProject.shipments.find(
+                          (shipment) => shipment.warehouse_assortement_id === wareName.id,
+                        );
 
-                      const shipmentForWarehouse = shipProject.shipments.find(
-                        (shipment) => shipment.warehouse_assortement_id === wareName.id,
-                      );
+                        // Эти вычисления можно вынести или мемоизировать
+                        const weight = orderForWarehouse
+                          ? orderForWarehouse.quantity * wareName.weight
+                          : 0;
+                        const isDone = shipmentForWarehouse && shipmentForWarehouse.done;
+                        const hasNote = shipmentForWarehouse && shipmentForWarehouse.note;
 
-                      if (!orderForWarehouse) {
-                        return null;
-                      }
-
-                      return (
-                        <tr key={wareName.id}>
-                          <td className="shipment-warehouse__table-td">{wareName.name}</td>
-                          {shipmentForWarehouse && shipmentForWarehouse.done ? (
+                        return (
+                          <tr key={wareName.id}>
+                            <td className="shipment-warehouse__table-td">{wareName.name}</td>
                             <td
-                              className="shipment-warehouse__table-td done"
                               onClick={() =>
-                                handleDeleteShipmentWarehouse(shipmentForWarehouse.id)
-                              }>
-                              <img src="./img/done.png" alt="Отгружено" />
+                                handleOpenModalUpdateQuantityWarehouseDetail(orderForWarehouse.id)
+                              }
+                              className="shipment-warehouse__table-td quantity">
+                              {orderForWarehouse.quantity}
                             </td>
-                          ) : (
+                            <td className="shipment-warehouse__table-td weight">{weight}</td>
+                            {isDone ? (
+                              <td
+                                className="shipment-warehouse__table-td done"
+                                onClick={() =>
+                                  handleDeleteShipmentWarehouse(shipmentForWarehouse.id)
+                                }>
+                                <img src="./img/done.png" alt="Отгружено" />
+                              </td>
+                            ) : (
+                              <td
+                                className="shipment-warehouse__table-td no-done"
+                                onClick={() =>
+                                  handleDoneShipmentWarehouse(
+                                    shipProject.projectId,
+                                    orderForWarehouse.warehouse_assortement_id,
+                                  )
+                                }
+                              />
+                            )}
                             <td
-                              className="shipment-warehouse__table-td no-done"
+                              className="shipment-warehouse__table-td note"
                               onClick={() =>
-                                handleDoneShipmentWarehouse(
-                                  shipProject.projectId,
-                                  orderForWarehouse.warehouse_assortement_id,
-                                )
-                              }></td>
-                          )}
-                          <td
-                            onClick={() =>
-                              handleOpenModalUpdateQuantityWarehouseDetail(orderForWarehouse.id)
-                            }
-                            className="shipment-warehouse__table-td quantity">
-                            {orderForWarehouse.quantity}
-                          </td>
-                          <td className="shipment-warehouse__table-td weight">
-                            {orderForWarehouse.quantity * wareName.weight}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                handleCreateNoteShipmentWarehouse(shipmentForWarehouse.id)
+                              }>
+                              {hasNote ? shipmentForWarehouse.note : ''}
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
                 <button
