@@ -126,7 +126,7 @@
 
     &-table {
         margin-top: 20px;
-        width: 550px;
+        width: 750px;
         border-collapse: separate; 
         border-spacing: 0;
         @media(max-width: 460px) {
@@ -154,17 +154,34 @@
             font-weight: 600;
             color: #000000;
             @media(max-width: 460px) {
-                width: 70%;
-                font-size: 14px;
+                width: 60%;
+                font-size: 12px;
+            }
+            @media(max-width: 405px) {
+                font-size: 11px;
             }
         }
 
         &__th.quantity {
             text-align: center;
-            width: 150px;
+            width: 100px;
             @media(max-width: 460px) {
-                width: 30%;
-                font-size: 14px;
+                width: 15%;
+                font-size: 12px;
+            }
+            @media(max-width: 405px) {
+                font-size: 11px;
+            }
+        }
+        &__th.note {
+            text-align: center;
+            width: 200px;
+            @media(max-width: 460px) {
+                width: 25%;
+                font-size: 12px;
+            }
+            @media(max-width: 405px) {
+                font-size: 11px;
             }
         }
 
@@ -185,6 +202,16 @@
             font-weight: 500;
             color: #000000;
             text-align-last: right;
+            cursor: pointer;
+            @media(max-width: 460px) {
+                font-size: 12px;
+            }
+        }
+
+        &__td.note {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
             cursor: pointer;
             @media(max-width: 460px) {
                 font-size: 12px;

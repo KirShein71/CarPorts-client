@@ -9,7 +9,6 @@ import {
 } from '../../http/shipmentWarehouseApi';
 import CreateWarehouseAssortmentProject from './modals/CreateWarehouseAssortmentProject';
 import UpdateQuantityWarehouseDetail from './modals/UpdateQuantityWarehouseDetail';
-import CreateNote from './modals/CreateNote';
 
 import './style.scss';
 
@@ -45,11 +44,9 @@ function ShipmentWarehouseComponent() {
   const [valid, setValid] = React.useState(defaultValid);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [shipmentWarehouseToDelete, setShipmentWarehouseToDelete] = React.useState(null);
-  const [shipmentWarehouseId, setShipmentWarehouseId] = React.useState(null);
   const [modalUpdateQuantityWarehouseDetail, setModalQuantityWarehouseDetail] =
     React.useState(false);
   const [projectWarehouseId, setProjectWarehouseId] = React.useState(null);
-  const [modalCreateNote, setModalCreateNote] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([fetchAllWarehouseAssortments(), fetchAllShipmentWarehouse()])
@@ -173,11 +170,6 @@ function ShipmentWarehouseComponent() {
     setModalQuantityWarehouseDetail(true);
   };
 
-  const handleCreateNoteShipmentWarehouse = (id) => {
-    setShipmentWarehouseId(id);
-    setModalCreateNote(true);
-  };
-
   const handleDeleteShipmentWarehouse = (id) => {
     setShipmentWarehouseToDelete(id);
     setDeleteModal(true);
@@ -219,12 +211,6 @@ function ShipmentWarehouseComponent() {
         setShow={setModalQuantityWarehouseDetail}
         setChange={setChange}
         id={projectWarehouseId}
-      />
-      <CreateNote
-        show={modalCreateNote}
-        setShow={setModalCreateNote}
-        id={shipmentWarehouseId}
-        setChange={setChange}
       />
       <Modal
         show={deleteModal}
@@ -316,7 +302,6 @@ function ShipmentWarehouseComponent() {
                           ? orderForWarehouse.quantity * wareName.weight
                           : 0;
                         const isDone = shipmentForWarehouse && shipmentForWarehouse.done;
-                        const hasNote = shipmentForWarehouse && shipmentForWarehouse.note;
 
                         return (
                           <tr key={wareName.id}>
@@ -348,18 +333,20 @@ function ShipmentWarehouseComponent() {
                                 }
                               />
                             )}
-                            <td
-                              className="shipment-warehouse__table-td note"
-                              onClick={() =>
-                                handleCreateNoteShipmentWarehouse(shipmentForWarehouse.id)
-                              }>
-                              {hasNote ? shipmentForWarehouse.note : ''}
+                            <td className="shipment-warehouse__table-td note">
+                              {orderForWarehouse.note}
                             </td>
                           </tr>
                         );
                       })}
                   </tbody>
                 </Table>
+                <div className="shipment-warehouse__totalWeigth">
+                  Общий вес: {shipProject.totalWeight}
+                </div>
+                <div className="shipment-warehouse__totalCost">
+                  Общая стоимость: {shipProject.totalCost}
+                </div>
                 <button
                   onClick={() => handleOpenCreateWarehouseProjectModal(shipProject)}
                   className="shipment-warehouse__button-added">

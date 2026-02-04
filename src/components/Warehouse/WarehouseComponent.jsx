@@ -6,6 +6,7 @@ import { getAllActiveWarehouseAssortement } from '../../http/warehouseAssortment
 import { fetchAllProjectWarehouse } from '../../http/projectWarehouseApi';
 import UpdateWarehouseDetail from './modals/UpdateWarehouseDetail';
 import CreateOneWarehouseDetail from './modals/CreateOneWarehouseDetail';
+import CreateNote from './modals/CreateNote';
 
 import './style.scss';
 
@@ -18,7 +19,6 @@ function WarehouseComponent() {
   const [warehouseChangeComponent, setWarehouseChangeComponent] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [change, setChange] = React.useState(true);
-  const [fetching, setFetching] = React.useState(true);
   const [openModalUpdateWarehouseDetail, setOpenModalUpdateWarehouseDetail] = React.useState(false);
   const [oneProjectWarehouse, setOneProjectWarehouse] = React.useState(null);
   const [projectId, setProjectId] = React.useState(null);
@@ -29,6 +29,7 @@ function WarehouseComponent() {
 
   // Кэш для деталей каждого проекта, чтобы избежать полного рендера
   const [projectDetailsCache, setProjectDetailsCache] = React.useState({});
+  const [modalCreateNote, setModalCreateNote] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([getAllActiveWarehouseAssortement(), fetchAllProjectWarehouse()])
@@ -132,6 +133,11 @@ function WarehouseComponent() {
     setOpenModalUpdateWarehouseDetail(true);
   };
 
+  const handleCreateNoteProjectWarehouse = (id) => {
+    setOneProjectWarehouse(id);
+    setModalCreateNote(true);
+  };
+
   // Функция для получения деталей проекта
   const getWarehouseDetailsForProject = (proWarehouse, assortments, shouldShowAll) => {
     const allAssortments = [...assortments].sort((a, b) => a.number - b.number);
@@ -142,12 +148,16 @@ function WarehouseComponent() {
         (prop) => prop.warehouse_assortement_id === wareAssortName.id,
       );
       const quantity = warehouseProject ? warehouseProject.quantity : '';
+      const note = warehouseProject ? warehouseProject.note : '';
+      const projectWarehouseId = warehouseProject ? warehouseProject.id : '';
       const warehouseProjectId = warehouseProject ? warehouseProject.id : null;
 
       return {
         ...wareAssortName,
         quantity,
         warehouseProjectId,
+        note,
+        projectWarehouseId,
         hasData: !!warehouseProject,
       };
     });
@@ -248,6 +258,12 @@ function WarehouseComponent() {
         id={oneProjectWarehouse}
         onDetailUpdated={updateProjectCache} // Передаем функцию для обновления кэша
       />
+      <CreateNote
+        show={modalCreateNote}
+        setShow={setModalCreateNote}
+        id={oneProjectWarehouse}
+        setChange={setChange}
+      />
       <div className="warehouse__filter">
         {warehouseChangeComponent ? (
           <button
@@ -304,6 +320,7 @@ function WarehouseComponent() {
                       {proWarehouse.project.name} {proWarehouse.project.number}
                     </th>
                     <th className="warehouse-table__th quantity">Кол-во</th>
+                    <th className="warehouse-table__th note">Ком-ий</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -325,6 +342,13 @@ function WarehouseComponent() {
                           }>
                           {wareAssortName.quantity || ''}
                         </td>
+                        <td
+                          className="warehouse-table__td note"
+                          onClick={() =>
+                            handleCreateNoteProjectWarehouse(wareAssortName.projectWarehouseId)
+                          }>
+                          {wareAssortName.note}
+                        </td>
                       </tr>
                     ))
                   ) : !shouldShowAll ? (
@@ -335,7 +359,7 @@ function WarehouseComponent() {
                 {shouldShowToggleButton(proWarehouse) && (
                   <tfoot>
                     <tr>
-                      <td colSpan="2">
+                      <td colSpan="3">
                         <div
                           className="warehouse-button__show"
                           onClick={() => handleToggleShowAllRows(projectId)}>

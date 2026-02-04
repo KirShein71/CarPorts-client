@@ -8,12 +8,14 @@ const defaultValue = {
   warehouse_assortement_name: '',
   quantity: '',
   quantity_stat: '',
+  note: '',
 };
 const defaultValid = {
   warehouse_assortement: null,
   warehouse_assortement_name: null,
   quantity: null,
   quantity_stat: null,
+  note: '',
 };
 
 const isValid = (value) => {
@@ -25,6 +27,7 @@ const isValid = (value) => {
       result.warehouse_assortement_name = value.warehouse_assortement_name.trim() !== '';
     if (key === 'quantity') result.quantity = value.quantity.trim() !== '';
     if (key === 'quantity_stat') result.quantity_stat = value.quantity_stat.trim() !== '';
+    if (key === 'note') result.note = value.note.trim() !== '';
   }
   return result;
 };
@@ -33,7 +36,7 @@ const CreateWarehouseProject = (props) => {
   const { show, setShow, setChange, projectId } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
-  const [warehouseDetails, setWarehouseDetails] = React.useState([]); // Исправлено: null на []
+  const [warehouseDetails, setWarehouseDetails] = React.useState([]);
   const [selectedWarehouseDetails, setSelectedWarehouseDetails] = React.useState([]);
 
   React.useEffect(() => {
@@ -59,19 +62,17 @@ const CreateWarehouseProject = (props) => {
   };
 
   const handleAddWarehouseDetail = () => {
-    // Проверяем, что все обязательные поля заполнены
+    // Проверяем только обязательные поля (комментарий необязателен)
     if (value.warehouse_assortement && value.warehouse_assortement_name && value.quantity) {
       const newDetail = {
-        warehouse_assortement_id: value.warehouse_assortement, // Исправлено: было warehouse_assortement
+        warehouse_assortement_id: value.warehouse_assortement,
         warehouse_assortement_name: value.warehouse_assortement_name,
         quantity: value.quantity,
+        note: value.note || '', // Добавляем пустую строку, если нет комментария
       };
       setSelectedWarehouseDetails((prev) => [...prev, newDetail]);
       setValue(defaultValue);
       setValid(defaultValid);
-    } else {
-      // Можно добавить уведомление пользователю
-      alert('Пожалуйста, заполните все поля');
     }
   };
 
@@ -88,7 +89,8 @@ const CreateWarehouseProject = (props) => {
         formData.append('quantity', detail.quantity.trim());
         formData.append('quantity_stat', detail.quantity.trim());
         formData.append('warehouse_assortement_name', detail.warehouse_assortement_name);
-        formData.append('warehouse_assortement_id', detail.warehouse_assortement_id); // Исправлено: было warehouse_assortement
+        formData.append('warehouse_assortement_id', detail.warehouse_assortement_id);
+        formData.append('note', detail.note || ''); // Добавляем пустой комментарий, если нет
         formData.append('projectId', projectId);
 
         return createProjectWarehouse(formData);
@@ -185,39 +187,79 @@ const CreateWarehouseProject = (props) => {
 
           <Row className="mb-3">
             <Col>
+              <Form.Control
+                as="textarea"
+                name="note"
+                value={value.note}
+                onChange={handleInputChange}
+                placeholder="Комментарий"
+                style={{ minHeight: '100px', width: '100%' }}
+              />
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col>
               <Button variant="dark" onClick={handleAddWarehouseDetail}>
-                Добавить
+                Добавить в список
               </Button>
             </Col>
           </Row>
 
           {/* Список выбранных деталей */}
-          {selectedWarehouseDetails.map((warehouseDetail, index) => (
-            <Row key={index} className="mb-2 align-items-center">
-              <Col xs={5}>
-                <Form.Control disabled value={warehouseDetail.warehouse_assortement_name || ''} />
-              </Col>
-              <Col xs={3}>
-                <Form.Control disabled value={warehouseDetail.quantity || ''} />
-              </Col>
-              <Col xs={4}>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => handleRemoveWarehouseDetail(index)}>
-                  Удалить
-                </Button>
-              </Col>
-            </Row>
-          ))}
+          {selectedWarehouseDetails.length > 0 && (
+            <div className="selected-details-list">
+              <h6>Выбранные детали ({selectedWarehouseDetails.length}):</h6>
+              {selectedWarehouseDetails.map((warehouseDetail, index) => (
+                <Row key={index} className="mb-2 align-items-center g-1">
+                  <Col xs={5} className="d-flex align-items-center">
+                    <Form.Control
+                      disabled
+                      value={warehouseDetail.warehouse_assortement_name || ''}
+                      className="text-truncate"
+                      title={warehouseDetail.warehouse_assortement_name}
+                    />
+                  </Col>
+                  <Col xs={2} className="d-flex align-items-center">
+                    <Form.Control
+                      disabled
+                      value={warehouseDetail.quantity || ''}
+                      className="text-center"
+                    />
+                  </Col>
+                  <Col xs={3} className="d-flex align-items-center">
+                    <Form.Control
+                      disabled
+                      value={warehouseDetail.note || ''}
+                      className="text-truncate"
+                      title={warehouseDetail.note}
+                      placeholder="Нет комментария"
+                    />
+                  </Col>
+                  <Col xs={2} className="d-flex align-items-center justify-content-end">
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      className="flex-shrink-0"
+                      onClick={() => handleRemoveWarehouseDetail(index)}>
+                      Удалить
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          )}
 
           {selectedWarehouseDetails.length > 0 && (
             <Row className="mt-3">
               <Col>
-                <Button variant="dark" className="me-2" onClick={handleSaveDetails}>
+                <Button variant="dark" className="me-2 mb-2" onClick={handleSaveDetails}>
                   Сохранить все детали ({selectedWarehouseDetails.length})
                 </Button>
-                <Button variant="outline-dark" onClick={handleRemoveAllWarehouseDetails}>
+                <Button
+                  variant="outline-dark"
+                  className="mb-2"
+                  onClick={handleRemoveAllWarehouseDetails}>
                   Удалить все
                 </Button>
               </Col>

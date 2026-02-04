@@ -9,6 +9,7 @@ import CreateAntypical from '../ProductionList/modal/CreateAntypical';
 import CreateName from './modals/CreateName';
 import CreateColor from './modals/CreateColor';
 import CreateAntypicalsQuantity from './modals/CreateAntypicalsQuantity';
+import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
 import UpdateProjectDetails from '../ProductionList/modal/UpdateProjectDetails';
 import UpdateShipmentDetails from '../ShipmentList/modals/updateShipmentDetails';
 import CreateOneShipmentDetail from '../ShipmentList/modals/createOneShipmentDetail';
@@ -18,6 +19,7 @@ import CreateAntypicalsDeliveryQuantity from './modals/CreateAntypicalsDeliveryQ
 import CreateAntypicalsShipmentQuantity from './modals/CreateAntypicalsShipmentQuantity';
 import CreateColorDetails from './modals/CreateColorDetails';
 import CreateProjectDetails from './modals/CreateProjectDetails';
+import CreateAntypicalsWeldersQuantity from '../WeldersList/modals/CreateAntypicalsWeldersQuanity';
 
 import './style.scss';
 
@@ -25,7 +27,6 @@ function ProductionOrders() {
   const [projectDetails, setProjectDetails] = React.useState([]);
   const [nameDetails, setNameDetails] = React.useState([]);
   const [shipmentDetails, setShipmentDetails] = React.useState([]);
-  const [fetching, setFetching] = React.useState(true);
   const [change, setChange] = React.useState(true);
   const [openModalCreateAntypical, setOpenModalCreateAntypical] = React.useState(false);
   const [openModalCreateAntypicalColor, setOpenModalCreateAntypicalColor] = React.useState(false);
@@ -36,6 +37,7 @@ function ProductionOrders() {
   const [antypicalId, setAntypicalId] = React.useState(null);
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [projectDetail, setProjectDetail] = React.useState(null);
+  const [modalCreateOneProjectDetails, setModalCreateOneProjectDetails] = React.useState(false);
   const [updateProjectDetailsModal, setUpdateProjectDetailsModal] = React.useState(false);
   const [shipmentDetail, setShipmentDetail] = React.useState(null);
   const [modalUpdateShimpentDetails, setModalUpdateShimpentDetails] = React.useState(false);
@@ -56,6 +58,9 @@ function ProductionOrders() {
   const [filteredProjects, setFilteredProjects] = React.useState([]);
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
+  const [openModalCreateAntypicalsWeldersQuantity, setOpenModalCreateAntypicalsWeldersQuantity] =
+    React.useState(false);
+  const [antypicalsId, setAntypicalsId] = React.useState(null);
 
   React.useEffect(() => {
     const fetchAllData = async () => {
@@ -222,6 +227,11 @@ function ProductionOrders() {
     setOpenModalCreateDetailColor(true);
   };
 
+  const handleOpenModalCreateAntypicalsWeldersQuantity = (id) => {
+    setAntypicalsId(id);
+    setOpenModalCreateAntypicalsWeldersQuantity(true);
+  };
+
   const handleCreateProjectDetails = (proDetail) => {
     const projectId = proDetail.id || proDetail.projectId;
     const projectProps = proDetail.props || [];
@@ -232,6 +242,12 @@ function ProductionOrders() {
     setProject(projectId);
     setExistingDetailIds(existingIds);
     setOpenModalCreateProjectDetails(true);
+  };
+
+  const handleOpenModalCreateOneProjectDetail = (detailId, project) => {
+    setDetailId(detailId);
+    setProject(project);
+    setModalCreateOneProjectDetails(true);
   };
 
   const handleUpdateProjectDetailClick = (id) => {
@@ -330,6 +346,13 @@ function ProductionOrders() {
         setChange={setChange}
         existingDetailIds={existingDetailIds}
       />
+      <CreateOneProjectDetail
+        detailId={detailId}
+        projectId={project}
+        show={modalCreateOneProjectDetails}
+        setShow={setModalCreateOneProjectDetails}
+        setChange={setChange}
+      />
       <UpdateProjectDetails
         id={projectDetail}
         show={updateProjectDetailsModal}
@@ -361,6 +384,12 @@ function ProductionOrders() {
         id={deliveryDetail}
         show={modalUpdateDeliveryDetails}
         setShow={setModalUpdateDeliveryDetails}
+        setChange={setChange}
+      />
+      <CreateAntypicalsWeldersQuantity
+        show={openModalCreateAntypicalsWeldersQuantity}
+        setShow={setOpenModalCreateAntypicalsWeldersQuantity}
+        id={antypicalsId}
         setChange={setChange}
       />
       <Header title={'Заказы на производство'} />
@@ -489,7 +518,18 @@ function ProductionOrders() {
                             </td>
                             <td
                               className="production-orders__quantityDetail"
-                              onClick={() => handleUpdateProjectDetailClick(detailProject?.id)}>
+                              onClick={() => {
+                                if (detailProject?.id) {
+                                  handleUpdateProjectDetailClick(detailProject?.id);
+                                } else if (detailProject) {
+                                  handleOpenModalCreateOneProjectDetail(
+                                    part.id,
+                                    detailProject.projectId,
+                                  );
+                                } else {
+                                  handleOpenModalCreateOneProjectDetail(part.id, projectId);
+                                }
+                              }}>
                               {quantity ? (
                                 quantity
                               ) : (
@@ -588,8 +628,16 @@ function ProductionOrders() {
                               antypDetails.antypicals_quantity
                             )}
                           </td>
-                          <td className="production-orders__quantityDetail">
-                            {antypDetails.antypicals_welders_quantity}
+                          <td
+                            className="production-orders__quantityDetail"
+                            onClick={() =>
+                              handleOpenModalCreateAntypicalsWeldersQuantity(antypDetails.id)
+                            }>
+                            {antypDetails.antypicals_welders_quantity === null ? (
+                              <div className="production-orders__quantityDetail plus">+</div>
+                            ) : (
+                              antypDetails.antypicals_welders_quantity
+                            )}
                           </td>
                           <td
                             className="production-orders__quantityDetail"

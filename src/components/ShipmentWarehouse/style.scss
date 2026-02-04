@@ -294,6 +294,15 @@
             }
         }
     }
+
+    &__totalWeigth, &__totalCost {
+        font-size: 16px;
+        font-weight: 600;
+        color: #000000;
+        @media(max-width: 460px) {
+            font-size: 12px;
+        }
+    }
 }
 
 

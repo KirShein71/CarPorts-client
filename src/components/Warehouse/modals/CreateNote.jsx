@@ -1,10 +1,10 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import {
-  fetchOneShipmentWarehouse,
+  fetchOneProjectWarehouse,
   createNote,
   deleteNote,
-} from '../../../http/shipmentWarehouseApi';
+} from '../../../http/projectWarehouseApi';
 
 const defaultValue = { note: '' };
 const defaultValid = {
@@ -28,10 +28,10 @@ const CreateNote = (props) => {
 
   React.useEffect(() => {
     if (id) {
-      fetchOneShipmentWarehouse(id)
+      fetchOneProjectWarehouse(id)
         .then((data) => {
           const prod = {
-            note: data.note.toString(),
+            note: data.note ? data.note.toString() : '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -39,8 +39,6 @@ const CreateNote = (props) => {
         .catch((error) => {
           if (error.response && error.response.data) {
             alert(error.response.data.message);
-          } else {
-            console.log('An error occurred');
           }
         });
     }
@@ -117,10 +115,12 @@ const CreateNote = (props) => {
           <Form noValidate onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Col>
-                <textarea
+                {/* Заменяем textarea на Form.Control */}
+                <Form.Control
+                  as="textarea"
                   name="note"
                   value={value.note}
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={handleInputChange}
                   isValid={valid.note === true}
                   isInvalid={valid.note === false}
                   placeholder="Комментарии"

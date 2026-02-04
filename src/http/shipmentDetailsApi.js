@@ -34,3 +34,8 @@ export const deleteShipmentDetails = async (projectId) => {
     const {data} = await guestInstance.delete(`shipmentdetails/delete/${projectId}`)
     return data
 }
+
+export const deleteOneShipmentDetail = async (id) => {
+    const {data} = await guestInstance.delete(`shipmentdetails/deleteOneShipmentDetail/${id}`)
+    return data
+}

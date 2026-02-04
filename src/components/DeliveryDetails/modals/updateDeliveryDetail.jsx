@@ -1,6 +1,10 @@
 import React from 'react';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
-import { fetchOneDeliveryDetails, updateDeliveryDetails } from '../../../http/deliveryDetailsApi';
+import {
+  fetchOneDeliveryDetails,
+  updateDeliveryDetails,
+  deleteOneDeliveryDetail,
+} from '../../../http/deliveryDetailsApi';
 
 const defaultValue = {
   delivery_quantity: '',
@@ -23,6 +27,7 @@ const UpdateDeliveryDetails = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [deleteModal, setDeleteModal] = React.useState(false);
 
   React.useEffect(() => {
     if (id) {
@@ -83,39 +88,88 @@ const UpdateDeliveryDetails = (props) => {
     setShow(false);
   };
 
+  const handleDeleteClick = () => {
+    setDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteOneDeliveryDetail(id)
+      .then(() => {
+        setShow(false);
+        setChange((state) => !state);
+        setDeleteModal(false);
+      })
+      .catch((error) => {
+        alert(error.response?.data?.message || 'Ошибка при удалении');
+        setDeleteModal(false);
+      });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModal(false);
+  };
+
   return (
-    <Modal
-      show={show}
-      onHide={() => setShow(false)}
-      size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Добавить количество детали</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
-          <Col>
-            <Form.Control
-              name="delivery_quantity"
-              value={value.delivery_quantity}
-              onChange={(e) => handleInputChange(e)}
-              isValid={valid.delivery_quantity === true}
-              isInvalid={valid.delivery_quantity === false}
-              placeholder="Количество деталей"
-              className="mb-3"
-            />
-          </Col>
-          <Row>
+    <>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Добавить количество детали</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form noValidate onSubmit={handleSubmit}>
             <Col>
-              <Button variant="dark" type="submit" disabled={isLoading}>
-                {isLoading ? 'Сохранение...' : 'Сохранить'}
-              </Button>
+              <Form.Control
+                name="delivery_quantity"
+                value={value.delivery_quantity}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.delivery_quantity === true}
+                isInvalid={valid.delivery_quantity === false}
+                placeholder="Количество деталей"
+                className="mb-3"
+              />
             </Col>
-          </Row>
-        </Form>
-      </Modal.Body>
-    </Modal>
+            <Row>
+              <Col>
+                <Button variant="dark" className="me-3 mb-3" type="submit" disabled={isLoading}>
+                  {isLoading ? 'Сохранение...' : 'Сохранить'}
+                </Button>
+                <Button className="mb-3" variant="dark" onClick={() => handleDeleteClick()}>
+                  Удалить
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={deleteModal}
+        onHide={handleCancelDelete}
+        aria-labelledby="delete-confirmation-modal"
+        centered
+        size="md"
+        className="modal__delete-confirm">
+        <Modal.Header closeButton>
+          <Modal.Title>Подтверждение удаления</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Вы уверены, что хотите удалить?</p>
+          <div className="d-flex justify-content-end gap-2">
+            <Button variant="dark" onClick={handleCancelDelete}>
+              Отмена
+            </Button>
+            <Button variant="dark" onClick={handleConfirmDelete}>
+              Удалить
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

@@ -17,16 +17,6 @@ export const fetchOneShipmentWarehouse = async (id) => {
     return data
 }
 
-export const createNote = async (id, shipmentwarehouses) => {
-    const {data} = await authInstance.patch(`shipmentwarehouse/createNote/${id}`, shipmentwarehouses)
-    return data
-}
-
-export const deleteNote = async (id) => {
-    const { data } = await guestInstance.delete(`shipmentwarehouse/deleteNote/${id}`);
-    return data;
-};
-
 export const deleteOneShipmentWarehouse = async (id) => {
     const {data} = await guestInstance.delete(`shipmentwarehouse/delete/${id}`)
     return data

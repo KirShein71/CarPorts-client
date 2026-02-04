@@ -17,7 +17,7 @@ const isValid = (value) => {
 };
 
 const CreateAntypicalsWeldersQuantity = (props) => {
-  const { id, show, setShow, setChange, scrollPosition } = props;
+  const { id, show, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -27,7 +27,9 @@ const CreateAntypicalsWeldersQuantity = (props) => {
       fetchOneAntypical(id)
         .then((data) => {
           const prod = {
-            antypicals_welders_quantity: data.antypicals_welders_quantity.toString(),
+            antypicals_welders_quantity: data.antypicals_welders_quantity
+              ? data.antypicals_welders_quantity.toString()
+              : '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -44,7 +46,6 @@ const CreateAntypicalsWeldersQuantity = (props) => {
 
   const handleCloseModal = () => {
     setShow(false);
-    window.scrollTo(0, scrollPosition);
   };
 
   const handleInputChange = (event) => {
