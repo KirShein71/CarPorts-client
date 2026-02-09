@@ -50,6 +50,7 @@ import TechExamination from './TechExamination';
 import CreateAntypicalsQuantity from '../ProductionOrders/modals/CreateAntypicalsQuantity';
 import CreateAntypicalsDeliveryQuantity from '../ProductionOrders/modals/CreateAntypicalsDeliveryQuantity';
 import CreateAntypicalsShipmentQuantity from '../ProductionOrders/modals/CreateAntypicalsShipmentQuantity';
+import ProjectTask from '../ProjectTask/ProjectTask';
 
 import './style.scss';
 
@@ -769,6 +770,13 @@ function ProjectInfoList() {
                 className={`projectinfo__filter-card__item ${
                   activeTab === 'cabinet' ? 'active' : ''
                 }`}
+                onClick={() => handleTabClick('task')}>
+                Задачи
+              </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'cabinet' ? 'active' : ''
+                }`}
                 onClick={() => handleTabClick('cabinet')}>
                 Личный кабинет
               </div>
@@ -1166,6 +1174,7 @@ function ProjectInfoList() {
         {activeTab === 'techSupervision' && (
           <TechExamination projectId={id} regionId={project.project.regionId} />
         )}
+        {activeTab === 'task' && <ProjectTask projectId={id} />}
         {activeTab === 'cabinet' && (
           <div className="cabinet">
             {project.userProject && project.userProject.length > 0 ? (

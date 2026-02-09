@@ -115,7 +115,6 @@ const CreateNote = (props) => {
           <Form noValidate onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Col>
-                {/* Заменяем textarea на Form.Control */}
                 <Form.Control
                   as="textarea"
                   name="note"

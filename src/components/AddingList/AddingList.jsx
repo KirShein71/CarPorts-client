@@ -9,6 +9,7 @@ import Examination from './Examination';
 import Designer from './Designer';
 import Nps from './Nps';
 import WarehouseAssortment from './WarehouseAssortment';
+import TemplatesTask from './TemplatesTask';
 
 import './style.scss';
 
@@ -26,6 +27,7 @@ function AddingList() {
     'Список проверок',
     'Обратная связь',
     'Ассортимент склада',
+    'Шаблоны задач',
   ];
   const modalRef = React.useRef();
 
@@ -54,6 +56,8 @@ function AddingList() {
         return <Nps />;
       case 'Ассортимент склада':
         return <WarehouseAssortment />;
+      case 'Шаблоны задач':
+        return <TemplatesTask />;
       default:
         return <Details />;
     }
