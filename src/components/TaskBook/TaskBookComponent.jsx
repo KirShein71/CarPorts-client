@@ -183,7 +183,7 @@ function TaskBookComponent() {
 
             return hasMatch;
           })
-          .sort((a, b) => a.number - b.number)
+
           .map((activeTask) => (
             <div className="task-book__table-content">
               <div className="task-book__projectName">{activeTask.project.name || ''}</div>
@@ -208,6 +208,7 @@ function TaskBookComponent() {
                         // Если фильтр выбран, показываем только подзадачи с нужным исполнителем
                         return compareExecutorNames(propsTask.executor_name, selectedExecutorName);
                       })
+                      .sort((a, b) => a.number - b.number)
                       .map((propsTask) => (
                         <tr key={propsTask.id}>
                           <td>{propsTask.number}</td>
@@ -229,17 +230,6 @@ function TaskBookComponent() {
               </div>
             </div>
           ))}
-
-        {/* Показываем сообщение, если нет задач после фильтрации */}
-        {activeProjectTask.filter((activeTask) => {
-          if (!selectedExecutorName) return true;
-          return activeTask.props.some((taskProp) =>
-            compareExecutorNames(taskProp.executor_name, selectedExecutorName),
-          );
-        }).length === 0 &&
-          activeProjectTask.length > 0 && (
-            <div className="task-book__no-tasks">Нет задач для выбранного исполнителя</div>
-          )}
       </div>
     </div>
   );
