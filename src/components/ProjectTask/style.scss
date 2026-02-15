@@ -3,27 +3,158 @@
         margin-top: 15px;
     }
 
-    &__button {
-        width: 150px;
-        height: 30px;
-        border: 1px solid #212529;
-        background-color: #212529;
-        color: #ffffff;
+    &__buttons {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        margin-top: 10px;
+
+        &-added {
+            width: 150px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-top: 10px;
+            @media(max-width: 460px) {
+                width: 60px;
+                height: 20px;
+                font-size: 10px;
+            }
+        }
+
+        &-templates {
+            margin-left: 10px;
+            width: 180px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-top: 10px;
+            @media(max-width: 460px) {
+                width: 130px;
+                height: 20px;
+                font-size: 10px;
+            }
+        }
+    }
+
+    
+
+    
+
+    &__table {
+        &-container {
+            @media(max-width: 460px) {
+            height: calc(100vh - var(--header-height, 250px));
+            position: relative;
+            overflow: hidden;
+            }
+        }
+
+        &-wrapper {
+            @media(max-width: 460px) {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: calc(100vh - var(--header-height, 250px));
+            }
+        }
+    }
+
+    &__th {
         @media(max-width: 460px) {
-            width: 60px;
-            height: 20px;
-            font-size: 10px;
+            background-color: #ffffff !important;
+            border: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;      
+            z-index: 5;
+            border-top: 2px solid #dee2e6; // Усиливаем верхнюю границу
+            border-bottom: 2px solid #dee2e6; // Усиливаем нижнюю границу
+        }
+    }
+
+    &__th.term {
+        text-align: center;
+    }
+
+    &__th.mobile {
+        @media(max-width: 460px) {
+            
+            border: 1px solid #dee2e6;
+            left: 0;         
+            z-index: 10;            
+            background-color: white;
+            border-right: 2px solid #dee2e6; 
         }
     }
 
     &__td {
+        &-executor {
+            text-align: center;
+            cursor: pointer;
+        }
+        
         &-done {
             width: 40px;
+            min-width: 40px; 
+            max-width: 40px; 
+            cursor: pointer;
+            
+            @media(max-width: 460px) {
+                width: 40px;
+                min-width: 40px; 
+                max-width: 40px;
+            }
+            
+            img {
+                display: block;
+                margin: 0 auto;
+            }
+        }
+
+        &-delete {
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px; 
+            cursor: pointer;
+            
+            @media(max-width: 460px) {
+                width: 40px;
+                min-width: 40px; 
+                max-width: 40px;
+            }
+            
+            img {
+            display: block;
+            margin: 0 auto;
+            }
         }
     }
+
+    &__td.mobile { 
+        cursor: pointer;
+        
+        @media(max-width: 460px) {
+            position: sticky;
+            left: 0;
+            z-index: 3;             
+            background-color: white;
+            border-right: 2px solid #dee2e6; // Добавляем правую границу
+        }
+    }
+}
+
+
+.table-bordered {
+  @media(max-width: 460px) {
+    td, th {
+      border: 1px solid #dee2e6;
+      border-top: 2px solid #dee2e6; // Усиливаем верхние границы для всех ячеек
+    }
+  }
 }

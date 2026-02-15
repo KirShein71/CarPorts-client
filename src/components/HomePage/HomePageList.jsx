@@ -49,6 +49,7 @@ function HomePageList() {
 
   const managerSaleItems = [
     { label: 'Все проекты', link: '/project' },
+    { label: 'Задачник', link: '/task-book' },
     { label: 'Рекламация', link: '/complaint' },
     { title: 'Гант' },
     { label: 'Гант проектов', link: '/gant-projects' },
@@ -61,6 +62,7 @@ function HomePageList() {
 
   const managerProjectItems = [
     { label: 'Все проекты', link: '/project' },
+    { label: 'Задачник', link: '/task-book' },
     { label: 'Проектирование', link: '/planning' },
     { title: 'Производство' },
     { label: 'Заказы на производство', link: '/production' },
@@ -91,6 +93,7 @@ function HomePageList() {
 
   const adminItems = [
     { label: 'Все проекты', link: '/project' },
+    { label: 'Задачник', link: '/task-book' },
     { label: 'Проектирование', link: '/planning' },
     { title: 'Производство' },
     { label: 'Заказы на производство', link: '/production' },
@@ -144,6 +147,7 @@ function HomePageList() {
 
   const employeeItems = [
     { label: 'Все проекты', link: '/project' },
+    { label: 'Задачник', link: '/task-book' },
     { label: 'Проектирование', link: '/planning' },
     { title: 'Производство' },
     { label: 'Заказы на производство', link: '/production' },

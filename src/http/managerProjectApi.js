@@ -36,6 +36,7 @@ export const login = async (phone) => {
         const manager = jwtDecode(token)
         localStorage.setItem('token', token)
         localStorage.setItem('id', manager.id)
+        localStorage.setItem('id', manager.name)
         return manager
     } catch (e) {
         alert(e.response.data.message)

@@ -6,19 +6,30 @@ export const createAccount = async (user) => {
     return data
     }
 
-    export const login = async (phone,password) => {
-        try {
-            const response = await authInstance.post('user/login', {phone, password})
-            const token = response.data.token
-            const user = jwtDecode(token)
-            localStorage.setItem('token', token)
-            localStorage.setItem('id', user.id)
-            return user
-        } catch (e) {
-            alert(e.response.data.message)
-            return false
+export const login = async (phone, password) => {
+    try {
+        const response = await authInstance.post('user/login', {phone, password})
+        const token = response.data.token
+        const user = jwtDecode(token)
+        
+        localStorage.setItem('token', token)
+        localStorage.setItem('id', user.id)
+        
+        // Сохраняем name только если он есть (для менеджеров)
+        if (user.name) {
+            localStorage.setItem('name', user.name)
         }
+        
+        
+        
+        return user
+    } catch (e) {
+        alert(e.response.data.message)
+        return false
     }
+}
+
+
 
 
     export const check = async () => {

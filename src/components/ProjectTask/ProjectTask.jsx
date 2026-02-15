@@ -4,9 +4,11 @@ import {
   getAllTaskForProject,
   deleteTask,
   updateActiveProjectTask,
+  createTasksFromTemplates,
 } from '../../http/projectTaskApi';
 import CreateProjectTask from './modals/CreateProjectTask';
 import UpdateProjectTask from './modals/UpdateProjectTask';
+import CreateExecutor from './modals/CreateExecutor';
 
 import './style.scss';
 
@@ -34,6 +36,7 @@ function ProjectTask(props) {
   const [projectTaskToDelete, setProjectTaskToDelete] = React.useState(null);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
+  const [modalCreateExecutor, setModalCreateExecutor] = React.useState(false);
 
   React.useEffect(() => {
     getAllTaskForProject(projectId).then((data) => {
@@ -48,6 +51,11 @@ function ProjectTask(props) {
   const handleOpenModalUpdateProjectTask = (id) => {
     setProjectTaskId(id);
     setModalUpdateProjectTask(true);
+  };
+
+  const handleOpenModalCreateExecutor = (id) => {
+    setProjectTaskId(id);
+    setModalCreateExecutor(true);
   };
 
   const handleInactiveProjectTask = (id) => {
@@ -76,6 +84,16 @@ function ProjectTask(props) {
         setChange((state) => !state);
       })
       .catch((error) => alert(error.response.data.message));
+  };
+
+  const handleCreateFromTemplates = () => {
+    createTasksFromTemplates(projectId)
+      .then(() => {
+        setChange((prev) => !prev); // обновляем список задач
+      })
+      .catch((error) => {
+        alert(error.response?.data?.message || 'Ошибка при создании задач из шаблонов');
+      });
   };
 
   const handleDeleteProjectTask = (id) => {
@@ -113,6 +131,12 @@ function ProjectTask(props) {
         setChange={setChange}
         project={projectId}
       />
+      <CreateExecutor
+        show={modalCreateExecutor}
+        setShow={setModalCreateExecutor}
+        setChange={setChange}
+        id={projectTaskId}
+      />
       <UpdateProjectTask
         show={modalUpdateProjectTask}
         setShow={setModalUpdateProjectTask}
@@ -140,56 +164,85 @@ function ProjectTask(props) {
       </Modal>
       <div className="project-task__content">
         <div className="project-task__table-container">
-          <Table bordered hover size="sm" className="mt-3">
-            <thead>
-              <tr>
-                <th>Номер</th>
-                <th>Наименование</th>
-                <th>Текст</th>
-                <th>Срок</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {projectTasks
-                .sort((a, b) => a.number - b.number)
-                .map((projectTask) => (
-                  <tr key={projectTask.id}>
-                    <td onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
-                      {projectTask.number}
-                    </td>
-                    <td onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
-                      {projectTask.name}
-                    </td>
-                    <td onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
-                      {projectTask.note}
-                    </td>
-                    <td onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
-                      {projectTask.term}
-                    </td>
-                    {projectTask.done === 'true' ? (
+          <div className="project-task__table-wrapper">
+            <Table bordered hover size="sm" className="mt-3">
+              <thead>
+                <tr>
+                  <th className="project-task__th">Номер</th>
+                  <th className="project-task__th mobile">Наименование</th>
+                  <th className="project-task__th">Текст</th>
+                  <th className="project-task__th term">Срок</th>
+                  <th className="project-task__th executor">Исполнитель</th>
+                  <th className="project-task__th done"></th>
+                  <th className="project-task__th"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {projectTasks
+                  .sort((a, b) => a.number - b.number)
+                  .map((projectTask) => (
+                    <tr key={projectTask.id}>
                       <td
-                        className="project-task__td-done"
-                        onClick={() => handleInactiveProjectTask(projectTask.id)}>
-                        <img src="../img/done.png" alt="Сделано" />
+                        className="task-project__td"
+                        onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
+                        {projectTask.number}
                       </td>
-                    ) : (
                       <td
-                        className="project-task__td-done"
-                        onClick={() => handleActiveProjectTask(projectTask.id)}></td>
-                    )}
-                    <td onClick={() => handleDeleteProjectTask(projectTask.id)}>
-                      <img src="../img/delete.png" alt="Удалить" />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+                        className="project-task__td mobile"
+                        onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
+                        {projectTask.name}
+                      </td>
+                      <td
+                        className="task-project__td"
+                        onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
+                        {projectTask.note}
+                      </td>
+                      <td
+                        className="task-project__td"
+                        onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
+                        {projectTask.term}
+                      </td>
+                      <td
+                        className="project-task__td-executor"
+                        onClick={() => handleOpenModalCreateExecutor(projectTask.id)}>
+                        {projectTask.executor_name}
+                      </td>
+                      {projectTask.done === 'true' ? (
+                        <td
+                          className="project-task__td-done"
+                          onClick={() => handleInactiveProjectTask(projectTask.id)}>
+                          <img src="../img/done.png" alt="Сделано" />
+                        </td>
+                      ) : (
+                        <td
+                          className="project-task__td-done"
+                          onClick={() => handleActiveProjectTask(projectTask.id)}></td>
+                      )}
+                      <td
+                        className="project-task__td-delete"
+                        onClick={() => handleDeleteProjectTask(projectTask.id)}>
+                        <img src="../img/delete.png" alt="Удалить" />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
-        <button onClick={() => handleOpenModalCreateProjectTask()} className="project-task__button">
-          Добавить
-        </button>
+        <div className="project-task__buttons">
+          <button
+            onClick={() => handleOpenModalCreateProjectTask()}
+            className="project-task__buttons-added">
+            Добавить
+          </button>
+          {projectTasks.length > 0 ? (
+            ''
+          ) : (
+            <button onClick={handleCreateFromTemplates} className="project-task__buttons-templates">
+              Добавить из шаблона
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

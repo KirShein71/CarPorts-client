@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx'
 class UserStore {
     id = null
     phone = null
+    name = null
     isUser = false
     isAdmin = false
     isEmployee = false
@@ -16,9 +17,10 @@ class UserStore {
         makeAutoObservable(this)
     }
 
-    login({id, phone, role}) {
+    login({id, phone, role, name}) {
         this.id = id
         this.phone = phone
+        this.name = name
         this.isUser = role === 'USER'
         this.isAdmin = role === 'ADMIN'
         this.isEmployee = role === 'EMPLOYEE'
@@ -32,6 +34,7 @@ class UserStore {
     logout() {
         this.id = null
         this.phone = null
+        this.name = null
         this.isUser = false
         this.isAdmin = false
         this.isEmployee = false

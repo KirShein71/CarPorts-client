@@ -5,19 +5,34 @@ export const getAllProjectTask = async () => {
     return data
 }
 
+export const getAllActiveTaskProject = async () => {
+    const { data } = await guestInstance.get('projecttask/getAllActiveTaskProject')
+    return data
+}
+
 export const getAllTaskForProject = async (id) => {
     const {data} = await guestInstance.get(`projecttask/getAllTaskForProject/${id}`);
     return data;
-  }
+}
 
 export const createProjectTask = async (projecttask) => {
     const { data } = await authInstance.post(`projecttask/create`, projecttask)
     return data
 }
 
+export const createTasksFromTemplates = async (projectId) => {
+  const { data } = await authInstance.post(`projecttask/createTasksFromTemplates/${projectId}`);
+  return data;
+}
+
 
 export const getOneProjectTask = async (id) => {
     const { data } = await guestInstance.get(`projecttask/getone/${id}`)
+    return data
+}
+
+export const createExecutorProjectTask = async (id, projecttask) => {
+    const {data} = await authInstance.put(`projecttask/createExecutorProjectTask/${id}`, projecttask)
     return data
 }
 
