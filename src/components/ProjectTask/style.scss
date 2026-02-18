@@ -83,6 +83,7 @@
     }
 
     &__th.mobile {
+        
         @media(max-width: 460px) {
             
             border: 1px solid #dee2e6;
@@ -94,6 +95,10 @@
     }
 
     &__td {
+        &-number, &-note, &-term {
+            cursor: pointer;
+        }
+        
         &-executor {
             text-align: center;
             cursor: pointer;

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createProjectTask } from '../../../http/projectTaskApi';
+import { getAllManagerSale } from '../../../http/managerSaleApi';
+import { getAllManagerProject } from '../../../http/managerProjectApi';
 
 const defaultValue = {
   number: '',
@@ -9,6 +11,8 @@ const defaultValue = {
   term: '',
   done: '',
   project: '',
+  executor: '',
+  executor_name: '',
 };
 const defaultValid = {
   number: null,
@@ -17,6 +21,8 @@ const defaultValid = {
   term: null,
   done: null,
   project: null,
+  executor: null,
+  executor_name: null,
 };
 
 const isValid = (value) => {
@@ -26,6 +32,8 @@ const isValid = (value) => {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'term') result.term = value.term.trim() !== '';
+    if (key === 'executor') result.executor = value.executor;
+    if (key === 'executor_name') result.executor_name = value.executor_name;
   }
   return result;
 };
@@ -35,6 +43,70 @@ const CreateProjectTask = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [combinedManagers, setCombinedManagers] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchExecutorData = async () => {
+      try {
+        const [managerSales, managerProjects] = await Promise.all([
+          getAllManagerSale(),
+          getAllManagerProject(),
+        ]);
+
+        // Объединяем менеджеров из обоих источников
+        const combined = [
+          ...(managerSales || []).map((manager) => ({
+            id: manager.id?.toString(),
+            name:
+              manager.name ||
+              `${manager.first_name || ''} ${manager.last_name || ''}`.trim() ||
+              'Менеджер по продажам',
+            type: 'sale',
+          })),
+          ...(managerProjects || []).map((manager) => ({
+            id: manager.id?.toString(),
+            name:
+              manager.name ||
+              `${manager.first_name || ''} ${manager.last_name || ''}`.trim() ||
+              'Менеджер по проектам',
+            type: 'project',
+          })),
+        ].filter((manager) => manager.id); // Фильтруем только тех, у кого есть ID
+
+        setCombinedManagers(combined);
+      } catch (error) {
+        console.error('Ошибка при загрузке списка менеджеров:', error);
+        alert('Не удалось загрузить список менеджеров');
+      }
+    };
+
+    if (show) {
+      fetchExecutorData();
+    }
+  }, [show]);
+
+  const handleManagerSelect = (event) => {
+    const selectedName = event.target.value;
+    const selectedManager = combinedManagers.find((manager) => manager.name === selectedName);
+
+    if (selectedManager) {
+      const newValue = {
+        ...value,
+        executor: selectedManager.id,
+        executor_name: selectedManager.name,
+      };
+      setValue(newValue);
+      setValid(isValid(newValue));
+    } else {
+      const newValue = {
+        ...value,
+        executor: '',
+        executor_name: '',
+      };
+      setValue(newValue);
+      setValid(isValid(newValue));
+    }
+  };
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -54,6 +126,8 @@ const CreateProjectTask = (props) => {
       data.append('term', value.term.trim());
       data.append('done', (value.done = 'false'));
       data.append('projectId', project);
+      data.append('executor', value.executor);
+      data.append('executor_name', value.executor_name);
       setIsLoading(true);
       createProjectTask(data)
         .then((data) => {
@@ -67,7 +141,6 @@ const CreateProjectTask = (props) => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (
@@ -79,7 +152,7 @@ const CreateProjectTask = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Header closeButton>
-        <Modal.Title>Создание задачи</Modal.Title>
+        <Modal.Title>Создание шаблона</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate onSubmit={handleSubmit}>
@@ -131,6 +204,25 @@ const CreateProjectTask = (props) => {
                 isInvalid={valid.term === false}
                 placeholder="Срок"
               />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Select
+                id="executor-select"
+                value={value.executor_name}
+                onChange={handleManagerSelect}
+                isInvalid={valid.executor_name === false}
+                disabled={isLoading}
+                aria-label="Выберите исполнителя">
+                <option value="">Выберите исполнителя</option>
+                {combinedManagers.map((manager) => (
+                  <option key={`${manager.type}-${manager.name}`} value={manager.name}>
+                    {manager.name} (
+                    {manager.type === 'sale' ? 'Менеджер по продажам' : 'Менеджер по проектам'})
+                  </option>
+                ))}
+              </Form.Select>
             </Col>
           </Row>
           <Row>

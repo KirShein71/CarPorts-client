@@ -183,7 +183,7 @@ function ProjectTask(props) {
                   .map((projectTask) => (
                     <tr key={projectTask.id}>
                       <td
-                        className="task-project__td"
+                        className="project-task__td-number"
                         onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
                         {projectTask.number}
                       </td>
@@ -193,12 +193,12 @@ function ProjectTask(props) {
                         {projectTask.name}
                       </td>
                       <td
-                        className="task-project__td"
+                        className="project-task__td-note"
                         onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
                         {projectTask.note}
                       </td>
                       <td
-                        className="task-project__td"
+                        className="project-task__td-term"
                         onClick={() => handleOpenModalUpdateProjectTask(projectTask.id)}>
                         {projectTask.term}
                       </td>

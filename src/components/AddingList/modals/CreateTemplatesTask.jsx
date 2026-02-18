@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createTemplatesTask } from '../../../http/templatesTaskApi';
+import { getAllManagerSale } from '../../../http/managerSaleApi';
+import { getAllManagerProject } from '../../../http/managerProjectApi';
 
 const defaultValue = {
   number: '',
@@ -8,6 +10,8 @@ const defaultValue = {
   note: '',
   term: '',
   active: '',
+  executor: '',
+  executor_name: '',
 };
 const defaultValid = {
   number: null,
@@ -15,6 +19,8 @@ const defaultValid = {
   note: null,
   term: null,
   active: null,
+  executor: null,
+  executor_name: null,
 };
 
 const isValid = (value) => {
@@ -24,6 +30,8 @@ const isValid = (value) => {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'term') result.term = value.term.trim() !== '';
+    if (key === 'executor') result.executor = value.executor;
+    if (key === 'executor_name') result.executor_name = value.executor_name;
   }
   return result;
 };
@@ -33,6 +41,61 @@ const CreateTemplatesTask = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [combinedManagers, setCombinedManagers] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchExecutorData = async () => {
+      try {
+        const [managerSales, managerProjects] = await Promise.all([
+          getAllManagerSale(),
+          getAllManagerProject(),
+        ]);
+
+        // Объединяем менеджеров из обоих источников
+        const combined = [
+          ...(managerSales || []).map((manager) => ({
+            id: manager.id?.toString(),
+            name:
+              manager.name ||
+              `${manager.first_name || ''} ${manager.last_name || ''}`.trim() ||
+              'Менеджер по продажам',
+            type: 'sale',
+          })),
+          ...(managerProjects || []).map((manager) => ({
+            id: manager.id?.toString(),
+            name:
+              manager.name ||
+              `${manager.first_name || ''} ${manager.last_name || ''}`.trim() ||
+              'Менеджер по проектам',
+            type: 'project',
+          })),
+        ].filter((manager) => manager.id); // Фильтруем только тех, у кого есть ID
+
+        setCombinedManagers(combined);
+      } catch (error) {
+        console.error('Ошибка при загрузке списка менеджеров:', error);
+        alert('Не удалось загрузить список менеджеров');
+      }
+    };
+
+    if (show) {
+      fetchExecutorData();
+    }
+  }, [show]);
+
+  const handleManagerSelect = (event) => {
+    const selectedName = event.target.value;
+    const selectedManager = combinedManagers.find((manager) => manager.name === selectedName);
+
+    if (selectedManager) {
+      const newValue = {
+        executor: selectedManager.id,
+        executor_name: selectedManager.name,
+      };
+      setValue(newValue);
+      setValid(isValid(newValue));
+    }
+  };
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -51,6 +114,9 @@ const CreateTemplatesTask = (props) => {
       data.append('note', value.note.trim());
       data.append('term', value.term.trim());
       data.append('active', (value.active = 'true'));
+      data.append('executor', value.executor);
+      data.append('executor_name', value.executor_name);
+
       setIsLoading(true);
       createTemplatesTask(data)
         .then((data) => {
@@ -64,7 +130,6 @@ const CreateTemplatesTask = (props) => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (
@@ -128,6 +193,25 @@ const CreateTemplatesTask = (props) => {
                 isInvalid={valid.term === false}
                 placeholder="Срок"
               />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Select
+                id="executor-select"
+                value={value.executor_name}
+                onChange={handleManagerSelect}
+                isInvalid={valid.executor_name === false}
+                disabled={isLoading}
+                aria-label="Выберите исполнителя">
+                <option value="">Выберите исполнителя</option>
+                {combinedManagers.map((manager) => (
+                  <option key={`${manager.type}-${manager.name}`} value={manager.name}>
+                    {manager.name} (
+                    {manager.type === 'sale' ? 'Менеджер по продажам' : 'Менеджер по проектам'})
+                  </option>
+                ))}
+              </Form.Select>
             </Col>
           </Row>
           <Row>

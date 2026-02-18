@@ -165,6 +165,7 @@ function TemplatesTask() {
                   <td>{templatesTask.name}</td>
                   <td>{templatesTask.note}</td>
                   <td>{templatesTask.term}</td>
+                  <td>{templatesTask.executor_name}</td>
                   <td>
                     <Button
                       variant="dark"
