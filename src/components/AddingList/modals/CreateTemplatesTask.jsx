@@ -89,8 +89,17 @@ const CreateTemplatesTask = (props) => {
 
     if (selectedManager) {
       const newValue = {
+        ...value,
         executor: selectedManager.id,
         executor_name: selectedManager.name,
+      };
+      setValue(newValue);
+      setValid(isValid(newValue));
+    } else {
+      const newValue = {
+        ...value,
+        executor: '',
+        executor_name: '',
       };
       setValue(newValue);
       setValid(isValid(newValue));
@@ -195,7 +204,7 @@ const CreateTemplatesTask = (props) => {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className="mb-3">
             <Col>
               <Form.Select
                 id="executor-select"

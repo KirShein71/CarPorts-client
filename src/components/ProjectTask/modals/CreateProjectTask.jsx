@@ -206,7 +206,7 @@ const CreateProjectTask = (props) => {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className="mb-3">
             <Col>
               <Form.Select
                 id="executor-select"
