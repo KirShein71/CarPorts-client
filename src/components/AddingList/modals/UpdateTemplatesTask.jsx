@@ -13,6 +13,7 @@ const defaultValue = {
   name: '',
   note: '',
   term: '',
+  active: '',
   executor: '',
   executor_name: '',
   previous_task: '',
@@ -23,6 +24,7 @@ const defaultValid = {
   name: null,
   note: null,
   term: null,
+  active: null,
   executor: null,
   executor_name: null,
   previous_task: null,
@@ -36,8 +38,8 @@ const isValid = (value) => {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'term') result.term = value.term.trim() !== '';
-    if (key === 'executor') result.executor = value.executor.trim() !== '';
-    if (key === 'executor_name') result.executor_name = value.executor_name.trim() !== '';
+    if (key === 'executor') result.executor = value.executor;
+    if (key === 'executor_name') result.executor_name = value.executor_name;
     if (key === 'previous_task') result.previous_task = value.previous_task;
     if (key === 'term_integer') result.term_integer = value.term_integer.trim() !== '';
   }
@@ -51,41 +53,6 @@ const UpdateTemplatesTask = (props) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [combinedManagers, setCombinedManagers] = React.useState([]);
   const [templatesTasks, setTemplatesTasks] = React.useState([]);
-
-  // Сброс формы при открытии/закрытии модального окна
-  React.useEffect(() => {
-    if (!show) {
-      setValue(defaultValue);
-      setValid(defaultValid);
-    }
-  }, [show]);
-
-  React.useEffect(() => {
-    if (show && id) {
-      fetchOneTemplatesTask(id)
-        .then((data) => {
-          const prod = {
-            name: data.name?.toString() || '',
-            note: data.note?.toString() || '',
-            term: data.term?.toString() || '',
-            number: data.number?.toString() || '',
-            executor: data.executor?.toString() || '',
-            executor_name: data.executor_name?.toString() || '',
-            previous_task: data.previous_task?.toString() || '',
-            term_integer: data.term_integer?.toString() || '',
-          };
-          setValue(prod);
-          setValid(isValid(prod));
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            alert(error.response.data.message);
-          } else {
-            console.log('An error occurred');
-          }
-        });
-    }
-  }, [show, id]);
 
   React.useEffect(() => {
     const fetchExecutorData = async () => {
@@ -129,14 +96,32 @@ const UpdateTemplatesTask = (props) => {
     }
   }, [show]);
 
-  const handleInputChange = (event) => {
-    const { name, value: inputValue } = event.target;
-    setValue((prev) => {
-      const newValue = { ...prev, [name]: inputValue };
-      setValid(isValid(newValue));
-      return newValue;
-    });
-  };
+  React.useEffect(() => {
+    if (show && id) {
+      fetchOneTemplatesTask(id)
+        .then((data) => {
+          const prod = {
+            name: data.name?.toString() || '',
+            note: data.note?.toString() || '',
+            term: data.term?.toString() || '',
+            number: data.number?.toString() || '',
+            executor: data.executor?.toString() || '',
+            executor_name: data.executor_name?.toString() || '',
+            previous_task: data.previous_task?.toString() || '',
+            term_integer: data.term_integer?.toString() || '',
+          };
+          setValue(prod);
+          setValid(isValid(prod));
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
+    }
+  }, [show, id]);
 
   const handleManagerSelect = (event) => {
     const selectedName = event.target.value;
@@ -168,6 +153,12 @@ const UpdateTemplatesTask = (props) => {
       ...prev,
       previous_task: isValid({ ...value, previous_task: selectedTaskNumber }).previous_task,
     }));
+  };
+
+  const handleInputChange = (event) => {
+    const data = { ...value, [event.target.name]: event.target.value };
+    setValue(data);
+    setValid(isValid(data));
   };
 
   const handleSubmit = async (event) => {

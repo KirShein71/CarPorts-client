@@ -151,6 +151,7 @@ function TemplatesTask() {
               <th>Наименование</th>
               <th>Текст</th>
               <th>Срок</th>
+              <th>Исполнитель</th>
               <th></th>
               <th></th>
               <th></th>
