@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { createTemplatesTask } from '../../../http/templatesTaskApi';
+import { createTemplatesTask, fetchAllTemplatesTasks } from '../../../http/templatesTaskApi';
 import { getAllManagerSale } from '../../../http/managerSaleApi';
 import { getAllManagerProject } from '../../../http/managerProjectApi';
 
@@ -12,6 +12,8 @@ const defaultValue = {
   active: '',
   executor: '',
   executor_name: '',
+  previous_task: '',
+  term_integer: '',
 };
 const defaultValid = {
   number: null,
@@ -21,6 +23,8 @@ const defaultValid = {
   active: null,
   executor: null,
   executor_name: null,
+  previous_task: null,
+  term_integer: null,
 };
 
 const isValid = (value) => {
@@ -32,6 +36,8 @@ const isValid = (value) => {
     if (key === 'term') result.term = value.term.trim() !== '';
     if (key === 'executor') result.executor = value.executor;
     if (key === 'executor_name') result.executor_name = value.executor_name;
+    if (key === 'previous_task') result.previous_task = value.previous_task;
+    if (key === 'term_integer') result.term_integer = value.term_integer.trim() !== '';
   }
   return result;
 };
@@ -42,13 +48,15 @@ const CreateTemplatesTask = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
   const [combinedManagers, setCombinedManagers] = React.useState([]);
+  const [templatesTasks, setTemplatesTasks] = React.useState([]);
 
   React.useEffect(() => {
     const fetchExecutorData = async () => {
       try {
-        const [managerSales, managerProjects] = await Promise.all([
+        const [managerSales, managerProjects, templatesTasks] = await Promise.all([
           getAllManagerSale(),
           getAllManagerProject(),
+          fetchAllTemplatesTasks(),
         ]);
 
         // Объединяем менеджеров из обоих источников
@@ -72,6 +80,7 @@ const CreateTemplatesTask = (props) => {
         ].filter((manager) => manager.id); // Фильтруем только тех, у кого есть ID
 
         setCombinedManagers(combined);
+        setTemplatesTasks(templatesTasks);
       } catch (error) {
         console.error('Ошибка при загрузке списка менеджеров:', error);
         alert('Не удалось загрузить список менеджеров');
@@ -106,6 +115,23 @@ const CreateTemplatesTask = (props) => {
     }
   };
 
+  const handleTemplatesTaskSelect = (event) => {
+    const selectedTaskNumber = event.target.value;
+
+    setValue((prev) => {
+      const newValue = {
+        ...prev,
+        previous_task: selectedTaskNumber,
+      };
+      return newValue;
+    });
+
+    setValid((prev) => ({
+      ...prev,
+      previous_task: isValid({ ...value, previous_task: selectedTaskNumber }).previous_task,
+    }));
+  };
+
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
@@ -125,6 +151,8 @@ const CreateTemplatesTask = (props) => {
       data.append('active', (value.active = 'true'));
       data.append('executor', value.executor);
       data.append('executor_name', value.executor_name);
+      data.append('previous_task', value.previous_task);
+      data.append('term_integer', value.term_integer);
 
       setIsLoading(true);
       createTemplatesTask(data)
@@ -194,13 +222,46 @@ const CreateTemplatesTask = (props) => {
           </Row>
           <Row className="mb-3">
             <Col>
+              <Form.Select
+                id="previous-task-select"
+                value={value.previous_task || ''}
+                onChange={handleTemplatesTaskSelect}
+                isInvalid={valid.previous_task === false}
+                disabled={isLoading}
+                aria-label="Выберите задачу, после которой должна выполняться создаваемая задача">
+                <option value="">
+                  Выберите задачу, после которой должна выполняться создаваемая задача
+                </option>
+                {templatesTasks
+                  .sort((a, b) => a.number - b.number)
+                  .map((tempTask) => (
+                    <option key={`${tempTask.number}-${tempTask.name}`} value={tempTask.number}>
+                      {tempTask.number} - {tempTask.name}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
               <Form.Control
                 name="term"
                 value={value.term}
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.term === true}
                 isInvalid={valid.term === false}
-                placeholder="Срок"
+                placeholder="Срок(описание)"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="term_integer"
+                value={value.term_integer}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.term_integer === true}
+                placeholder="Срок(через сколько дней после завершения предедущей задачи)"
               />
             </Col>
           </Row>

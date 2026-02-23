@@ -1,6 +1,10 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { updateTemplatesTask, fetchOneTemplatesTask } from '../../../http/templatesTaskApi';
+import {
+  updateTemplatesTask,
+  fetchOneTemplatesTask,
+  fetchAllTemplatesTasks,
+} from '../../../http/templatesTaskApi';
 import { getAllManagerSale } from '../../../http/managerSaleApi';
 import { getAllManagerProject } from '../../../http/managerProjectApi';
 
@@ -11,6 +15,8 @@ const defaultValue = {
   term: '',
   executor: '',
   executor_name: '',
+  previous_task: '',
+  term_integer: '',
 };
 const defaultValid = {
   number: null,
@@ -19,6 +25,8 @@ const defaultValid = {
   term: null,
   executor: null,
   executor_name: null,
+  previous_task: null,
+  term_integer: null,
 };
 
 const isValid = (value) => {
@@ -30,6 +38,8 @@ const isValid = (value) => {
     if (key === 'term') result.term = value.term.trim() !== '';
     if (key === 'executor') result.executor = value.executor.trim() !== '';
     if (key === 'executor_name') result.executor_name = value.executor_name.trim() !== '';
+    if (key === 'previous_task') result.previous_task = value.previous_task;
+    if (key === 'term_integer') result.term_integer = value.term_integer.trim() !== '';
   }
   return result;
 };
@@ -40,6 +50,7 @@ const UpdateTemplatesTask = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
   const [combinedManagers, setCombinedManagers] = React.useState([]);
+  const [templatesTasks, setTemplatesTasks] = React.useState([]);
 
   // Сброс формы при открытии/закрытии модального окна
   React.useEffect(() => {
@@ -60,6 +71,8 @@ const UpdateTemplatesTask = (props) => {
             number: data.number?.toString() || '',
             executor: data.executor?.toString() || '',
             executor_name: data.executor_name?.toString() || '',
+            previous_task: data.previous_task?.toString() || '',
+            term_integer: data.term_integer?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -77,9 +90,10 @@ const UpdateTemplatesTask = (props) => {
   React.useEffect(() => {
     const fetchExecutorData = async () => {
       try {
-        const [managerSales, managerProjects] = await Promise.all([
+        const [managerSales, managerProjects, templatesTasks] = await Promise.all([
           getAllManagerSale(),
           getAllManagerProject(),
+          fetchAllTemplatesTasks(),
         ]);
 
         // Объединяем менеджеров из обоих источников
@@ -103,6 +117,7 @@ const UpdateTemplatesTask = (props) => {
         ].filter((manager) => manager.id);
 
         setCombinedManagers(combined);
+        setTemplatesTasks(templatesTasks);
       } catch (error) {
         console.error('Ошибка при загрузке списка менеджеров:', error);
         alert('Не удалось загрузить список менеджеров');
@@ -138,40 +153,52 @@ const UpdateTemplatesTask = (props) => {
     });
   };
 
+  const handleTemplatesTaskSelect = (event) => {
+    const selectedTaskNumber = event.target.value;
+
+    setValue((prev) => {
+      const newValue = {
+        ...prev,
+        previous_task: selectedTaskNumber,
+      };
+      return newValue;
+    });
+
+    setValid((prev) => ({
+      ...prev,
+      previous_task: isValid({ ...value, previous_task: selectedTaskNumber }).previous_task,
+    }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
 
-    // Проверяем все обязательные поля
-    const allFieldsValid = Object.values(correct).every((field) => field === true);
+    const data = new FormData();
+    data.append('number', value.number.trim());
+    data.append('name', value.name.trim());
+    data.append('note', value.note.trim());
+    data.append('term', value.term.trim());
+    data.append('executor', value.executor.trim());
+    data.append('executor_name', value.executor_name.trim());
+    data.append('previous_task', value.previous_task);
+    data.append('term_integer', value.term_integer);
 
-    if (allFieldsValid) {
-      const data = new FormData();
-      data.append('number', value.number.trim());
-      data.append('name', value.name.trim());
-      data.append('note', value.note.trim());
-      data.append('term', value.term.trim());
-      data.append('executor', value.executor.trim());
-      data.append('executor_name', value.executor_name.trim());
+    setIsLoading(true);
 
-      setIsLoading(true);
-
-      try {
-        await updateTemplatesTask(id, data);
-        setChange((state) => !state);
-        setShow(false);
-      } catch (error) {
-        if (error.response && error.response.data) {
-          alert(error.response.data.message);
-        } else {
-          console.log('An error occurred');
-        }
-      } finally {
-        setIsLoading(false);
+    try {
+      await updateTemplatesTask(id, data);
+      setChange((state) => !state);
+      setShow(false);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        alert(error.response.data.message);
+      } else {
+        console.log('An error occurred');
       }
-    } else {
-      alert('Пожалуйста, заполните все обязательные поля');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -228,13 +255,47 @@ const UpdateTemplatesTask = (props) => {
           </Row>
           <Row className="mb-3">
             <Col>
+              <Form.Select
+                id="previous-task-select"
+                value={value.previous_task || ''}
+                onChange={handleTemplatesTaskSelect}
+                isInvalid={valid.previous_task === false}
+                disabled={isLoading}
+                aria-label="Выберите задачу, после которой должна выполняться создаваемая задача">
+                <option value="">
+                  Выберите задачу, после которой должна выполняться создаваемая задача
+                </option>
+                {templatesTasks
+                  .sort((a, b) => a.number - b.number)
+                  .map((tempTask) => (
+                    <option key={`${tempTask.number}-${tempTask.name}`} value={tempTask.number}>
+                      {tempTask.number} - {tempTask.name}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
               <Form.Control
                 name="term"
-                value={value.term || ''}
-                onChange={handleInputChange}
+                value={value.term}
+                onChange={(e) => handleInputChange(e)}
                 isValid={valid.term === true}
                 isInvalid={valid.term === false}
-                placeholder="Срок"
+                placeholder="Срок(описание)"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="term_integer"
+                value={value.term_integer}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.term_integer === true}
+                isInvalid={valid.term_integer === false}
+                placeholder="Срок(через сколько дней после завершения предедущей задачи)"
               />
             </Col>
           </Row>

@@ -1,18 +1,26 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { updateProjectTask, getOneProjectTask } from '../../../http/projectTaskApi';
+import {
+  updateProjectTask,
+  getOneProjectTask,
+  getAllTaskForProject,
+} from '../../../http/projectTaskApi';
 
 const defaultValue = {
   number: '',
   name: '',
   note: '',
   term: '',
+  previous_task: '',
+  term_integer: '',
 };
 const defaultValid = {
   number: null,
   name: null,
   note: null,
   term: null,
+  previous_task: null,
+  term_integer: null,
 };
 
 const isValid = (value) => {
@@ -22,18 +30,21 @@ const isValid = (value) => {
     if (key === 'name') result.name = value.name.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'term') result.term = value.term.trim() !== '';
+    if (key === 'previous_task') result.previous_task = value.previous_task;
+    if (key === 'term_integer') result.term_integer = value.term_integer.trim() !== '';
   }
   return result;
 };
 
 const UpdateProjectTask = (props) => {
-  const { id, show, setShow, setChange } = props;
+  const { id, show, projectId, setShow, setChange } = props;
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [projectTasks, setProjectTasks] = React.useState([]);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       getOneProjectTask(id)
         .then((data) => {
           const prod = {
@@ -41,6 +52,8 @@ const UpdateProjectTask = (props) => {
             note: data.note.toString(),
             term: data.term.toString(),
             number: data.number.toString(),
+            previous_task: data.previous_task?.toString() || '',
+            term_integer: data.term_integer?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -53,12 +66,43 @@ const UpdateProjectTask = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [show]);
+
+  React.useEffect(() => {
+    if (show) {
+      getAllTaskForProject(projectId)
+        .then((data) => setProjectTasks(data))
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            alert(error.response.data.message);
+          } else {
+            console.log('An error occurred');
+          }
+        });
+    }
+  }, [show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
+  };
+
+  const handleTemplatesTaskSelect = (event) => {
+    const selectedTaskNumber = event.target.value;
+
+    setValue((prev) => {
+      const newValue = {
+        ...prev,
+        previous_task: selectedTaskNumber,
+      };
+      return newValue;
+    });
+
+    setValid((prev) => ({
+      ...prev,
+      previous_task: isValid({ ...value, previous_task: selectedTaskNumber }).previous_task,
+    }));
   };
 
   const handleSubmit = async (event) => {
@@ -71,6 +115,8 @@ const UpdateProjectTask = (props) => {
       data.append('name', value.name.trim());
       data.append('note', value.note.trim());
       data.append('term', value.term.trim());
+      data.append('previous_task', value.previous_task);
+      data.append('term_integer', value.term_integer);
       setIsLoading(true);
       updateProjectTask(id, data)
         .then((data) => {
@@ -79,6 +125,8 @@ const UpdateProjectTask = (props) => {
             note: data.note.toString(),
             term: data.term.toString(),
             number: data.number.toString(),
+            previous_task: data.previous_task?.toString() || '',
+            term_integer: data.term_integer?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -151,13 +199,47 @@ const UpdateProjectTask = (props) => {
           </Row>
           <Row className="mb-3">
             <Col>
+              <Form.Select
+                id="previous-task-select"
+                value={value.previous_task || ''}
+                onChange={handleTemplatesTaskSelect}
+                isInvalid={valid.previous_task === false}
+                disabled={isLoading}
+                aria-label="Выберите задачу, после которой должна выполняться создаваемая задача">
+                <option value="">
+                  Выберите задачу, после которой должна выполняться создаваемая задача
+                </option>
+                {projectTasks
+                  .sort((a, b) => a.number - b.number)
+                  .map((projTask) => (
+                    <option key={`${projTask.number}-${projTask.name}`} value={projTask.number}>
+                      {projTask.number} - {projTask.name}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
               <Form.Control
                 name="term"
                 value={value.term}
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.term === true}
                 isInvalid={valid.term === false}
-                placeholder="Срок"
+                placeholder="Срок(описание)"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="term_integer"
+                value={value.term_integer}
+                onChange={(e) => handleInputChange(e)}
+                isValid={valid.term_integer === true}
+                isInvalid={valid.term_integer === false}
+                placeholder="Срок(через сколько дней после завершения предедущей задачи)"
               />
             </Col>
           </Row>

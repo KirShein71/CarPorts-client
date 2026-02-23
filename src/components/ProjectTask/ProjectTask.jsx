@@ -64,6 +64,7 @@ function ProjectTask(props) {
 
     const data = new FormData();
     data.append('done', 'false');
+    data.append('done_date', '');
 
     updateActiveProjectTask(id, data)
       .then((response) => {
@@ -78,6 +79,7 @@ function ProjectTask(props) {
 
     const data = new FormData();
     data.append('done', 'true');
+    data.append('done_date', new Date().toISOString());
 
     updateActiveProjectTask(id, data)
       .then((response) => {
@@ -142,6 +144,7 @@ function ProjectTask(props) {
         setShow={setModalUpdateProjectTask}
         setChange={setChange}
         id={projectTaskId}
+        projectId={projectId}
       />
       <Modal
         show={deleteTaskModal}
