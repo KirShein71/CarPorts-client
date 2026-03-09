@@ -1,0 +1,109 @@
+.shipment-order {
+    &__header {
+        margin-top: 25px;
+
+        &-title {
+            margin-left: 25px;
+            font-size: 27px;
+            font-weight: 700;
+            color: rgb(7, 7, 7);
+            text-transform: uppercase;
+            @media (max-width: 768px) {
+                font-size: 27px;
+            }
+            @media(max-width: 575px) {
+                font-size: 24px;
+            }
+            @media(max-width: 480px) {
+                font-size: 18px;
+                margin-left: 0px;
+            }
+            
+        }
+    }
+
+    &__table {
+        margin-top: 15px;
+        width: 100%;
+        max-width: 550px; 
+        
+        @media(max-width: 460px) {
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed; 
+        }
+
+        &-th {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 15px;
+            }
+        }
+
+        &-td {
+            font-size: 16px;
+            font-weight: 500;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 14px;
+            }
+        }
+    }
+
+    &__antypical {
+        margin-top: 15px;
+        &-title {
+            font-size: 21px;
+            font-weight: 600;
+            color: #000000;
+            @media(max-width: 460px) {
+                font-size: 18px;
+            }
+        }
+
+        &-table {
+            margin-top: 15px;
+            width: 650px;
+      
+        
+            @media(max-width: 460px) {
+                width: 100%;
+            }
+        }
+
+        &-th {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 15px;
+            }
+        }
+
+        &-td {
+            font-size: 16px;
+            font-weight: 500;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 14px;
+            }
+        }
+
+        &-image {
+            img {
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+                display: block;
+                margin: 0 auto;
+                
+            }
+        }
+    }
+}

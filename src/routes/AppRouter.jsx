@@ -45,6 +45,7 @@ import ProductionOrder from '../pages/ProductionOrder';
 import Warehouse from '../pages/Warehouse';
 import ShipmentWarehouse from '../pages/ShipmentWarehouse';
 import TaskBook from '../pages/TaskBook';
+import ShipmentOrder from '../pages/ShipmentOrder';
 
 import { observer } from 'mobx-react';
 
@@ -86,6 +87,7 @@ const employeeRoutes = [
   { path: '/warehouse', Component: Warehouse },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
+  { path: '/shipment-order', Component: ShipmentOrder },
 ];
 
 const adminRoutes = [
@@ -132,6 +134,7 @@ const adminRoutes = [
   { path: '/warehouse', Component: Warehouse },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
+  { path: '/shipment-order', Component: ShipmentOrder },
 ];
 
 const managerSaleRoutes = [
@@ -186,6 +189,7 @@ const managerProjectRoutes = [
   { path: '/warehouse', Component: Warehouse },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
+  { path: '/shipment-order', Component: ShipmentOrder },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];
@@ -207,6 +211,7 @@ const managerProductionRoutes = [
   { path: '/production-orders', Component: ProductionOrder },
   { path: '/warehouse', Component: Warehouse },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
+  { path: '/shipment-order', Component: ShipmentOrder },
 ];
 
 const brigadesRoutes = [
@@ -219,6 +224,7 @@ const brigadesRoutes = [
 const routes = [
   { path: '/', Component: Home },
   { path: '/personalaccount', Component: PersonalAccount },
+  { path: '/shipment-order', Component: ShipmentOrder },
 ];
 
 const AppRouter = observer(() => {

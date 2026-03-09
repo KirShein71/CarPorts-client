@@ -138,7 +138,7 @@
 
     &__table {
         width: 100%;
-        max-width: 850px; 
+        max-width: 950px; 
         
         @media(max-width: 460px) {
             width: 100%;
@@ -209,10 +209,13 @@
     font-weight: 400;
     color: #000000;
     width: 15%;
+    cursor: pointer;
+    text-align: center;
     
     @media(max-width: 460px) {
       font-size: 10px;
       min-width: 70px;
+      text-align: center;
     }
   }
 

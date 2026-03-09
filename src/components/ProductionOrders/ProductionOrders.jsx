@@ -5,6 +5,7 @@ import { fetchAllProjectDetails } from '../../http/projectDetailsApi';
 import { fetchAllShipmentDetails } from '../../http/shipmentDetailsApi';
 import { fetchAllDetails } from '../../http/detailsApi';
 import { fetchAllDeliveryDetails } from '../../http/deliveryDetailsApi';
+import { getAllShipmentOrder } from '../../http/shipmentOrderApi';
 import CreateAntypical from '../ProductionList/modal/CreateAntypical';
 import CreateName from './modals/CreateName';
 import CreateColor from './modals/CreateColor';
@@ -20,6 +21,12 @@ import CreateAntypicalsShipmentQuantity from './modals/CreateAntypicalsShipmentQ
 import CreateColorDetails from './modals/CreateColorDetails';
 import CreateProjectDetails from './modals/CreateProjectDetails';
 import CreateAntypicalsWeldersQuantity from '../WeldersList/modals/CreateAntypicalsWeldersQuanity';
+import CreateOneShipmentOrderDetail from './modals/CreateOneShipmentOrderDetail';
+import UpdateShipmentOrderDetail from './modals/UpdateShipmentOrderDetail';
+import ModalCreateOrder from './modals/ModalCreateOrder';
+import ModalCreateNewShipmentOrder from './modals/ModalCreateNewShipmentOrder';
+import CreateAntypicalShipmentOrder from './modals/CreateAntypicalShipmentOrder';
+import ModalLink from './modals/ModalLink';
 
 import './style.scss';
 
@@ -61,21 +68,40 @@ function ProductionOrders() {
   const [openModalCreateAntypicalsWeldersQuantity, setOpenModalCreateAntypicalsWeldersQuantity] =
     React.useState(false);
   const [antypicalsId, setAntypicalsId] = React.useState(null);
+  const [shipmentOrders, setShipmentOrders] = React.useState([]);
+  const [modalCreateOneShipmentOrderDetail, setModalCreateOneShipmentOrderDetail] =
+    React.useState(false);
+  const [modalUpdateShipmentOrderDetail, setModalUpdateShipmentOrderDetail] = React.useState(false);
+  const [oneShipmentOrderDetail, setOneShipmentOrderDetail] = React.useState(null);
+  const [shipmentOrderDate, setShipmentOrderDate] = React.useState(null);
+  const [modalCreateShipmentOrder, setModalCreateShipmentOrder] = React.useState(false);
+  const [newColumnShipmentOrder, setNewColumnShipmentOrder] = React.useState(false);
+  const [modalCreateNewShipmentOrder, setModalCreateNewShipmentOrder] = React.useState(false);
+  const [detailColor, setDetailColor] = React.useState(null);
+  const [antypicalName, setAntypicalName] = React.useState(null);
+  const [antypicalImage, setAntypicalImage] = React.useState(null);
+  const [modalCreateAntypicalShipmentOrder, setModalCreateAntypicalShipmentOrder] =
+    React.useState(false);
+  const [modalLink, setModalLink] = React.useState(false);
+  const [flagShipmentOrder, setFlagShipmentOrder] = React.useState();
 
   React.useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [projectDetails, nameDetails, shipmentDetails, deliveryDetails] = await Promise.all([
-          fetchAllProjectDetails(),
-          fetchAllDetails(),
-          fetchAllShipmentDetails(),
-          fetchAllDeliveryDetails(),
-        ]);
+        const [projectDetails, nameDetails, shipmentDetails, deliveryDetails, shipmentOrders] =
+          await Promise.all([
+            fetchAllProjectDetails(),
+            fetchAllDetails(),
+            fetchAllShipmentDetails(),
+            fetchAllDeliveryDetails(),
+            getAllShipmentOrder(),
+          ]);
 
         setProjectDetails(projectDetails);
         setShipmentDetails(shipmentDetails);
         setNameDetails(nameDetails);
         setDeliveryDetails(deliveryDetails);
+        setShipmentOrders(shipmentOrders);
       } catch (error) {
         console.error('Ошибка при загрузке данных:', error);
       }
@@ -267,6 +293,39 @@ function ProductionOrders() {
     setModalCreateOneShipmentDetails(true);
   };
 
+  const handleOpenModalUpdateShipmentOrderDetail = (id) => {
+    setOneShipmentOrderDetail(id);
+    setModalUpdateShipmentOrderDetail(true);
+  };
+
+  const handleOpenModalCreateOneShipmentOrderDetail = (
+    detailId,
+    project,
+    shipment_date,
+    detailColor,
+  ) => {
+    setDetailId(detailId);
+    setProject(project);
+    setShipmentOrderDate(shipment_date);
+    setDetailColor(detailColor);
+    setModalCreateOneShipmentOrderDetail(true);
+  };
+
+  const handleOpenModalCreateAntypicalShipmentOrder = (
+    name,
+    project,
+    shipment_date,
+    detailColor,
+    image,
+  ) => {
+    setAntypicalName(name);
+    setProject(project);
+    setShipmentOrderDate(shipment_date);
+    setDetailColor(detailColor);
+    setAntypicalImage(image);
+    setModalCreateAntypicalShipmentOrder(true);
+  };
+
   const handleOpenModalUpdateDeliveryDetails = (id) => {
     setDeliveryDetail(id);
     setModalUpdateDeliveryDetails(true);
@@ -286,6 +345,29 @@ function ProductionOrders() {
   const handleButtonClosedProject = () => {
     setButtonActiveProject(false);
     setButtonClosedProject(true);
+  };
+
+  const handleOpenModalCreateShipmentOrder = (projectId, flag) => {
+    setProject(projectId);
+    setFlagShipmentOrder(flag);
+    setModalCreateShipmentOrder(true);
+  };
+
+  const handleOpenModalCreateNewShipmentOrder = (projectId) => {
+    setProject(projectId);
+    setModalCreateNewShipmentOrder(true);
+  };
+
+  const handleOpenModalLink = (projectId, shipmentOrderDate) => {
+    setProject(projectId);
+    setShipmentOrderDate(shipmentOrderDate);
+    setModalLink(true);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU');
   };
 
   return (
@@ -373,6 +455,33 @@ function ProductionOrders() {
         setShow={setModalUpdateShimpentDetails}
         setChange={setChange}
       />
+      <CreateOneShipmentOrderDetail
+        detailId={detailId}
+        projectId={project}
+        show={modalCreateOneShipmentOrderDetail}
+        setShow={setModalCreateOneShipmentOrderDetail}
+        setChange={setChange}
+        shipmentOrderDate={shipmentOrderDate}
+        detailColor={detailColor}
+        setNewColumnShipmentOrder={setNewColumnShipmentOrder}
+      />
+      <CreateAntypicalShipmentOrder
+        antypicalName={antypicalName}
+        image={antypicalImage}
+        projectId={project}
+        show={modalCreateAntypicalShipmentOrder}
+        setShow={setModalCreateAntypicalShipmentOrder}
+        setChange={setChange}
+        shipmentOrderDate={shipmentOrderDate}
+        detailColor={detailColor}
+        setNewColumnShipmentOrder={setNewColumnShipmentOrder}
+      />
+      <UpdateShipmentOrderDetail
+        id={oneShipmentOrderDetail}
+        show={modalUpdateShipmentOrderDetail}
+        setShow={setModalUpdateShipmentOrderDetail}
+        setChange={setChange}
+      />
       <CreateOneDeliveryDetail
         detailId={detailId}
         projectId={project}
@@ -391,6 +500,26 @@ function ProductionOrders() {
         setShow={setOpenModalCreateAntypicalsWeldersQuantity}
         id={antypicalsId}
         setChange={setChange}
+      />
+      <ModalCreateOrder
+        show={modalCreateShipmentOrder}
+        setShow={setModalCreateShipmentOrder}
+        setChange={setChange}
+        projectId={project}
+        setNewColumnShipmentOrder={setNewColumnShipmentOrder}
+        flag={flagShipmentOrder}
+      />
+      <ModalCreateNewShipmentOrder
+        show={modalCreateNewShipmentOrder}
+        setShow={setModalCreateNewShipmentOrder}
+        setChange={setChange}
+        projectId={project}
+      />
+      <ModalLink
+        show={modalLink}
+        setShow={setModalLink}
+        projectId={project}
+        date={shipmentOrderDate}
       />
       <Header title={'Заказы на производство'} />
 
@@ -412,258 +541,450 @@ function ProductionOrders() {
           </button>
         </div>
         <div className="production-orders__table-container">
-          {filteredProjects.map((proDetail) => {
-            const project = proDetail.project || {};
-            const projectProps = proDetail.props || [];
-            const projectId = proDetail.id || proDetail.projectId;
+          <div className="production-orders__table-container">
+            {filteredProjects.map((proDetail) => {
+              const project = proDetail.project || {};
+              const projectProps = proDetail.props || [];
+              const projectId = proDetail.id || proDetail.projectId;
 
-            // Получаем отфильтрованные детали для этого проекта
-            const filteredDetails = getFilteredDetails(projectId, projectProps);
+              // Получаем все отгрузки для текущего проекта
+              const projectShipmentOrders = shipmentOrders.filter(
+                (order) => order.projectId === projectId,
+              );
 
-            // Если нет деталей с данными - не показываем проект
-            if (filteredDetails.length === 0) {
-              return null;
-            }
+              // Сортируем по дате
+              const sortedShipmentOrders = [...projectShipmentOrders].sort(
+                (a, b) => new Date(a.shipment_date) - new Date(b.shipment_date),
+              );
 
-            return (
-              <Table className="production-orders__table" bordered>
-                <thead>
-                  <tr>
-                    <th className="production-orders__projectName" colSpan={4}>
-                      {project.name || ''}
-                    </th>
-                    <th
-                      colSpan={2}
-                      onClick={() => handleCreateProjectDetails(proDetail)}
-                      style={{ backgroundColor: '#000000' }}
-                      className="production-orders__added">
-                      Добавить
-                    </th>
-                  </tr>
-                  <tr>
-                    <th className="production-orders__columnNumber">{project.number || ''}</th>
-                    <th className="production-orders__columnColor"></th>
-                    <th className="production-orders__columnName">Заказ</th>
-                    <th className="production-orders__columnName">Произведено</th>
-                    <th className="production-orders__columnName">Покраска</th>
-                    <th className="production-orders__columnName">На объекте</th>
-                  </tr>
-                </thead>
-                <tbody className="production-orders__body">
-                  <React.Fragment key={proDetail.id || proDetail.projectId}>
-                    {/* Строки с деталями и количеством - ОТСОРТИРОВАННЫЕ */}
-                    {filteredDetails
-                      .sort((a, b) => {
-                        // Находим detailProject для каждой детали
-                        const detailA = projectProps.find((prop) => prop.detailId === a.id);
-                        const detailB = projectProps.find((prop) => prop.detailId === b.id);
+              // Отделяем существующие даты от новой колонки
+              const existingDates = sortedShipmentOrders;
+              const newColumn = newColumnShipmentOrder
+                ? [
+                    {
+                      shipment_date: 'new',
+                      props: [],
+                      isNew: true,
+                    },
+                  ]
+                : [];
 
-                        // Получаем ID деталей для сортировки
-                        const detailIdA = detailA ? parseInt(detailA.detailId) : parseInt(a.id);
-                        const detailIdB = detailB ? parseInt(detailB.detailId) : parseInt(b.id);
+              const datesCount = existingDates.length + newColumn.length;
 
-                        // Сортируем по возрастанию detail_id
-                        return detailIdA - detailIdB;
-                      })
-                      .map((part) => {
-                        const detailProject = projectProps.find(
-                          (prop) => prop.detailId === part.id,
-                        );
-                        const quantity = detailProject ? detailProject.quantity : '';
-                        const colorDetail = detailProject ? detailProject.color : '';
+              // Получаем отфильтрованные детали
+              const filteredDetails = getFilteredDetails(projectId, projectProps);
 
-                        // Находим shipment для данного проекта
-                        const shipmentForProject = shipmentDetails.find(
-                          (shipDetail) => shipDetail.projectId === projectId,
-                        );
+              if (filteredDetails.length === 0) return null;
 
-                        // Получаем shipment_quantity и detailShipment
-                        let quantityShipment = '';
-                        let detailShipment = null;
+              return (
+                <>
+                  <Table className="production-orders__table" bordered>
+                    <thead>
+                      <tr>
+                        <th className="production-orders__projectName" colSpan={4}>
+                          {project.name || ''}
+                        </th>
+                        <th
+                          colSpan={2 + datesCount}
+                          onClick={() => handleCreateProjectDetails(proDetail)}
+                          style={{ backgroundColor: '#000000' }}
+                          className="production-orders__added">
+                          Добавить
+                        </th>
+                      </tr>
+                      <tr>
+                        <th className="production-orders__columnNumber">{project.number || ''}</th>
+                        <th className="production-orders__columnColor"></th>
+                        <th className="production-orders__columnName">Заказ</th>
+                        <th className="production-orders__columnName">Произведено</th>
+                        {projectShipmentOrders.length > 0 ? (
+                          <th
+                            onClick={() => handleOpenModalCreateShipmentOrder(projectId, 'true')}
+                            className="production-orders__columnName"
+                            colSpan={1 + datesCount}>
+                            Покраска
+                          </th>
+                        ) : (
+                          <th
+                            onClick={() => handleOpenModalCreateShipmentOrder(projectId, 'false')}
+                            className="production-orders__columnName"
+                            colSpan={1 + datesCount}>
+                            Покраска
+                          </th>
+                        )}
 
-                        if (shipmentForProject && shipmentForProject.props) {
-                          detailShipment = shipmentForProject.props.find(
-                            (prop) => prop.detailId === part.id,
-                          );
-                          quantityShipment = detailShipment ? detailShipment.shipment_quantity : '';
-                        }
-
-                        // Находим delivery для данного проекта
-                        const deliveryForProject = deliveryDetails.find(
-                          (delDetail) => delDetail.projectId === projectId,
-                        );
-
-                        // Получаем shipment_quantity и detailShipment
-                        let quantityDelivery = '';
-                        let detailDelivery = null;
-
-                        if (deliveryForProject && deliveryForProject.props) {
-                          detailDelivery = deliveryForProject.props.find(
-                            (prop) => prop.detailId === part.id,
-                          );
-                          quantityDelivery = detailDelivery ? detailDelivery.delivery_quantity : '';
-                        }
-
-                        return (
-                          <tr key={`${proDetail.id || proDetail.projectId}-${part.id}`}>
-                            <td className="production-orders__detailName">{part.name}</td>
-                            <td
-                              className="production-orders__detailColor"
-                              onClick={() => handleCreateDetailColor(detailProject?.id)}>
-                              {colorDetail ? (
-                                colorDetail
-                              ) : (
-                                <div className="production-orders__detailColor plus">+</div>
-                              )}
-                            </td>
-                            <td
-                              className="production-orders__quantityDetail"
-                              onClick={() => {
-                                if (detailProject?.id) {
-                                  handleUpdateProjectDetailClick(detailProject?.id);
-                                } else if (detailProject) {
-                                  handleOpenModalCreateOneProjectDetail(
-                                    part.id,
-                                    detailProject.projectId,
-                                  );
-                                } else {
-                                  handleOpenModalCreateOneProjectDetail(part.id, projectId);
-                                }
-                              }}>
-                              {quantity ? (
-                                quantity
-                              ) : (
-                                <div className="production-orders__quantityDetail plus">+</div>
-                              )}
-                            </td>
-                            <td></td>
-                            <td
-                              className="production-orders__quantityDetail"
-                              onClick={() => {
-                                if (detailShipment?.id) {
-                                  handleOpenModalUpdateShipmentDetails(detailShipment.id);
-                                } else if (shipmentForProject) {
-                                  handleOpenModalCreateOneShipmentDetail(
-                                    part.id,
-                                    shipmentForProject.projectId,
-                                    shipmentForProject.shipment_date,
-                                  );
-                                } else {
-                                  handleOpenModalCreateOneShipmentDetail(part.id, projectId);
-                                }
-                              }}>
-                              {quantityShipment ? (
-                                quantityShipment
-                              ) : (
-                                <div className="production-orders__quantityDetail plus">+</div>
-                              )}
-                            </td>
-                            <td
-                              className="production-orders__quantityDetail"
-                              onClick={() => {
-                                if (detailDelivery?.id) {
-                                  handleOpenModalUpdateDeliveryDetails(detailDelivery.id);
-                                } else if (deliveryForProject) {
-                                  handleOpenModalCreateOneDeliveryDetail(
-                                    part.id,
-                                    deliveryForProject.projectId,
-                                  );
-                                } else {
-                                  handleOpenModalCreateOneDeliveryDetail(part.id, projectId);
-                                }
-                              }}>
-                              {quantityDelivery ? (
-                                quantityDelivery
-                              ) : (
-                                <div className="production-orders__quantityDetail plus">+</div>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-
-                    <tr>
-                      <td
-                        className="production-orders__antypicalTitle"
-                        onClick={() => handleCreateAntypical(proDetail.projectId)}>
-                        Нетиповые
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    {proDetail.antypical
-                      .sort((a, b) => {
-                        // Сортируем нетиповые по ID (чтобы новые были внизу)
-                        return a.id - b.id;
-                      })
-                      .map((antypDetails) => (
-                        <tr key={antypDetails.id}>
-                          <td
-                            className="production-orders__antypicalName"
-                            onClick={() => handleCreateAntypicalName(antypDetails.id)}>
-                            {antypDetails.name === '' || antypDetails.name === null ? (
-                              <div className="production-orders__antypicalName plus">+</div>
-                            ) : (
-                              antypDetails.name
-                            )}
-                          </td>
-                          <td
-                            className="production-orders__antypicalColor"
-                            onClick={() => handleCreateAntypicalColor(antypDetails.id)}>
-                            {antypDetails.color === '' || antypDetails.color === null ? (
-                              <div className="production-orders__antypicalColor plus">+</div>
-                            ) : (
-                              antypDetails.color
-                            )}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_quantity === null ? (
-                              <div className="production-orders__quantityDetail plus">+</div>
-                            ) : (
-                              antypDetails.antypicals_quantity
-                            )}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() =>
-                              handleOpenModalCreateAntypicalsWeldersQuantity(antypDetails.id)
-                            }>
-                            {antypDetails.antypicals_welders_quantity === null ? (
-                              <div className="production-orders__quantityDetail plus">+</div>
-                            ) : (
-                              antypDetails.antypicals_welders_quantity
-                            )}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsShipmentQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_shipment_quantity === null ? (
-                              <div className="production-orders__quantityDetail plus">+</div>
-                            ) : (
-                              antypDetails.antypicals_shipment_quantity
-                            )}
-                          </td>
-                          <td
-                            className="production-orders__quantityDetail"
-                            onClick={() => handleCreateAntypicalsDeliveryQuantity(antypDetails.id)}>
-                            {antypDetails.antypicals_delivery_quantity === null ? (
-                              <div className="production-orders__quantityDetail plus">+</div>
-                            ) : (
-                              antypDetails.antypicals_delivery_quantity
-                            )}
-                          </td>
+                        <th className="production-orders__columnName">Объект</th>
+                      </tr>
+                      {datesCount > 0 && (
+                        <tr>
+                          <th className="production-orders__columnNumber"></th>
+                          <th className="production-orders__columnColor"></th>
+                          <th className="production-orders__columnName"></th>
+                          <th className="production-orders__columnName"></th>
+                          <th className="production-orders__columnName">общ</th>
+                          {/* Сначала рендерим колонки с датами */}
+                          {existingDates.map((order) => {
+                            if (order.shipment_date) {
+                              return (
+                                <th
+                                  key={order.shipment_date}
+                                  className="production-orders__columnName"
+                                  onClick={() =>
+                                    handleOpenModalLink(projectId, order.shipment_date)
+                                  }>
+                                  {formatDate(order.shipment_date)}
+                                </th>
+                              );
+                            } else {
+                              return (
+                                <th
+                                  key={order.shipment_date || 'new'}
+                                  className="production-orders__columnName"
+                                  onClick={() =>
+                                    handleOpenModalCreateNewShipmentOrder(projectId)
+                                  }></th>
+                              );
+                            }
+                          })}
+                          {/* Потом рендерим новую колонку без даты */}
+                          {newColumn.map((order, index) => (
+                            <th
+                              key={`new-${index}`}
+                              className="production-orders__columnName"
+                              onClick={() => handleOpenModalCreateNewShipmentOrder(projectId)}>
+                              {/* Пустой заголовок для новой колонки */}
+                            </th>
+                          ))}
+                          <th className="production-orders__columnName"></th>
                         </tr>
-                      ))}
-                  </React.Fragment>
-                </tbody>
-              </Table>
-            );
-          })}
+                      )}
+                    </thead>
+                    <tbody className="production-orders__body">
+                      <React.Fragment key={proDetail.id || proDetail.projectId}>
+                        {/* Типовые детали */}
+                        {filteredDetails
+                          .sort((a, b) => {
+                            const detailA = projectProps.find((prop) => prop.detailId === a.id);
+                            const detailB = projectProps.find((prop) => prop.detailId === b.id);
+                            const detailIdA = detailA ? parseInt(detailA.detailId) : parseInt(a.id);
+                            const detailIdB = detailB ? parseInt(detailB.detailId) : parseInt(b.id);
+                            return detailIdA - detailIdB;
+                          })
+                          .map((part) => {
+                            const detailProject = projectProps.find(
+                              (prop) => prop.detailId === part.id,
+                            );
+                            const quantity = detailProject ? detailProject.quantity : '';
+                            const colorDetail = detailProject ? detailProject.color : '';
+
+                            // Данные из shipmentDetails (общая отгрузка - колонка "общ")
+                            const shipmentForProject = shipmentDetails.find(
+                              (shipDetail) => shipDetail.projectId === projectId,
+                            );
+                            let quantityShipment = '';
+                            let detailShipment = null;
+                            if (shipmentForProject && shipmentForProject.props) {
+                              detailShipment = shipmentForProject.props.find(
+                                (prop) => prop.detailId === part.id,
+                              );
+                              quantityShipment = detailShipment
+                                ? detailShipment.shipment_quantity
+                                : '';
+                            }
+
+                            // Данные доставки
+                            const deliveryForProject = deliveryDetails.find(
+                              (del) => del.projectId === projectId,
+                            );
+                            let quantityDelivery = '';
+                            let detailDelivery = null;
+                            if (deliveryForProject && deliveryForProject.props) {
+                              detailDelivery = deliveryForProject.props.find(
+                                (prop) => prop.detailId === part.id,
+                              );
+                              quantityDelivery = detailDelivery
+                                ? detailDelivery.delivery_quantity
+                                : '';
+                            }
+
+                            return (
+                              <tr key={`${proDetail.id || proDetail.projectId}-${part.id}`}>
+                                <td className="production-orders__detailName">{part.name}</td>
+                                <td
+                                  className="production-orders__detailColor"
+                                  onClick={() => handleCreateDetailColor(detailProject?.id)}>
+                                  {colorDetail ? (
+                                    colorDetail
+                                  ) : (
+                                    <div className="production-orders__detailColor plus">+</div>
+                                  )}
+                                </td>
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() => {
+                                    if (detailProject?.id) {
+                                      handleUpdateProjectDetailClick(detailProject?.id);
+                                    } else if (detailProject) {
+                                      handleOpenModalCreateOneProjectDetail(
+                                        part.id,
+                                        detailProject.projectId,
+                                      );
+                                    } else {
+                                      handleOpenModalCreateOneProjectDetail(part.id, projectId);
+                                    }
+                                  }}>
+                                  {quantity ? (
+                                    quantity
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+                                <td></td>
+
+                                {/* Колонка "общ" */}
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() => {
+                                    if (detailShipment?.id) {
+                                      handleOpenModalUpdateShipmentDetails(detailShipment.id);
+                                    } else if (shipmentForProject) {
+                                      handleOpenModalCreateOneShipmentDetail(
+                                        part.id,
+                                        shipmentForProject.projectId,
+                                        shipmentForProject.shipment_date,
+                                      );
+                                    } else {
+                                      handleOpenModalCreateOneShipmentDetail(part.id, projectId);
+                                    }
+                                  }}>
+                                  {quantityShipment ? (
+                                    quantityShipment
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+
+                                {/* Ячейки для существующих дат */}
+                                {existingDates.map((order) => {
+                                  const detail = order.props?.find((p) => p.detailId === part.id);
+                                  const qty = detail ? detail.shipment_quantity : '';
+                                  const detailId = detail ? detail.id : null;
+
+                                  return (
+                                    <td
+                                      key={order.shipment_date}
+                                      onClick={() => {
+                                        if (detailId) {
+                                          handleOpenModalUpdateShipmentOrderDetail(detailId);
+                                        } else {
+                                          handleOpenModalCreateOneShipmentOrderDetail(
+                                            part.id,
+                                            projectId,
+                                            order.shipment_date,
+                                            colorDetail,
+                                          );
+                                        }
+                                      }}
+                                      className="production-orders__quantityDetail">
+                                      {qty ? (
+                                        qty
+                                      ) : (
+                                        <div className="production-orders__quantityDetail plus">
+                                          +
+                                        </div>
+                                      )}
+                                    </td>
+                                  );
+                                })}
+
+                                {/* Ячейка для новой колонки (без даты) */}
+                                {newColumn.map((order, index) => (
+                                  <td
+                                    key={`new-${index}`}
+                                    onClick={() => {
+                                      handleOpenModalCreateOneShipmentOrderDetail(
+                                        part.id,
+                                        projectId,
+                                        null,
+                                      );
+                                    }}
+                                    className="production-orders__quantityDetail">
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  </td>
+                                ))}
+
+                                {/* Колонка "На объекте" */}
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() => {
+                                    if (detailDelivery?.id) {
+                                      handleOpenModalUpdateDeliveryDetails(detailDelivery.id);
+                                    } else if (deliveryForProject) {
+                                      handleOpenModalCreateOneDeliveryDetail(
+                                        part.id,
+                                        deliveryForProject.projectId,
+                                      );
+                                    } else {
+                                      handleOpenModalCreateOneDeliveryDetail(part.id, projectId);
+                                    }
+                                  }}>
+                                  {quantityDelivery ? (
+                                    quantityDelivery
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                        {/* Строка "Нетиповые" */}
+                        <tr>
+                          <td
+                            className="production-orders__antypicalTitle"
+                            onClick={() => handleCreateAntypical(proDetail.projectId)}>
+                            Нетиповые
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td> {/* общ */}
+                          {existingDates.map((_, idx) => (
+                            <td key={`existing-${idx}`}></td>
+                          ))}
+                          {newColumn.map((_, idx) => (
+                            <td key={`new-${idx}`}></td>
+                          ))}
+                          <td></td> {/* на объекте */}
+                        </tr>
+
+                        {/* Нетиповые детали */}
+                        {proDetail.antypical
+                          .sort((a, b) => a.id - b.id)
+                          .map((antypDetails) => {
+                            return (
+                              <tr key={antypDetails.id}>
+                                <td
+                                  className="production-orders__antypicalName"
+                                  onClick={() => handleCreateAntypicalName(antypDetails.id)}>
+                                  {antypDetails.name ? (
+                                    antypDetails.name
+                                  ) : (
+                                    <div className="production-orders__antypicalName plus">+</div>
+                                  )}
+                                </td>
+                                <td
+                                  className="production-orders__antypicalColor"
+                                  onClick={() => handleCreateAntypicalColor(antypDetails.id)}>
+                                  {antypDetails.color ? (
+                                    antypDetails.color
+                                  ) : (
+                                    <div className="production-orders__antypicalColor plus">+</div>
+                                  )}
+                                </td>
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() => handleCreateAntypicalsQuantity(antypDetails.id)}>
+                                  {antypDetails.antypicals_quantity !== null ? (
+                                    antypDetails.antypicals_quantity
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() =>
+                                    handleOpenModalCreateAntypicalsWeldersQuantity(antypDetails.id)
+                                  }>
+                                  {antypDetails.antypicals_welders_quantity !== null ? (
+                                    antypDetails.antypicals_welders_quantity
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() =>
+                                    handleCreateAntypicalsShipmentQuantity(antypDetails.id)
+                                  }>
+                                  {antypDetails.antypicals_shipment_quantity !== null ? (
+                                    antypDetails.antypicals_shipment_quantity
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+
+                                {/* Ячейки для существующих дат - отображаем shipment_quantity из shipmentOrders */}
+                                {existingDates.map((order, idx) => {
+                                  const found = order.props?.find(
+                                    (p) =>
+                                      p.antypical_name === antypDetails.name &&
+                                      p.antypical_name !== null,
+                                  );
+                                  const qty = found ? found.shipment_quantity : '';
+                                  const detailId = found ? found.id : null;
+
+                                  return (
+                                    <td
+                                      key={`existing-${idx}`}
+                                      className="production-orders__quantityDetail"
+                                      onClick={() => {
+                                        if (detailId) {
+                                          handleOpenModalUpdateShipmentOrderDetail(detailId);
+                                        } else {
+                                          handleOpenModalCreateAntypicalShipmentOrder(
+                                            antypDetails.name,
+                                            projectId,
+                                            order.shipment_date,
+                                            antypDetails.color,
+                                            antypDetails.image,
+                                          );
+                                        }
+                                      }}>
+                                      {qty ? qty : '+'}
+                                    </td>
+                                  );
+                                })}
+
+                                {/* Пустые ячейки для новой колонки */}
+                                {newColumn.map((_, idx) => (
+                                  <td
+                                    onClick={() => {
+                                      handleOpenModalCreateAntypicalShipmentOrder(
+                                        antypDetails.name,
+                                        projectId,
+                                        order.shipment_date,
+                                        antypDetails.color,
+                                        antypDetails.image,
+                                      );
+                                    }}
+                                    key={`new-${idx}`}
+                                    className="production-orders__quantityDetail">
+                                    +
+                                  </td>
+                                ))}
+
+                                <td
+                                  className="production-orders__quantityDetail"
+                                  onClick={() =>
+                                    handleCreateAntypicalsDeliveryQuantity(antypDetails.id)
+                                  }>
+                                  {antypDetails.antypicals_delivery_quantity !== null ? (
+                                    antypDetails.antypicals_delivery_quantity
+                                  ) : (
+                                    <div className="production-orders__quantityDetail plus">+</div>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </React.Fragment>
+                    </tbody>
+                  </Table>
+                </>
+              );
+            })}
+          </div>
         </div>
       </>
     </div>
