@@ -90,8 +90,7 @@ function ControlTourCalendar() {
                     const dateString = date.toISOString().split('T')[0];
                     return (
                       dateMoscow.date.date.startsWith(dateString) &&
-                      dateMoscow.weekend === '' &&
-                      dateMoscow.warranty === '' &&
+                      dateMoscow.warehouse === '' &&
                       dateMoscow.regionId === 2
                     );
                   }).length
@@ -107,11 +106,11 @@ function ControlTourCalendar() {
               })
               .map((dateMoscow) => (
                 <tr key={dateMoscow.id}>
-                  <td className="control-table__body">{dateMoscow.brigade.name}</td>
+                  <td className="control-table__body">{dateMoscow.set.name}</td>
                   <td className="control-table__body">
                     {dateMoscow.project?.name}{' '}
                     {dateMoscow.complaint ? `*${dateMoscow.complaint.project.name}*` : ''}
-                    {dateMoscow.warranty} {dateMoscow.weekend}
+                    {dateMoscow.warehouse}
                   </td>
                 </tr>
               ))}
@@ -128,8 +127,7 @@ function ControlTourCalendar() {
                     const dateString = date.toISOString().split('T')[0];
                     return (
                       dateSankt.date.date.startsWith(dateString) &&
-                      dateSankt.weekend === '' &&
-                      dateSankt.warranty === '' &&
+                      dateSankt.warehouse === '' &&
                       dateSankt.regionId === 1
                     );
                   }).length
@@ -145,13 +143,11 @@ function ControlTourCalendar() {
               })
               .map((dateSpb) => (
                 <tr key={dateSpb.id}>
-                  <td className="control-table__body">
-                    {dateSpb.brigade ? dateSpb.brigade.name : ''}
-                  </td>
+                  <td className="control-table__body">{dateSpb.brigade ? dateSpb.set.name : ''}</td>
                   <td className="control-table__body">
                     {dateSpb.project?.name}{' '}
                     {dateSpb.complaint ? `*${dateSpb.complaint.project.name}*` : ''}
-                    {dateSpb.warranty} {dateSpb.weekend}
+                    {dateSpb.warehouse}
                   </td>
                 </tr>
               ))}
