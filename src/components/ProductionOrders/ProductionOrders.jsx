@@ -84,6 +84,7 @@ function ProductionOrders() {
     React.useState(false);
   const [modalLink, setModalLink] = React.useState(false);
   const [flagShipmentOrder, setFlagShipmentOrder] = React.useState();
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   React.useEffect(() => {
     const fetchAllData = async () => {
@@ -114,19 +115,27 @@ function ProductionOrders() {
     const filters = {
       isActive: buttonActiveProject,
       isClosed: buttonClosedProject,
+      searchQuery: searchQuery, // добавим поиск в фильтры
     };
 
     const filteredProjects = projectDetails.filter((project) => {
-      // Проверяем активные проекты в зависимости от состояния кнопок
+      // Проверяем поиск по названию проекта
+      const matchesSearch = project.project.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Если есть поисковый запрос и название не подходит - сразу исключаем
+      if (searchQuery && !matchesSearch) {
+        return false;
+      }
+
+      // Проверяем статус проекта (активный/завершенный)
       const isActiveProject = filters.isActive
         ? project.project.finish === null
         : filters.isClosed
           ? project.project.finish === 'true'
           : true;
 
-      // Логика фильтрации
+      // Если обе кнопки активны - показываем все проекты
       if (filters.isActive && filters.isClosed) {
-        // Если обе кнопки активны - показываем все проекты
         return true;
       }
 
@@ -138,12 +147,11 @@ function ProductionOrders() {
       // Функция для определения статуса отгрузки проекта
       const getShippingStatus = (project) => {
         const projectDetails = (project.props || []).filter(
-          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0, // Исключаем quantity = 0, так как они считаются отгруженными
+          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0,
         );
 
-        if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
+        if (projectDetails.length === 0) return 2;
 
-        // Проверяем статус отгрузки для каждой детали
         const notShippedDetails = projectDetails.filter((projectProp) => {
           const shipmentPropsForDetail = shipmentDetails
             .filter((shipment) => shipment.projectId === project.projectId)
@@ -163,23 +171,22 @@ function ProductionOrders() {
         });
 
         if (notShippedDetails.length === projectDetails.length) {
-          return 0; // не отгружено ни одной детали (высший приоритет)
+          return 0;
         } else if (notShippedDetails.length > 0) {
-          return 1; // отгружены не все детали (средний приоритет)
+          return 1;
         } else {
-          return 2; // все детали отгружены (низший приоритет)
+          return 2;
         }
       };
 
       const aStatus = getShippingStatus(a);
       const bStatus = getShippingStatus(b);
 
-      // Сортировка по приоритету: 0 > 1 > 2
       return aStatus - bStatus;
     });
 
     setFilteredProjects(sortedProjects);
-  }, [projectDetails, buttonActiveProject, buttonClosedProject, shipmentDetails]);
+  }, [projectDetails, buttonActiveProject, buttonClosedProject, shipmentDetails, searchQuery]); // добавили searchQuery в зависимости
 
   // Фильтруем детали, которые есть в проектах или shipment
   const getFilteredDetails = React.useCallback(
@@ -364,6 +371,10 @@ function ProductionOrders() {
     setModalLink(true);
   };
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -539,6 +550,12 @@ function ProductionOrders() {
             onClick={handleButtonClosedProject}>
             Завершенные
           </button>
+          <input
+            class="production-orders__search"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
         </div>
         <div className="production-orders__table-container">
           <div className="production-orders__table-container">
@@ -947,7 +964,7 @@ function ProductionOrders() {
                                 })}
 
                                 {/* Пустые ячейки для новой колонки */}
-                                {newColumn.map((_, idx) => (
+                                {newColumn.map((order, idx) => (
                                   <td
                                     onClick={() => {
                                       handleOpenModalCreateAntypicalShipmentOrder(

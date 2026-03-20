@@ -10,6 +10,7 @@ import Designer from './Designer';
 import Nps from './Nps';
 import WarehouseAssortment from './WarehouseAssortment';
 import TemplatesTask from './TemplatesTask';
+import Set from './Set';
 
 import './style.scss';
 
@@ -28,6 +29,7 @@ function AddingList() {
     'Обратная связь',
     'Ассортимент склада',
     'Шаблоны задач',
+    'Комплекты',
   ];
   const modalRef = React.useRef();
 
@@ -58,6 +60,8 @@ function AddingList() {
         return <WarehouseAssortment />;
       case 'Шаблоны задач':
         return <TemplatesTask />;
+      case 'Комплекты':
+        return <Set />;
       default:
         return <Details />;
     }

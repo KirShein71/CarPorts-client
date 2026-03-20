@@ -1,0 +1,30 @@
+.control-table {
+    margin-top: 25px;
+    width: 360px;
+
+    &__title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    &__header {
+        width: 200px;
+        background-color: #e1dede !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        font-size: 20px;
+        font-weight: 700;
+        color: #000000;
+    }
+
+    &__header.th {
+        border-top: 1px solid #dee2e6;
+    }
+    
+    &__body {
+        width: 200px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #000000;
+    }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import TableBrigadeCalendar from '../TableBrigadeCalendar/TableBrigadeCalendar';
+import ControlTourCalendar from '../ControlTourCalenadar/ControlTourCalendar';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import { logout } from '../../http/userApi';
@@ -78,6 +79,7 @@ function HomePageList() {
     { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Контроль тур', link: '/control-tour' },
     { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Итоги Технадзора', link: '/result-supervision' },
     { label: 'Рекламация', link: '/complaint' },
@@ -109,6 +111,7 @@ function HomePageList() {
     { label: 'Логистика', link: '/logistics' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Контроль тур', link: '/control-tour' },
     { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Итоги Технадзора', link: '/result-supervision' },
     { label: 'Рекламация', link: '/complaint' },
@@ -162,6 +165,7 @@ function HomePageList() {
     { label: 'Заказ материалов', link: '/ordermaterials' },
     { title: 'Монтаж' },
     { label: 'Календарь монтажных работ', link: '/changebrigadedate' },
+    { label: 'Контроль тур', link: '/control-tour' },
     { label: 'Технадзор', link: '/technical-supervision' },
     { label: 'Итоги Технадзора', link: '/result-supervision' },
     { label: 'Гант проектов', link: '/gant-projects' },
@@ -206,6 +210,7 @@ function HomePageList() {
           </div>
 
           <TableBrigadeCalendar />
+          <ControlTourCalendar />
           <InstallationBilling />
           <StatProject />
         </div>

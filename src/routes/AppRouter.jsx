@@ -46,6 +46,7 @@ import Warehouse from '../pages/Warehouse';
 import ShipmentWarehouse from '../pages/ShipmentWarehouse';
 import TaskBook from '../pages/TaskBook';
 import ShipmentOrder from '../pages/ShipmentOrder';
+import ControlTour from '../pages/ControlTour';
 
 import { observer } from 'mobx-react';
 
@@ -88,6 +89,7 @@ const employeeRoutes = [
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
+  { path: '/control-tour', Component: ControlTour },
 ];
 
 const adminRoutes = [
@@ -135,6 +137,7 @@ const adminRoutes = [
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
+  { path: '/control-tour', Component: ControlTour },
 ];
 
 const managerSaleRoutes = [
@@ -190,6 +193,7 @@ const managerProjectRoutes = [
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
+  { path: '/control-tour', Component: ControlTour },
 ];
 
 const constructorRoutes = [{ path: '/planning', Component: Planning }];

@@ -1,0 +1,167 @@
+.control-tour {
+    &__filter {
+        margin-top: 15px;
+        display: flex;
+
+        &-item {
+            width: auto;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #ffffff; /* Белый фон для неактивной кнопки */
+            color: #212529; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            &:active {
+                background-color: #212529; /* Черный фон для активной кнопки */
+                color: #ffffff;
+               
+              }
+            &.active {
+                background-color: #212529; /* Черный фон для активной кнопки */
+                color: #ffffff;
+            }
+
+            @media(max-width: 460px) {
+                height: 20px;
+                font-size: 10px;
+                margin-right: 5px;
+            }
+        }
+
+        &-newProject {
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529; /* Черный фон для активной кнопки */
+            color: #ffffff; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            @media(max-width: 460px) {
+                height: 20px;
+                font-size: 10px;
+                margin-right: 5px;
+            }
+        }
+
+        
+    }
+
+    &__month {
+        margin-top: 15px;
+        display: flex;
+
+        &-arrow {
+            img {
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+            }
+        }
+
+        &-name {
+            font-size: 18px;
+            font-weight: 400;
+            padding: 0px 7px 0px 7px;
+        }
+    }
+
+    .table-scrollable {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    
+        .control-tour__table {
+            min-width: 100%;
+            border-collapse: collapse;
+        
+            &-th {
+                padding: 5px !important;
+                position: sticky;
+                left: 0;
+                top: 0;
+                z-index: 3;
+                background-color: white !important; 
+                text-align: center;
+            
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    height: 100%;
+                    border-bottom: 2px solid #dee2e6;
+                    width: 100%;
+                }
+            
+                &.nameKit {
+                    padding: 5px !important;
+                    position: sticky;
+                    left: 0;
+                    top: 0;
+                    z-index: 3;
+                    background-color: white !important; 
+                    text-align: center;
+                    white-space: nowrap; 
+                    overflow: hidden; 
+                    text-overflow: ellipsis; 
+                    max-width: 120px; 
+                    min-width: 50px; 
+                
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        height: 100%;
+                            border-bottom: 2px solid #dee2e6;
+                    width: 100%;
+                    }
+                }
+            
+                &.mobile {
+                    padding: 5px !important;
+                    position: sticky;
+                    left: 0;
+                    top: 0;
+                    z-index: 4;
+                    background-color: white !important; 
+                    text-align: center;
+                
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        height: 100%;
+                        border-bottom: 2px solid #dee2e6;
+                        width: 100%;
+                    }   
+                }   
+            }
+        
+            &-td.mobile {
+                position: sticky;
+                left: 0;
+                top: 0;
+                z-index: 3;
+                background-color: #ffffff !important;
+                
+            }
+
+            &-td.mobile::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0px;
+                width: 1px;
+                height: 100%;
+                background-color: #dee2e6;
+            }
+        }
+    }
+}

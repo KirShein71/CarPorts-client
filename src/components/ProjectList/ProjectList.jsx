@@ -512,34 +512,49 @@ function ProjectList() {
                         const endDate = addWorkingDays(agreementDate, sumDays);
                         const formattedEndDate = formatDate(endDate);
 
-                        // Проверяем, прошла ли дата дедлайна
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0); // Убираем время для точного сравнения
+                        // Проверяем, закрыт ли проект (есть ли date_finish)
+                        const finishDate =
+                          item && item.date_finish ? new Date(item.date_finish) : null;
+                        const isProjectClosed = finishDate !== null;
 
+                        // Приводим даты к началу дня для точного сравнения
                         const deadlineDate = new Date(endDate);
                         deadlineDate.setHours(0, 0, 0, 0);
 
-                        // Вычисляем разницу в днях
-                        const diffTime = deadlineDate - today;
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                        // Определяем цвет в зависимости от условий
                         let textColor = '#000000'; // черный по умолчанию
+                        let fontWeight = 'normal';
 
-                        if (diffDays < 0) {
-                          textColor = '#dc3545'; // красный - дедлайн прошел
-                        } else if (diffDays <= 7) {
-                          textColor = '#e83e8c'; // розовый - осталось 7 дней или меньше
+                        if (isProjectClosed) {
+                          // Проект закрыт - сравниваем дату закрытия с дедлайном
+                          const finishDateOnly = new Date(finishDate);
+                          finishDateOnly.setHours(0, 0, 0, 0);
+
+                          // Если дата закрытия МЕНЬШЕ или РАВНА дедлайну - черный (сдано вовремя)
+                          // Если дата закрытия БОЛЬШЕ дедлайна - красный (просрочка)
+                          if (finishDateOnly <= deadlineDate) {
+                            textColor = '#000000'; // черный - сдано вовремя
+                          } else {
+                            textColor = '#dc3545'; // красный - просрочка
+                          }
+                        } else {
+                          // Проект не закрыт - рассчитываем по текущей дате
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+
+                          // Вычисляем разницу в днях
+                          const diffTime = deadlineDate - today;
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                          if (diffDays < 0) {
+                            textColor = '#dc3545'; // красный - дедлайн прошел
+                          } else if (diffDays <= 7) {
+                            textColor = '#e83e8c'; // розовый - осталось 7 дней или меньше
+                            fontWeight = 'bold';
+                          }
                         }
 
                         return (
-                          <span
-                            style={{
-                              color: textColor,
-                              fontWeight: diffDays <= 7 ? 'bold' : 'normal',
-                            }}>
-                            {formattedEndDate}
-                          </span>
+                          <span style={{ color: textColor, fontWeight }}>{formattedEndDate}</span>
                         );
                       })()}
                     </td>

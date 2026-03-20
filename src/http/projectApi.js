@@ -92,7 +92,10 @@ export const getAllProjectsWithNoInBrigadesDate = async () => {
     return data
 }
 
-
+export const getAllProjectsWithNoInControlTour = async () => {
+    const { data } = await guestInstance.get('project/getAllProjectsWithNoInControlTour')
+    return data
+}
 
 export const getAllWithNoDesing = async () => {
     const {data} = await guestInstance.get('project/getAllWithNoDesing')

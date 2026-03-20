@@ -468,10 +468,10 @@ function ChangeBrigade() {
                                   color: brigadeDate.warranty
                                     ? '#0000ff'
                                     : brigadeDate.weekend
-                                    ? '#9b2d30'
-                                    : brigadeDate.downtime
-                                    ? '#ff0000'
-                                    : '#000000',
+                                      ? '#9b2d30'
+                                      : brigadeDate.downtime
+                                        ? '#ff0000'
+                                        : '#000000',
                                   backgroundColor:
                                     date.date.toLocaleString().split('T')[0] === todayString
                                       ? '#bbbbbb'
