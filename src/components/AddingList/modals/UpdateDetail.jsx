@@ -22,9 +22,10 @@ const UpdateDetail = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [image, setImage] = React.useState(null);
 
   React.useEffect(() => {
-    if (id) {
+    if (show) {
       fetchDetail(id)
         .then((data) => {
           const prod = {
@@ -42,12 +43,20 @@ const UpdateDetail = (props) => {
           }
         });
     }
-  }, [id]);
+  }, [id, show]);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
     setValue(data);
     setValid(isValid(data));
+  };
+
+  const handleImageChange = (event) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setImage(event.target.files[0]);
+    } else {
+      setImage(null);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -58,6 +67,10 @@ const UpdateDetail = (props) => {
       const data = new FormData();
       data.append('name', value.name.trim());
       data.append('price', value.price.trim());
+      // Добавляем изображение только если оно выбрано
+      if (image) {
+        data.append('image', image);
+      }
       setIsLoading(true);
       updateDetail(id, data)
         .then((data) => {
@@ -67,6 +80,7 @@ const UpdateDetail = (props) => {
           };
           setValue(prod);
           setValid(isValid(prod));
+          setImage(null);
           setChange((state) => !state);
         })
         .catch((error) => {
@@ -117,6 +131,16 @@ const UpdateDetail = (props) => {
                 isValid={valid.price === true}
                 isInvalid={valid.price === false}
                 placeholder="Себестоимость"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="image"
+                type="file"
+                onChange={(e) => handleImageChange(e)}
+                placeholder="Изображение."
               />
             </Col>
           </Row>

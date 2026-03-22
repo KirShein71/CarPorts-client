@@ -40,3 +40,8 @@ export const deleteDetail = async(id) => {
     const {data} = await guestInstance.delete(`details/delete/${id}`)
     return data
 }
+
+export const deleteImageDetail = async(id) => {
+    const {data} = await guestInstance.delete(`details/deleteImage/${id}`)
+    return data
+}

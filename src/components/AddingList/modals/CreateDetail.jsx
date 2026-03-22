@@ -26,6 +26,7 @@ const CreateDetail = (props) => {
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [image, setImage] = React.useState(null);
 
   const handleInputChange = (event) => {
     const data = { ...value, [event.target.name]: event.target.value };
@@ -33,30 +34,46 @@ const CreateDetail = (props) => {
     setValid(isValid(data));
   };
 
+  const handleImageChange = (event) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setImage(event.target.files[0]);
+    } else {
+      setImage(null);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const correct = isValid(value);
     setValid(correct);
+
+    // Проверяем только обязательные поля (name и price)
     if (correct.name && correct.price) {
       const data = new FormData();
       data.append('number', value.number.trim());
       data.append('name', value.name.trim());
       data.append('price', value.price.trim());
       data.append('weight', value.weight.trim());
+
+      // Добавляем изображение только если оно выбрано
+      if (image) {
+        data.append('image', image);
+      }
+
       setIsLoading(true);
       createDetail(data)
-        .then((data) => {
+        .then(() => {
           setValue(defaultValue);
           setValid(defaultValid);
+          setImage(null);
           setShow(false);
           setChange((state) => !state);
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => alert(error.response?.data?.message || 'Ошибка при создании детали'))
         .finally(() => {
           setIsLoading(false);
         });
     }
-    setShow(false);
   };
 
   return (
@@ -117,6 +134,16 @@ const CreateDetail = (props) => {
                 isValid={valid.weight === true}
                 isInvalid={valid.weight === false}
                 placeholder="Вес детали"
+              />
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Control
+                name="image"
+                type="file"
+                onChange={(e) => handleImageChange(e)}
+                placeholder="Изображение."
               />
             </Col>
           </Row>

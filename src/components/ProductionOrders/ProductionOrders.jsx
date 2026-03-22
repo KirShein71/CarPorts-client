@@ -85,6 +85,7 @@ function ProductionOrders() {
   const [modalLink, setModalLink] = React.useState(false);
   const [flagShipmentOrder, setFlagShipmentOrder] = React.useState();
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [hoveredDetail, setHoveredDetail] = React.useState(null);
 
   React.useEffect(() => {
     const fetchAllData = async () => {
@@ -691,6 +692,7 @@ function ProductionOrders() {
                             const detailProject = projectProps.find(
                               (prop) => prop.detailId === part.id,
                             );
+                            const hasImage = part.image && part.image.trim() !== '';
                             const quantity = detailProject ? detailProject.quantity : '';
                             const colorDetail = detailProject ? detailProject.color : '';
 
@@ -726,7 +728,21 @@ function ProductionOrders() {
 
                             return (
                               <tr key={`${proDetail.id || proDetail.projectId}-${part.id}`}>
-                                <td className="production-orders__detailName">{part.name}</td>
+                                <td
+                                  className="production-orders__detailName"
+                                  style={{ position: 'relative', cursor: 'default' }}
+                                  onMouseEnter={() => hasImage && setHoveredDetail(part.id)}
+                                  onMouseLeave={() => setHoveredDetail(null)}>
+                                  {part.name}
+                                  {hoveredDetail === part.id && hasImage && (
+                                    <div className="production-orders__tooltip">
+                                      <img
+                                        src={`${process.env.REACT_APP_IMG_URL}${part.image}`}
+                                        alt={part.name}
+                                      />
+                                    </div>
+                                  )}
+                                </td>
                                 <td
                                   className="production-orders__detailColor"
                                   onClick={() => handleCreateDetailColor(detailProject?.id)}>

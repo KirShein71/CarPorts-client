@@ -4,6 +4,7 @@ import UpdateDetail from './modals/UpdateDetail';
 import CreatePriceDetail from './modals/CreatePriceDetail';
 import CreateNumberDetail from './modals/CreateNumberDetail';
 import CreateWeightDetail from './modals/CreateWeightDetail';
+import ModalImageDetail from './modals/ModalImageDetail';
 import { Table, Button, Spinner, Modal } from 'react-bootstrap';
 import { fetchAllDetails, deleteDetail } from '../../http/detailsApi';
 
@@ -19,6 +20,8 @@ function Details() {
   const [fetching, setFetching] = React.useState(true);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [detailToDelete, setDetailToDelete] = React.useState(null);
+  const [modalImageDetail, setModalImageDetail] = React.useState(false);
+  const [image, setImage] = React.useState(null);
 
   React.useEffect(() => {
     fetchAllDetails()
@@ -73,6 +76,12 @@ function Details() {
     setCreateWeightModal(true);
   };
 
+  const handleOpenModalImageDetail = (image, id) => {
+    setImage(image);
+    setDetail(id);
+    setModalImageDetail(true);
+  };
+
   if (fetching) {
     return <Spinner />;
   }
@@ -104,6 +113,13 @@ function Details() {
         setShow={setCreateWeightModal}
         setChange={setChange}
         id={detail}
+      />
+      <ModalImageDetail
+        show={modalImageDetail}
+        setShow={setModalImageDetail}
+        image={image}
+        id={detail}
+        setChange={setChange}
       />
       <Modal
         show={deleteModal}
@@ -138,6 +154,7 @@ function Details() {
               <th>Название детали</th>
               <th>Себестоимость</th>
               <th>Вес</th>
+              <th>Изображение</th>
               <th></th>
               <th></th>
             </tr>
@@ -165,6 +182,17 @@ function Details() {
                       <>{detail.weight}</>
                     ) : (
                       <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
+                    )}
+                  </td>
+                  <td>
+                    {detail.image ? (
+                      <Button
+                        variant="dark"
+                        onClick={() => handleOpenModalImageDetail(detail.image, detail.id)}>
+                        Посмотреть
+                      </Button>
+                    ) : (
+                      ''
                     )}
                   </td>
                   <td>

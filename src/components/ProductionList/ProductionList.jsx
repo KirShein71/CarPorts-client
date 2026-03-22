@@ -497,18 +497,33 @@ function ProductionList() {
                 <th className="production-th mobile">Проект</th>
                 {nameDetails
                   .sort((a, b) => a.number - b.number)
-                  .map((part) => (
-                    <th
-                      className="production-th"
-                      key={part.id}
-                      onMouseEnter={() => setHoveredColumn(part.id)}
-                      onMouseLeave={() => setHoveredColumn(null)}
-                      style={{
-                        backgroundColor: hoveredColumn === part.id ? '#d6d4d4' : '#ffffff',
-                      }}>
-                      {part.name}
-                    </th>
-                  ))}
+                  .map((part) => {
+                    const hasImage = part.image && part.image.trim() !== '';
+                    const isHovered = hoveredColumn === part.id;
+
+                    return (
+                      <th
+                        key={part.id}
+                        className="production-th"
+                        onMouseEnter={() => setHoveredColumn(part.id)}
+                        onMouseLeave={() => setHoveredColumn(null)}
+                        style={{
+                          backgroundColor: hoveredColumn === part.id ? '#d6d4d4' : '#ffffff',
+                          cursor: 'default',
+                        }}>
+                        {part.name}
+
+                        {isHovered && hasImage && (
+                          <div className="production__tooltip">
+                            <img
+                              src={`${process.env.REACT_APP_IMG_URL}${part.image}`}
+                              alt={part.name}
+                            />
+                          </div>
+                        )}
+                      </th>
+                    );
+                  })}
                 <th className="production-th stat">Нетиповые</th>
                 <th className="production-th stat"></th>
               </tr>
