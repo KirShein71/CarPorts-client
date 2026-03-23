@@ -336,7 +336,7 @@ function ShipmentWarehouseComponent() {
                           );
 
                           const weight = orderForWarehouse
-                            ? orderForWarehouse.quantity * wareName.weight
+                            ? Math.round(orderForWarehouse.quantity * wareName.weight)
                             : 0;
                           const isDone = shipmentForWarehouse && shipmentForWarehouse.done;
 
