@@ -74,6 +74,7 @@ function ControlTourComponent() {
             <tbody>
               {kits
                 .filter((kitName) => kitName.regionId === 2)
+                .sort((a, b) => a.number - b.number)
                 .map((kitName) => {
                   const controlTourData = controlTours.find(
                     (item) => item.setId === kitName.id && item.regionId === 2,
@@ -114,6 +115,7 @@ function ControlTourComponent() {
             <tbody>
               {kits
                 .filter((kitName) => kitName.regionId === 1)
+                .sort((a, b) => a.number - b.number)
                 .map((kitName) => {
                   const controlTourData = controlTours.find(
                     (item) => item.setId === kitName.id && item.regionId === 1,

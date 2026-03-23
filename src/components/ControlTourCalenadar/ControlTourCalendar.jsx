@@ -36,6 +36,7 @@ function ControlTourCalendar() {
           <tbody>
             {controlTourDates
               .filter((dataMsk) => dataMsk.regionId === 2)
+              .sort((a, b) => a.set.number - b.set.number)
               .map((dataMsk) => (
                 <tr key={dataMsk.id}>
                   <td>{dataMsk.set?.name}</td>
@@ -55,6 +56,7 @@ function ControlTourCalendar() {
           <tbody>
             {controlTourDates
               .filter((dataSpb) => dataSpb.regionId === 1)
+              .sort((a, b) => a.set.number - b.set.number)
               .map((dataSpb) => (
                 <tr key={dataSpb.id}>
                   <td>{dataSpb.set?.name}</td>
