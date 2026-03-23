@@ -47,6 +47,7 @@ function ShipmentWarehouseComponent() {
   const [modalUpdateQuantityWarehouseDetail, setModalQuantityWarehouseDetail] =
     React.useState(false);
   const [projectWarehouseId, setProjectWarehouseId] = React.useState(null);
+  const [expandedProjects, setExpandedProjects] = React.useState({});
 
   React.useEffect(() => {
     Promise.all([fetchAllWarehouseAssortments(), fetchAllShipmentWarehouse()])
@@ -196,6 +197,21 @@ function ShipmentWarehouseComponent() {
     setShipmentWarehouseToDelete(null);
   };
 
+  const handleToggleDetails = (projectId) => {
+    setExpandedProjects((prev) => ({
+      ...prev,
+      [projectId]: !prev[projectId],
+    }));
+  };
+
+  const formatNumber = (number) => {
+    if (!number && number !== 0) return '0';
+    // Округляем до целого
+    const rounded = Math.round(number);
+    // Разделяем разряды пробелом
+    return rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
   return (
     <div className="shipment-warehouse">
       <Header title={'Отгрузка со склад'} />
@@ -265,128 +281,148 @@ function ShipmentWarehouseComponent() {
             return null;
           }
 
+          const isExpanded = expandedProjects[shipProject.projectId] || false;
+
           return (
-            <div className="shipment-warehouse__container">
-              <div key={shipProject.projectId}>
-                <Table className="shipment-warehouse__table">
-                  <thead>
-                    <tr>
-                      <th className="shipment-warehouse__table-th">
-                        {shipProject.project.name} {shipProject.project.number}
-                      </th>
-                      <th className="shipment-warehouse__table-th quantity">Кол-во</th>
-                      <th className="shipment-warehouse__table-th weigth">Вес</th>
-                      <th className="shipment-warehouse__table-th done"></th>
-                      <th className="shipment-warehouse__table-th note">Ком-ий</th>
-                    </tr>
-                  </thead>
+            <div className="shipment-warehouse__container" key={shipProject.projectId}>
+              <div className="shipment-warehouse__project">
+                <Table bordered className="shipment-warehouse__project-table">
                   <tbody>
-                    {projectAssortments
-                      .filter((wareName) => {
-                        // Фильтруем сразу, а не внутри map
-                        return shipProject.orders.some(
-                          (order) => order.warehouse_assortement_id === wareName.id,
-                        );
-                      })
-                      .map((wareName) => {
-                        // Используем find один раз, сохраняем в переменные
-                        const orderForWarehouse = shipProject.orders.find(
-                          (order) => order.warehouse_assortement_id === wareName.id,
-                        );
-                        const shipmentForWarehouse = shipProject.shipments.find(
-                          (shipment) => shipment.warehouse_assortement_id === wareName.id,
-                        );
-
-                        // Эти вычисления можно вынести или мемоизировать
-                        const weight = orderForWarehouse
-                          ? orderForWarehouse.quantity * wareName.weight
-                          : 0;
-                        const isDone = shipmentForWarehouse && shipmentForWarehouse.done;
-
-                        return (
-                          <tr key={wareName.id}>
-                            <td className="shipment-warehouse__table-td">{wareName.name}</td>
-                            <td
-                              onClick={() =>
-                                handleOpenModalUpdateQuantityWarehouseDetail(orderForWarehouse.id)
-                              }
-                              className="shipment-warehouse__table-td quantity">
-                              {orderForWarehouse.quantity}
-                            </td>
-                            <td className="shipment-warehouse__table-td weight">{weight}</td>
-                            {isDone ? (
-                              <td
-                                className="shipment-warehouse__table-td done"
-                                onClick={() =>
-                                  handleDeleteShipmentWarehouse(shipmentForWarehouse.id)
-                                }>
-                                <img src="./img/done.png" alt="Отгружено" />
-                              </td>
-                            ) : (
-                              <td
-                                className="shipment-warehouse__table-td no-done"
-                                onClick={() =>
-                                  handleDoneShipmentWarehouse(
-                                    shipProject.projectId,
-                                    orderForWarehouse.warehouse_assortement_id,
-                                  )
-                                }
-                              />
-                            )}
-                            <td className="shipment-warehouse__table-td note">
-                              {orderForWarehouse.note}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                    <tr>
+                      <td className="shipment-warehouse__project-td">
+                        {shipProject.project.name} {shipProject.project.number}
+                      </td>
+                      <td className="shipment-warehouse__project-td">
+                        {formatNumber(shipProject.totalWeight)} кг
+                      </td>
+                      <td className="shipment-warehouse__project-td">
+                        {formatNumber(shipProject.totalCost)} руб
+                      </td>
+                      <td
+                        className="shipment-warehouse__project-td more"
+                        onClick={() => handleToggleDetails(shipProject.projectId)}>
+                        {isExpanded ? 'Скрыть' : 'Подробнее'}
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
-                <div className="shipment-warehouse__totalWeigth">
-                  Общий вес: {shipProject.totalWeight}
-                </div>
-                <div className="shipment-warehouse__totalCost">
-                  Общая стоимость: {shipProject.totalCost}
-                </div>
-                <button
-                  onClick={() => handleOpenCreateWarehouseProjectModal(shipProject)}
-                  className="shipment-warehouse__button-added">
-                  Добавить
-                </button>
               </div>
-              {shipProject.exceeded.length > 0 ? (
-                <div className="shipment-warehouse__unloaded">
-                  <div className="shipment-warehouse__unloaded-title">Неотгруженные</div>
-                  <Table bordered className="shipment-warehouse__unloaded-table">
+
+              {isExpanded && (
+                <div className="shipment-warehouse__info">
+                  <Table className="shipment-warehouse__table">
                     <thead>
                       <tr>
-                        <th className="shipment-warehouse__unloaded-th">Деталь</th>
-                        <th className="shipment-warehouse__unloaded-th quantity">Кол-во</th>
+                        <th className="shipment-warehouse__table-th"></th>
+                        <th className="shipment-warehouse__table-th quantity">Кол-во</th>
+                        <th className="shipment-warehouse__table-th weigth">Вес</th>
+                        <th className="shipment-warehouse__table-th done"></th>
+                        <th className="shipment-warehouse__table-th note">Ком-ий</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {projectAssortments.map((wareName) => {
-                        // Находим заказ для этого ассортимента
-                        const exceededForWarehouse = shipProject.exceeded.find(
-                          (exceeded) => exceeded.warehouse_assortement_id === wareName.id,
-                        );
+                      {projectAssortments
+                        .filter((wareName) => {
+                          return shipProject.orders.some(
+                            (order) => order.warehouse_assortement_id === wareName.id,
+                          );
+                        })
+                        .map((wareName) => {
+                          const orderForWarehouse = shipProject.orders.find(
+                            (order) => order.warehouse_assortement_id === wareName.id,
+                          );
+                          const shipmentForWarehouse = shipProject.shipments.find(
+                            (shipment) => shipment.warehouse_assortement_id === wareName.id,
+                          );
 
-                        if (!exceededForWarehouse) {
-                          return null;
-                        }
-                        return (
-                          <tr>
-                            <td className="shipment-warehouse__unloaded-td">{wareName.name}</td>
-                            <td className="shipment-warehouse__unloaded-td quantity">
-                              {exceededForWarehouse.exceeded_quantity}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                          const weight = orderForWarehouse
+                            ? orderForWarehouse.quantity * wareName.weight
+                            : 0;
+                          const isDone = shipmentForWarehouse && shipmentForWarehouse.done;
+
+                          return (
+                            <tr key={wareName.id}>
+                              <td className="shipment-warehouse__table-td">{wareName.name}</td>
+                              <td
+                                onClick={() =>
+                                  handleOpenModalUpdateQuantityWarehouseDetail(orderForWarehouse.id)
+                                }
+                                className="shipment-warehouse__table-td quantity">
+                                {orderForWarehouse.quantity}
+                              </td>
+                              <td className="shipment-warehouse__table-td weight">{weight}</td>
+                              {isDone ? (
+                                <td
+                                  className="shipment-warehouse__table-td done"
+                                  onClick={() =>
+                                    handleDeleteShipmentWarehouse(shipmentForWarehouse.id)
+                                  }>
+                                  <img src="./img/done.png" alt="Отгружено" />
+                                </td>
+                              ) : (
+                                <td
+                                  className="shipment-warehouse__table-td no-done"
+                                  onClick={() =>
+                                    handleDoneShipmentWarehouse(
+                                      shipProject.projectId,
+                                      orderForWarehouse.warehouse_assortement_id,
+                                    )
+                                  }
+                                />
+                              )}
+                              <td className="shipment-warehouse__table-td note">
+                                {orderForWarehouse.note}
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </Table>
+                  {/* <div className="shipment-warehouse__totalWeigth">
+                    Общий вес: {formatNumber(shipProject.totalWeight)} кг
+                  </div>
+                  <div className="shipment-warehouse__totalCost">
+                    Общая стоимость: {formatNumber(shipProject.totalCost)} руб
+                  </div> */}
+                  <button
+                    onClick={() => handleOpenCreateWarehouseProjectModal(shipProject)}
+                    className="shipment-warehouse__button-added">
+                    Добавить
+                  </button>
+
+                  {shipProject.exceeded.length > 0 && (
+                    <div className="shipment-warehouse__unloaded">
+                      <div className="shipment-warehouse__unloaded-title">Неотгруженные</div>
+                      <Table bordered className="shipment-warehouse__unloaded-table">
+                        <thead>
+                          <tr>
+                            <th className="shipment-warehouse__unloaded-th">Деталь</th>
+                            <th className="shipment-warehouse__unloaded-th quantity">Кол-во</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {projectAssortments.map((wareName) => {
+                            const exceededForWarehouse = shipProject.exceeded.find(
+                              (exceeded) => exceeded.warehouse_assortement_id === wareName.id,
+                            );
+
+                            if (!exceededForWarehouse) {
+                              return null;
+                            }
+                            return (
+                              <tr key={wareName.id}>
+                                <td className="shipment-warehouse__unloaded-td">{wareName.name}</td>
+                                <td className="shipment-warehouse__unloaded-td quantity">
+                                  {exceededForWarehouse.exceeded_quantity}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                ''
               )}
             </div>
           );
