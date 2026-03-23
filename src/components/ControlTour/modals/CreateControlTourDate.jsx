@@ -26,7 +26,7 @@ const isValid = (value) => {
 };
 
 const CreateControlTourDate = (props) => {
-  const { show, setShow, setChange, kitId, dateId, regionId } = props;
+  const { show, setShow, setChange, kitId, regionId } = props;
   const [projects, setProjects] = React.useState([]);
   const [complaints, setComplaints] = React.useState([]);
   const [value, setValue] = React.useState(defaultValue);
@@ -102,7 +102,6 @@ const CreateControlTourDate = (props) => {
     data.append('projectId', value.project === '' ? 0 : value.project);
     data.append('complaintId', value.complaint === '' ? 0 : value.complaint);
     data.append('setId', kitId);
-    data.append('dateId', dateId);
     data.append('regionId', regionId);
 
     setIsLoading(true);

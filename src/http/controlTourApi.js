@@ -5,11 +5,6 @@ export const getAllControlTour = async () => {
     return data
 }
 
-export const getDaysSetForProjects = async () => {
-    const { data } = await guestInstance.get('controltour/getDaysSetForProjects')
-    return data
-}
-
 export const getAllCertainDays = async () => {
     const { data } = await guestInstance.get('controltour/getAllCertainDays')
     return data
@@ -30,28 +25,7 @@ export const updateControlTour = async (id, controltour) => {
     return data
 }
 
-export const refreshDataControlTour = async (id, controltour) => {
-    const { data } = await guestInstance.put(`controltour/refreshDataControlTour/${id}`, controltour)
-    return data
-}
-
 export const deleteControlTour = async(id) => {
     const { data} = await guestInstance.delete(`controltour/delete/${id}`)
-    return data
-}
-
-
-export const getAllNumberOfDaysControlTour = async (setId, projectId) => {
-    const { data } = await guestInstance.get(`controltour/getAllNumberOfDaysControlTour/${setId}/${projectId}`)
-    return data
-}
-
-export const getAllNumberOfDaysSetForProject = async (setId) => {
-    const { data } = await guestInstance.get(`controltour/getAllNumberOfDaysSetForProject/${setId}`)
-    return data
-}
-
-export const getAllNumberOfDaysControlTourForRegion = async () => {
-    const { data } = await guestInstance.get('controltour/getAllNumberOfDaysControlTourForRegion')
     return data
 }
