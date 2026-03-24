@@ -14,9 +14,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
 import CreatePriceProject from './modals/CreatePriceProject';
+import NpsModal from './modals/NpsModal';
 
 import './style.scss';
-import NpsModal from './modals/NpsModal';
 
 function ProjectList() {
   const [projects, setProjects] = React.useState([]);

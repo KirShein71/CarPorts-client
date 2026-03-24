@@ -17,6 +17,11 @@ export const fetchOneShipmentWarehouse = async (id) => {
     return data
 }
 
+export const getShipmentWarehouseForProject = async (projectId) => {
+    const { data } = await guestInstance.get(`shipmentwarehouse/getShipmentWarehouseForProject/${projectId}`)
+    return data
+}
+
 export const deleteOneShipmentWarehouse = async (id) => {
     const {data} = await guestInstance.delete(`shipmentwarehouse/delete/${id}`)
     return data
