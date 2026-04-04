@@ -5,6 +5,11 @@ export const fetchAllDeliveryDetails = async () => {
     return data
 }
 
+export const getAllDeliveryDetailsForProject = async (projectId) => {
+    const { data } = await guestInstance.get(`deliverydetails/getAllDeliveryDetailsForProject/${projectId}`)
+    return data
+}
+
 export const fetchProjectDeliveryDetails = async (projectId) => {
     const {data} = await guestInstance.get(`deliverydetails/getproject/${projectId}`);
     return data;

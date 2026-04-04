@@ -5,6 +5,11 @@ export const getAllShipmentOrder = async () => {
     return data
 }
 
+export const getAllShipmentOrderForProject = async (projectId) => {
+    const { data } = await guestInstance.get(`shipmentorder/getAllShipmentOrderForProject/${projectId}`)
+    return data
+}
+
 export const getAllForShipmentOrderProject = async (projectId, date) => {
     const { data } = await guestInstance.get(`shipmentorder/getAllForShipmentOrderProject/${projectId}/${date}`)
     return data

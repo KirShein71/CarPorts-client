@@ -47,9 +47,9 @@ import UserFile from './UserFile';
 import ProjectLogistic from './ProjectLogistic';
 import ModalUrlClient from './modals/ModalUrlClient';
 import TechExamination from './TechExamination';
-import CreateAntypicalsQuantity from '../ProductionOrders/modals/CreateAntypicalsQuantity';
-import CreateAntypicalsDeliveryQuantity from '../ProductionOrders/modals/CreateAntypicalsDeliveryQuantity';
-import CreateAntypicalsShipmentQuantity from '../ProductionOrders/modals/CreateAntypicalsShipmentQuantity';
+import CreateAntypicalsQuantity from '../ProductionProject/modals/CreateAntypicalsQuantity';
+import CreateAntypicalsDeliveryQuantity from '../ProductionProject/modals/CreateAntypicalsDeliveryQuantity';
+import CreateAntypicalsShipmentQuantity from '../ProductionProject/modals/CreateAntypicalsShipmentQuantity';
 import ProjectTask from '../ProjectTask/ProjectTask';
 
 import './style.scss';

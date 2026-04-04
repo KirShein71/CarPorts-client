@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal, Table } from 'react-bootstrap';
 import { deleteAntypical, getAllAntypiclasForProject } from '../../../http/antypicalApi';
-import CreateName from '../../ProductionOrders/modals/CreateName';
-import CreateColor from '../../ProductionOrders/modals/CreateColor';
-import CreateAntypicalsQuantity from '../../ProductionOrders/modals/CreateAntypicalsQuantity';
+import CreateName from '../../ProductionProject/modals/CreateName';
+import CreateColor from '../../ProductionProject/modals/CreateColor';
+import CreateAntypicalsQuantity from '../../ProductionProject/modals/CreateAntypicalsQuantity';
 
 function ImageModal(props) {
   const { show, setShow, id } = props;

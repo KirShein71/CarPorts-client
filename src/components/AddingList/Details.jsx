@@ -172,7 +172,7 @@ function Details() {
                   <td>{detail.name}</td>
                   <td onClick={() => handleCreatePrice(detail.id)}>
                     {detail.price ? (
-                      <>{detail.price}</>
+                      <>{detail.price.toLocaleString('ru-RU')}</>
                     ) : (
                       <span style={{ color: 'red', fontWeight: 600, cursor: 'pointer' }}>+</span>
                     )}

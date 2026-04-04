@@ -8,7 +8,7 @@ import UpdateShipmentDetails from './modals/updateShipmentDetails';
 import CreateOneShipmentDetail from './modals/createOneShipmentDetail';
 import { getAllForAntypicalsShipment } from '../../http/antypicalApi';
 import ShipmentAntypicals from './ShipmentAntypicals';
-import CreateAntypicalsShipmentQuantity from '../ProductionOrders/modals/CreateAntypicalsShipmentQuantity';
+import CreateAntypicalsShipmentQuantity from '../ProductionProject/modals/CreateAntypicalsShipmentQuantity';
 
 import './modals/styles.scss';
 
@@ -73,8 +73,8 @@ function ShipmentList() {
       const isActiveProject = filters.isActive
         ? project.project.finish === null
         : filters.isClosed
-        ? project.project.finish === 'true'
-        : true; // Если ни одна кнопка не активна, показываем все проекты
+          ? project.project.finish === 'true'
+          : true; // Если ни одна кнопка не активна, показываем все проекты
 
       // Логика фильтрации
       if (filters.isActive && filters.isClosed) {
