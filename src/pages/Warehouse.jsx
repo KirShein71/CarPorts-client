@@ -1,7 +1,7 @@
-import WarehouseComponent from '../components/Warehouse/WarehouseComponent';
+import AddWarehouse from '../components/AddWarehouse/AddWarehouse';
 
 function Warehouse() {
-  return <WarehouseComponent />;
+  return <AddWarehouse />;
 }
 
 export default Warehouse;

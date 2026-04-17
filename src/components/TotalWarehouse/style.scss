@@ -1,0 +1,44 @@
+.total-warehouse {
+
+    &__content {
+        margin-top: 25px;
+        @media(max-width: 460px) {
+            margin-top: 10px;
+        }
+    }
+
+    &__table {
+        width: 800px;
+        @media(max-width: 460px) {
+            width: 100%;
+        }
+
+        &-th {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 14px;
+            }
+        }
+
+        &-th.detail {
+            text-align: left;
+        }
+
+        &-td {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            text-align: center;
+            @media(max-width: 460px) {
+                font-size: 13px;
+            }
+        }
+
+        &-td.detail {
+            text-align: left;
+        }
+    }
+}

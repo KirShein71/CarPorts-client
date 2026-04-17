@@ -42,13 +42,15 @@ import ResultSupervision from '../pages/ResultSupervision';
 import GantInstaller from '../pages/GantInstaller';
 import GantProject from '../pages/GantProject';
 import ProductionOrder from '../pages/ProductionOrder';
-import Warehouse from '../pages/Warehouse';
+import WarehouseOrder from '../pages/WarehouseOrder';
 import ShipmentWarehouse from '../pages/ShipmentWarehouse';
 import TaskBook from '../pages/TaskBook';
 import ShipmentOrder from '../pages/ShipmentOrder';
 import ControlTour from '../pages/ControlTour';
 import WarehouseProject from '../pages/WarehouseProject';
 import ProductionProject from '../pages/ProductionProject';
+import Warehouse from '../pages/Warehouse';
+import TotalWarehouse from '../pages/TotalWarehouse';
 
 import { observer } from 'mobx-react';
 
@@ -88,7 +90,9 @@ const employeeRoutes = [
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
   { path: '/warehouse', Component: Warehouse },
+  { path: '/warehouse-order', Component: WarehouseOrder },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
+  { path: '/total-warehouse', Component: TotalWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
   { path: '/control-tour', Component: ControlTour },
@@ -138,7 +142,9 @@ const adminRoutes = [
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
   { path: '/warehouse', Component: Warehouse },
+  { path: '/warehouse-order', Component: WarehouseOrder },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
+  { path: '/total-warehouse', Component: TotalWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
   { path: '/control-tour', Component: ControlTour },
@@ -196,7 +202,9 @@ const managerProjectRoutes = [
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
   { path: '/warehouse', Component: Warehouse },
+  { path: '/warehouse-order', Component: WarehouseOrder },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
+  { path: '/total-warehouse', Component: TotalWarehouse },
   { path: '/task-book', Component: TaskBook },
   { path: '/shipment-order', Component: ShipmentOrder },
   { path: '/control-tour', Component: ControlTour },
@@ -222,7 +230,9 @@ const managerProductionRoutes = [
   { path: '/gant-projects', Component: GantProject },
   { path: '/production-orders', Component: ProductionOrder },
   { path: '/warehouse', Component: Warehouse },
+  { path: '/warehouse-order', Component: WarehouseOrder },
   { path: '/shipment-warehouse', Component: ShipmentWarehouse },
+  { path: '/total-warehouse', Component: TotalWarehouse },
   { path: '/shipment-order', Component: ShipmentOrder },
   { path: '/warehouse-project/:projectId', Component: WarehouseProject },
   { path: '/production-project/:projectId', Component: ProductionProject },

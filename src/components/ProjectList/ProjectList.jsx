@@ -408,6 +408,7 @@ function ProjectList() {
               <tr>
                 <th className="project-th mobile">Название</th>
                 <th className="project-th">% вып</th>
+                <th className="project-th">% впл</th>
                 <th className="project-th">Номер</th>
                 <th className="project-th" onClick={() => handleSort('agreement_date')}>
                   <div style={{ cursor: 'pointer', display: 'flex' }}>
@@ -489,6 +490,9 @@ function ProjectList() {
                         <td></td>
                       </>
                     )}
+                    <td style={{ textAlign: 'center' }}>
+                      {item.paymentPercentage ? `${item.paymentPercentage}%` : ''}
+                    </td>
                     <td
                       style={{ cursor: 'pointer', textAlign: 'left' }}
                       onClick={() => {

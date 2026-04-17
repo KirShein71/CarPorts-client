@@ -85,6 +85,26 @@ export const deletePlanDateProjectMaterials = async (id) => {
     return data;
 };
 
+export const createBudgetProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createBudgetProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
+export const deleteBudgetProjectMaterials = async (id) => {
+    const { data } = await guestInstance.delete(`projectmaterials/deleteBudgetProjectMaterials/${id}`);
+    return data;
+};
+
+export const createFactProjectMaterials = async(id, projectmaterials) => {
+    const {data} = await guestInstance.put(`projectmaterials/createFactProjectMaterials/${id}`, projectmaterials)
+    return data
+}
+
+export const deleteFactProjectMaterials = async (id) => {
+    const { data } = await guestInstance.delete(`projectmaterials/deleteFactProjectMaterials/${id}`);
+    return data;
+};
+
 
 export const createColorProjectMaterials = async(id, projectmaterials) => {
     const {data} = await guestInstance.put(`projectmaterials/createColorProjectMaterials/${id}`, projectmaterials)

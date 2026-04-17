@@ -1,0 +1,55 @@
+.add-warehouse {
+    &__header {
+        margin-top: 15px;
+
+        &-add {
+            width: 120px;
+            height: 30px;
+            border: 1px solid #212529;
+            background-color: #212529;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            @media(max-width: 460px) {
+                width: 90px;
+                height: 20px;
+                font-size: 10px;
+            }
+        }
+    }
+
+    &__table {
+        margin-top: 15px;
+
+        &-th {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000000;
+            @media(max-width: 460px) {
+                font-size: 15px;
+            }
+        }
+
+        &-th.date {
+            text-align: center;
+        }
+
+        &-td {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000000;
+            @media(max-width: 460px) {
+                font-size: 14px;
+            }
+        }
+
+        &-td.quantity {
+            text-align: center;
+            cursor: pointer;
+        }
+    }
+
+    
+}

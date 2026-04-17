@@ -14,6 +14,8 @@ function MaterialProject({
   hadlePlanDate,
   handleDeleteProjectMaterials,
   handleCreateColor,
+  handleCreateBudget,
+  handleCreateFact,
   user,
   buttonNoColorProject,
   buttonNoDatePaymentProject,
@@ -102,6 +104,8 @@ function MaterialProject({
                   <th style={{ textAlign: 'center', width: '25%' }}>Готовность</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Отгрузка</th>
                   <th style={{ textAlign: 'center', width: '25%' }}>Цвет</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Бюджет</th>
+                  <th style={{ textAlign: 'center', width: '25%' }}>Факт</th>
                   <th style={{ width: '25%' }}></th>
                 </tr>
               </thead>
@@ -233,6 +237,44 @@ function MaterialProject({
                         }>
                         {prop.color ? (
                           <>{prop.color}</>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={
+                          user.isManagerProduction ? undefined : () => handleCreateBudget(prop.id)
+                        }>
+                        {prop.budget ? (
+                          <>{prop.budget}</>
+                        ) : (
+                          <span
+                            style={{
+                              color: 'red',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              textAlign: 'center',
+                            }}>
+                            +
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        style={{ cursor: 'pointer', textAlign: 'center' }}
+                        onClick={
+                          user.isManagerProduction ? undefined : () => handleCreateFact(prop.id)
+                        }>
+                        {prop.fact ? (
+                          <>{prop.fact}</>
                         ) : (
                           <span
                             style={{

@@ -19,6 +19,8 @@ import UpdateMaterialId from './modals/updateMaterialId';
 import MaterialProject from './MaterialProject';
 import ProjectMaterial from './ProjectMaterial';
 import { AppContext } from '../../context/AppContext';
+import CreateBudget from './modals/CreateBudget';
+import CreateFact from './modals/CreateFact';
 
 function OrderMaterialsList() {
   const { user } = React.useContext(AppContext);
@@ -45,6 +47,8 @@ function OrderMaterialsList() {
   const [buttonNoReadyDateProject, setButtonNoReadyDateProject] = React.useState(false);
   const [buttonNoShippingDateProject, setButtonNoShippingDateProject] = React.useState(false);
   const [modalUpdateMaterialId, setModalUpdateMaterialId] = React.useState(false);
+  const [createBudget, setCreateBudget] = React.useState(false);
+  const [createFact, setCreateFact] = React.useState(false);
 
   React.useEffect(() => {
     Promise.all([fetchAllProjectMaterials(), getAllMaterialProject()])
@@ -214,6 +218,16 @@ function OrderMaterialsList() {
   const handleCreateMaterial = (project) => {
     setProject(project);
     setCreateMaterial(true);
+  };
+
+  const handleCreateBudget = (id) => {
+    setProjectMaterials(id);
+    setCreateBudget(true);
+  };
+
+  const handleCreateFact = (id) => {
+    setProjectMaterials(id);
+    setCreateFact(true);
   };
 
   const handleCreateColor = (id) => {
@@ -386,6 +400,20 @@ function OrderMaterialsList() {
         setChange={setChange}
         scrollPosition={scrollPosition}
       />
+      <CreateBudget
+        id={projectMaterials}
+        show={createBudget}
+        setShow={setCreateBudget}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+      />
+      <CreateFact
+        id={projectMaterials}
+        show={createFact}
+        setShow={setCreateFact}
+        setChange={setChange}
+        scrollPosition={scrollPosition}
+      />
       <CreateMaterial
         projectId={project}
         show={createMaterial}
@@ -507,6 +535,8 @@ function OrderMaterialsList() {
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateMaterial={handleCreateMaterial}
                 handleCreateColor={handleCreateColor}
+                handleCreateBudget={handleCreateBudget}
+                handleCreateFact={handleCreateFact}
                 handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}
                 user={user}
                 buttonNoColorProject={buttonNoColorProject}
@@ -532,6 +562,8 @@ function OrderMaterialsList() {
                 hadlePlanDate={hadlePlanDate}
                 handleDeleteProjectMaterials={handleDeleteProjectMaterials}
                 handleCreateColor={handleCreateColor}
+                handleCreateBudget={handleCreateBudget}
+                handleCreateFact={handleCreateFact}
                 handleOpenModalUpdateMaterialId={handleOpenModalUpdateMaterialId}
                 buttonNoColorProject={buttonNoColorProject}
                 buttonNoDatePaymentProject={buttonNoDatePaymentProject}

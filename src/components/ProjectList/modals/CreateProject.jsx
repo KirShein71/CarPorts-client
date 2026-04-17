@@ -15,8 +15,6 @@ const defaultValue = {
   price: '',
   note: '',
   region: '',
-  phone: '',
-  password: '',
   contact: '',
   address: '',
   navigator: '',
@@ -33,8 +31,6 @@ const defaultValid = {
   price: null,
   note: null,
   region: null,
-  phone: null,
-  password: null,
   contact: null,
   address: null,
   navigator: null,
@@ -53,8 +49,6 @@ const isValid = (value) => {
       result.installation_period = value.installation_period.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'region') result.region = value.region;
-    if (key === 'phone') result.phone = value.phone.trim() !== '';
-    if (key === 'password') result.password = value.password.trim() !== '';
   }
   return result;
 };
@@ -128,9 +122,7 @@ const CreateProject = (props) => {
       correct.agreement_date &&
       correct.design_period &&
       correct.expiration_date &&
-      correct.installation_period &&
-      correct.phone &&
-      correct.password
+      correct.installation_period
     ) {
       try {
         const data = new FormData();
@@ -149,9 +141,7 @@ const CreateProject = (props) => {
         data.append('address', value.address.trim());
         data.append('navigator', value.navigator.trim());
         data.append('coordinates', value.coordinates.trim());
-        // Данные аккаунта
-        data.append('phone', value.phone.trim());
-        data.append('password', value.password.trim());
+
         if (image) {
           data.append('image', image, image.name);
         } else {
@@ -352,30 +342,7 @@ const CreateProject = (props) => {
                   placeholder="Кооридинаты"
                 />
               </Col>
-              <Col className="mt-3">
-                <Form.Control
-                  name="phone"
-                  value={clicked ? value.phone || '8' : ''}
-                  onChange={(e) => handleInputChange(e)}
-                  onClick={handleInputClick}
-                  isValid={valid.phone === true}
-                  isInvalid={valid.phone === false}
-                  minLength="10"
-                  maxLength="11"
-                  placeholder="Логин личн.кабинета"
-                />
-              </Col>
-              <Col className="mt-3">
-                <Form.Control
-                  name="password"
-                  value={value.password}
-                  onChange={(e) => handleInputChange(e)}
-                  onClick={handleInputClick}
-                  isValid={valid.password === true}
-                  isInvalid={valid.password === false}
-                  placeholder="Пароль личн.кабинета"
-                />
-              </Col>
+
               <Col className="mt-3">
                 <Form.Control
                   name="image"
@@ -544,19 +511,6 @@ const CreateProject = (props) => {
                     placeholder="Срок монтажа"
                   />
                 </Col>
-                <Col>
-                  <Form.Control
-                    name="phone"
-                    value={clicked ? value.phone || '8' : ''}
-                    onChange={(e) => handleInputChange(e)}
-                    onClick={handleInputClick}
-                    isValid={valid.phone === true}
-                    isInvalid={valid.phone === false}
-                    minLength="10"
-                    maxLength="11"
-                    placeholder="Логин личн.кабинета"
-                  />
-                </Col>
               </Row>
               <Row className="mt-3">
                 <Col md={3}>
@@ -567,17 +521,6 @@ const CreateProject = (props) => {
                     isValid={valid.installation_billing === true}
                     isInvalid={valid.installation_billing === false}
                     placeholder="Расчетный срок монтажа"
-                  />
-                </Col>
-                <Col>
-                  <Form.Control
-                    name="password"
-                    value={value.password}
-                    onChange={(e) => handleInputChange(e)}
-                    onClick={handleInputClick}
-                    isValid={valid.password === true}
-                    isInvalid={valid.password === false}
-                    placeholder="Пароль личн.кабинета"
                   />
                 </Col>
               </Row>

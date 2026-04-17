@@ -59,7 +59,7 @@ const CreateOneStockDetail = (props) => {
     <Modal
       show={show}
       onHide={() => setShow(false)}
-      size="sm"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       className="modal__detail">

@@ -7,7 +7,7 @@ import { getAllDeliveryDetailsForProject } from '../../http/deliveryDetailsApi';
 import { getAllShipmentOrderForProject } from '../../http/shipmentOrderApi';
 import { Link, useParams } from 'react-router-dom';
 import CreateAntypical from '../ProductionList/modal/CreateAntypical';
-import CreateName from './modals/CreateName';
+
 import CreateColor from './modals/CreateColor';
 import CreateAntypicalsQuantity from './modals/CreateAntypicalsQuantity';
 import CreateOneProjectDetail from '../ProductionList/modal/CreateOneProjectDetail';
@@ -27,6 +27,7 @@ import ModalCreateOrder from './modals/ModalCreateOrder';
 import ModalCreateNewShipmentOrder from './modals/ModalCreateNewShipmentOrder';
 import CreateAntypicalShipmentOrder from './modals/CreateAntypicalShipmentOrder';
 import ModalLink from './modals/ModalLink';
+import ModalUpdateOrLook from './modals/ModalUpdateOrLook';
 
 import './style.scss';
 
@@ -45,7 +46,6 @@ function ProductionProjectComponent() {
   // Модальные окна
   const [openModalCreateAntypical, setOpenModalCreateAntypical] = React.useState(false);
   const [openModalCreateAntypicalColor, setOpenModalCreateAntypicalColor] = React.useState(false);
-  const [openModalCreateAntypicalName, setOpenModalCreateAntypicalName] = React.useState(false);
   const [openModalCreateAntypicalsQuantity, setOpenModalCreateAntypicalsQuantity] =
     React.useState(false);
   const [openModalCreateAntypicalsShipmentQuantity, setOpenModalCreateAntypicalsShipmentQuantity] =
@@ -70,6 +70,7 @@ function ProductionProjectComponent() {
   const [modalCreateAntypicalShipmentOrder, setModalCreateAntypicalShipmentOrder] =
     React.useState(false);
   const [modalLink, setModalLink] = React.useState(false);
+  const [modalUpdateOrLook, setModalUpdateOrLook] = React.useState(false);
 
   // Состояния для передачи в модалки
   const [antypicalId, setAntypicalId] = React.useState(null);
@@ -193,9 +194,10 @@ function ProductionProjectComponent() {
     setOpenModalCreateAntypical(true);
   };
 
-  const handleCreateAntypicalName = (id) => {
+  const handleOpenModalUpdateOrLook = (id, image) => {
     setAntypicalId(id);
-    setOpenModalCreateAntypicalName(true);
+    setAntypicalImage(image);
+    setModalUpdateOrLook(true);
   };
 
   const handleCreateAntypicalColor = (id) => {
@@ -326,11 +328,12 @@ function ProductionProjectComponent() {
         projectId={projectId}
         scrollPosition={scrollPosition}
       />
-      <CreateName
-        show={openModalCreateAntypicalName}
-        setShow={setOpenModalCreateAntypicalName}
+      <ModalUpdateOrLook
+        show={modalUpdateOrLook}
+        setShow={setModalUpdateOrLook}
         setChange={setChange}
         id={antypicalId}
+        image={antypicalImage}
         scrollPosition={scrollPosition}
       />
       <CreateColor
@@ -743,7 +746,9 @@ function ProductionProjectComponent() {
                 <tr key={antypDetails.id}>
                   <td
                     className="production-project__antypicalName"
-                    onClick={() => handleCreateAntypicalName(antypDetails.id)}>
+                    onClick={() =>
+                      handleOpenModalUpdateOrLook(antypDetails.id, antypDetails.image)
+                    }>
                     {antypDetails.name ? (
                       antypDetails.name
                     ) : (

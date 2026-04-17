@@ -183,50 +183,8 @@ function ProductionList() {
       return matchesSearch && isActiveProject && matchesShippingFilter() && matchesOrderFilter();
     });
 
-    // Сортируем проекты по приоритету отгрузки
-    const sortedProjects = filteredProjects.sort((a, b) => {
-      // Функция для определения статуса отгрузки проекта
-      const getShippingStatus = (project) => {
-        const projectDetails = (project.props || []).filter(
-          (prop) => prop.detailId !== null && prop.quantity !== null && prop.quantity > 0, // Исключаем quantity = 0, так как они считаются отгруженными
-        );
-
-        if (projectDetails.length === 0) return 2; // нет деталей для отгрузки - нейтральный статус
-
-        // Проверяем статус отгрузки для каждой детали
-        const notShippedDetails = projectDetails.filter((projectProp) => {
-          const shipmentPropsForDetail = shipmentDetails
-            .filter((shipment) => shipment.projectId === project.projectId)
-            .flatMap((shipment) => shipment.props || [])
-            .filter(
-              (shipmentProp) =>
-                shipmentProp.detailId === projectProp.detailId &&
-                shipmentProp.shipment_quantity !== null,
-            );
-
-          const totalShipped = shipmentPropsForDetail.reduce(
-            (sum, shipmentProp) => sum + (shipmentProp.shipment_quantity || 0),
-            0,
-          );
-
-          return totalShipped < projectProp.quantity;
-        });
-
-        if (notShippedDetails.length === projectDetails.length) {
-          return 0; // не отгружено ни одной детали (высший приоритет)
-        } else if (notShippedDetails.length > 0) {
-          return 1; // отгружены не все детали (средний приоритет)
-        } else {
-          return 2; // все детали отгружены (низший приоритет)
-        }
-      };
-
-      const aStatus = getShippingStatus(a);
-      const bStatus = getShippingStatus(b);
-
-      // Сортировка по приоритету: 0 > 1 > 2
-      return aStatus - bStatus;
-    });
+    // Сортируем проекты по id от нового к старому (по убыванию)
+    const sortedProjects = filteredProjects.sort((a, b) => b.id - a.id);
 
     setFilteredProjects(sortedProjects);
   }, [

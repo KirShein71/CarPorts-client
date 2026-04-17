@@ -171,7 +171,10 @@ function ShipmentOrderComponent() {
                       <td
                         className="shipment-order__antypical-image"
                         onClick={() => handleOpenModalImage(prop.image)}>
-                        <img src="./img/eye.png" alt="Посмотреть чертеж" />
+                        <img
+                          src={`${process.env.REACT_APP_IMG_URL}${prop.image}`}
+                          alt={prop.antypical_name || 'чертеж'}
+                        />
                       </td>
                     </tr>
                   ))}
