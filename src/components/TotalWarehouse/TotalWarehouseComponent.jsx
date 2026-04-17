@@ -28,6 +28,16 @@ function TotalWarehouseComponent() {
     fetchAllData();
   }, []);
 
+  // Создаем Set с ID ассортиментов, которые есть в warehouseTotalData
+  const existingAssortementIds = new Set(
+    warehouseTotalData.map((item) => item.warehouse_assortement_id),
+  );
+
+  // Фильтруем ассортименты, оставляя только те, что есть в warehouseTotalData
+  const filteredAssortements = warehouseAssortements.filter((assortement) =>
+    existingAssortementIds.has(assortement.id),
+  );
+
   return (
     <div className="total-warehouse">
       <Header title={'Итоговая склад'} />
@@ -43,7 +53,7 @@ function TotalWarehouseComponent() {
             </tr>
           </thead>
           <tbody>
-            {warehouseAssortements
+            {filteredAssortements
               .sort((a, b) => a.id - b.id)
               .map((assortementName) => (
                 <tr key={assortementName.id}>
@@ -54,10 +64,8 @@ function TotalWarehouseComponent() {
                         wareTotalData.warehouse_assortement_id === assortementName.id,
                     )
                     .map((wareTotalData) => (
-                      <>
-                        <td className="total-warehouse__table-td" key={wareTotalData.id}>
-                          {wareTotalData.add_warehouse}
-                        </td>
+                      <React.Fragment key={wareTotalData.warehouse_assortement_id}>
+                        <td className="total-warehouse__table-td">{wareTotalData.add_warehouse}</td>
                         <td className="total-warehouse__table-td">
                           {wareTotalData.order_warehouse}
                         </td>
@@ -67,7 +75,7 @@ function TotalWarehouseComponent() {
                         <td className="total-warehouse__table-td">
                           {wareTotalData.remainder_warehouse}
                         </td>
-                      </>
+                      </React.Fragment>
                     ))}
                 </tr>
               ))}

@@ -20,8 +20,9 @@
             text-align: center;
             @media(max-width: 460px) {
                 font-size: 14px;
+                
             }
-        }
+        }width: 25%;
 
         &-th.detail {
             text-align: left;
@@ -34,6 +35,7 @@
             text-align: center;
             @media(max-width: 460px) {
                 font-size: 13px;
+                width: 25%;
             }
         }
 
