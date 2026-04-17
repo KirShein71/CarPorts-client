@@ -9,8 +9,10 @@
 
     &__table {
         width: 800px;
+        border-collapse: collapse;
         @media(max-width: 460px) {
             width: 100%;
+            min-width: 400px;
         }
 
         &-th {
