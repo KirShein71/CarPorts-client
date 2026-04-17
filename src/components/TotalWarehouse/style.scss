@@ -15,7 +15,7 @@
         border-collapse: collapse;
         
         @media(max-width: 460px) {
-            min-width: 280px;
+            min-width: 100%;
         }
 
         &-th {
@@ -23,17 +23,17 @@
             font-weight: 600;
             color: #000000;
             text-align: center;
-            padding: 12px 8px;
+           
             background-color: #f8f9fa;
             
             @media(max-width: 460px) {
-                font-size: 12px;
-              
+                font-size: 11px;
             }
         }
 
         &-th.detail {
             text-align: left;
+            
         }
 
         &-td {
@@ -41,18 +41,22 @@
             font-weight: 500;
             color: #000000;
             text-align: center;
-            padding: 10px 8px;
+           
             
             @media(max-width: 460px) {
-                font-size: 12px;
-                padding: 8px 5px;
+                font-size: 11px;
+               
             }
         }
 
         &-td.detail {
             text-align: left;
             font-weight: 600;
-            background-color: white;
+             @media(max-width: 460px) {
+                font-size: 12px;
+             
+            }
+           
         }
     }
 }
