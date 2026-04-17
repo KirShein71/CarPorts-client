@@ -5,7 +5,7 @@ import './Header.styles.scss';
 function Header({ title }) {
   return (
     <div className="header">
-      <Link to="/">
+      <Link to="/workingpage">
         <img className="header__icon" src="./img/back.png" alt="back" />
       </Link>
       <h1 className="header__title">{title}</h1>

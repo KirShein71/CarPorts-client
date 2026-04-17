@@ -10,11 +10,6 @@ import { Spinner } from 'react-bootstrap';
 import './app.scss'
 
 
-
-
-
-
-
 const App = observer(() => {
     const { user } = React.useContext(AppContext)
     const [loading, setLoading] = React.useState(true)
