@@ -629,7 +629,7 @@ function ProjectList() {
                         })()}
                     </td>
                     <td>
-                      {item.project_examinations.length > 0 ? (
+                      {item.hasExamination ? (
                         <img
                           style={{ display: 'block', margin: '0 auto' }}
                           src="./img/done.png"
