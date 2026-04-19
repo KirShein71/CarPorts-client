@@ -7,7 +7,7 @@ import UpdateDateProject from './modals/UpdateDateProject';
 import CreateRegion from './modals/CreateRegion';
 import CreateInstallationBilling from './modals/CreateInstallationBilling';
 import GearModal from './modals/gearModal';
-import { fetchAllProjects } from '../../http/projectApi';
+import { getAllForProjectPage } from '../../http/projectApi';
 import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
 import { Spinner, Table } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -51,7 +51,7 @@ function ProjectList() {
 
   React.useEffect(() => {
     setFetching(true);
-    fetchAllProjects()
+    getAllForProjectPage()
       .then((data) => {
         setProjects(data);
       })

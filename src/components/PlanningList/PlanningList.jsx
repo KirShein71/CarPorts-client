@@ -6,7 +6,7 @@ import CreateInspectionDesigner from './modals/CreateInspectionDisegner';
 import CreateDesignerStart from './modals/CreateDesignerStart';
 import UpdateDesigner from './modals/UpdateDisegner';
 import UpdateNote from './modals/UpdateNote';
-import { fetchAllProjects } from '../../http/projectApi';
+import { getAllForPlanningPage } from '../../http/projectApi';
 import { getAllActiveDesigner } from '../../http/designerApi';
 import { Spinner, Table } from 'react-bootstrap';
 import Moment from 'react-moment';
@@ -59,7 +59,7 @@ function PlanningList() {
       try {
         const [designersData, projectsData] = await Promise.all([
           getAllActiveDesigner(),
-          fetchAllProjects(),
+          getAllForPlanningPage(),
         ]);
 
         setDesigners(designersData);

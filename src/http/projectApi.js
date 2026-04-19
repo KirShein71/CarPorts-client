@@ -47,8 +47,28 @@ export const fetchAllProjects = async () => {
     return data
 }
 
+export const getAllForProjectPage = async () => {
+    const { data } = await guestInstance.get('project/getAllForProjectPage')
+    return data
+}
+
+export const getAllForPlanningPage = async () => {
+    const { data } = await guestInstance.get('project/getAllForPlanningPage')
+    return data
+}
+
+export const getAllProjectForComplaint = async () => {
+    const { data } = await guestInstance.get('project/getAllProjectForComplaint')
+    return data
+}
+
 export const getAllActiveProject = async () => {
     const { data } = await guestInstance.get('project/getAllActiveProject')
+    return data
+}
+
+export const getAllActiveProjectForCreatedAndUpdated = async () => {
+    const { data } = await guestInstance.get('project/getAllActiveProjectForCreatedAndUpdated')
     return data
 }
 

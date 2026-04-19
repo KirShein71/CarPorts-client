@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { createComplaint } from '../../../http/complaintApi';
 import { createComplaintImage } from '../../../http/complaintImageApi';
-import { fetchAllProjects } from '../../../http/projectApi';
+import { getAllProjectForComplaint } from '../../../http/projectApi';
 import Select from 'react-select';
 
 const defaultValue = {
@@ -40,7 +40,7 @@ const CreateComplaint = (props) => {
 
   React.useEffect(() => {
     if (show) {
-      fetchAllProjects().then((data) => setProjects(data));
+      getAllProjectForComplaint().then((data) => setProjects(data));
     }
   }, [show]);
 

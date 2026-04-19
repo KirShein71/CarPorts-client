@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { fetchOneBrigadesDate, updateBrigadesDate } from '../../../http/brigadesDateApi';
-import { fetchAllProjects } from '../../../http/projectApi';
+import { getAllActiveProjectForCreatedAndUpdated } from '../../../http/projectApi';
 import { getAllComplaint } from '../../../http/complaintApi';
 
 const defaultValue = { weekend: '', warranty: '', downtime: '', project: '', complaint: '' };
@@ -58,7 +58,7 @@ const UpdateBrigadeDate = (props) => {
 
   React.useEffect(() => {
     if (show) {
-      fetchAllProjects().then((data) => setProjects(data));
+      getAllActiveProjectForCreatedAndUpdated().then((data) => setProjects(data));
       getAllComplaint().then((data) => setComplaints(data));
     }
   }, [show]);
@@ -223,7 +223,7 @@ const UpdateBrigadeDate = (props) => {
                   <option value="">Проект</option>
                   {projects &&
                     projects
-                      .filter((project) => project.finish === null && project.regionId === regionId)
+                      .filter((project) => project.regionId === regionId)
                       .sort((a, b) => new Date(b.agreement_date) - new Date(a.agreement_date))
                       .map((project) => (
                         <option key={project.id} value={project.id}>
