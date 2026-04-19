@@ -13,6 +13,7 @@ function ProductionOrders() {
   const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
   const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [sortOrder, setSortOrder] = React.useState('desc');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,6 +31,36 @@ function ProductionOrders() {
 
     fetchAllData();
   }, [change]);
+
+  // Функция для преобразования номера проекта в сравниваемое значение
+  const getProjectNumberValue = (projectNumber) => {
+    if (projectNumber === null || projectNumber === undefined || projectNumber === '') return 0;
+
+    const str = String(projectNumber);
+    if (str === '') return 0;
+
+    if (str.includes('_')) {
+      const [main, sub] = str.split('_');
+      const mainNum = parseInt(main, 10) || 0;
+      const subNum = parseInt(sub, 10) || 0;
+
+      return mainNum * 1000 + subNum;
+    }
+
+    // Обычный номер: умножаем на 1000, чтобы он всегда был больше любого номера с подчёркиванием
+    // с тем же основным числом
+    const num = parseInt(str, 10) || 0;
+    return num * 1000;
+  };
+  // Функция сортировки проектов
+  const sortProjects = (projects, order) => {
+    return [...projects].sort((a, b) => {
+      const valueA = getProjectNumberValue(a.project.number);
+      const valueB = getProjectNumberValue(b.project.number);
+
+      return order === 'asc' ? valueA - valueB : valueB - valueA;
+    });
+  };
 
   React.useEffect(() => {
     const filters = {
@@ -62,8 +93,14 @@ function ProductionOrders() {
       return isActiveProject;
     });
 
-    setFilteredProjects(filteredProjects);
-  }, [projectsData, buttonActiveProject, buttonClosedProject, searchQuery]);
+    const sortedProjects = sortProjects(filteredProjects, sortOrder);
+
+    setFilteredProjects(sortedProjects);
+  }, [projectsData, buttonActiveProject, buttonClosedProject, searchQuery, sortOrder]);
+
+  const handleSortClick = () => {
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  };
 
   const handleButtonActiveProject = () => {
     setButtonActiveProject(true);
@@ -122,7 +159,9 @@ function ProductionOrders() {
           <Table bordered className="production-orders__project-table">
             <thead>
               <tr>
-                <th className="production-orders__project-th project">Проект</th>
+                <th className="production-orders__project-th project" onClick={handleSortClick}>
+                  Проект
+                </th>
                 <th className="production-orders__project-th data">Вес/Стоимость</th>
               </tr>
             </thead>

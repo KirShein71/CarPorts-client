@@ -52,6 +52,7 @@ function ProductionList() {
   const [hoveredRowShipment, setHoveredRowShipment] = React.useState(null);
   const [hoveredRowDelivery, setHoveredRowDelivery] = React.useState(null);
   const [hoveredRowDetails, setHoveredRowDetails] = React.useState(null);
+  const [sortOrder, setSortOrder] = React.useState('desc');
 
   React.useEffect(() => {
     fetchAllProjectDetails().then((data) => {
@@ -68,6 +69,36 @@ function ProductionList() {
   React.useEffect(() => {
     fetchAllDetails().then((data) => setNameDetails(data));
   }, []);
+
+  // Функция для преобразования номера проекта в сравниваемое значение
+  const getProjectNumberValue = (projectNumber) => {
+    if (projectNumber === null || projectNumber === undefined || projectNumber === '') return 0;
+
+    const str = String(projectNumber);
+    if (str === '') return 0;
+
+    if (str.includes('_')) {
+      const [main, sub] = str.split('_');
+      const mainNum = parseInt(main, 10) || 0;
+      const subNum = parseInt(sub, 10) || 0;
+
+      return mainNum * 1000 + subNum;
+    }
+
+    // Обычный номер: умножаем на 1000, чтобы он всегда был больше любого номера с подчёркиванием
+    // с тем же основным числом
+    const num = parseInt(str, 10) || 0;
+    return num * 1000;
+  };
+  // Функция сортировки проектов
+  const sortProjects = (projects, order) => {
+    return [...projects].sort((a, b) => {
+      const valueA = getProjectNumberValue(a.project.number);
+      const valueB = getProjectNumberValue(b.project.number);
+
+      return order === 'asc' ? valueA - valueB : valueB - valueA;
+    });
+  };
 
   React.useEffect(() => {
     const filters = {
@@ -183,8 +214,7 @@ function ProductionList() {
       return matchesSearch && isActiveProject && matchesShippingFilter() && matchesOrderFilter();
     });
 
-    // Сортируем проекты по id от нового к старому (по убыванию)
-    const sortedProjects = filteredProjects.sort((a, b) => b.id - a.id);
+    const sortedProjects = sortProjects(filteredProjects, sortOrder);
 
     setFilteredProjects(sortedProjects);
   }, [
@@ -197,7 +227,12 @@ function ProductionList() {
     buttonNoOrderedProject,
     searchQuery,
     shipmentDetails,
+    sortOrder,
   ]);
+
+  const handleSortClick = () => {
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  };
 
   const handleUpdateProjectDetailClick = (id) => {
     setProjectDetail(id);
@@ -451,7 +486,9 @@ function ProductionList() {
             style={{ border: '1px solid #dee2e6', borderCollapse: 'collapse' }}>
             <thead className="production-table__thead">
               <tr>
-                <th className="production-th stat">Номер проекта</th>
+                <th className="production-th stat" onClick={handleSortClick}>
+                  Номер проекта
+                </th>
                 <th className="production-th mobile">Проект</th>
                 {nameDetails
                   .sort((a, b) => a.number - b.number)
