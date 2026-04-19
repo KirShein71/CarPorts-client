@@ -10,7 +10,6 @@ const defaultValue = {
   agreement_date: '',
   design_period: '',
   expiration_date: '',
-  installation_period: '',
   installation_billing: '',
   price: '',
   note: '',
@@ -26,7 +25,6 @@ const defaultValid = {
   agreement_date: null,
   design_period: null,
   expiration_date: null,
-  installation_period: null,
   installation_billing: null,
   price: null,
   note: null,
@@ -45,8 +43,6 @@ const isValid = (value) => {
     if (key === 'agreement_date') result.agreement_date = value.agreement_date.trim() !== '';
     if (key === 'design_period') result.design_period = value.design_period.trim() !== '';
     if (key === 'expiration_date') result.expiration_date = value.expiration_date.trim() !== '';
-    if (key === 'installation_period')
-      result.installation_period = value.installation_period.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'region') result.region = value.region;
   }
@@ -121,8 +117,7 @@ const CreateProject = (props) => {
       correct.number &&
       correct.agreement_date &&
       correct.design_period &&
-      correct.expiration_date &&
-      correct.installation_period
+      correct.expiration_date
     ) {
       try {
         const data = new FormData();
@@ -132,7 +127,6 @@ const CreateProject = (props) => {
         data.append('agreement_date', value.agreement_date.trim());
         data.append('design_period', value.design_period.trim());
         data.append('expiration_date', value.expiration_date.trim());
-        data.append('installation_period', value.installation_period.trim());
         data.append('installation_billing', value.installation_billing.trim());
         data.append('price', value.price.trim());
         data.append('note', value.note.trim());
@@ -272,16 +266,7 @@ const CreateProject = (props) => {
                   placeholder="Срок производства"
                 />
               </Col>
-              <Col md={3} className="mt-3">
-                <Form.Control
-                  name="installation_period"
-                  value={value.installation_period}
-                  onChange={(e) => handleInputNumberChange(e)}
-                  isValid={valid.installation_period === true}
-                  isInvalid={valid.installation_period === false}
-                  placeholder="Срок монтажа"
-                />
-              </Col>
+
               <Col md={3} className="mt-3">
                 <Form.Control
                   name="installation_billing"
@@ -339,7 +324,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputChange(e)}
                   isValid={valid.coordinates === true}
                   isInvalid={valid.coordinates === false}
-                  placeholder="Кооридинаты"
+                  placeholder="Координаты"
                 />
               </Col>
 
@@ -496,22 +481,11 @@ const CreateProject = (props) => {
                     onChange={(e) => handleInputChange(e)}
                     isValid={valid.coordinates === true}
                     isInvalid={valid.coordinates === false}
-                    placeholder="Кооридинаты"
+                    placeholder="Координаты"
                   />
                 </Col>
               </Row>
-              <Row className="mt-3">
-                <Col md={3}>
-                  <Form.Control
-                    name="installation_period"
-                    value={value.installation_period}
-                    onChange={(e) => handleInputNumberChange(e)}
-                    isValid={valid.installation_period === true}
-                    isInvalid={valid.installation_period === false}
-                    placeholder="Срок монтажа"
-                  />
-                </Col>
-              </Row>
+
               <Row className="mt-3">
                 <Col md={3}>
                   <Form.Control
