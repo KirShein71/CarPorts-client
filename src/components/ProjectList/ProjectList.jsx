@@ -479,8 +479,8 @@ function ProjectList() {
                         .map((projectDay) => (
                           <>
                             <td style={{ textAlign: 'center' }}>
-                              {item.installation_billing !== 0
-                                ? `${Math.round((projectDay.factDay / item.installation_billing) * 100)}%`
+                              {item.installation_period !== 0
+                                ? `${Math.round((projectDay.factDay / item.installation_period) * 100)}%`
                                 : ''}
                             </td>
                           </>
@@ -573,11 +573,7 @@ function ProjectList() {
                       onClick={() => hadleCreatePriceProject(item.id)}>
                       {item.price?.toLocaleString('ru-RU')}
                     </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => hadleCreateInstallationBilling(item.id)}>
-                      {item.installation_billing}
-                    </td>
+                    <td style={{ textAlign: 'center' }}>{item.installation_period}</td>
                     {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
                       projectDays
                         .filter((projectDay) => projectDay.projectId === item.id)
@@ -586,7 +582,7 @@ function ProjectList() {
                             <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
                             <td style={{ textAlign: 'center' }}>{projectDay.planDay}</td>
                             <td style={{ textAlign: 'center' }}>
-                              {item.installation_billing - projectDay.factDay - projectDay.planDay}
+                              {item.installation_period - projectDay.factDay - projectDay.planDay}
                             </td>
                           </>
                         ))
@@ -681,7 +677,7 @@ function ProjectList() {
                       {item.npsChapter6 ? `${item.npsChapter6}%` : ''}
                     </td>
                     <td>
-                      {item.installation_billing === null || item.regionId === null ? (
+                      {item.installation_period === null || item.regionId === null ? (
                         <img
                           style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
                           src="./img/gear-red.png"

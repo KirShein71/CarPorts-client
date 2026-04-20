@@ -266,17 +266,6 @@ const CreateProject = (props) => {
                   placeholder="Срок производства"
                 />
               </Col>
-
-              <Col md={3} className="mt-3">
-                <Form.Control
-                  name="installation_billing"
-                  value={value.installation_billing}
-                  onChange={(e) => handleInputNumberChange(e)}
-                  isValid={valid.installation_billing === true}
-                  isInvalid={valid.installation_billing === false}
-                  placeholder="Расчетный срок монтажа"
-                />
-              </Col>
               <Col md={3} className="mt-3">
                 <Form.Control
                   name="price"
@@ -294,7 +283,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputChange(e)}
                   isValid={valid.contact === true}
                   isInvalid={valid.contact === false}
-                  placeholder="Контакты"
+                  placeholder="Телефон"
                 />
               </Col>
               <Col className="mt-3">
@@ -397,7 +386,7 @@ const CreateProject = (props) => {
                     onChange={(e) => handleInputChange(e)}
                     isValid={valid.contact === true}
                     isInvalid={valid.contact === false}
-                    placeholder="Контакты"
+                    placeholder="Телефон"
                   />
                 </Col>
               </Row>
@@ -482,19 +471,6 @@ const CreateProject = (props) => {
                     isValid={valid.coordinates === true}
                     isInvalid={valid.coordinates === false}
                     placeholder="Координаты"
-                  />
-                </Col>
-              </Row>
-
-              <Row className="mt-3">
-                <Col md={3}>
-                  <Form.Control
-                    name="installation_billing"
-                    value={value.installation_billing}
-                    onChange={(e) => handleInputNumberChange(e)}
-                    isValid={valid.installation_billing === true}
-                    isInvalid={valid.installation_billing === false}
-                    placeholder="Расчетный срок монтажа"
                   />
                 </Col>
               </Row>

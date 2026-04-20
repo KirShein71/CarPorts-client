@@ -6,11 +6,10 @@ import {
   deleteProject,
 } from '../../../http/projectApi';
 
-const defaultValue = { number: '', name: '', installation_billing: '' };
+const defaultValue = { number: '', name: '' };
 const defaultValid = {
   number: null,
   name: null,
-  installation_billing: null,
 };
 
 const isValid = (value) => {
@@ -34,7 +33,6 @@ const GearModal = (props) => {
           const prod = {
             number: data.number?.toString() || '',
             name: data.name?.toString() || '',
-            installation_billing: data.installation_billing?.toString() || '',
           };
           setValue(prod);
           setValid(isValid(prod));
@@ -77,7 +75,6 @@ const GearModal = (props) => {
       const data = {
         number: value.number?.trim() || '',
         name: value.name?.trim() || '',
-        installation_billing: value.installation_billing?.trim() || null,
       };
 
       try {
@@ -85,7 +82,6 @@ const GearModal = (props) => {
         const prod = {
           number: response.number?.toString() || '',
           name: response.name?.toString() || '',
-          installation_billing: response.installation_billing || null,
         };
         setValue(prod);
         setValid(isValid(prod));
@@ -151,18 +147,7 @@ const GearModal = (props) => {
               />
             </Col>
           </Row>
-          <Row className="mb-3">
-            <Col>
-              <Form.Control
-                name="installation_billing"
-                value={value.installation_billing}
-                onChange={(e) => handleInputNumberChange(e)}
-                isValid={valid.installation_billing === true}
-                isInvalid={valid.installation_billing === false}
-                placeholder="Расчетный срок монтажа"
-              />
-            </Col>
-          </Row>
+
           <Row>
             <Col>
               <Button variant="dark" className="me-3" type="submit">
