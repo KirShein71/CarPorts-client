@@ -7,6 +7,7 @@ import { fetchAllProjectWarehouse } from '../../http/projectWarehouseApi';
 import UpdateWarehouseDetail from './modals/UpdateWarehouseDetail';
 import CreateOneWarehouseDetail from './modals/CreateOneWarehouseDetail';
 import CreateNote from './modals/CreateNote';
+import EditTableCell from './EditTableCell';
 
 import './style.scss';
 
@@ -328,20 +329,14 @@ function WarehouseComponent() {
                     warehouseDetails.map((wareAssortName) => (
                       <tr key={`${projectId}-${wareAssortName.id}`}>
                         <td className="warehouse-table__td">{wareAssortName.name}</td>
-                        <td
-                          className="warehouse-table__td quantity"
-                          onClick={() =>
-                            wareAssortName.hasData
-                              ? handleOpenModalUpdateWareouseDetail(
-                                  wareAssortName.warehouseProjectId,
-                                )
-                              : handleOpenModalOneCreateWarehouseDetail(
-                                  wareAssortName.id,
-                                  proWarehouse.projectId,
-                                )
-                          }>
-                          {wareAssortName.quantity || ''}
-                        </td>
+                        <EditTableCell
+                          value={wareAssortName.quantity}
+                          hasData={wareAssortName.hasData}
+                          warehouseAssortmentId={wareAssortName.id}
+                          projectId={proWarehouse.projectId}
+                          warehouseProjectId={wareAssortName.warehouseProjectId}
+                          setChange={setChange}
+                        />
                         <td
                           className="warehouse-table__td note"
                           onClick={() =>

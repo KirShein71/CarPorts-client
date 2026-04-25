@@ -208,6 +208,26 @@
             }
         }
 
+        &__td.input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 8px;
+            background-color: #f8f9fa;
+            text-align-last: right;
+            @media(max-width: 460px) {
+                font-size: 12px;
+            }
+        }
+
+        &__td.loading {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
         &__td.note {
             font-size: 15px;
             font-weight: 500;

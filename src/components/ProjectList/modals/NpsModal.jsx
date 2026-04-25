@@ -9,6 +9,7 @@ import {
   getNoteForProject,
   deleteNpsProject,
   updateNpsProjectScore,
+  updateNpsProjectApproved,
   updateNpsProjeNote,
   deleteNpsNote,
 } from '../../../http/npsProjectApi';
@@ -35,20 +36,25 @@ function NpsModal(props) {
   const [npsChapters, setNpsChapters] = React.useState([]);
   const [npsQuestions, setNpsQuestions] = React.useState([]);
   const [npsProjectScores, setNpsProjectScores] = React.useState([]);
+  const [npsProjectApproved, setNpsProjectApproved] = React.useState([]);
   const [npsNotesProject, setNpsNotesProject] = React.useState([]);
   const [fetching, setFetching] = React.useState(true);
   const [scores, setScores] = React.useState({});
+  const [approved, setApproved] = React.useState({});
   const [submitting, setSubmitting] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue);
   const [valid, setValid] = React.useState(defaultValid);
   const [deleteModal, setDeleteModal] = React.useState(false);
   const [editModal, setEditModal] = React.useState(false);
+  const [editApprovedModal, setEditApprovedModal] = React.useState(false);
   const [editNoteModal, setEditNoteModal] = React.useState(false);
   const [npsProjectToDelete, setNpsProjectToDelete] = React.useState(null);
   const [npsProjectToEdit, setNpsProjectToEdit] = React.useState(null);
+  const [npsProjectToEditApproved, setNpsProjectToEditApproved] = React.useState(null);
   const [noteToEdit, setNoteToEdit] = React.useState(null);
   const [change, setChange] = React.useState(true);
   const [editScore, setEditScore] = React.useState(0);
+  const [editApprovedValue, setEditApprovedValue] = React.useState(false);
   const [editNoteValue, setEditNoteValue] = React.useState('');
   const [npsNoteToDelete, setNpsNoteToDelete] = React.useState(null);
   const [deleteNoteModal, setDeleteNoteModal] = React.useState(false);
@@ -57,6 +63,7 @@ function NpsModal(props) {
     if (show && projectId) {
       setFetching(true);
       setScores({});
+      setApproved({});
       setValue(defaultValue);
 
       Promise.all([
@@ -68,18 +75,33 @@ function NpsModal(props) {
         .then(([chaptersData, questionsData, scoresData, notesData]) => {
           setNpsChapters(chaptersData);
           setNpsQuestions(questionsData);
-          setNpsProjectScores(scoresData);
-          setNpsNotesProject(notesData);
 
-          if (scoresData && scoresData.length > 0) {
+          const scoresOnly = scoresData.filter(
+            (item) => item.approved === null || item.approved === undefined,
+          );
+          const approvedOnly = scoresData.filter(
+            (item) => item.approved !== null && item.approved !== undefined,
+          );
+
+          setNpsProjectScores(scoresOnly);
+          setNpsProjectApproved(approvedOnly);
+
+          if (scoresOnly && scoresOnly.length > 0) {
             const initialScores = {};
-            scoresData.forEach((score) => {
+            scoresOnly.forEach((score) => {
               initialScores[score.nps_question_id] = score.score;
             });
             setScores(initialScores);
           }
 
-          // Если есть заметки, устанавливаем первую как значение по умолчанию
+          if (approvedOnly && approvedOnly.length > 0) {
+            const initialApproved = {};
+            approvedOnly.forEach((item) => {
+              initialApproved[item.nps_question_id] = item.approved;
+            });
+            setApproved(initialApproved);
+          }
+
           if (notesData && notesData.length > 0) {
             setValue({ note: notesData[0].note });
           }
@@ -115,6 +137,13 @@ function NpsModal(props) {
     }));
   };
 
+  const handleApprovedChange = (questionId, value) => {
+    setApproved((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }));
+  };
+
   const handleDeleteClick = (id) => {
     const npsProject = npsProjectScores.find((item) => item.id === id);
     setNpsProjectToDelete(npsProject);
@@ -130,6 +159,21 @@ function NpsModal(props) {
     }
   };
 
+  const handleEditApprovedClick = (id) => {
+    const npsProject = npsProjectApproved.find((item) => item.id === id);
+    if (npsProject) {
+      setNpsProjectToEditApproved(npsProject);
+      setEditApprovedValue(npsProject.approved);
+      setEditApprovedModal(true);
+    }
+  };
+
+  const handleDeleteApprovedClick = (id) => {
+    const npsProject = npsProjectApproved.find((item) => item.id === id);
+    setNpsProjectToDelete(npsProject);
+    setDeleteModal(true);
+  };
+
   const handleDeleteNoteClick = (id) => {
     const npsNote = npsNotesProject.find((item) => item.id === id);
     setNpsNoteToDelete(npsNote);
@@ -140,12 +184,8 @@ function NpsModal(props) {
     if (npsNoteToDelete) {
       deleteNpsNote(npsNoteToDelete.id)
         .then((data) => {
-          // Удаляем заметку из локального состояния
           setNpsNotesProject((prev) => prev.filter((item) => item.id !== npsNoteToDelete.id));
-
-          // Сбрасываем значение textarea
           setValue({ note: '' });
-
           setChange(!change);
           setDeleteNoteModal(false);
           setNpsNoteToDelete(null);
@@ -166,17 +206,47 @@ function NpsModal(props) {
 
   const confirmDelete = () => {
     if (npsProjectToDelete) {
-      deleteNpsProject(npsProjectToDelete.id)
-        .then((data) => {
-          setChange(!change);
-          setDeleteModal(false);
-          setNpsProjectToDelete(null);
-        })
-        .catch((error) => {
-          setDeleteModal(false);
-          setNpsProjectToDelete(null);
-          alert(error.response.data.message);
-        });
+      const isApprovedItem = npsProjectToDelete.approved !== undefined;
+
+      if (isApprovedItem) {
+        deleteNpsProject(npsProjectToDelete.id)
+          .then((data) => {
+            setNpsProjectApproved((prev) =>
+              prev.filter((item) => item.id !== npsProjectToDelete.id),
+            );
+            setApproved((prev) => {
+              const newApproved = { ...prev };
+              delete newApproved[npsProjectToDelete.nps_question_id];
+              return newApproved;
+            });
+            setChange(!change);
+            setDeleteModal(false);
+            setNpsProjectToDelete(null);
+          })
+          .catch((error) => {
+            setDeleteModal(false);
+            setNpsProjectToDelete(null);
+            alert(error.response.data.message);
+          });
+      } else {
+        deleteNpsProject(npsProjectToDelete.id)
+          .then((data) => {
+            setNpsProjectScores((prev) => prev.filter((item) => item.id !== npsProjectToDelete.id));
+            setScores((prev) => {
+              const newScores = { ...prev };
+              delete newScores[npsProjectToDelete.nps_question_id];
+              return newScores;
+            });
+            setChange(!change);
+            setDeleteModal(false);
+            setNpsProjectToDelete(null);
+          })
+          .catch((error) => {
+            setDeleteModal(false);
+            setNpsProjectToDelete(null);
+            alert(error.response.data.message);
+          });
+      }
     }
   };
 
@@ -211,6 +281,39 @@ function NpsModal(props) {
     }
   };
 
+  const confirmEditApproved = () => {
+    if (npsProjectToEditApproved) {
+      const data = {
+        approved: editApprovedValue,
+      };
+
+      updateNpsProjectApproved(npsProjectToEditApproved.id, data)
+        .then((response) => {
+          setApproved((prev) => ({
+            ...prev,
+            [npsProjectToEditApproved.nps_question_id]: editApprovedValue,
+          }));
+
+          setNpsProjectApproved((prev) =>
+            prev.map((item) =>
+              item.id === npsProjectToEditApproved.id
+                ? { ...item, approved: editApprovedValue }
+                : item,
+            ),
+          );
+
+          setEditApprovedModal(false);
+          setNpsProjectToEditApproved(null);
+          setChange(!change);
+        })
+        .catch((error) => {
+          setEditApprovedModal(false);
+          setNpsProjectToEditApproved(null);
+          alert(error.response?.data?.message || 'Произошла ошибка при обновлении');
+        });
+    }
+  };
+
   const confirmEditNote = () => {
     if (noteToEdit && editNoteValue.trim()) {
       const data = {
@@ -225,7 +328,6 @@ function NpsModal(props) {
             ),
           );
 
-          // Обновляем также значение в основном textarea
           setValue({ note: editNoteValue.trim() });
 
           setEditNoteModal(false);
@@ -252,6 +354,11 @@ function NpsModal(props) {
     setNpsProjectToEdit(null);
   };
 
+  const cancelEditApproved = () => {
+    setEditApprovedModal(false);
+    setNpsProjectToEditApproved(null);
+  };
+
   const cancelEditNote = () => {
     setEditNoteModal(false);
     setNoteToEdit(null);
@@ -266,12 +373,17 @@ function NpsModal(props) {
   const handleSave = async (event) => {
     event.preventDefault();
 
-    const answeredQuestions = npsQuestions.filter((question) => scores[question.id] !== undefined);
+    const chapter7 = npsChapters.find((ch) => ch.number === 7);
+    const chapter7Questions = npsQuestions.filter((q) => q.nps_chapter_id === chapter7?.id);
+    const chapter7QuestionIds = chapter7Questions.map((q) => q.id);
+
+    const scoreQuestions = npsQuestions.filter((q) => !chapter7QuestionIds.includes(q.id));
+    const approvedQuestions = npsQuestions.filter((q) => chapter7QuestionIds.includes(q.id));
 
     setSubmitting(true);
 
     try {
-      const scorePromises = answeredQuestions.map((question) => {
+      const scorePromises = scoreQuestions.map((question) => {
         const score = scores[question.id];
         const existingScore = npsProjectScores.find((s) => s.nps_question_id === question.id);
 
@@ -279,41 +391,61 @@ function NpsModal(props) {
           return Promise.resolve();
         }
 
-        const data = {
-          projectId: projectId,
-          nps_chapter_id: question.nps_chapter_id,
-          nps_question_id: question.id,
-          score: score,
-        };
-
-        return createNpsProject(data);
+        if (score !== undefined) {
+          const data = {
+            projectId: projectId,
+            nps_chapter_id: question.nps_chapter_id,
+            nps_question_id: question.id,
+            score: score,
+          };
+          return createNpsProject(data);
+        }
+        return Promise.resolve();
       });
 
-      await Promise.all(scorePromises.filter((p) => p !== undefined));
+      const approvedPromises = approvedQuestions.map((question) => {
+        const approvedValue = approved[question.id];
+        const existingApproved = npsProjectApproved.find((a) => a.nps_question_id === question.id);
+
+        if (existingApproved && existingApproved.approved === approvedValue) {
+          return Promise.resolve();
+        }
+
+        if (approvedValue !== undefined) {
+          const data = {
+            projectId: projectId,
+            nps_chapter_id: question.nps_chapter_id,
+            nps_question_id: question.id,
+            approved: approvedValue,
+          };
+          return createNpsProject(data);
+        }
+        return Promise.resolve();
+      });
+
+      await Promise.all([
+        ...scorePromises.filter((p) => p !== undefined),
+        ...approvedPromises.filter((p) => p !== undefined),
+      ]);
 
       const noteText = value.note.trim();
 
-      // Если есть текст заметки и нет существующих заметок - создаем новую
       if (noteText && npsNotesProject.length === 0) {
         const noteData = {
           projectId: projectId,
           note: noteText,
         };
         await createNpsNote(noteData);
-      }
-      // Если есть текст заметки и есть существующие заметки - обновляем первую
-      else if (noteText && npsNotesProject.length > 0) {
+      } else if (noteText && npsNotesProject.length > 0) {
         const noteData = {
           note: noteText,
         };
         await updateNpsProjeNote(npsNotesProject[0].id, noteData);
-      }
-      // Если текст заметки пустой и есть существующие заметки - удаляем все заметки
-      else if (!noteText && npsNotesProject.length > 0) {
-        // Удаляем все заметки
+      } else if (!noteText && npsNotesProject.length > 0) {
         const deletePromises = npsNotesProject.map((note) => deleteNpsNote(note.id));
         await Promise.all(deletePromises);
       }
+
       setChangeProject((state) => !state);
       setShow(false);
     } catch (error) {
@@ -327,6 +459,11 @@ function NpsModal(props) {
   const getExistingScore = (questionId) => {
     const existingScore = npsProjectScores.find((score) => score.nps_question_id === questionId);
     return existingScore ? existingScore.score : null;
+  };
+
+  const getExistingApproved = (questionId) => {
+    const existingApproved = npsProjectApproved.find((item) => item.nps_question_id === questionId);
+    return existingApproved ? existingApproved.approved : null;
   };
 
   const renderScoreDisplay = (question) => {
@@ -376,6 +513,59 @@ function NpsModal(props) {
     );
   };
 
+  const renderApprovedDisplay = (question) => {
+    const existingRecord = npsProjectApproved.find((item) => item.nps_question_id === question.id);
+
+    const hasExistingRecord = existingRecord !== undefined && existingRecord !== null;
+
+    if (hasExistingRecord) {
+      const approvedValue = existingRecord.approved;
+      return (
+        <div className="nps-modal__existing-score">
+          <div className="nps-modal__score-display">
+            Ответ:{' '}
+            <span className="nps-modal__score-value">
+              {approvedValue === 'true' ? 'Да' : 'Нет'}
+            </span>
+          </div>
+          <div
+            className="nps-modal__update"
+            onClick={() => handleEditApprovedClick(existingRecord.id)}>
+            <img src="./img/update.png" alt="изменить" />
+          </div>
+          <div
+            className="nps-modal__delete"
+            onClick={() => handleDeleteApprovedClick(existingRecord.id)}>
+            <img src="./img/delete-small.png" alt="удалить" />
+          </div>
+        </div>
+      );
+    }
+
+    const currentApproved = approved[question.id];
+
+    return (
+      <div className="nps-modal__scores">
+        <button
+          type="button"
+          className={`nps-modal__scores-btn ${
+            currentApproved === true ? 'nps-modal__scores-btn--active' : ''
+          }`}
+          onClick={() => handleApprovedChange(question.id, true)}>
+          Да
+        </button>
+        <button
+          type="button"
+          className={`nps-modal__scores-btn ${
+            currentApproved === false ? 'nps-modal__scores-btn--active' : ''
+          }`}
+          onClick={() => handleApprovedChange(question.id, false)}>
+          Нет
+        </button>
+      </div>
+    );
+  };
+
   const renderNoteSection = () => {
     if (npsNotesProject.length === 0) {
       return (
@@ -383,8 +573,6 @@ function NpsModal(props) {
           name="note"
           value={value.note}
           onChange={(e) => handleInputChange(e)}
-          isValid={valid.note === true}
-          isInvalid={valid.note === false}
           placeholder="Комментарий"
           style={{ height: '200px', width: '100%' }}
         />
@@ -411,8 +599,6 @@ function NpsModal(props) {
                   variant="dark"
                   size="sm"
                   onClick={() => handleDeleteNoteClick(noteProject.id)}>
-                  {' '}
-                  {/* Передаем ID */}
                   Удалить
                 </Button>
               </div>
@@ -423,9 +609,10 @@ function NpsModal(props) {
     }
   };
 
+  const isChapter7 = (chapterNumber) => chapterNumber === 7;
+
   return (
     <>
-      {/* Модальное окно удаления оценки */}
       <Modal
         show={deleteModal}
         onHide={cancelDelete}
@@ -446,7 +633,6 @@ function NpsModal(props) {
         </Modal.Footer>
       </Modal>
 
-      {/* Модальное окно редактирования оценки */}
       <Modal
         show={editModal}
         onHide={cancelEdit}
@@ -484,7 +670,48 @@ function NpsModal(props) {
         </Modal.Footer>
       </Modal>
 
-      {/* Модальное окно удаления комментария */}
+      <Modal
+        show={editApprovedModal}
+        onHide={cancelEditApproved}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ color: '#000' }}>Редактирование ответа</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ color: '#000' }}>
+          <div className="nps-modal__update">
+            <p>Выберите ответ:</p>
+            <div className="nps-modal__update-scores">
+              <button
+                type="button"
+                className={`nps-modal__update-score ${
+                  editApprovedValue === true ? 'nps-modal__update-score--active' : ''
+                }`}
+                onClick={() => setEditApprovedValue(true)}>
+                Да
+              </button>
+              <button
+                type="button"
+                className={`nps-modal__update-score ${
+                  editApprovedValue === false ? 'nps-modal__update-score--active' : ''
+                }`}
+                onClick={() => setEditApprovedValue(false)}>
+                Нет
+              </button>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" onClick={cancelEditApproved}>
+            Отмена
+          </Button>
+          <Button variant="dark" onClick={confirmEditApproved}>
+            Сохранить
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal
         show={deleteNoteModal}
         onHide={cancelDeleteNote}
@@ -507,7 +734,6 @@ function NpsModal(props) {
         </Modal.Footer>
       </Modal>
 
-      {/* Модальное окно редактирования комментария */}
       <Modal
         show={editNoteModal}
         onHide={cancelEditNote}
@@ -536,7 +762,6 @@ function NpsModal(props) {
         </Modal.Footer>
       </Modal>
 
-      {/* Основное модальное окно */}
       <Modal
         show={show}
         onHide={() => {
@@ -565,6 +790,7 @@ function NpsModal(props) {
                     );
 
                     if (chapterQuestions.length === 0) return null;
+                    const isChapter7Question = isChapter7(npsChapProj.number);
 
                     return (
                       <div key={npsChapProj.id} className="nps-modal__chapter">
@@ -575,7 +801,9 @@ function NpsModal(props) {
                         {chapterQuestions.map((npsQuesProj) => (
                           <div key={npsQuesProj.id} className="nps-modal__question">
                             <div className="nps-modal__question-title">{npsQuesProj.name}</div>
-                            {renderScoreDisplay(npsQuesProj)}
+                            {isChapter7Question
+                              ? renderApprovedDisplay(npsQuesProj)
+                              : renderScoreDisplay(npsQuesProj)}
                           </div>
                         ))}
                       </div>

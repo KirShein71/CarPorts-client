@@ -25,6 +25,11 @@ export const updateNpsProjectScore = async(id, npsprojects) => {
     return data
 }
 
+export const updateNpsProjectApproved = async(id, npsprojects) => {
+    const {data} = await guestInstance.put(`npsproject/updateApproved/${id}`, npsprojects)
+    return data
+}
+
 export const deleteNpsProject = async(id) => {
     const {data} = await guestInstance.delete(`npsproject/delete/${id}`)
     return data

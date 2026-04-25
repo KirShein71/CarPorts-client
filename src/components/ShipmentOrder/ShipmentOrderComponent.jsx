@@ -124,6 +124,7 @@ function ShipmentOrderComponent() {
             <thead>
               <tr>
                 <th className="shipment-order__table-th">Деталь</th>
+                <th className="shipment-order__table-th">Чертеж</th>
                 <th className="shipment-order__table-th">Цвет</th>
                 <th className="shipment-order__table-th">Количество</th>
               </tr>
@@ -137,6 +138,9 @@ function ShipmentOrderComponent() {
                 return (
                   <tr key={part.id}>
                     <td className="shipment-order__table-td">{part.name}</td>
+                    <td className="shipment-order__table-image">
+                      <img src={`${process.env.REACT_APP_IMG_URL}${part.image}`} alt={'чертеж'} />
+                    </td>
                     <td className="shipment-order__table-td">{shipmentProp?.color || ''}</td>
                     <td className="shipment-order__table-td">
                       {shipmentProp?.shipment_quantity || ''}

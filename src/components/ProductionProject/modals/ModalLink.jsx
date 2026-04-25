@@ -25,6 +25,12 @@ function ModalLink(props) {
       });
   };
 
+  const handleOpenLink = () => {
+    if (link) {
+      window.open(link, '_blank');
+    }
+  };
+
   return (
     <Modal show={show} onHide={() => setShow(false)} centered>
       <Modal.Header closeButton>
@@ -40,6 +46,9 @@ function ModalLink(props) {
           </div>
         </div>
         <div className="d-flex justify-content-center gap-2 mt-3">
+          <Button variant="dark" onClick={handleOpenLink}>
+            Открыть
+          </Button>
           <Button variant="dark" onClick={() => setShow(false)}>
             Закрыть
           </Button>
