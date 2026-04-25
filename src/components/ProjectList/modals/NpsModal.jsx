@@ -59,6 +59,20 @@ function NpsModal(props) {
   const [npsNoteToDelete, setNpsNoteToDelete] = React.useState(null);
   const [deleteNoteModal, setDeleteNoteModal] = React.useState(false);
 
+  // Функция для сортировки вопросов: в 6 разделе вопрос с id=19 должен быть первым
+  const sortQuestionsByChapter = (questions, chapterNumber) => {
+    if (chapterNumber === 6) {
+      // Для 6 раздела: вопрос с id=19 первым, остальные по id
+      return [...questions].sort((a, b) => {
+        if (a.id === 19) return -1;
+        if (b.id === 19) return 1;
+        return a.id - b.id;
+      });
+    }
+    // Для остальных разделов сортируем по id
+    return [...questions].sort((a, b) => a.id - b.id);
+  };
+
   React.useEffect(() => {
     if (show && projectId) {
       setFetching(true);
@@ -790,6 +804,12 @@ function NpsModal(props) {
                     );
 
                     if (chapterQuestions.length === 0) return null;
+
+                    // Сортируем вопросы для текущего раздела
+                    const sortedQuestions = sortQuestionsByChapter(
+                      chapterQuestions,
+                      npsChapProj.number,
+                    );
                     const isChapter7Question = isChapter7(npsChapProj.number);
 
                     return (
@@ -798,7 +818,7 @@ function NpsModal(props) {
                           <strong>{npsChapProj.number}.</strong> {npsChapProj.name}
                         </div>
 
-                        {chapterQuestions.map((npsQuesProj) => (
+                        {sortedQuestions.map((npsQuesProj) => (
                           <div key={npsQuesProj.id} className="nps-modal__question">
                             <div className="nps-modal__question-title">{npsQuesProj.name}</div>
                             {isChapter7Question
