@@ -197,8 +197,8 @@ function PersonalAccountList() {
                             {userData.employeeId === 4 && userData.managerProjectId === null
                               ? 'Алла Ким'
                               : userData.manager_project
-                              ? userData.manager_project.name
-                              : ''}
+                                ? userData.manager_project.name
+                                : ''}
                           </div>
                         </div>
                         <div className="manager__content">

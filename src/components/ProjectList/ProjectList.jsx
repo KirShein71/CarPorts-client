@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Header from '../Header/Header';
 import CreateProject from './modals/CreateProject';
 import UpdateNameProject from './modals/UpdateNameProject';
@@ -9,341 +9,493 @@ import CreateInstallationBilling from './modals/CreateInstallationBilling';
 import GearModal from './modals/gearModal';
 import { getAllForProjectPage } from '../../http/projectApi';
 import { getDaysInstallerForProjects } from '../../http/brigadesDateApi';
-import { Spinner, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 import UpdateDateFinishProject from './modals/UpdateDateFinishProject';
 import CreatePriceProject from './modals/CreatePriceProject';
 import NpsModal from './modals/NpsModal';
-
 import './style.scss';
 
+// Выносим константы за пределы компонента
+const HOLIDAYS = [
+  '2024-01-01',
+  '2024-01-02',
+  '2024-01-03',
+  '2024-01-04',
+  '2024-01-05',
+  '2024-01-08',
+  '2024-02-23',
+  '2024-03-08',
+  '2024-04-29',
+  '2024-04-30',
+  '2024-05-01',
+  '2024-05-09',
+  '2024-05-10',
+  '2024-06-12',
+  '2024-11-04',
+  '2025-01-01',
+  '2025-01-02',
+  '2025-01-03',
+  '2025-01-06',
+  '2025-01-07',
+  '2025-01-08',
+  '2025-05-01',
+  '2025-05-02',
+  '2025-05-08',
+  '2025-05-09',
+  '2025-06-12',
+  '2025-06-13',
+  '2025-11-03',
+  '2025-11-04',
+  '2025-12-31',
+  '2026-01-01',
+  '2026-01-02',
+  '2026-01-03',
+  '2026-01-04',
+  '2026-01-05',
+  '2026-01-08',
+  '2026-01-09',
+  '2026-02-23',
+  '2026-03-09',
+  '2026-05-01',
+  '2026-05-11',
+  '2026-06-12',
+  '2026-11-04',
+  '2026-12-31',
+];
+
+const holidaysSet = new Set(HOLIDAYS);
+
 function ProjectList() {
-  const [projects, setProjects] = React.useState([]);
-  const [project, setProject] = React.useState(null);
-  const [projectDays, setProjectDays] = React.useState([]);
-  const [fetching, setFetching] = React.useState(true);
-  const [createShow, setCreateShow] = React.useState(false);
-  const [updateNameModal, setUpdateNameModal] = React.useState(false);
-  const [updateNumberProjectModal, setUpdateNumberProjectModal] = React.useState(false);
-  const [updateDateProject, setUpdateDateProject] = React.useState(false);
-  const [change, setChange] = React.useState(true);
-  const [sortOrder, setSortOrder] = React.useState('desc');
-  const [sortField, setSortField] = React.useState('agreement_date');
-  const [scrollPosition, setScrollPosition] = React.useState(0);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [filteredProjects, setFilteredProjects] = React.useState([]);
-  const [createRegionModal, setCreateRegionModal] = React.useState(false);
-  const [createInstallationBillingModal, setCreateInstallationBillingModal] = React.useState(false);
-  const [createPriceProjectModal, setCreatePriceProjectModal] = React.useState(false);
-  const [buttonMskProject, setButtonMskProject] = React.useState(true);
-  const [buttonSpbProject, setButtonSpbProject] = React.useState(true);
-  const [buttonActiveProject, setButtonActiveProject] = React.useState(true);
-  const [buttonClosedProject, setButtonClosedProject] = React.useState(false);
-  const [openGearModal, setOpenGearModal] = React.useState(false);
-  const [openModalUpdateDateFinishProject, setOpenModalUpdateDateFinishProject] =
-    React.useState(false);
-  const [openModalNpsProject, setOpenModalNpsProject] = React.useState(false);
-  const [nameProject, setNameProject] = React.useState(null);
-  const [numberProject, setNumberProject] = React.useState(null);
+  const [projects, setProjects] = useState([]);
+  const [projectDays, setProjectDays] = useState(new Map());
+  const [fetching, setFetching] = useState(true);
+  const [createShow, setCreateShow] = useState(false);
+  const [updateNameModal, setUpdateNameModal] = useState(false);
+  const [updateNumberProjectModal, setUpdateNumberProjectModal] = useState(false);
+  const [updateDateProject, setUpdateDateProject] = useState(false);
+  const [change, setChange] = useState(true);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortField, setSortField] = useState('agreement_date');
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [createRegionModal, setCreateRegionModal] = useState(false);
+  const [createInstallationBillingModal, setCreateInstallationBillingModal] = useState(false);
+  const [createPriceProjectModal, setCreatePriceProjectModal] = useState(false);
+  const [buttonMskProject, setButtonMskProject] = useState(true);
+  const [buttonSpbProject, setButtonSpbProject] = useState(true);
+  const [buttonActiveProject, setButtonActiveProject] = useState(true);
+  const [buttonClosedProject, setButtonClosedProject] = useState(false);
+  const [openGearModal, setOpenGearModal] = useState(false);
+  const [openModalUpdateDateFinishProject, setOpenModalUpdateDateFinishProject] = useState(false);
+  const [openModalNpsProject, setOpenModalNpsProject] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [nameProject, setNameProject] = useState(null);
+  const [numberProject, setNumberProject] = useState(null);
+
   const location = useLocation();
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    setFetching(true);
-    getAllForProjectPage()
-      .then((data) => {
-        setProjects(data);
-      })
-      .finally(() => setFetching(false));
-  }, [change]);
+  // Мемоизированные функции для расчета дат
+  const isWorkingDay = useCallback((date) => {
+    const dayOfWeek = date.getDay();
+    const dateString = date.toISOString().split('T')[0];
+    return dayOfWeek !== 0 && dayOfWeek !== 6 && !holidaysSet.has(dateString);
+  }, []);
 
-  React.useEffect(() => {
-    const filters = {
-      isActive: buttonActiveProject,
-      isClosed: buttonClosedProject,
-      isMsk: buttonMskProject,
-      isSpb: buttonSpbProject,
+  const addWorkingDays = useCallback(
+    (startDate, daysToAdd) => {
+      let currentDate = new Date(startDate);
+      let addedDays = 0;
+
+      while (addedDays < daysToAdd) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        if (isWorkingDay(currentDate)) {
+          addedDays++;
+        }
+      }
+      return currentDate;
+    },
+    [isWorkingDay],
+  );
+
+  const formatDate = useCallback((date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  }, []);
+
+  // Загрузка данных
+  useEffect(() => {
+    const loadData = async () => {
+      setFetching(true);
+      try {
+        const [projectsData, daysData] = await Promise.all([
+          getAllForProjectPage(),
+          getDaysInstallerForProjects(),
+        ]);
+
+        setProjects(projectsData);
+
+        // Создаем Map для быстрого доступа
+        const daysMap = new Map();
+        daysData.forEach((item) => {
+          daysMap.set(item.projectId, {
+            factDay: item.factDay,
+            planDay: item.planDay,
+          });
+        });
+        setProjectDays(daysMap);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setFetching(false);
+      }
     };
 
-    const filteredProjects = projects.filter((project) => {
-      // Условие для поиска по имени
+    loadData();
+  }, [change]);
+
+  // Фильтрация проектов с useMemo
+  useEffect(() => {
+    const filtered = projects.filter((project) => {
       const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Проверяем активные проекты в зависимости от состояния кнопок
-      const isActiveProject = filters.isActive
-        ? project.finish === null
-        : filters.isClosed
-          ? project.finish === 'true'
-          : true; // Если ни одна кнопка не активна, показываем все проекты
-
-      // Проверяем, активны ли оба региона
-      const isBothRegionsActive = filters.isMsk && filters.isSpb;
-
-      // Проверяем, соответствует ли регион проекту
-      const isRegionMatch =
-        (filters.isMsk && project.regionId === 2) || (filters.isSpb && project.regionId === 1);
-
-      // Логика фильтрации
-      if (filters.isActive && filters.isClosed) {
-        // Если обе кнопки активны, показываем все проекты, если оба региона неактивны
-        return matchesSearch && (isBothRegionsActive || isRegionMatch);
+      let isActiveMatch = true;
+      if (buttonActiveProject && !buttonClosedProject) {
+        isActiveMatch = project.finish === null;
+      } else if (!buttonActiveProject && buttonClosedProject) {
+        isActiveMatch = project.finish === 'true';
       }
 
-      // Если одна из кнопок активна (либо только активные, либо только закрытые)
-      return (
-        matchesSearch &&
-        isActiveProject &&
-        (isBothRegionsActive || (filters.isMsk || filters.isSpb ? isRegionMatch : true))
-      );
+      const isRegionMatch =
+        (buttonMskProject && project.regionId === 2) ||
+        (buttonSpbProject && project.regionId === 1);
+      const isBothRegions = buttonMskProject && buttonSpbProject;
+
+      return matchesSearch && isActiveMatch && (isBothRegions || isRegionMatch);
     });
 
-    setFilteredProjects(filteredProjects);
+    setFilteredProjects(filtered);
   }, [
     projects,
+    searchQuery,
     buttonActiveProject,
     buttonClosedProject,
     buttonMskProject,
     buttonSpbProject,
-    searchQuery,
   ]);
 
-  const handleScroll = () => {
+  // Сортировка с useMemo
+  const sortedProjects = useMemo(() => {
+    return [...filteredProjects].sort((a, b) => {
+      let dateA, dateB;
+
+      if (sortField === 'agreement_date') {
+        dateA = new Date(a[sortField]);
+        dateB = new Date(b[sortField]);
+      } else {
+        dateA = a[sortField];
+        dateB = b[sortField];
+      }
+
+      if (sortOrder === 'desc') {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
+  }, [filteredProjects, sortField, sortOrder]);
+
+  const handleScroll = useCallback(() => {
     setScrollPosition(window.scrollY);
-  };
-
-  React.useEffect(() => {
-    getDaysInstallerForProjects().then((data) => setProjectDays(data));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+
+  const handleSearch = useCallback((event) => {
+    setSearchQuery(event.target.value);
   }, []);
 
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleButtonActiveProject = () => {
-    const newButtonActiveProject = !buttonActiveProject;
-    setButtonActiveProject(newButtonActiveProject);
-
-    if (!newButtonActiveProject) {
-      setButtonClosedProject(true);
+  const handleButtonActiveProject = useCallback(() => {
+    setButtonActiveProject((prev) => !prev);
+    if (buttonActiveProject) {
+      setButtonClosedProject(false);
     }
-  };
+  }, [buttonActiveProject]);
 
-  const handleButtonClosedProject = () => {
-    const newButtonClosedProject = !buttonClosedProject;
-    setButtonClosedProject(newButtonClosedProject);
-
-    if (!newButtonClosedProject) {
-      setButtonActiveProject(true);
+  const handleButtonClosedProject = useCallback(() => {
+    setButtonClosedProject((prev) => !prev);
+    if (buttonClosedProject) {
+      setButtonActiveProject(false);
     }
-  };
+  }, [buttonClosedProject]);
 
-  const handleButtonMskProject = () => {
-    const newButtonMskProject = !buttonMskProject;
-    setButtonMskProject(newButtonMskProject);
-
-    if (!newButtonMskProject) {
+  const handleButtonMskProject = useCallback(() => {
+    setButtonMskProject((prev) => !prev);
+    if (!buttonMskProject) {
       setButtonSpbProject(true);
     }
-  };
+  }, [buttonMskProject]);
 
-  const handleButtonSpbProject = () => {
-    const newButtonSpbProject = !buttonSpbProject;
-    setButtonSpbProject(newButtonSpbProject);
-
-    if (!newButtonSpbProject) {
+  const handleButtonSpbProject = useCallback(() => {
+    setButtonSpbProject((prev) => !prev);
+    if (!buttonSpbProject) {
       setButtonMskProject(true);
     }
-  };
+  }, [buttonSpbProject]);
 
-  const hadleUpdateDateProject = (id) => {
-    setProject(id);
-    setUpdateDateProject(true);
-  };
+  const addToInfo = useCallback(
+    (id) => {
+      navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
+    },
+    [navigate, location.pathname],
+  );
 
-  const hadleCreateRegionProject = (id) => {
-    setProject(id);
-    setCreateRegionModal(true);
-  };
+  // Компонент строки таблицы для оптимизации рендеринга
+  const ProjectRow = React.memo(
+    ({
+      item,
+      projectDays,
+      addWorkingDays,
+      formatDate,
+      addToInfo,
+      hadleUpdateDateProject,
+      hadleCreateRegionProject,
+      hadleCreatePriceProject,
+      hadleOpenModalUpdateDateFinishProject,
+      hadleOpenGearModal,
+      handleOpenModalNpsProject,
+    }) => {
+      const daysInfo = projectDays.get(item.id);
 
-  const hadleCreateInstallationBilling = (id) => {
-    setProject(id);
-    setCreateInstallationBillingModal(true);
-  };
+      const getDeadlineInfo = useMemo(() => {
+        const agreementDate = new Date(item.agreement_date);
+        const sumDays =
+          (item.design_period || 0) + (item.expiration_date || 0) + (item.installation_period || 0);
+        const endDate = addWorkingDays(agreementDate, sumDays);
+        const formattedEndDate = formatDate(endDate);
 
-  const hadleCreatePriceProject = (id) => {
-    setProject(id);
-    setCreatePriceProjectModal(true);
-  };
+        const finishDate = item.date_finish ? new Date(item.date_finish) : null;
+        const isProjectClosed = finishDate !== null;
+        const deadlineDate = new Date(endDate);
+        deadlineDate.setHours(0, 0, 0, 0);
 
-  const hadleOpenGearModal = (id) => {
-    setProject(id);
-    setOpenGearModal(true);
-  };
+        let textColor = '#000000';
+        let fontWeight = 'normal';
 
-  const hadleOpenModalUpdateDateFinishProject = (id) => {
-    setProject(id);
-    setOpenModalUpdateDateFinishProject(true);
-  };
+        if (isProjectClosed) {
+          const finishDateOnly = new Date(finishDate);
+          finishDateOnly.setHours(0, 0, 0, 0);
+          if (finishDateOnly > deadlineDate) {
+            textColor = '#dc3545';
+          }
+        } else {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const diffTime = deadlineDate - today;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const handleOpenModalNpsProject = (id, name, number) => {
-    setProject(id);
-    setNameProject(name);
-    setNumberProject(number);
-    setOpenModalNpsProject(true);
-  };
+          if (diffDays < 0) {
+            textColor = '#dc3545';
+          } else if (diffDays <= 7) {
+            textColor = '#e83e8c';
+            fontWeight = 'bold';
+          }
+        }
 
-  const handleSort = (field) => {
-    if (field === sortField) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
-  };
+        return { formattedEndDate, textColor, fontWeight };
+      }, [item, addWorkingDays, formatDate]);
 
-  const holidays = [
-    '2024-01-01',
-    '2024-01-02',
-    '2024-01-03',
-    '2024-01-04',
-    '2024-01-05',
-    '2024-01-08',
-    '2024-02-23',
-    '2024-03-08',
-    '2024-04-29',
-    '2024-04-30',
-    '2024-05-01',
-    '2024-05-09',
-    '2024-05-10',
-    '2024-06-12',
-    '2024-11-04',
-    '2025-01-01',
-    '2025-01-02',
-    '2025-01-03',
-    '2025-01-06',
-    '2025-01-07',
-    '2025-01-08',
-    '2025-05-01',
-    '2025-05-02',
-    '2025-05-08',
-    '2025-05-09',
-    '2025-06-12',
-    '2025-06-13',
-    '2025-11-03',
-    '2025-11-04',
-    '2025-12-31',
-    '2026-01-01',
-    '2026-01-02',
-    '2026-01-03',
-    '2026-01-04',
-    '2026-01-05',
-    '2026-01-08',
-    '2026-01-09',
-    '2026-02-23',
-    '2026-03-09',
-    '2026-05-01',
-    '2026-05-11',
-    '2026-06-12',
-    '2026-11-04',
-    '2026-12-31',
-  ].map((date) => new Date(date));
-
-  // Функция для проверки, является ли дата выходным или праздничным днем
-  function isWorkingDay(date) {
-    const dayOfWeek = date.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
-    const isHoliday = holidays.some((holiday) => {
-      const holidayString = holiday.toDateString();
-      const dateString = date.toDateString();
-      return holidayString === dateString;
-    });
-
-    return dayOfWeek !== 0 && dayOfWeek !== 6 && !isHoliday; // Не выходной и не праздник
-  }
-  // Функция для добавления рабочих дней к дате
-  function addWorkingDays(startDate, daysToAdd) {
-    let currentDate = new Date(startDate);
-    let addedDays = 0;
-
-    while (addedDays < daysToAdd) {
-      currentDate.setDate(currentDate.getDate() + 1); // Переходим на следующий день
-      if (isWorkingDay(currentDate)) {
-        addedDays++;
-      }
-    }
-
-    return currentDate;
-  }
-
-  // Функция для форматирования даты в формате ДД.ММ.ГГГГ
-  function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
-    const year = date.getFullYear();
-
-    return `${day}.${month}.${year}`; // Исправлено: добавлены кавычки для шаблонной строки
-  }
-
-  const addToInfo = (id) => {
-    navigate(`/projectinfo/${id}`, { state: { from: location.pathname } });
-  };
+      return (
+        <tr style={{ color: item.finish === 'true' ? '#808080' : 'black' }}>
+          <td
+            className="project-td mobile"
+            style={{ cursor: 'pointer', textAlign: 'left' }}
+            onClick={() => addToInfo(item.id)}>
+            {item.name}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {daysInfo && item.installation_period !== 0
+              ? `${Math.round((daysInfo.factDay / item.installation_period) * 100)}%`
+              : ''}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {item.paymentPercentage ? `${item.paymentPercentage}%` : ''}
+          </td>
+          <td style={{ cursor: 'pointer', textAlign: 'left' }} onClick={() => addToInfo(item.id)}>
+            {item.number}
+          </td>
+          <td
+            style={{ cursor: 'pointer', textAlign: 'center' }}
+            onClick={() => hadleUpdateDateProject(item.id)}>
+            <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            <span
+              style={{ color: getDeadlineInfo.textColor, fontWeight: getDeadlineInfo.fontWeight }}>
+              {getDeadlineInfo.formattedEndDate}
+            </span>
+          </td>
+          <td
+            style={{ cursor: 'pointer', textAlign: 'center' }}
+            onClick={() => hadleCreateRegionProject(item.id)}>
+            {item.region?.region}
+          </td>
+          <td
+            style={{ cursor: 'pointer', textAlign: 'center' }}
+            onClick={() => hadleCreatePriceProject(item.id)}>
+            {item.price?.toLocaleString('ru-RU')}
+          </td>
+          <td style={{ textAlign: 'center' }}>{item.installation_period}</td>
+          <td style={{ textAlign: 'center' }}>{daysInfo?.factDay || ''}</td>
+          <td style={{ textAlign: 'center' }}>{daysInfo?.planDay || ''}</td>
+          <td style={{ textAlign: 'center' }}>
+            {item.installation_period - (daysInfo?.factDay || 0) - (daysInfo?.planDay || 0)}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {item.date_finish && (
+              <Moment
+                format="DD.MM.YYYY"
+                style={{ cursor: 'pointer' }}
+                onClick={() => hadleOpenModalUpdateDateFinishProject(item.id)}>
+                {item.date_finish}
+              </Moment>
+            )}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {item.agreement_date &&
+              (() => {
+                const finishDate = item.date_finish ? new Date(item.date_finish) : new Date();
+                const agreementDate = new Date(item.agreement_date);
+                return Math.ceil((finishDate - agreementDate) / (1000 * 60 * 60 * 24));
+              })()}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {item.hasExamination && (
+              <img style={{ display: 'block', margin: '0 auto' }} src="./img/done.png" alt="done" />
+            )}
+          </td>
+          <td style={{ textAlign: 'center' }}>
+            {item.estimate && (
+              <img style={{ display: 'block', margin: '0 auto' }} src="./img/done.png" alt="done" />
+            )}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter1 ? `${item.npsChapter1}%` : ''}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter2 ? `${item.npsChapter2}%` : ''}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter3 ? `${item.npsChapter3}%` : ''}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter4 ? `${item.npsChapter4}%` : ''}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter5 ? `${item.npsChapter5}%` : ''}
+          </td>
+          <td
+            className="project__nps"
+            onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
+            {item.npsChapter6 ? `${item.npsChapter6}%` : ''}
+          </td>
+          <td>
+            <img
+              style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
+              src={
+                item.installation_period === null || item.regionId === null
+                  ? './img/gear-red.png'
+                  : './img/gear.png'
+              }
+              alt="gear"
+              onClick={() => hadleOpenGearModal(item.id)}
+            />
+          </td>
+        </tr>
+      );
+    },
+  );
 
   if (fetching) {
-    return <Spinner animation="border" />;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}>
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Загрузка...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="projectlist">
       <Header title={'Проекты '} />
 
+      {/* Модальные окна */}
       <CreateProject show={createShow} setShow={setCreateShow} setChange={setChange} />
       <UpdateNameProject
         show={updateNameModal}
         setShow={setUpdateNameModal}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <UpdateNumberProject
         show={updateNumberProjectModal}
         setShow={setUpdateNumberProjectModal}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <UpdateDateProject
         show={updateDateProject}
         setShow={setUpdateDateProject}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <CreateRegion
         show={createRegionModal}
         setShow={setCreateRegionModal}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <CreateInstallationBilling
         show={createInstallationBillingModal}
         setShow={setCreateInstallationBillingModal}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <CreatePriceProject
         show={createPriceProjectModal}
         setShow={setCreatePriceProjectModal}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <GearModal
@@ -351,7 +503,7 @@ function ProjectList() {
         setShow={setOpenGearModal}
         change={change}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
         scrollPosition={scrollPosition}
       />
       <UpdateDateFinishProject
@@ -359,48 +511,49 @@ function ProjectList() {
         setShow={setOpenModalUpdateDateFinishProject}
         change={change}
         setChange={setChange}
-        id={project}
+        id={selectedProject}
       />
       <NpsModal
         show={openModalNpsProject}
         setShow={setOpenModalNpsProject}
-        projectId={project}
+        projectId={selectedProject}
         nameProject={nameProject}
         numberProject={numberProject}
         setChangeProject={setChange}
       />
+
       <div style={{ display: 'flex' }}>
         <button className="button__addproject" onClick={() => setCreateShow(true)}>
           Добавить
         </button>
         <button
-          className={`button__active ${buttonActiveProject === true ? 'active' : 'inactive'}`}
+          className={`button__active ${buttonActiveProject ? 'active' : 'inactive'}`}
           onClick={handleButtonActiveProject}>
           Активные
         </button>
         <button
-          className={`button__noactive ${buttonClosedProject === true ? 'active' : 'inactive'}`}
+          className={`button__noactive ${buttonClosedProject ? 'active' : 'inactive'}`}
           onClick={handleButtonClosedProject}>
           Завершенные
         </button>
         <button
-          className={`button__msk ${buttonMskProject === true ? 'active' : 'inactive'}`}
+          className={`button__msk ${buttonMskProject ? 'active' : 'inactive'}`}
           onClick={handleButtonMskProject}>
           МО
         </button>
         <button
-          className={`button__spb ${buttonSpbProject === true ? 'active' : 'inactive'}`}
+          className={`button__spb ${buttonSpbProject ? 'active' : 'inactive'}`}
           onClick={handleButtonSpbProject}>
           ЛО
         </button>
-
         <input
-          class="project__search"
+          className="project__search"
           placeholder="Поиск"
           value={searchQuery}
           onChange={handleSearch}
         />
       </div>
+
       <div className="project-table-container">
         <div className="project-table-wrapper">
           <Table bordered hover size="sm">
@@ -410,9 +563,8 @@ function ProjectList() {
                 <th className="project-th">% вып</th>
                 <th className="project-th">% впл</th>
                 <th className="project-th">Номер</th>
-                <th className="project-th" onClick={() => handleSort('agreement_date')}>
+                <th className="project-th" onClick={() => setSortField('agreement_date')}>
                   <div style={{ cursor: 'pointer', display: 'flex' }}>
-                    {' '}
                     Дата дог.
                     <img
                       style={{
@@ -447,254 +599,42 @@ function ProjectList() {
               </tr>
             </thead>
             <tbody>
-              {filteredProjects
-                .slice()
-                .sort((a, b) => {
-                  const dateA = new Date(a[sortField]);
-                  const dateB = new Date(b[sortField]);
-
-                  if (sortOrder === 'desc') {
-                    return dateB - dateA;
-                  } else {
-                    return dateA - dateB;
-                  }
-                })
-                .map((item) => (
-                  <tr
-                    key={item.id}
-                    style={{
-                      color: item.finish === 'true' ? '#808080' : 'black',
-                    }}>
-                    <td
-                      className="project-td mobile"
-                      style={{ cursor: 'pointer', textAlign: 'left' }}
-                      onClick={() => {
-                        addToInfo(item.id);
-                      }}>
-                      {item.name}
-                    </td>
-                    {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
-                      projectDays
-                        .filter((projectDay) => projectDay.projectId === item.id)
-                        .map((projectDay) => (
-                          <>
-                            <td style={{ textAlign: 'center' }}>
-                              {item.installation_period !== 0
-                                ? `${Math.round((projectDay.factDay / item.installation_period) * 100)}%`
-                                : ''}
-                            </td>
-                          </>
-                        ))
-                    ) : (
-                      <>
-                        <td></td>
-                      </>
-                    )}
-                    <td style={{ textAlign: 'center' }}>
-                      {item.paymentPercentage ? `${item.paymentPercentage}%` : ''}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'left' }}
-                      onClick={() => {
-                        addToInfo(item.id);
-                      }}>
-                      {item.number}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => hadleUpdateDateProject(item.id)}>
-                      <Moment format="DD.MM.YYYY">{item.agreement_date}</Moment>
-                    </td>
-                    <td>
-                      {(() => {
-                        const agreementDate = new Date(item && item.agreement_date);
-                        const designPeriod = item && item.design_period;
-                        const expirationDate = item && item.expiration_date;
-                        const installationPeriod = item && item.installation_period;
-                        const sumDays = designPeriod + expirationDate + installationPeriod;
-
-                        const endDate = addWorkingDays(agreementDate, sumDays);
-                        const formattedEndDate = formatDate(endDate);
-
-                        // Проверяем, закрыт ли проект (есть ли date_finish)
-                        const finishDate =
-                          item && item.date_finish ? new Date(item.date_finish) : null;
-                        const isProjectClosed = finishDate !== null;
-
-                        // Приводим даты к началу дня для точного сравнения
-                        const deadlineDate = new Date(endDate);
-                        deadlineDate.setHours(0, 0, 0, 0);
-
-                        let textColor = '#000000'; // черный по умолчанию
-                        let fontWeight = 'normal';
-
-                        if (isProjectClosed) {
-                          // Проект закрыт - сравниваем дату закрытия с дедлайном
-                          const finishDateOnly = new Date(finishDate);
-                          finishDateOnly.setHours(0, 0, 0, 0);
-
-                          // Если дата закрытия МЕНЬШЕ или РАВНА дедлайну - черный (сдано вовремя)
-                          // Если дата закрытия БОЛЬШЕ дедлайна - красный (просрочка)
-                          if (finishDateOnly <= deadlineDate) {
-                            textColor = '#000000'; // черный - сдано вовремя
-                          } else {
-                            textColor = '#dc3545'; // красный - просрочка
-                          }
-                        } else {
-                          // Проект не закрыт - рассчитываем по текущей дате
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-
-                          // Вычисляем разницу в днях
-                          const diffTime = deadlineDate - today;
-                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                          if (diffDays < 0) {
-                            textColor = '#dc3545'; // красный - дедлайн прошел
-                          } else if (diffDays <= 7) {
-                            textColor = '#e83e8c'; // розовый - осталось 7 дней или меньше
-                            fontWeight = 'bold';
-                          }
-                        }
-
-                        return (
-                          <span style={{ color: textColor, fontWeight }}>{formattedEndDate}</span>
-                        );
-                      })()}
-                    </td>
-
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => hadleCreateRegionProject(item.id)}>
-                      {item.region?.region}
-                    </td>
-                    <td
-                      style={{ cursor: 'pointer', textAlign: 'center' }}
-                      onClick={() => hadleCreatePriceProject(item.id)}>
-                      {item.price?.toLocaleString('ru-RU')}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>{item.installation_period}</td>
-                    {projectDays.some((projectDay) => projectDay.projectId === item.id) ? (
-                      projectDays
-                        .filter((projectDay) => projectDay.projectId === item.id)
-                        .map((projectDay) => (
-                          <>
-                            <td style={{ textAlign: 'center' }}>{projectDay.factDay}</td>
-                            <td style={{ textAlign: 'center' }}>{projectDay.planDay}</td>
-                            <td style={{ textAlign: 'center' }}>
-                              {item.installation_period - projectDay.factDay - projectDay.planDay}
-                            </td>
-                          </>
-                        ))
-                    ) : (
-                      <>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </>
-                    )}
-                    <td style={{ textAlign: 'center' }}>
-                      {item.date_finish !== null ? (
-                        <Moment
-                          format="DD.MM.YYYY"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => hadleOpenModalUpdateDateFinishProject(item.id)}>
-                          {item.date_finish}
-                        </Moment>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {item &&
-                        item.agreement_date &&
-                        (() => {
-                          // Используем текущую дату, если date_finish равен null или undefined
-                          const finishDate = item.date_finish
-                            ? new Date(item.date_finish)
-                            : new Date();
-                          const agreementDate = new Date(item.agreement_date);
-
-                          // Разница в миллисекундах
-                          const diffTime = finishDate - agreementDate;
-
-                          // Конвертируем в дни
-                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                          return diffDays;
-                        })()}
-                    </td>
-                    <td>
-                      {item.hasExamination ? (
-                        <img
-                          style={{ display: 'block', margin: '0 auto' }}
-                          src="./img/done.png"
-                          alt="done"
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td>
-                      {item.estimate ? (
-                        <img
-                          style={{ display: 'block', margin: '0 auto' }}
-                          src="./img/done.png"
-                          alt="done"
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter1 ? `${item.npsChapter1}%` : ''}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter2 ? `${item.npsChapter2}%` : ''}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter3 ? `${item.npsChapter3}%` : ''}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter4 ? `${item.npsChapter4}%` : ''}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter5 ? `${item.npsChapter5}%` : ''}
-                    </td>
-                    <td
-                      className="project__nps"
-                      onClick={() => handleOpenModalNpsProject(item.id, item.name, item.number)}>
-                      {item.npsChapter6 ? `${item.npsChapter6}%` : ''}
-                    </td>
-                    <td>
-                      {item.installation_period === null || item.regionId === null ? (
-                        <img
-                          style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                          src="./img/gear-red.png"
-                          alt="gear"
-                          onClick={() => hadleOpenGearModal(item.id)}
-                        />
-                      ) : (
-                        <img
-                          style={{ display: 'block', margin: '0 auto', cursor: 'pointer' }}
-                          src="./img/gear.png"
-                          alt="gear"
-                          onClick={() => hadleOpenGearModal(item.id)}
-                        />
-                      )}
-                    </td>
-                  </tr>
-                ))}
+              {sortedProjects.map((item) => (
+                <ProjectRow
+                  key={item.id}
+                  item={item}
+                  projectDays={projectDays}
+                  addWorkingDays={addWorkingDays}
+                  formatDate={formatDate}
+                  addToInfo={addToInfo}
+                  hadleUpdateDateProject={(id) => {
+                    setSelectedProject(id);
+                    setUpdateDateProject(true);
+                  }}
+                  hadleCreateRegionProject={(id) => {
+                    setSelectedProject(id);
+                    setCreateRegionModal(true);
+                  }}
+                  hadleCreatePriceProject={(id) => {
+                    setSelectedProject(id);
+                    setCreatePriceProjectModal(true);
+                  }}
+                  hadleOpenModalUpdateDateFinishProject={(id) => {
+                    setSelectedProject(id);
+                    setOpenModalUpdateDateFinishProject(true);
+                  }}
+                  hadleOpenGearModal={(id) => {
+                    setSelectedProject(id);
+                    setOpenGearModal(true);
+                  }}
+                  handleOpenModalNpsProject={(id, name, number) => {
+                    setSelectedProject(id);
+                    setNameProject(name);
+                    setNumberProject(number);
+                    setOpenModalNpsProject(true);
+                  }}
+                />
+              ))}
             </tbody>
           </Table>
         </div>

@@ -264,6 +264,8 @@
 //user-file
 .user-file {
     margin-top: 25px;
+    display: flex;
+    justify-content: center;
 
     &__item {
         display: flex;
