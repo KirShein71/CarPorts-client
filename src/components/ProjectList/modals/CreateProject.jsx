@@ -225,7 +225,7 @@ const CreateProject = (props) => {
                   onClick={handleInputClick}
                   isValid={valid.phone === true}
                   isInvalid={valid.phone === false}
-                  placeholder="Телефон(для личного кабинета)"
+                  placeholder="Телефон"
                   minLength="10"
                   maxLength="11"
                 />

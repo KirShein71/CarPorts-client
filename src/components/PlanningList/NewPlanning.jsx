@@ -17,6 +17,7 @@ function NewPlanning(props) {
   return (
     <div className="card-project">
       {projects
+
         .filter((projectDesigner) => {
           // Проверяем совпадение проектировщика
           if (projectDesigner.designer !== selectedDesignerName) return false;
@@ -70,7 +71,7 @@ function NewPlanning(props) {
                         }
 
                         const delay = Math.round(
-                          (projectDesigner - agreementDate) / (1000 * 60 * 60 * 24),
+                          (designStart - agreementDate) / (1000 * 60 * 60 * 24),
                         );
 
                         return (
@@ -234,21 +235,31 @@ function NewPlanning(props) {
                     <div className="cell-subtitle">
                       {Math.round((projectDesigner.price * 0.08) / 5000) || 0} /{' '}
                       {(() => {
-                        if (!projectDesigner.project_delivery) return 0;
+                        // Определяем конечную дату
+                        let endDate;
+                        if (projectDesigner.project_delivery) {
+                          endDate = new Date(projectDesigner.project_delivery);
+                        } else {
+                          endDate = new Date();
+                          endDate.setHours(0, 0, 0, 0);
+                        }
 
-                        const startDate = projectDesigner.design_start
-                          ? new Date(projectDesigner.design_start)
-                          : (() => {
-                              const d = new Date();
-                              d.setHours(0, 0, 0, 0);
-                              return d;
-                            })();
+                        // Определяем начальную дату
+                        let startDate;
+                        if (projectDesigner.design_start) {
+                          startDate = new Date(projectDesigner.design_start);
+                        } else {
+                          startDate = new Date();
+                          startDate.setHours(0, 0, 0, 0);
+                        }
 
-                        const deliveryDate = new Date(projectDesigner.project_delivery);
+                        // Проверяем валидность дат
+                        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                          return 0;
+                        }
 
-                        if (isNaN(startDate) || isNaN(deliveryDate)) return 0;
-
-                        return Math.round((deliveryDate - startDate) / (1000 * 60 * 60 * 24) + 1);
+                        const days = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24) + 1);
+                        return days > 0 ? days : 0;
                       })()}
                     </div>
                   </div>
