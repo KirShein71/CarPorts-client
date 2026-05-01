@@ -54,15 +54,23 @@ function NewPlanning(props) {
                     <div className="cell-title">Задержка начала работ</div>
                     <div className="cell-subtitle">
                       {(() => {
-                        if (!projectDesigner.design_start || !projectDesigner.agreement_date) {
+                        if (!projectDesigner.agreement_date) {
                           return <span style={{ color: '#000000' }}>0</span>;
                         }
 
-                        const designStart = new Date(projectDesigner.design_start);
                         const agreementDate = new Date(projectDesigner.agreement_date);
 
+                        // Определяем дату начала работ
+                        let designStart;
+                        if (projectDesigner.design_start) {
+                          designStart = new Date(projectDesigner.design_start);
+                        } else {
+                          designStart = new Date();
+                          designStart.setHours(0, 0, 0, 0);
+                        }
+
                         const delay = Math.round(
-                          (designStart - agreementDate) / (1000 * 60 * 60 * 24),
+                          (projectDesigner - agreementDate) / (1000 * 60 * 60 * 24),
                         );
 
                         return (
@@ -225,14 +233,23 @@ function NewPlanning(props) {
                     <div className="cell-title">Время план/факт</div>
                     <div className="cell-subtitle">
                       {Math.round((projectDesigner.price * 0.08) / 5000) || 0} /{' '}
-                      {projectDesigner.project_delivery && projectDesigner.design_start
-                        ? Math.round(
-                            (new Date(projectDesigner.project_delivery) -
-                              new Date(projectDesigner.design_start)) /
-                              (1000 * 60 * 60 * 24) +
-                              1,
-                          )
-                        : 0}
+                      {(() => {
+                        if (!projectDesigner.project_delivery) return 0;
+
+                        const startDate = projectDesigner.design_start
+                          ? new Date(projectDesigner.design_start)
+                          : (() => {
+                              const d = new Date();
+                              d.setHours(0, 0, 0, 0);
+                              return d;
+                            })();
+
+                        const deliveryDate = new Date(projectDesigner.project_delivery);
+
+                        if (isNaN(startDate) || isNaN(deliveryDate)) return 0;
+
+                        return Math.round((deliveryDate - startDate) / (1000 * 60 * 60 * 24) + 1);
+                      })()}
                     </div>
                   </div>
                 </td>

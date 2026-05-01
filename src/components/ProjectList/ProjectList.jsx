@@ -353,7 +353,7 @@ function ProjectList() {
             onClick={() => hadleCreatePriceProject(item.id)}>
             {item.price?.toLocaleString('ru-RU')}
           </td>
-          <td style={{ textAlign: 'center' }}>{item.installation_period}</td>
+          <td style={{ textAlign: 'center' }}>{item.installation_billing}</td>
           <td style={{ textAlign: 'center' }}>{daysInfo?.factDay || ''}</td>
           <td style={{ textAlign: 'center' }}>{daysInfo?.planDay || ''}</td>
           <td style={{ textAlign: 'center' }}>

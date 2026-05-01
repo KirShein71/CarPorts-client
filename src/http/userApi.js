@@ -8,26 +8,34 @@ export const createAccount = async (user) => {
 
 export const login = async (phone, password) => {
     try {
-        const response = await authInstance.post('user/login', {phone, password})
-        const token = response.data.token
-        const user = jwtDecode(token)
+        const response = await authInstance.post('user/login', { phone, password });
+        const token = response.data.token;
         
-        localStorage.setItem('token', token)
-        localStorage.setItem('id', user.id)
-        
-        // Сохраняем name только если он есть (для менеджеров)
-        if (user.name) {
-            localStorage.setItem('name', user.name)
+        if (!token) {
+            throw new Error('Токен не получен');
         }
         
+        const user = jwtDecode(token);
         
+        localStorage.setItem('token', token);
+        localStorage.setItem('id', user.id);
+        localStorage.setItem('role', user.role);
         
-        return user
+        if (user.name) {
+            localStorage.setItem('name', user.name);
+        }
+        
+        if (user.projectId) {
+            localStorage.setItem('projectId', user.projectId);
+        }
+        
+        return user;
     } catch (e) {
-        alert(e.response.data.message)
-        return false
+        console.error('Login error:', e);
+        alert(e.response?.data?.message || 'Ошибка авторизации');
+        return false;
     }
-}
+};
 
 
 

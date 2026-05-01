@@ -143,10 +143,11 @@ export const getAllWithNoWarehouseOrder = async () => {
     return data
 }
 
-export const reviseProjectNameAndNumberAndInstallationBilling = async (id, project) => {
-    const { data } = await authInstance.put(`project/reviseProjectNameAndNumberAndInstallationBilling/${id}`, project)
+export const reviseProjectNameAndNumber = async (id, project) => {
+    const { data } = await authInstance.put(`project/reviseProjectNameAndNumber/${id}`, project)
     return data
 }
+
 
 export const updateProject = async (id, project) => {
     const { data } = await authInstance.put(`project/update/${id}`, project)

@@ -43,15 +43,24 @@ function MobilePlanning(props) {
                   <div className="cell-title">Задержка начала работ</div>
                   <div className="cell-subtitle">
                     {(() => {
-                      if (!mobilePlanning.design_start || !mobilePlanning.agreement_date) {
+                      if (!mobilePlanning.agreement_date) {
                         return <span style={{ color: '#000000' }}>0</span>;
                       }
 
-                      const designStart = new Date(mobilePlanning.design_start);
                       const agreementDate = new Date(mobilePlanning.agreement_date);
+
+                      // Определяем дату начала работ
+                      let designStart;
+                      if (mobilePlanning.design_start) {
+                        designStart = new Date(mobilePlanning.design_start);
+                      } else {
+                        designStart = new Date();
+                        designStart.setHours(0, 0, 0, 0);
+                      }
 
                       const delay = Math.round(
                         (designStart - agreementDate) / (1000 * 60 * 60 * 24),
+                        console.log(designStart),
                       );
 
                       return (
@@ -313,14 +322,23 @@ function MobilePlanning(props) {
                   <div className="cell-title">Время план/факт</div>
                   <div className="cell-subtitle">
                     {Math.round((mobilePlanning.price * 0.08) / 5000) || 0} /{' '}
-                    {mobilePlanning.project_delivery && mobilePlanning.design_start
-                      ? Math.round(
-                          (new Date(mobilePlanning.project_delivery) -
-                            new Date(mobilePlanning.design_start)) /
-                            (1000 * 60 * 60 * 24) +
-                            1,
-                        )
-                      : 0}
+                    {(() => {
+                      if (!mobilePlanning.project_delivery) return 0;
+
+                      const startDate = mobilePlanning.design_start
+                        ? new Date(mobilePlanning.design_start)
+                        : (() => {
+                            const d = new Date();
+                            d.setHours(0, 0, 0, 0);
+                            return d;
+                          })();
+
+                      const deliveryDate = new Date(mobilePlanning.project_delivery);
+
+                      if (isNaN(startDate) || isNaN(deliveryDate)) return 0;
+
+                      return Math.round((deliveryDate - startDate) / (1000 * 60 * 60 * 24) + 1);
+                    })()}
                   </div>
                 </div>
               </td>

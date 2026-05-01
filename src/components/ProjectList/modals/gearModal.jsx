@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import {
   fetchOneProject,
-  reviseProjectNameAndNumberAndInstallationBilling,
+  reviseProjectNameAndNumber,
   deleteProject,
 } from '../../../http/projectApi';
 
@@ -78,7 +78,7 @@ const GearModal = (props) => {
       };
 
       try {
-        const response = await reviseProjectNameAndNumberAndInstallationBilling(id, data);
+        const response = await reviseProjectNameAndNumber(id, data);
         const prod = {
           number: response.number?.toString() || '',
           name: response.name?.toString() || '',

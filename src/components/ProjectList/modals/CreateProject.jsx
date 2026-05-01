@@ -10,7 +10,7 @@ const defaultValue = {
   agreement_date: '',
   design_period: '',
   expiration_date: '',
-  installation_billing: '',
+  installation_period: '',
   price: '',
   note: '',
   region: '',
@@ -18,6 +18,7 @@ const defaultValue = {
   address: '',
   navigator: '',
   coordinates: '',
+  phone: '',
 };
 const defaultValid = {
   name: null,
@@ -25,7 +26,7 @@ const defaultValid = {
   agreement_date: null,
   design_period: null,
   expiration_date: null,
-  installation_billing: null,
+  installation_period: null,
   price: null,
   note: null,
   region: null,
@@ -33,6 +34,7 @@ const defaultValid = {
   address: null,
   navigator: null,
   coordinates: null,
+  phone: null,
 };
 
 const isValid = (value) => {
@@ -42,9 +44,12 @@ const isValid = (value) => {
     if (key === 'number') result.number = value.number.trim() !== '';
     if (key === 'agreement_date') result.agreement_date = value.agreement_date.trim() !== '';
     if (key === 'design_period') result.design_period = value.design_period.trim() !== '';
+    if (key === 'installation_period')
+      result.installation_period = value.installation_period.trim() !== '';
     if (key === 'expiration_date') result.expiration_date = value.expiration_date.trim() !== '';
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'region') result.region = value.region;
+    if (key === 'phone') result.phone = value.phone.trim() !== '';
   }
   return result;
 };
@@ -57,6 +62,7 @@ const CreateProject = (props) => {
   const [clicked, setClicked] = React.useState(false);
   const [image, setImage] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
+  const form = React.useRef();
 
   React.useEffect(() => {
     getAllRegion()
@@ -117,7 +123,9 @@ const CreateProject = (props) => {
       correct.number &&
       correct.agreement_date &&
       correct.design_period &&
-      correct.expiration_date
+      correct.installation_period &&
+      correct.expiration_date &&
+      correct.phone
     ) {
       try {
         const data = new FormData();
@@ -127,19 +135,22 @@ const CreateProject = (props) => {
         data.append('agreement_date', value.agreement_date.trim());
         data.append('design_period', value.design_period.trim());
         data.append('expiration_date', value.expiration_date.trim());
-        data.append('installation_billing', value.installation_billing.trim());
+        data.append('installation_period', value.installation_period.trim());
         data.append('price', value.price.trim());
         data.append('note', value.note.trim());
         data.append('regionId', value.region);
-        data.append('contact', value.contact.trim());
+        data.append('contact', value.phone.trim());
         data.append('address', value.address.trim());
         data.append('navigator', value.navigator.trim());
         data.append('coordinates', value.coordinates.trim());
 
+        // Данные пользователя
+        data.append('phone', value.phone.trim());
+        data.append('password', value.number.trim()); // 🔑 Номер проекта как пароль
+
         if (image) {
           data.append('image', image, image.name);
         } else {
-          // Если изображение не загружено, используем изображение по умолчанию
           const defaultImage = await fetchDefaultImage();
           data.append('image', defaultImage, 'default.jpg');
         }
@@ -154,6 +165,10 @@ const CreateProject = (props) => {
         }
       } catch (error) {
         console.log(error.response?.data?.message);
+      }
+    } else {
+      if (!correct.phone) {
+        alert('Пожалуйста, введите номер телефона');
       }
     }
   };
@@ -200,6 +215,19 @@ const CreateProject = (props) => {
                   isValid={valid.name === true}
                   isInvalid={valid.name === false}
                   placeholder="Название проекта"
+                />
+              </Col>
+              <Col className="mt-3">
+                <Form.Control
+                  name="phone"
+                  value={clicked ? value.phone || '8' : ''}
+                  onChange={(e) => handleInputChange(e)}
+                  onClick={handleInputClick}
+                  isValid={valid.phone === true}
+                  isInvalid={valid.phone === false}
+                  placeholder="Телефон(для личного кабинета)"
+                  minLength="10"
+                  maxLength="11"
                 />
               </Col>
               <Col md={3} className="mt-3">
@@ -268,6 +296,16 @@ const CreateProject = (props) => {
               </Col>
               <Col md={3} className="mt-3">
                 <Form.Control
+                  name="installation_period"
+                  value={value.installation_period}
+                  onChange={(e) => handleInputNumberChange(e)}
+                  isValid={valid.installation_period === true}
+                  isInvalid={valid.installation_period === false}
+                  placeholder="Срок монтажа"
+                />
+              </Col>
+              <Col md={3} className="mt-3">
+                <Form.Control
                   name="price"
                   value={value.price}
                   onChange={(e) => handleInputNumberChange(e)}
@@ -276,16 +314,7 @@ const CreateProject = (props) => {
                   placeholder="Стоимость работ"
                 />
               </Col>
-              <Col className="mt-3">
-                <Form.Control
-                  name="contact"
-                  value={value.contact}
-                  onChange={(e) => handleInputChange(e)}
-                  isValid={valid.contact === true}
-                  isInvalid={valid.contact === false}
-                  placeholder="Телефон"
-                />
-              </Col>
+
               <Col className="mt-3">
                 <Form.Control
                   name="address"
@@ -381,12 +410,15 @@ const CreateProject = (props) => {
                 </Col>
                 <Col>
                   <Form.Control
-                    name="contact"
-                    value={value.contact}
+                    name="phone"
+                    value={clicked ? value.phone || '8' : ''}
                     onChange={(e) => handleInputChange(e)}
-                    isValid={valid.contact === true}
-                    isInvalid={valid.contact === false}
+                    onClick={handleInputClick}
+                    isValid={valid.phone === true}
+                    isInvalid={valid.phone === false}
                     placeholder="Телефон"
+                    minLength="10"
+                    maxLength="11"
                   />
                 </Col>
               </Row>
@@ -485,7 +517,31 @@ const CreateProject = (props) => {
                     placeholder="Стоимость работ"
                   />
                 </Col>
+                <Col>
+                  <Form.Control
+                    name="installation_period"
+                    value={value.installation_period}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.installation_period === true}
+                    isInvalid={valid.installation_period === false}
+                    placeholder="Срок монтажа"
+                  />
+                </Col>
+                {/* <Col>
+                  <Form.Control
+                    name="phone"
+                    value={clicked ? value.phone || '8' : ''}
+                    onChange={(e) => handleInputChange(e)}
+                    onClick={handleInputClick}
+                    isValid={valid.phone === true}
+                    isInvalid={valid.phone === false}
+                    placeholder="Телефон(для личного кабинета)"
+                    minLength="10"
+                    maxLength="11"
+                  />
+                </Col> */}
               </Row>
+
               <Row className="mt-3">
                 <Col>
                   <Form.Control

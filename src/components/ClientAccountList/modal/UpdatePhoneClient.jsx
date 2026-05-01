@@ -97,7 +97,7 @@ const UpdatePhoneClient = (props) => {
                 onClick={handleInputClick}
                 isValid={valid.phone === true}
                 isInvalid={valid.phone === false}
-                placeholder="Ввидите номер телефона"
+                placeholder="Введите номер телефона"
                 minLength="10"
                 maxLength="11"
               />

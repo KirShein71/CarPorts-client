@@ -3,6 +3,7 @@ import { AppContext } from '../../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../http/userApi';
 import { observer } from 'mobx-react';
+import jwtDecode from 'jwt-decode';
 
 import './style.scss';
 
@@ -14,16 +15,27 @@ const Login = observer(() => {
   const [phone, setPhone] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (user.isAdmin) navigate('/workingpage', { replace: true });
-    if (user.isUser) navigate('/personalaccount', { replace: true });
-    if (user.isEmployee) navigate('/workingpage', { replace: true });
-    if (user.isBrigade) navigate('/installeraccount', { replace: true });
-    if (user.isManagerSale) navigate('/workingpage', { replace: true });
-    if (user.isManagerProject) navigate('/workingpage', { replace: true });
-    if (user.isConstructor) navigate('/planning', { replace: true });
-    if (user.isManagerProduction) navigate('/workingpage', { replace: true });
+    // Редирект после успешной авторизации
+    if (user.isAdmin) {
+      navigate('/workingpage', { replace: true });
+    } else if (user.isUser) {
+      navigate('/personalaccount', { replace: true });
+    } else if (user.isEmployee) {
+      navigate('/workingpage', { replace: true });
+    } else if (user.isBrigade) {
+      navigate('/installeraccount', { replace: true });
+    } else if (user.isManagerSale) {
+      navigate('/workingpage', { replace: true });
+    } else if (user.isManagerProject) {
+      navigate('/workingpage', { replace: true });
+    } else if (user.isConstructor) {
+      navigate('/planning', { replace: true });
+    } else if (user.isManagerProduction) {
+      navigate('/workingpage', { replace: true });
+    }
   }, [
     navigate,
     user.isAdmin,
@@ -38,25 +50,23 @@ const Login = observer(() => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const phone = event.target.phone.value.trim();
-    const password = event.target.password.value.trim();
+    const phoneValue = event.target.phone.value.trim();
+    const passwordValue = event.target.password.value.trim();
+
+    setLoading(true);
+
     try {
-      const data = await login(phone, password);
+      const userData = await login(phoneValue, passwordValue);
 
-      if (data) {
-        user.login(data);
-
-        if (user.isAdmin) navigate('/admin');
-        if (user.isUser) navigate('/personalaccount');
-        if (user.isEmployee) navigate('/');
-        if (user.isBrigade) navigate('/installeraccount');
-        if (user.isManagerSale) navigate('/workingpage');
-        if (user.isManagerProject) navigate('/workingpage');
-        if (user.isConstructor) navigate('/planning');
-        if (user.isManagerProduction) navigate('/workingpage');
+      if (userData) {
+        user.login(userData);
+        // Редирект произойдет в useEffect
       }
     } catch (error) {
       console.error(error);
+      alert(error.response?.data?.message || 'Ошибка авторизации');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,6 +109,7 @@ const Login = observer(() => {
                 onChange={handleInputPhone}
                 onClick={handleInputClick}
                 placeholder="Введите номер телефона"
+                disabled={loading}
               />
             </div>
             <div>
@@ -109,6 +120,7 @@ const Login = observer(() => {
                 onChange={handleInputPassword}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Введите ваш пароль"
+                disabled={loading}
               />
             </div>
             <label className="login__label">
@@ -118,10 +130,11 @@ const Login = observer(() => {
                 type="checkbox"
                 checked={showPassword}
                 onChange={toggleShowPassword}
+                disabled={loading}
               />
             </label>
-            <button type="submit" className="login__button">
-              Войти
+            <button type="submit" className="login__button" disabled={loading}>
+              {loading ? 'Вход...' : 'Войти'}
             </button>
           </form>
         </div>
