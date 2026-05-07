@@ -243,7 +243,7 @@ const UpdateBrigade = (props) => {
             </Col>
           </Row>
 
-          <h6>Паспортные данные (необязательно)</h6>
+          <h6>Паспортные данные</h6>
 
           <Row className="mb-3">
             <Col>
@@ -287,7 +287,7 @@ const UpdateBrigade = (props) => {
             </Col>
           </Row>
 
-          <h6>Автомобиль (необязательно)</h6>
+          <h6>Автомобиль</h6>
 
           <Row className="mb-3">
             <Col>

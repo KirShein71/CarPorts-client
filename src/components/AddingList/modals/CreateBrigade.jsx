@@ -96,7 +96,7 @@ const CreateBrigade = (props) => {
       data.append('name', value.name.trim());
       data.append('phone', value.phone.trim());
       data.append('password', value.password.trim());
-      data.append('active', 'true');
+      data.append('active', (value.active = 'true'));
       data.append('regionId', value.region);
 
       // Необязательные поля - отправляем только если они заполнены
