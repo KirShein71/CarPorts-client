@@ -281,7 +281,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputNumberChange(e)}
                   isValid={valid.design_period === true}
                   isInvalid={valid.design_period === false}
-                  placeholder="Срок проектирования"
+                  placeholder="Проектирование по договору"
                 />
               </Col>
               <Col md={3} className="mt-3">
@@ -291,7 +291,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputNumberChange(e)}
                   isValid={valid.expiration_date === true}
                   isInvalid={valid.expiration_date === false}
-                  placeholder="Срок производства"
+                  placeholder="Производство по договору"
                 />
               </Col>
               <Col md={3} className="mt-3">
@@ -301,7 +301,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputNumberChange(e)}
                   isValid={valid.installation_period === true}
                   isInvalid={valid.installation_period === false}
-                  placeholder="Срок монтажа"
+                  placeholder="Монтаж по договору"
                 />
               </Col>
               <Col md={3} className="mt-3">
@@ -311,7 +311,7 @@ const CreateProject = (props) => {
                   onChange={(e) => handleInputNumberChange(e)}
                   isValid={valid.price === true}
                   isInvalid={valid.price === false}
-                  placeholder="Стоимость работ"
+                  placeholder="Стоимость монтажных работ"
                 />
               </Col>
 
@@ -470,7 +470,7 @@ const CreateProject = (props) => {
                     onChange={(e) => handleInputNumberChange(e)}
                     isValid={valid.design_period === true}
                     isInvalid={valid.design_period === false}
-                    placeholder="Срок проектирования"
+                    placeholder="Проектирование по договору"
                   />
                 </Col>
                 <Col>
@@ -492,7 +492,7 @@ const CreateProject = (props) => {
                     onChange={(e) => handleInputNumberChange(e)}
                     isValid={valid.expiration_date === true}
                     isInvalid={valid.expiration_date === false}
-                    placeholder="Срок производства"
+                    placeholder="Производство по договору"
                   />
                 </Col>
                 <Col>
@@ -509,22 +509,22 @@ const CreateProject = (props) => {
               <Row className="mt-3">
                 <Col md={3}>
                   <Form.Control
-                    name="price"
-                    value={value.price}
-                    onChange={(e) => handleInputNumberChange(e)}
-                    isValid={valid.price === true}
-                    isInvalid={valid.price === false}
-                    placeholder="Стоимость работ"
-                  />
-                </Col>
-                <Col>
-                  <Form.Control
                     name="installation_period"
                     value={value.installation_period}
                     onChange={(e) => handleInputNumberChange(e)}
                     isValid={valid.installation_period === true}
                     isInvalid={valid.installation_period === false}
-                    placeholder="Срок монтажа"
+                    placeholder="Монтаж по договору"
+                  />
+                </Col>
+                <Col>
+                  <Form.Control
+                    name="price"
+                    value={value.price}
+                    onChange={(e) => handleInputNumberChange(e)}
+                    isValid={valid.price === true}
+                    isInvalid={valid.price === false}
+                    placeholder="Стоимость монтажных работ"
                   />
                 </Col>
                 {/* <Col>

@@ -357,7 +357,7 @@ function ProjectList() {
           <td style={{ textAlign: 'center' }}>{daysInfo?.factDay || ''}</td>
           <td style={{ textAlign: 'center' }}>{daysInfo?.planDay || ''}</td>
           <td style={{ textAlign: 'center' }}>
-            {item.installation_period - (daysInfo?.factDay || 0) - (daysInfo?.planDay || 0)}
+            {item.installation_billing - (daysInfo?.factDay || 0) - (daysInfo?.planDay || 0)}
           </td>
           <td style={{ textAlign: 'center' }}>
             {item.date_finish && (
