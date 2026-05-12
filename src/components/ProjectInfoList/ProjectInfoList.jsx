@@ -51,6 +51,7 @@ import CreateAntypicalsQuantity from '../ProductionProject/modals/CreateAntypica
 import CreateAntypicalsDeliveryQuantity from '../ProductionProject/modals/CreateAntypicalsDeliveryQuantity';
 import CreateAntypicalsShipmentQuantity from '../ProductionProject/modals/CreateAntypicalsShipmentQuantity';
 import ProjectTask from '../ProjectTask/ProjectTask';
+import ProjectPortfolio from '../ProjectPortfolio/ProjectPortfolio';
 
 import './style.scss';
 
@@ -767,9 +768,7 @@ function ProjectInfoList() {
                 </div>
               ) : null}
               <div
-                className={`projectinfo__filter-card__item ${
-                  activeTab === 'cabinet' ? 'active' : ''
-                }`}
+                className={`projectinfo__filter-card__item ${activeTab === 'task' ? 'active' : ''}`}
                 onClick={() => handleTabClick('task')}>
                 Задачи
               </div>
@@ -786,6 +785,13 @@ function ProjectInfoList() {
                 }`}
                 onClick={() => handleTabClick('userFile')}>
                 Файлы
+              </div>
+              <div
+                className={`projectinfo__filter-card__item ${
+                  activeTab === 'portfolio' ? 'active' : ''
+                }`}
+                onClick={() => handleTabClick('portfolio')}>
+                Портфолио
               </div>
               <div
                 className={`projectinfo__filter-card__item ${
@@ -1217,6 +1223,15 @@ function ProjectInfoList() {
             change={change}
             setChange={setChange}
             userId={project.userProject[0].userId}
+          />
+        )}
+        {activeTab === 'portfolio' && (
+          <ProjectPortfolio
+            projectId={id}
+            portfolio={project.project.portfolio}
+            portfolioNote={project.project.note_portfolio}
+            change={change}
+            setChange={setChange}
           />
         )}
         {activeTab === 'complaint' && <Complaint project={project} />}

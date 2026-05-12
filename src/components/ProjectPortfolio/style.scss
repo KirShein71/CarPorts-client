@@ -1,0 +1,221 @@
+.project-portfolio {
+    &__content {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 30px;
+        padding: 10px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+  
+    &__title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #000000;
+        margin: 0;
+        padding-right: 7px;
+        
+        @media (max-width: 460px) {
+            font-size: 17px;
+        }
+    }
+
+    &__images {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 40px;
+        
+        &-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            
+            @media (max-width: 768px) {
+                font-size: 17px;
+            }
+        }
+        
+        &-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+            justify-items: center;
+            align-items: start;
+        }
+
+        &-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 180px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            
+        }
+
+        &-image {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.2s;
+            }
+            
+           
+        }
+
+        &-delete {
+            display: block;
+            margin: 12px auto;
+            padding: 6px 16px;
+            font-size: 13px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            
+        }
+
+         &-added {
+            display: block;
+            margin: 12px auto;
+            
+            font-size: 15px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            
+        }
+        
+    }
+
+    &__note {
+        margin-bottom: 40px;
+        width: 100%;
+        
+        &-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            
+            @media (max-width: 768px) {
+                font-size: 17px;
+            }
+        }
+
+        &-content {
+            margin: 0 0 20px 0;
+            padding: 25px;
+            width: 100%;
+            min-height: 200px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            background-color: #fafafa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        &-field {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 400;
+            color: #333;
+            font-family: "Open Sans", sans-serif;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 0;
+            
+            @media (max-width: 768px) {
+                font-size: 14px;
+            }
+        }
+
+        &-show {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #000000;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: transparent;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            transition: all 0.2s;
+            width: auto;
+            
+            &:hover {
+                background-color: #000000;
+                color: white;
+            }
+            
+            @media (max-width: 768px) {
+                font-size: 13px;
+                padding: 6px 14px;
+            }
+        }
+        
+        
+    }
+}
+
+    /* Черный свитч */
+.portfolio-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    
+    input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin: 0;
+        accent-color: #000000;
+        
+        &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+        }
+    }
+    
+    &__label {
+        font-size: 14px;
+        user-select: none;
+        
+        &:hover {
+        opacity: 0.8;
+        }
+    }
+}

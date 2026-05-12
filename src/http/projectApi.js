@@ -221,4 +221,18 @@ export const createLogisticProject = async (id, project) => {
     return data
 }
 
+export const createPortfolioProject = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createPortfolioProject/${id}`, project)
+    return data
+}
+
+export const createPortfolioNote = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createPortfolioNote/${id}`, project)
+    return data
+}
+
+
+
+
+
 
