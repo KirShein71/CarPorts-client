@@ -7,12 +7,14 @@ const defaultValue = {
   warehouse_assortement: '',
   warehouse_assortement_name: '',
   quantity: '',
+  unit: 'шт', // Добавляем единицу измерения
   date: '',
 };
 const defaultValid = {
   warehouse_assortement: null,
   warehouse_assortement_name: null,
   quantity: null,
+  unit: null,
   date: null,
 };
 
@@ -24,6 +26,7 @@ const isValid = (value) => {
     if (key === 'warehouse_assortement_name')
       result.warehouse_assortement_name = value.warehouse_assortement_name.trim() !== '';
     if (key === 'quantity') result.quantity = value.quantity.trim() !== '';
+    if (key === 'unit') result.unit = value.unit !== '';
     if (key === 'date') result.date = value.date.trim() !== '';
   }
   return result;
@@ -43,25 +46,53 @@ const AddWarehouseDetail = (props) => {
   }, [show]);
 
   const handleInputChange = (event) => {
-    const regex = /^[0-9]*$/;
+    const regex = /^[0-9]*\.?[0-9]*$/; // Разрешаем десятичные дроби для кг
     if (regex.test(event.target.value)) {
       setValue({ ...value, [event.target.name]: event.target.value });
       setValid(isValid({ ...value, [event.target.name]: event.target.value }));
     }
   };
 
+  const handleUnitChange = (event) => {
+    setValue({ ...value, unit: event.target.value });
+    setValid(isValid({ ...value, unit: event.target.value }));
+  };
+
   const handleAddWarehouseDetail = () => {
     // Проверяем, что все обязательные поля заполнены
-    if (value.warehouse_assortement && value.warehouse_assortement_name && value.quantity) {
+    if (
+      value.warehouse_assortement &&
+      value.warehouse_assortement_name &&
+      value.quantity &&
+      value.unit
+    ) {
+      // Находим выбранную деталь для получения веса
+      const selectedDetail = warehouseDetails.find(
+        (item) => item.id === parseInt(value.warehouse_assortement),
+      );
+
+      let finalQuantity = parseFloat(value.quantity);
+
+      // Если единица измерения "кг", пересчитываем в штуки
+      if (value.unit === 'кг' && selectedDetail && selectedDetail.weight) {
+        // weight в граммах, переводим в кг и делим
+        const weightInKg = selectedDetail.weight / 1000;
+        finalQuantity = Math.round(value.quantity / weightInKg);
+      } else {
+        finalQuantity = parseInt(value.quantity, 10);
+      }
+
       const newDetail = {
         warehouse_assortement_id: value.warehouse_assortement,
         warehouse_assortement_name: value.warehouse_assortement_name,
-        quantity: value.quantity,
+        quantity: finalQuantity,
+        original_quantity: value.quantity, // Сохраняем исходное значение для отображения
+        unit: value.unit,
       };
       setSelectedWarehouseDetails((prev) => [...prev, newDetail]);
 
       // Сбрасываем форму
-      setValue(defaultValue);
+      setValue({ ...defaultValue, unit: 'шт' });
       setValid(defaultValid);
     } else {
       alert('Пожалуйста, заполните все поля');
@@ -69,8 +100,6 @@ const AddWarehouseDetail = (props) => {
   };
 
   const handleSaveDetails = () => {
-    const newData = selectedWarehouseDetails.filter((detail) => !detail.id);
-
     const getCurrentDate = () => {
       const now = new Date();
       const year = now.getFullYear();
@@ -79,9 +108,9 @@ const AddWarehouseDetail = (props) => {
       return `${year}-${month}-${day}`;
     };
 
-    const data = newData.map((detail) => {
+    const data = selectedWarehouseDetails.map((detail) => {
       const formData = new FormData();
-      formData.append('quantity', detail.quantity.trim());
+      formData.append('quantity', detail.quantity);
       formData.append('warehouse_assortement_name', detail.warehouse_assortement_name);
       formData.append('warehouse_assortement_id', detail.warehouse_assortement_id);
       formData.append('date', getCurrentDate());
@@ -99,7 +128,9 @@ const AddWarehouseDetail = (props) => {
 
   const handleDetailChange = (e) => {
     const warehouse_assortement_id = e.target.value;
-    const warehouse_assortement_name = e.target.options[e.target.selectedIndex].text;
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const warehouse_assortement_name = selectedOption.text;
+
     setValue((prevValue) => ({
       ...prevValue,
       warehouse_assortement: warehouse_assortement_id,
@@ -135,35 +166,49 @@ const AddWarehouseDetail = (props) => {
               onChange={handleDetailChange}
               isValid={valid.warehouse_assortement === true}
               isInvalid={valid.warehouse_assortement === false}>
-              <option value="">Детали</option>
+              <option value="">Выберите деталь</option>
               {warehouseDetails &&
                 warehouseDetails
                   .sort((a, b) => a.id - b.id)
                   .map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name}
+                      {item.name} {item.weight ? `(вес: ${item.weight}г)` : ''}
                     </option>
                   ))}
             </Form.Select>
           </Col>
+
           <Row className="mb-3 mt-4">
-            <Col>
+            <Col md={6}>
+              <Form.Select
+                name="unit"
+                value={value.unit}
+                onChange={handleUnitChange}
+                isValid={valid.unit === true}
+                isInvalid={valid.unit === false}
+                className="mb-3">
+                <option value="шт">Штуки (шт)</option>
+                <option value="кг">Килограммы (кг)</option>
+              </Form.Select>
+            </Col>
+            <Col md={6}>
               <Form.Control
                 name="quantity"
                 value={value.quantity}
                 onChange={(e) => handleInputChange(e)}
                 isValid={valid.quantity === true}
                 isInvalid={valid.quantity === false}
-                placeholder="Количество деталей"
-                className="mb-3"
+                placeholder={value.unit === 'шт' ? 'Количество (шт)' : 'Вес (кг)'}
               />
             </Col>
           </Row>
+
           <Col>
             <Button variant="dark" className="mb-3" onClick={handleAddWarehouseDetail}>
               Добавить
             </Button>
           </Col>
+
           {selectedWarehouseDetails.map((detail, index) => (
             <div key={index}>
               <Row className="mb-3">
@@ -175,7 +220,15 @@ const AddWarehouseDetail = (props) => {
                   />
                 </Col>
                 <Col>
-                  <Form.Control disabled value={detail.quantity} className="mb-3" />
+                  <Form.Control
+                    disabled
+                    value={
+                      detail.unit === 'кг'
+                        ? `${detail.original_quantity} кг (${detail.quantity} шт)`
+                        : `${detail.quantity} шт`
+                    }
+                    className="mb-3"
+                  />
                 </Col>
                 <Col>
                   <Button variant="dark" onClick={() => handleRemoveDetail(index)}>
@@ -185,6 +238,7 @@ const AddWarehouseDetail = (props) => {
               </Row>
             </div>
           ))}
+
           {selectedWarehouseDetails.length > 0 && (
             <>
               <Button variant="dark" className="me-3" onClick={handleSaveDetails}>

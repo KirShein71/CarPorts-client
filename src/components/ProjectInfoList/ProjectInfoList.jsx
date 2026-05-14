@@ -1175,7 +1175,13 @@ function ProjectInfoList() {
         {user.isManagerSale
           ? null
           : activeTab === 'estimate' && (
-              <Estimate projectId={id} regionId={project.project.regionId} />
+              <Estimate
+                projectId={id}
+                regionId={project.project.regionId}
+                changeProject={change}
+                setChangeProject={setChange}
+                estimateFile={project.project.estimate_file}
+              />
             )}
         {activeTab === 'techSupervision' && (
           <TechExamination projectId={id} regionId={project.project.regionId} />

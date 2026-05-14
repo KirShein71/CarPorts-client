@@ -12,6 +12,8 @@
             font-weight: 500;
             cursor: pointer;
         }
+
+       
     }
 
     &__input {
@@ -32,6 +34,35 @@
             font-weight: 500;
             @media(max-width: 460px){
                 font-size: 18px;
+            }
+        }
+
+         &__file {
+            display: flex;
+            margin-top: 10px;
+
+            &-title {
+                font-size: 19px;
+                font-weight: 600;
+                color: #000000;
+                padding-right: 7px;
+                @media(max-width: 460px) {
+                    font-size: 18px;
+                }
+            }
+
+            &-link {
+                font-size: 19px;
+                font-weight: 500;
+                color: #000000;
+                cursor: pointer;
+                @media(max-width: 460px) {
+                    font-size: 18px;
+                }
+            }
+
+            &-link.delete {
+                color: #eb0909;
             }
         }
 

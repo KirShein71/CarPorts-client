@@ -9,7 +9,7 @@ import {
 } from '../../http/estimateApi';
 import { fetchBrigades } from '../../http/bragadeApi';
 import './style.scss';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, Modal } from 'react-bootstrap';
 import UpdateEstimatePrice from './modals/UpdateEstimatePrice';
 import UpdateEstimateBrigade from './modals/UpdateEstimateBrigade';
 import CheckboxInstallation from '../InstallationPage/checkbox/CheckboxInstallation';
@@ -18,9 +18,11 @@ import UpdatePaymentDate from './modals/UpdatePaymentDate';
 import UpdatePaymentSum from './modals/UpdatePaymentSum';
 import { deletePayment } from '../../http/paymentApi';
 import Moment from 'react-moment';
+import CreateEstimateFile from './modals/CreateEstimateFile';
+import { deleteEstimateFile } from '../../http/projectApi';
 
 function Estimate(props) {
-  const { projectId, regionId } = props;
+  const { projectId, regionId, estimateFile, changeProject, setChangeProject } = props;
   const [services, setServices] = React.useState([]);
   const [brigades, setBrigades] = React.useState([]);
   const [selectedBrigade, setSelectedBrigade] = React.useState(null);
@@ -43,6 +45,8 @@ function Estimate(props) {
   const [sortOrderServiceName, setSortOrderServiceName] = React.useState('asc');
   const [sortField, setSortField] = React.useState('service.number');
   const [sortServiceName, setSortServiceName] = React.useState('number');
+  const [modalCreateEstimateFile, setModalCreateEstimateFile] = React.useState(false);
+  const [deleteModal, setDeleteModal] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -225,6 +229,45 @@ function Estimate(props) {
     }
   };
 
+  const handleOpenModalCreateEstimateFile = () => {
+    setModalCreateEstimateFile(true);
+  };
+
+  const handleDeleteEstimateFile = () => {
+    setDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteEstimateFile(projectId)
+      .then(() => {
+        setChangeProject((state) => !state);
+        setDeleteModal(false);
+      })
+      .catch((error) => {
+        console.log(error.response?.data?.message || 'Ошибка при удалении');
+        setDeleteModal(false);
+      });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModal(false);
+  };
+
+  const handleDownloadFile = (fileUrl) => {
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileUrl.substring(fileUrl.lastIndexOf('/') + 1));
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => console.error('Ошибка при скачивании файла:', error));
+  };
+
   const handleSortService = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -360,9 +403,63 @@ function Estimate(props) {
         setChange={setChange}
         id={paymentColId}
       />
+      <CreateEstimateFile
+        show={modalCreateEstimateFile}
+        setShow={setModalCreateEstimateFile}
+        id={projectId}
+        change={changeProject}
+        setChange={setChangeProject}
+      />
       <div className="estimate__content">
         <div className="estimate-brigade">
           <div className="estimate-brigade__title">Сметы по проекту</div>
+          <div className="estimate-brigade__file">
+            <Modal
+              show={deleteModal}
+              onHide={handleCancelDelete}
+              aria-labelledby="delete-confirmation-modal"
+              centered
+              size="md"
+              className="modal__delete-confirm">
+              <Modal.Header closeButton>
+                <Modal.Title>Подтверждение удаления</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>Вы уверены, что хотите удалить файл?</p>
+                <div className="d-flex justify-content-end gap-2">
+                  <Button variant="dark" onClick={handleCancelDelete}>
+                    Отмена
+                  </Button>
+                  <Button variant="dark" onClick={handleConfirmDelete}>
+                    Удалить
+                  </Button>
+                </div>
+              </Modal.Body>
+            </Modal>
+            {estimateFile ? (
+              <>
+                <div
+                  className="estimate-brigade__file-title"
+                  onClick={() => handleDownloadFile(process.env.REACT_APP_IMG_URL + estimateFile)}>
+                  Файл сметы:
+                </div>
+                <div
+                  className="estimate-brigade__file-link delete"
+                  onClick={handleDeleteEstimateFile}>
+                  Удалить
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="estimate-brigade__file-title">Файл сметы:</div>
+                <div
+                  className="estimate-brigade__file-link"
+                  onClick={handleOpenModalCreateEstimateFile}>
+                  Добавить
+                </div>
+              </>
+            )}
+          </div>
           <div className="estimate-brigade__content">
             {estimateBrigades?.map((estimateBrigade) => (
               <>

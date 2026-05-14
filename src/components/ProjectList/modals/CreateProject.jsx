@@ -19,6 +19,7 @@ const defaultValue = {
   navigator: '',
   coordinates: '',
   phone: '',
+  estimate_file: '',
 };
 const defaultValid = {
   name: null,
@@ -35,6 +36,7 @@ const defaultValid = {
   navigator: null,
   coordinates: null,
   phone: null,
+  estimate_file: null,
 };
 
 const isValid = (value) => {
@@ -50,6 +52,7 @@ const isValid = (value) => {
     if (key === 'note') result.note = value.note.trim() !== '';
     if (key === 'region') result.region = value.region;
     if (key === 'phone') result.phone = value.phone.trim() !== '';
+    if (key === 'estimate_file') result.estimate_file = true;
   }
   return result;
 };
@@ -61,6 +64,7 @@ const CreateProject = (props) => {
   const [valid, setValid] = React.useState(defaultValid);
   const [clicked, setClicked] = React.useState(false);
   const [image, setImage] = React.useState(null);
+  const [estimateFile, setEstimateFile] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 800);
   const form = React.useRef();
 
@@ -99,6 +103,12 @@ const CreateProject = (props) => {
 
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
+  };
+
+  const handleEstimateFileChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setEstimateFile(event.target.files[0]);
+    }
   };
 
   const fetchDefaultImage = async () => {
@@ -147,6 +157,10 @@ const CreateProject = (props) => {
         // Данные пользователя
         data.append('phone', value.phone.trim());
         data.append('password', value.number.trim()); // 🔑 Номер проекта как пароль
+
+        if (estimateFile) {
+          data.append('estimate_file', estimateFile);
+        }
 
         if (image) {
           data.append('image', image, image.name);
@@ -354,6 +368,18 @@ const CreateProject = (props) => {
                   placeholder="Изображение..."
                 />
               </Col>
+              <Row className="mt-3">
+                <Col>
+                  <label for="estimate_file">Файл со сметой</label>
+                  <Form.Control
+                    name="estimate_file"
+                    type="file"
+                    onChange={handleEstimateFileChange}
+                    accept=".pdf,.xls,.xlsx,.doc,.docx"
+                    placeholder="Файл со сметой"
+                  />
+                </Col>
+              </Row>
               <Col md={12} className="mt-3 mb-3">
                 <textarea
                   name="note"
@@ -549,6 +575,18 @@ const CreateProject = (props) => {
                     type="file"
                     onChange={(e) => handleImageChange(e)}
                     placeholder="Изображение..."
+                  />
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col>
+                  <label for="estimate_file">Файл со сметой</label>
+                  <Form.Control
+                    name="estimate_file"
+                    type="file"
+                    onChange={handleEstimateFileChange}
+                    accept=".pdf,.xls,.xlsx,.doc,.docx"
+                    placeholder="Файл со сметой"
                   />
                 </Col>
               </Row>

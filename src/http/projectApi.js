@@ -231,6 +231,18 @@ export const createPortfolioNote = async (id, project) => {
     return data
 }
 
+export const createEstimateFile = async (id, project) => {
+    const { data} = await guestInstance.put(`project/createEstimateFile/${id}`, project)
+    return data
+}
+
+export const deleteEstimateFile = async (id, project) => {
+    const { data} = await guestInstance.put(`project/deleteEstimateFile/${id}`, project)
+    return data
+}
+
+
+
 
 
 

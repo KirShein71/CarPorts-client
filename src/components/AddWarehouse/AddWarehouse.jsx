@@ -18,6 +18,7 @@ function AddWarehouse() {
   const [modalAddOneWarehouseDetail, setModalOneWarehouseDetail] = React.useState(false);
   const [date, setDate] = React.useState(null);
   const [warehouseAssortementId, setWarehouseAssortementId] = React.useState(null);
+  const [warehouseAssortementName, setWarehouseAssortementName] = React.useState(null);
   const [modalUpdateWarehouseDetail, setModalUpdateWarehouseDetail] = React.useState(false);
   const [warehouseDetailId, setWarehouseDetailId] = React.useState(null);
 
@@ -43,16 +44,31 @@ function AddWarehouse() {
     setModalAddWarehouseDetail(true);
   };
 
-  const handleOpenModalAddOneWarehouseDetail = (id, date) => {
+  const handleOpenModalAddOneWarehouseDetail = (id, name, date) => {
     setWarehouseAssortementId(id);
+    setWarehouseAssortementName(name);
     setDate(date);
     setModalOneWarehouseDetail(true);
-    console.log(id);
   };
 
   const handleOpenModalUpdateWarehouseDetail = (id) => {
     setWarehouseDetailId(id);
     setModalUpdateWarehouseDetail(true);
+  };
+
+  // Функция для форматирования отображения количества с единицами измерения
+  const formatQuantity = (quantity, weight) => {
+    if (!quantity) return '';
+
+    // Если есть вес, показываем и в штуках, и в кг
+    if (weight && weight > 0) {
+      const weightInKg = weight / 1000;
+      const kgAmount = (quantity * weightInKg).toFixed(2);
+      return `${quantity}шт/${kgAmount}кг`;
+    }
+
+    // Если веса нет, показываем только штуки
+    return `${quantity} шт`;
   };
 
   return (
@@ -67,6 +83,7 @@ function AddWarehouse() {
         show={modalAddOneWarehouseDetail}
         setShow={setModalOneWarehouseDetail}
         warehouseAssortementId={warehouseAssortementId}
+        warehouseAssortementName={warehouseAssortementName}
         date={date}
         setChange={setChange}
       />
@@ -98,12 +115,21 @@ function AddWarehouse() {
               .sort((a, b) => a.id - b.id)
               .map((assortementName) => (
                 <tr key={assortementName.id}>
-                  <td>{assortementName.name}</td>
+                  <td className="add-warehouse__table-td name">
+                    {assortementName.name}
+                    {assortementName.weight && (
+                      <span className="add-warehouse__table-weight">
+                        ({assortementName.weight / 1000} кг)
+                      </span>
+                    )}
+                  </td>
                   {warehouseDetails.map((warehouseDetail) => {
                     const detail = warehouseDetail.props?.find(
                       (el) => el.warehouse_assortement_id === assortementName.id,
                     );
                     const quantity = detail ? detail.quantity : '';
+                    const weight = assortementName.weight;
+
                     return (
                       <td
                         className="add-warehouse__table-td quantity"
@@ -113,10 +139,11 @@ function AddWarehouse() {
                             ? handleOpenModalUpdateWarehouseDetail(detail.id)
                             : handleOpenModalAddOneWarehouseDetail(
                                 assortementName.id,
+                                assortementName.name,
                                 warehouseDetail.date,
                               )
                         }>
-                        {quantity}
+                        {formatQuantity(quantity, weight)}
                       </td>
                     );
                   })}
