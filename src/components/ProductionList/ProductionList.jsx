@@ -53,6 +53,7 @@ function ProductionList() {
   const [hoveredRowDelivery, setHoveredRowDelivery] = React.useState(null);
   const [hoveredRowDetails, setHoveredRowDetails] = React.useState(null);
   const [sortOrder, setSortOrder] = React.useState('desc');
+  const [hoveredTooltipId, setHoveredTooltipId] = React.useState(null);
 
   React.useEffect(() => {
     fetchAllProjectDetails().then((data) => {
@@ -495,20 +496,27 @@ function ProductionList() {
                   .map((part) => {
                     const hasImage = part.image && part.image.trim() !== '';
                     const isHovered = hoveredColumn === part.id;
+                    const isTooltipVisible = hoveredTooltipId === part.id;
 
                     return (
                       <th
                         key={part.id}
                         className="production-th"
-                        onMouseEnter={() => setHoveredColumn(part.id)}
-                        onMouseLeave={() => setHoveredColumn(null)}
+                        onMouseEnter={() => {
+                          setHoveredColumn(part.id);
+                          setHoveredTooltipId(part.id);
+                        }}
+                        onMouseLeave={() => {
+                          setHoveredColumn(null);
+                          setHoveredTooltipId(null);
+                        }}
                         style={{
                           backgroundColor: hoveredColumn === part.id ? '#d6d4d4' : '#ffffff',
+
                           cursor: 'default',
                         }}>
                         {part.name}
-
-                        {isHovered && hasImage && (
+                        {hasImage && isTooltipVisible && (
                           <div className="production__tooltip">
                             <img
                               src={`${process.env.REACT_APP_IMG_URL}${part.image}`}
