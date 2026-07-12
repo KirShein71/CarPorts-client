@@ -81,7 +81,7 @@ const CreateFile = (props) => {
         <Modal.Title>Добавить файл</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           <Row className="mb-3">
             <Col>
               <Form.Control

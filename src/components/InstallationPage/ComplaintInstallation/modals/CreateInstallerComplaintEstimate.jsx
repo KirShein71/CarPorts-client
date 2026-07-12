@@ -85,7 +85,7 @@ function CreateInstallerComplaintEstimate(props) {
         <Modal.Title>Смета</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSave}>
+        <Form autoComplete="off" noValidate onSubmit={handleSave}>
           <Table bordered className="mt-3">
             <thead>
               <tr>

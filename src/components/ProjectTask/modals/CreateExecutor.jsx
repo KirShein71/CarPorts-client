@@ -157,7 +157,7 @@ const CreateExecutor = (props) => {
         <Modal.Title>Выбрать исполнителя</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col>
             <Form.Select
               id="executor-select"

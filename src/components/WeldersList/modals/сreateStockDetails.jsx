@@ -107,7 +107,7 @@ const CreateStockDetails = (props) => {
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           <Col>
             <Form.Select
               name="detail"

@@ -136,7 +136,7 @@ const CreateMaterial = (props) => {
         <Modal.Title>Добавить материал</Modal.Title>
       </Modal.Header>
       <Modal.Body className="modal-dialog-scrollable">
-        <Form>
+        <Form autoComplete="off">
           <Col className="mb-3">
             <Form.Select
               name="material"

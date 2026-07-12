@@ -88,7 +88,7 @@ const CreateBrigade = (props) => {
         <Modal.Title>Назначить бригаду</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col>
             <Form.Select
               name="brigade"

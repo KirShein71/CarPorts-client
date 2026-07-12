@@ -59,7 +59,7 @@ const CreateCountBrigade = (props) => {
         <Modal.Title>Количество бригад</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSave}>
+        <Form autoComplete="off" noValidate onSubmit={handleSave}>
           <Row className="mb-3">
             <Col>
               <Form.Control

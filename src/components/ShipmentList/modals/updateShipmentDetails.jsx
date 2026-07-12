@@ -122,7 +122,7 @@ const UpdateShipmentDetails = (props) => {
           <Modal.Title>Добавить количество детали</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form noValidate onSubmit={handleSubmit}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Col>
               <Form.Control
                 name="shipment_quantity"

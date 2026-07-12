@@ -55,7 +55,7 @@ const CreateComplaintImage = (props) => {
         <Modal.Title>Добавить избражение</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           <Row className="mb-3">
             <Col>
               <Form.Control

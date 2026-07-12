@@ -83,7 +83,7 @@ const UpdateCount = (props) => {
         <Modal.Title>Изменить колиство бригад</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Control
               name="count"

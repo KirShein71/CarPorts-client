@@ -100,7 +100,7 @@ const CreateDateInspection = (props) => {
         <Modal.Title>Добавь дату проверки</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Control
               name="date_inspection"

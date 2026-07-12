@@ -151,7 +151,7 @@ const CreateWarehouseProject = (props) => {
         <Modal.Title>Добавить деталь</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           <Row className="mb-3">
             <Col>
               <Form.Select

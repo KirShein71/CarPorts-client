@@ -128,7 +128,7 @@ const CreateShipmentDetails = (props) => {
         <Modal.Title>Добавить деталь на отгрузку</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           <Col>
             <Form.Select
               name="detail"

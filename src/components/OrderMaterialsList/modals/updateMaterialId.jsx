@@ -122,7 +122,7 @@ const UpdateMaterialid = (props) => {
         <Modal.Title>Изменить материал</Modal.Title>
       </Modal.Header>
       <Modal.Body className="modal-dialog-scrollable">
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Select
               name="material"

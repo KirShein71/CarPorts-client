@@ -86,7 +86,7 @@ const CreateOneShipmentOrderDetail = (props) => {
         <Modal.Title>Добавить количество</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSaveDetail}>
+        <Form autoComplete="off" noValidate onSubmit={handleSaveDetail}>
           <Row className="mb-3 mt-4">
             <Col>
               <Form.Control

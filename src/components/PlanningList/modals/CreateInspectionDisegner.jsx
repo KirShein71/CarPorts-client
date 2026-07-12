@@ -100,7 +100,7 @@ const CreateInspectionDesigner = (props) => {
         <Modal.Title>Добавь проверяющего</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Control
               name="inspection_designer"

@@ -125,7 +125,7 @@ const UpdateDesigner = (props) => {
         <Modal.Title>Изменить проектировщика</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Select
               name="designerId"

@@ -99,7 +99,7 @@ const CreateProjectDelivery = (props) => {
         <Modal.Title>Добавь дату сдачи проекта</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col className="mb-3">
             <Form.Control
               name="project_delivery"

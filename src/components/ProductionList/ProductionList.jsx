@@ -516,14 +516,14 @@ function ProductionList() {
                           cursor: 'default',
                         }}>
                         {part.name}
-                        {hasImage && isTooltipVisible && (
+                        {/* {hasImage && isTooltipVisible && (
                           <div className="production__tooltip">
                             <img
                               src={`${process.env.REACT_APP_IMG_URL}${part.image}`}
                               alt={part.name}
                             />
                           </div>
-                        )}
+                        )} */}
                       </th>
                     );
                   })}

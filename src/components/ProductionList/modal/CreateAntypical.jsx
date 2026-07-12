@@ -231,7 +231,7 @@ const CreateAntypical = (props) => {
         <Modal.Title>Нетипичная деталь</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form autoComplete="off">
           {/* Ошибка формы */}
           {errors.form && <div className="alert alert-danger mb-3">{errors.form}</div>}
 

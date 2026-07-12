@@ -161,7 +161,7 @@ const CreateTechSupervision = (props) => {
         <Modal.Title>Заполнить чек лист</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSave}>
+        <form autoComplete="off" onSubmit={handleSave}>
           {/* Выбор проекта */}
           <div className="mb-3">
             <label htmlFor="project-select" className="form-label">
@@ -231,7 +231,7 @@ const CreateTechSupervision = (props) => {
                   <td style={{ textAlign: 'left' }}>
                     {examination?.number != null
                       ? `${examination.number}. ${examination?.name ?? ''}`
-                      : examination?.name ?? ''}
+                      : (examination?.name ?? '')}
                   </td>
                   <td>
                     <div className="d-flex gap-3">

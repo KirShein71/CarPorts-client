@@ -90,7 +90,7 @@ const UpdateEstimatePrice = (props) => {
         <Modal.Title>Изменить стоимость</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Row className="mb-3 mt-4">
             <Col>
               <Form.Control

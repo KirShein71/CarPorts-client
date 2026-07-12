@@ -93,7 +93,7 @@ function ClosedProject(props) {
             <Modal.Title>Внести дату закрытия проекта</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form noValidate onSubmit={handleFinishProject}>
+            <Form autoComplete="off" noValidate onSubmit={handleFinishProject}>
               <Col className="mb-3">
                 <Form.Control
                   name="date_finish"

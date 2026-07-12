@@ -113,7 +113,7 @@ const CreateProject = (props) => {
         <Modal.Title>Добавить проект</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Col>
             <Form.Control
               name="number"

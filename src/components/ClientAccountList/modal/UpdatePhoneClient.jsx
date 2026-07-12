@@ -87,7 +87,7 @@ const UpdatePhoneClient = (props) => {
         <Modal.Title>Изменить номер</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form ref={form} noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" ref={form} noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Control

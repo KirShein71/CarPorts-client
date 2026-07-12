@@ -126,7 +126,7 @@ const CreateReadyDate = (props) => {
           <Modal.Title>Внести дату готовности</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form noValidate onSubmit={handleSubmit}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Col>
                 <Form.Control

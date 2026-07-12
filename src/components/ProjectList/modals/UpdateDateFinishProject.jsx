@@ -75,7 +75,7 @@ function UpdateDateFinishProject(props) {
         <Modal.Title>Внести дату закрытия проекта</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleUpdateDateFinishProject}>
+        <Form autoComplete="off" noValidate onSubmit={handleUpdateDateFinishProject}>
           <Col className="mb-3">
             <Form.Control
               name="date_finish"

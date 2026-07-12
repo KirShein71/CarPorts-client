@@ -99,7 +99,7 @@ const CreateNpsQuestion = (props) => {
         <Modal.Title>Создние вопроса</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Select

@@ -72,7 +72,7 @@ const CreateDateBrigade = (props) => {
         <Modal.Title>Проставить данные</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate onSubmit={handleSave}>
+        <Form autoComplete="off" noValidate onSubmit={handleSave}>
           <Row className="mb-3 mt-4">
             <Col>
               <Form.Select

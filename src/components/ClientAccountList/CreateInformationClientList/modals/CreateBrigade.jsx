@@ -82,7 +82,7 @@ const CreateBrigade = (props) => {
         <Modal.Title>Назначить бригаду</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form autoComplete="off" onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Select
